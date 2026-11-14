@@ -8,6 +8,10 @@
     "scene": "tsx scene-spike.ts",
     "pano": "tsx pano-spike.ts",
     "upload": "tsx upload.ts",
+    "voices": "tsx voice-spike.ts",
+    "talk": "tsx talk-spike.ts",
+    "frames": "tsx frames.ts",
+    "walk": "tsx walk-spike.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

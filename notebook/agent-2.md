@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 16:55
-- Working on: A2-02 and A2-03 done. Next up A2-04
-- Next: A2-04 voice bake-off (Eleven v4 voices against Gemini TTS on one script). Then A2-05 guide frame and talk, from `out/scene-1880-pro.jpg` and `out/scene-1880-headshot.jpg`
+- Last updated: 2026-11-14 17:45
+- Working on: A2-04, A2-05 and A2-06 are generated and waiting for a human to listen and watch (`spikes/agent-2/out/review.html`)
+- Next: (1) write `VOICE_CATALOG` from the human's voice picks. (2) Make the full 45 s talk clip with the chosen avatar model and voice. (3) Tick A2-04 to A2-06, then A2-07 `src/lib/fal/` once Agent 1's scaffold is on `main`
 - Blocked on: nothing. Node v26.13.1 is installed at `C:\Program Files\nodejs`. Shells opened before the install need it added to PATH by hand. FAL_KEY is in `spikes/agent-2/.env.local`
-- Board read up to: 2026-11-14 15:55 (@agent-4 A4-01 viewer spike)
-- Waiting for commit approval: A2-02 and A2-03 spikes plus this notebook (A2-01 is committed as 33b7d6d on `agent-2`, not pushed)
+- Board read up to: 2026-11-14 15:55 (@agent-4 A4-01 viewer spike). Not re-read since: the human said not to track the other agents for now
+- Waiting for commit approval: the A2-04 to A2-06 spikes plus this notebook. Earlier commits on `agent-2`: 33b7d6d, cccfbd2. Not pushed, and the human said not to rebase or push
 
 ## Chosen models
 
@@ -23,12 +23,12 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 | scene | `fal-ai/nano-banana-pro/edit` (1K, 16:9, jpeg) | `google/nano-banana-2.1/edit` | 20.6 | $0.15 list | A2-02 |
 | panorama | `fal-ai/nano-banana-pro/edit` outpainting a 2:1 canvas (route b2, 2K, aspect `auto`), then resize to exactly 2:1 | none proven; `fal-ai/hunyuan_world` is not served | 27.0 | $0.15 list | A2-03 |
 | headshot | `google/nano-banana-2.1` (1K, 1:1, jpeg) | `fal-ai/nano-banana-pro` (not tested) | 18.1 | token-priced, see dashboard | A2-02 |
-| narration | | | | | A2-04 |
-| guide_frame | | | | | A2-05 |
-| talk | | | | | A2-05 |
-| walk_on, walk_off | | | | | A2-06 |
+| narration | waiting for the human's ear: 8 Eleven v4 and 8 Gemini TTS clips made | | 11-14 | Eleven ~$0.05, Gemini ~$0.03 per 600 chars | A2-04 |
+| guide_frame | `fal-ai/nano-banana-pro/edit` with [scene, headshot] | `google/nano-banana-2.1/edit` (untested) | ~20 | $0.15 list | A2-05 |
+| talk | waiting for the human's eye: Kling avatar v2 standard vs Fabric 480p | | Kling 226 s / Fabric 53 s per 10 s clip | $0.056/s / $0.08/s | A2-05 |
+| walk_on, walk_off | `kling/v4/image-to-video` 5 s 720p (made, waiting for the human's eye) | `blackforestlabs/flux-3/first-last-frame-to-video` | 163 | ~$0.79 | A2-06 |
 | chat speech | | | | | A2-04 |
-| speech to text | | | | | A2-11 |
+| speech to text | `fal-ai/elevenlabs/speech-to-text/scribe-v2` (works on MP3 and 24 kHz WAV) | | 2-4 | $0.008/min | A2-04 |
 | stitch | | | | | A2-14 |
 
 ## Tasks
@@ -110,3 +110,16 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Still open: the MASTER 5.4 pass mark needs a phone. `out/pano-1880-b2-2x1.jpg` is uploaded at https://v3b.fal.media/files/b/0ab2744b/pptkrvSGkOwD6o_RzIHjG_pano-1880-b2-2x1.jpg for Agent 4's viewer spike (`?src=<url>&vfov=180`). Added `upload.ts` (`npm run upload -- <files>`, free).
 - Next: A2-04 voice bake-off.
+
+### 2026-11-14 17:45, A2-04 to A2-06: voice, talk and walk spikes (generated, waiting for human judgement)
+- Did: `voice-spike.ts` (`npm run voices`). One 114-word, 605-character guide script, read by Eleven v4 (Alice, Lily, Charlotte, George, Daniel, Callum, Brian, Bill; stability 0.4) and by Gemini 3.8 Flash TTS (Kore, Aoede, Leda, Gacrux with a female Cockney style instruction; Charon, Algieba, Iapetus, Rasalgethi with a male one). Every clip was transcribed with Scribe v2 and scored for word error against the script. `talk-spike.ts` (`npm run talk`): guide frame, a 10 s clip in Lily's voice, then Kling avatar v2 standard against Fabric 1.0 480p. `walk-spike.ts` (`npm run walk`): Kling 4.0 first-and-last-frame, 5 s, 720p. Added `buildGuideFramePrompt` and `buildWalkPrompt` to `prompts.ts`. `out/review.html` puts everything on one page.
+- Measured or verified:
+  - **Voices:** 16 of 16 succeeded, at 11-14 s each. Word error 0-1.8% for every voice, so all read the script cleanly. **Length: 37.2-41.2 s for 114 words, about 2.9 words a second.** MASTER section 7's "105 to 120 words, about 45 s" actually gives about 36-42 s. 45 s needs about 130 words. Tell Agent 1 (Historian rules). Eleven returns MP3 at 44.1 kHz, 128 kbps, mono (about 600 KB). Gemini returns WAV, 16-bit, 24 kHz, mono (about 1.9 MB), with `content_type` audio/wav (the schema example's "png" is wrong). Scribe v2 accepts both formats and returns `words[]` with `type` "word" or "spacing" and times in seconds.
+  - **Guide frame, first try: fail.** It ignored "two metres, knees up" and placed her full-length about 8 m away, with a face about 40 px tall, too small for lip sync. **Second try: pass.** Putting "Medium close-up ... framed from the waist up ... large in the frame" first gave a face about 200 px tall that matches the headshot, with the scene unchanged except the lamp post and two cabs behind her. Both are 1376×768.
+  - **Talk, 10 s:** Kling standard took 226 s and made 1280×720, 10.13 s, with audio. Fabric 480p took 53 s and made 864×480, 10.16 s. Kling at that speed means about 15 min for a 45 s clip, so the live-generation demo must not wait on it.
+  - **Walk on:** 163 s, and the output is 5.04 s at **1280×716** (not 720), with an audio track. The stitch stage must scale every clip to 1280×720 (merge-videos picks the smallest size, F-006).
+  - **`fal-ai/ffmpeg-api/extract-frame` returns 403 "You do not have permission to use this endpoint"** on this key. The walk_off plan, starting on the talk clip's last frame, needs another route: use guide_frame as the start (it is the talk clip's first frame), or ask the team about access. Installing a local ffmpeg (`ffmpeg-static`) was blocked by the session's permission check, so I cannot cut stills from the videos myself.
+- Decided, and why: nothing final. Accents, lip sync and walking motion have to be judged by a person, and I cannot hear audio or play video here.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Spend so far (list prices): A2-01 to A2-03 about $1, voices about $0.70, guide frame ×2 $0.30, talk tests about $1.40, walk-on about $0.79. **About $4.20 in total.**
+- Next: the human's picks, then `VOICE_CATALOG`, then the 45 s clip.

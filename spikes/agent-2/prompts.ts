@@ -107,6 +107,61 @@ export function buildPanoramaGridPrompt(surroundings: string, year: number): str
 }
 
 /**
+ * Prompt for stage `guide_frame`: the guide standing in the scene. Image 1 is the scene, image 2 the headshot.
+ *
+ * Intent: this one frame is the end of walk_on, the whole of talk, and the start of walk_off, so it must keep the
+ * scene pixel for pixel apart from the guide, and the guide must match the headshot (same face, same clothes).
+ * The guide stands close, waist up and slightly off centre, so the face is big enough for the
+ * lip-sync model and the landmark stays visible behind. Facing the camera, mouth closed, hands relaxed: a neutral
+ * start pose that talking-avatar models animate best.
+ *
+ * Example output (abridged):
+ *   "Place the woman from image 2 into the street photograph in image 1 ... framed from the waist up ..."
+ *
+ * @param guide - The fictional guide (appearance repeats what the headshot shows, to keep clothing consistent).
+ * @param year - The guide's year.
+ * @returns The prompt string for an image-edit model given [scene, headshot].
+ */
+export function buildGuideFramePrompt(guide: GuideLike, year: number): string {
+  return [
+    `Medium close-up: the person from image 2 (${guide.name}, ${guide.role}) stands in the foreground of the street photograph in image 1, very close to the camera, as if photographed there in ${year}.`,
+    'They are large in the frame: framed from the waist up, the top of the head near the top quarter of the image, the body filling about a third of the image width, slightly left of centre. Their face is big and clearly visible.',
+    `Same face, hair, hat and clothing as image 2. Appearance: ${guide.appearance}`,
+    'Facing the camera, friendly closed-mouth smile, arms relaxed.',
+    'Keep everything else in image 1 exactly as it is: same camera position, framing, buildings, street, light and colours. Do not crop or zoom.',
+    'Match the lighting, colour and sharpness of image 1 so the person looks naturally part of the photograph, with a soft shadow on the ground.',
+    'No text, borders or watermarks.',
+  ].join('\n\n');
+}
+
+/**
+ * Prompt for stages `walk_on` and `walk_off`: a first-and-last-frame video between the empty scene and the guide frame.
+ *
+ * Intent: the camera must not move, because the clip has to cut cleanly into the talk clip (same frame) and the
+ * player sees it inside the Time Machine as "the guide arrives". The guide enters from the near pavement side so
+ * she grows naturally into the close-up position instead of popping in. Background traffic may move a little.
+ *
+ * Example output (abridged): "Static camera, locked off. A woman in a dark bonnet and grey shawl walks into the
+ * frame from the left ..."
+ *
+ * @param guide - The fictional guide.
+ * @param direction - 'on': empty scene to guide frame. 'off': guide frame to empty scene.
+ * @returns The prompt string for an image-to-video model with start and end frames.
+ */
+export function buildWalkPrompt(guide: GuideLike, direction: 'on' | 'off'): string {
+  // Appearance is written as a sentence; drop its final full stop so it reads as an apposition.
+  const appearance = guide.appearance.replace(/\.\s*$/, '');
+  const who = `${guide.name}, ${appearance.charAt(0).toLowerCase()}${appearance.slice(1)},`;
+  return [
+    'Static camera, locked off, no zoom, no pan.',
+    direction === 'on'
+      ? `${who} walks into the frame from the left along the pavement towards the camera, slows down and stops close to the camera, turns to face it and smiles.`
+      : `${who} gives a small friendly nod, turns to her left and walks out of the frame to the left along the pavement.`,
+    'Natural walking pace and realistic body motion. The street behind stays the same, with slight natural movement of distant carriages and people.',
+  ].join(' ');
+}
+
+/**
  * Prompt for stage `headshot`: the guide's chat profile picture.
  *
  * Intent: a clean, front-facing, evenly lit head-and-shoulders portrait. It doubles as the identity reference
