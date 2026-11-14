@@ -16,7 +16,16 @@ import { runFal, FalStageError, type FalRunContext } from './run';
 import { getVoice } from './voices';
 
 export { VOICE_CATALOG, getVoice, type VoiceEntry } from './voices';
-export { MODELS, type FalStageKey, type ModelChoice } from './models';
+export {
+  MODELS,
+  IMAGE_ASPECT_RATIO,
+  IMAGE_RESOLUTION,
+  PANORAMA_RESOLUTION,
+  WALK_DURATION_S,
+  WALK_RESOLUTION,
+  type FalStageKey,
+  type ModelChoice,
+} from './models';
 export { runFal, FalStageError, type FalRunContext, type FalRunResult, type FalQueueLike } from './run';
 
 /** Longest text one ElevenLabs request accepts, in characters (the schema page says 5,000). */

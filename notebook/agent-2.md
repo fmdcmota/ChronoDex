@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:05
-- Working on: A2-07 done on branch `agent-2` (merged up to `main` a505547 first). A2-04 to A2-06 still wait on the human's voice and talk-model picks
-- Next: A2-08 `src/lib/pipeline/stages/` (one file per stage, prompt builders from `spikes/agent-2/prompts.ts` plus panorama canvas building and the 2:1 resize), then A2-09 `runEraJob`, A2-10 worker, A2-11 routes
+- Last updated: 2026-11-14 20:15
+- Working on: A2-07 committed (6c2ac35). A2-08 written and passing, not yet committed. A2-04 to A2-06 still wait on the human's voice and talk-model picks
+- Next: A2-09 `runEraJob` in `src/lib/pipeline/index.ts`: brief (writeEraBrief) then scene, panorama, headshot, narration in parallel where the graph allows, each result written with patchEra, stage state with patchStage (set `model` as each stage starts: Agent 4 asked), then the video tier. Then A2-10 worker, A2-11 routes
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is in `spikes/agent-2/.env.local`; Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-14 19:55 (@team review)
-- Waiting for commit approval: A2-07 (src/lib/fal/*, this page, a board post)
+- Waiting for commit approval: two commits on `agent-2`: (1) the `sharp` dependency alone (package.json, lockfile), (2) A2-08 stages + `src/lib/fal/index.ts` re-exports + this page
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Chosen models
@@ -41,7 +41,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [ ] A2-05 Talking-guide bake-off, one full 45 s clip
 - [ ] A2-06 Walk-on spike
 - [x] A2-07 fal library: `runFal`, models, voices, upload, speech, transcribe
-- [ ] A2-08 Stage functions and prompt builders
+- [x] A2-08 Stage functions and prompt builders (stitch comes with A2-14, image checks with A2-12)
 - [ ] A2-09 `runEraJob` orchestrator
 - [ ] A2-10 Worker
 - [ ] A2-11 Routes: uploads, voice tts, voice stt
@@ -135,3 +135,17 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: the root `node_modules` held Linux-only native binaries (rolldown), so vitest would not start on Windows. A plain `npm install` fixed it and did not touch the lockfile. If another Windows machine hits "Cannot find native binding", run `npm install` there too. The first lint run failed on a missing doc description in `run.ts`; fixed.
 - Next: A2-08.
+
+### 2026-11-14 20:15, A2-08: pipeline stages (done)
+- Did: `src/lib/pipeline/stages/` with one function per stage (scene, panorama, headshot, narration, guide_frame, walk on and off, talk), `prompts.ts` (the spike prompts ported as exported builders), `inputs.ts` (model input shapes, with the fallback models' different fields), `image.ts` (panorama canvas, resize to exact 2:1, leftover-grey measure), `types.ts`, a README and 18 tests. `src/lib/fal/index.ts` now also re-exports the size constants. Added `sharp` as a direct dependency: Next already installs it, but it was not declared, and the panorama stage needs it.
+- Decided, and why:
+  - Stages take plain inputs and return `{ url, model, requestId, elapsedMs }`, so the orchestrator owns all state and every stage is testable with a fake queue.
+  - Walk off starts at the guide frame, not the last frame of talk, because `extract-frame` is 403 on our key.
+  - The panorama prompt now repeats `notYetBuilt` (the first spike drew modern road markings).
+  - Default horizon fraction 0.55 for a typical phone photo (the spike's 0.69 was for a tilted-up photo). Untested on other photos.
+- Measured or verified: `npm run check` passes (typecheck, lint, 213 tests). **Live run of `runPanorama` through the production code, three times:** 34.7 s, 35.4 s and 36.0 s. Results: one good sphere (0.3% grey), one valid sphere with the horizon about 10% too low (1% grey), and one bad picture, a mirrored two-row layout with the bottom third left as grey canvas (12.6% grey). Only one of three was fully good, so the model is not reliable here.
+- Fixed because of it: `runPanorama` now measures leftover grey and retries once above 3% (worst case two requests, about $0.30), keeping the better one, and reports `attempts` and `unpaintedFraction`. The grey measure separates the runs cleanly (0.3% and 1% against 12.6%). The low horizon is not caught: A2-12's Claude check should judge horizon height, the seam and leftover modern objects.
+- Bug the tests caught: a portrait-shaped scene made `sharp` refuse to composite onto the canvas; the scene is now fitted inside it.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Spend this session: panorama runs about $0.45, voice smoke test under $0.01. Total so far about $4.70 at list prices.
+- Next: A2-09.
