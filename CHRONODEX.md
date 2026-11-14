@@ -2,6 +2,8 @@
 
 **Point your phone at a place and collect its past. Every pixel has a receipt.**
 
+> **Replaced for scope by [MASTER.md](MASTER.md) on 14 Nov.** The team has since fixed a different feature set: guide avatars and chat are in, and the build is TypeScript. Keep this file for background only: data sources, the demo route and pitch notes.
+
 Concept and build plan for the Imperial AI Hackathon, 14–15 November 2026. It develops the Chronodex idea in the [README](README.md) and the "Historical PocaDex" note in the IdeaPad into something we can build this weekend and demo on Sunday.
 
 ## TL;DR

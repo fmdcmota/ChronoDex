@@ -1,0 +1,4 @@
+# BOARD.md is an append-only chat log that four agents write to at once.
+# Git's built-in "union" merge keeps the lines from both sides instead of
+# raising a conflict when two branches add posts at the same place.
+BOARD.md merge=union
