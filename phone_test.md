@@ -41,6 +41,8 @@ Open `spikes/agent-2/out/review.html` on Ishan's laptop (generated files are not
 
 ## Part 2. Laptop checks (Chrome, about 5 minutes)
 
+**Mocks must be off for this test.** In `.env.local` set `NEXT_PUBLIC_USE_MOCKS=` (empty) and make sure `FAL_KEY` is set, then restart `npm run dev`. With mocks on, the server always answers `{"text":"What was daily life like here?"}` in under 100 ms whatever you say. That happened in round 1 and proved nothing.
+
 | # | Do this | Pass if | Result |
 |---|---|---|---|
 | 2.1 | Terminal 1: `npm run dev`. Terminal 2: `node spikes/agent-2/voice-test.mjs`. Open `http://localhost:4000` in Chrome, press Record, say a sentence, press Stop | It prints `HTTP 200` and your words. **Paste the whole printout** | |
@@ -113,7 +115,7 @@ Same address plus `/media.html`. Sound on, phone not in silent mode. The log at 
 
 ## Part 6. Guide chat (spike, canned replies)
 
-Same address plus `/chat.html`. Judge how it looks and behaves, not what the guide says. Ask about clothes, food or "where next". A message containing "error" shows the error state.
+Same address plus `/chat.html`. **This page is a spike: its replies, its transcript and its beep-for-a-voice are canned by design.** The real chat (real replies, your own words transcribed, the guide's real voice) is tested in the app with mocks off and a generated era, after the Vercel deploy. Judge how it looks and behaves, not what the guide says. Ask about clothes, food or "where next". A message containing "error" shows the error state.
 
 | # | Do this | Pass if | iPhone | Android |
 |---|---|---|---|---|
