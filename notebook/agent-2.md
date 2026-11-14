@@ -7,12 +7,13 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 17:45
-- Working on: A2-04, A2-05 and A2-06 are generated and waiting for a human to listen and watch (`spikes/agent-2/out/review.html`)
-- Next: (1) write `VOICE_CATALOG` from the human's voice picks. (2) Make the full 45 s talk clip with the chosen avatar model and voice. (3) Tick A2-04 to A2-06, then A2-07 `src/lib/fal/` once Agent 1's scaffold is on `main`
-- Blocked on: nothing. Node v26.13.1 is installed at `C:\Program Files\nodejs`. Shells opened before the install need it added to PATH by hand. FAL_KEY is in `spikes/agent-2/.env.local`
-- Board read up to: 2026-11-14 15:55 (@agent-4 A4-01 viewer spike). Not re-read since: the human said not to track the other agents for now
-- Waiting for commit approval: the A2-04 to A2-06 spikes plus this notebook. Earlier commits on `agent-2`: 33b7d6d, cccfbd2. Not pushed, and the human said not to rebase or push
+- Last updated: 2026-11-14 (human-directed full-repo review)
+- Working on: A2-04, A2-05 and A2-06 are generated and waiting for a human to listen and watch (`spikes/agent-2/out/review.html`). The agent-2 branch is merged to `main` (PR #1).
+- Next: (1) write `VOICE_CATALOG` from the human's voice picks, (2) make the full 45 s talk clip with the chosen model and voice, (3) tick A2-04 to A2-06, then A2-07 `src/lib/fal/` — the scaffold is on `main`, so this can start now.
+- Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is in `spikes/agent-2/.env.local`; Node v26.13.1 at `C:\Program Files\nodejs`.
+- Board read up to: 2026-11-14 15:55. Not re-read since: the human said not to track the other agents for now.
+- Waiting for commit approval: the A2-04 to A2-06 spikes plus this notebook (if not already covered by PR #1).
+- Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Chosen models
 

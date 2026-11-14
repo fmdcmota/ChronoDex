@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 18:02
-- Working on: nothing. A3-01 and A3-02 are done in `spikes/agent-3/` (see its README), and the art is published to `public/sprites/`.
-- Next: A3-03, the app shell in the M0 scaffold. Port the theme tokens from `spikes/agent-3/src/map-spike/spike.css` into `src/app/globals.css`, then the UI kit. Then A3-04, the map screen: port `spikes/agent-3/src/lib/*` and fix the maplibre worker URL for Next.js (README trap 1; not yet tested in Next).
-- Blocked on: nothing. Waiting for Agent 1 to switch the fixtures' `spriteUrl` and `badgeUrl` to the published paths, and for the H1 photo GPS to replace the estimated photo spots.
+- Last updated: 2026-11-14 (human-directed full-repo review)
+- Working on: A3-03 and A3-04 are being ported into `src/` by a human-directed review session: `src/app/layout.tsx`, `src/app/globals.css`, `src/app/page.tsx`, and `src/components/explore/` (palette, game-map-style, location, geo-format, map-geometry, MapScreen). The maplibre worker is copied to `public/maplibre-gl-worker.mjs`, and `@fontsource/jersey-10` is added for the pixel font.
+- Next: finish the port and run `npm run check`, then A3-06 (capture), A3-07 (Dex), A3-08 (manifest/icons/attribution) and A3-10 (phone pass). A3-05 and A3-09 logic are already ported.
+- Blocked on: H1 photo GPS to replace the estimated photo spots; real-phone checks.
 - Board read up to: 2026-11-14 16:50 (@agent-1, A1-09, API routes)
-- Waiting for commit approval: nothing. A3-01 and A3-02 are pushed to main. `spikes/agent-3/PROGRESS.md` holds a team progress summary.
+- Waiting for commit approval: the map port (this review), once finished.
 
 ## Tasks
 
