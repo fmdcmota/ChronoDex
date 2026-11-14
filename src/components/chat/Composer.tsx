@@ -11,6 +11,7 @@
 
 import { useRef, useState, type FormEvent, type PointerEvent } from 'react';
 import { HoldToTalkRecorder, type Recording } from './recorder';
+import { PIXEL_FRAME } from '@/components/time-machine/pixel';
 
 /** Props for Composer. */
 export interface ComposerProps {
@@ -84,7 +85,7 @@ export function Composer({ enabled, onSend, onRecording, onUserGesture, onMicErr
   const showMic = text.trim() === '';
 
   return (
-    <form onSubmit={submit} className="flex items-end gap-2 border-t border-zinc-200 bg-white px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+    <form onSubmit={submit} className="flex items-end gap-2 border-t-[3px] border-(--ink) bg-(--paper-shade) px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
       <input
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -92,7 +93,7 @@ export function Composer({ enabled, onSend, onRecording, onUserGesture, onMicErr
         disabled={recording}
         enterKeyHint="send"
         aria-label="Message"
-        className="min-w-0 flex-1 rounded-full border border-zinc-300 bg-zinc-50 px-4 py-2 text-[16px] outline-none focus:border-blue-400"
+        className="min-w-0 flex-1 rounded-full border-2 border-(--ink) bg-white px-4 py-2 text-[16px] outline-none focus:border-(--gold-dark)"
       />
       {showMic ? (
         <button
@@ -103,14 +104,14 @@ export function Composer({ enabled, onSend, onRecording, onUserGesture, onMicErr
           onPointerCancel={up}
           onContextMenu={(e) => e.preventDefault()}
           aria-label="Hold to talk"
-          className={`h-10 w-10 shrink-0 touch-none select-none rounded-full text-lg [-webkit-touch-callout:none] disabled:opacity-40 ${
-            recording ? 'scale-125 bg-red-500 text-white' : 'bg-zinc-100 text-zinc-700'
+          className={`${PIXEL_FRAME} m-[3px] h-10 w-10 shrink-0 touch-none select-none text-lg [-webkit-touch-callout:none] disabled:opacity-40 ${
+            recording ? 'scale-125 bg-(--brick) text-(--paper)' : 'bg-white text-(--ink)'
           } transition-transform`}
         >
           🎙
         </button>
       ) : (
-        <button type="submit" disabled={!enabled} aria-label="Send" className="h-10 w-10 shrink-0 rounded-full bg-blue-500 text-lg text-white disabled:opacity-40">
+        <button type="submit" disabled={!enabled} aria-label="Send" className={`${PIXEL_FRAME} m-[3px] h-10 w-10 shrink-0 bg-(--gold) text-lg font-bold text-(--ink) disabled:opacity-40`}>
           ↑
         </button>
       )}

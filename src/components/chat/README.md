@@ -9,6 +9,8 @@ Owner: Agent 4. The `/chat/[eraId]` screen (MASTER.md section 1.2 part 3, tasks 
 - `Composer.tsx`: text box and Send, or hold-to-talk (`recorder.ts`) while the box is empty.
 - `NextStopCard.tsx` (A4-09): after the guide has answered, the nearest uncollected landmark from
   this one (`nextStop.ts`, using Agent 3's `nearestLandmark`), linking to the map.
+- Colours and fonts come from `../time-machine/pixel.ts` (Agent 3's palette). Bubbles stay rounded on
+  purpose: the spec asks for a text-message look.
 - `ChatHeader.tsx`, `MessageBubble.tsx`, `TypingIndicator.tsx`, `Avatar.tsx`: the look.
 
 ## Run and test

@@ -8,6 +8,7 @@
 
 import { useState } from 'react';
 import type { Job, JobStage } from '@/lib/contracts';
+import { PANEL_DARK, SECTION_LABEL } from './pixel';
 
 /** Props for ProgressSheet. */
 export interface ProgressSheetProps {
@@ -65,20 +66,20 @@ export function ProgressSheet({ job, nowMs, startCollapsed = false }: ProgressSh
         type="button"
         onClick={() => setCollapsed(false)}
         aria-label="Show generation progress"
-        className="flex w-full items-center gap-2 rounded-full bg-black/70 px-3 py-1.5 text-left text-xs text-white backdrop-blur"
+        className={`${PANEL_DARK} flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs`}
       >
         <span className="animate-spin" aria-hidden>◐</span>
         <span className="min-w-0 flex-1 truncate">{running?.label ?? 'Waiting for the studio'}</span>
-        <span className="tabular-nums text-white/70">{doneCount}/{job.stages.length}</span>
+        <span className="tabular-nums text-(--paper)/70">{doneCount}/{job.stages.length}</span>
       </button>
     );
   }
 
   return (
-    <section aria-label="Generation progress" className="rounded-2xl bg-black/75 p-3 text-white backdrop-blur">
+    <section aria-label="Generation progress" className={`${PANEL_DARK} p-3`}>
       <div className="mb-2 flex items-baseline justify-between text-xs">
-        <span className="font-bold uppercase tracking-wider">Travelling back</span>
-        <button type="button" onClick={() => setCollapsed(true)} className="tabular-nums text-white/70" aria-label="Hide generation progress">
+        <span className={SECTION_LABEL}>Travelling back</span>
+        <button type="button" onClick={() => setCollapsed(true)} className="tabular-nums text-(--paper)/70" aria-label="Hide generation progress">
           {doneCount}/{job.stages.length} ▴
         </button>
       </div>
@@ -86,16 +87,16 @@ export function ProgressSheet({ job, nowMs, startCollapsed = false }: ProgressSh
         {job.stages.map((stage) => {
           const seconds = stageSeconds(stage, nowMs);
           return (
-            <li key={stage.key} className={`flex gap-2 text-sm ${stage.state === 'pending' ? 'text-white/45' : ''}`}>
-              <span className={`w-4 text-center ${stage.state === 'running' ? 'animate-spin' : ''} ${stage.state === 'failed' ? 'text-red-400' : ''}`} aria-label={stage.state}>
+            <li key={stage.key} className={`flex gap-2 text-sm ${stage.state === 'pending' ? 'text-(--paper)/50' : ''}`}>
+              <span className={`w-4 text-center ${stage.state === 'running' ? 'animate-spin' : ''} ${stage.state === 'failed' ? 'text-(--brick)' : ''}`} aria-label={stage.state}>
                 {STATE_ICON[stage.state]}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block leading-tight">{stage.label}</span>
-                {stage.model && <span className="block truncate font-mono text-[10px] text-white/55">{stage.model}</span>}
-                {stage.error && <span className="block text-[11px] text-red-300">{stage.error}</span>}
+                {stage.model && <span className="block truncate font-mono text-[10px] text-(--paper)/60">{stage.model}</span>}
+                {stage.error && <span className="block text-[11px] text-(--brick)">{stage.error}</span>}
               </span>
-              {seconds !== null && <span className="text-xs tabular-nums text-white/60">{seconds}s</span>}
+              {seconds !== null && <span className="text-xs tabular-nums text-(--paper)/70">{seconds}s</span>}
             </li>
           );
         })}

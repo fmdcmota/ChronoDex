@@ -14,6 +14,7 @@ import type { LandmarkId } from '@/lib/contracts';
 import { api, getPlayerId } from '@/lib/client';
 import { directionHint, type LandmarkFix } from '@/components/explore/lib/geo-format';
 import { nextStop } from './nextStop';
+import { PIXEL_FONT, PIXEL_FRAME } from '@/components/time-machine/pixel';
 
 /** Props for NextStopCard. */
 export interface NextStopCardProps {
@@ -55,21 +56,22 @@ export function NextStopCard({ landmarkId }: NextStopCardProps) {
 
   if (suggestion.kind === 'all_done') {
     return (
-      <Link href="/dex" className="mx-auto mt-4 block max-w-[90%] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-center text-sm">
-        <span className="font-semibold">Every badge collected.</span> <span className="text-blue-600">Open the Dex ›</span>
+      <Link href="/dex" className={`${PIXEL_FRAME} m-[3px] mx-auto! mt-4! flex max-w-[90%] items-center gap-3 bg-white px-4 py-3 text-sm text-(--ink)`}>
+        <span className="flex-1 font-semibold">Every badge collected.</span>
+        <span className={`${PIXEL_FONT} text-xl text-(--gold-dark)`}>Dex ›</span>
       </Link>
     );
   }
 
   return (
-    <Link href="/" className="mx-auto mt-4 flex max-w-[90%] items-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm">
+    <Link href="/" className={`${PIXEL_FRAME} m-[3px] mx-auto! mt-4! flex max-w-[90%] items-center gap-3 bg-white px-4 py-3 text-sm text-(--ink)`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={suggestion.fix.landmark.spriteUrl} alt="" className="h-10 w-10 shrink-0 object-contain [image-rendering:pixelated]" />
       <span className="min-w-0 flex-1">
-        <span className="block text-[11px] font-semibold tracking-wide text-zinc-400 uppercase">Next stop</span>
+        <span className={`${PIXEL_FONT} block text-lg text-(--gold-dark)`}>Next stop</span>
         <span className="block">{directionHint(suggestion.fix)} from here.</span>
       </span>
-      <span className="shrink-0 text-blue-600">Map ›</span>
+      <span className={`${PIXEL_FONT} shrink-0 text-xl text-(--ink)`}>Map ›</span>
     </Link>
   );
 }

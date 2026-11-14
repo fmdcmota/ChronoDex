@@ -12,6 +12,7 @@
 
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { THEN_NOW_START_PERCENT, percentAfterKey, percentFromPointer } from './thenNow';
+import { BTN_SECONDARY, TAG_DARK } from './pixel';
 
 /** Props for ThenNowSlider. */
 export interface ThenNowSliderProps {
@@ -70,11 +71,11 @@ export function ThenNowSlider({ thenUrl, nowUrl, year, landmarkName, onClose }: 
   };
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={`${landmarkName}, ${year} and now`} className="absolute inset-0 z-40 flex flex-col justify-center bg-black/95">
+    <div role="dialog" aria-modal="true" aria-label={`${landmarkName}, ${year} and now`} className="absolute inset-0 z-40 flex flex-col justify-center bg-(--ink)/95">
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-3 right-3 z-10 rounded-full bg-white/15 px-3 py-1 text-sm font-bold"
+        className={`${BTN_SECONDARY} absolute top-3 right-3 z-10`}
       >
         Close
       </button>
@@ -99,8 +100,8 @@ export function ThenNowSlider({ thenUrl, nowUrl, year, landmarkName, onClose }: 
           style={{ clipPath: `inset(0 ${100 - percent}% 0 0)` }}
         />
 
-        <span className="absolute top-2 left-2 rounded bg-black/70 px-2 py-0.5 text-xs font-bold tabular-nums">{year}</span>
-        <span className="absolute top-2 right-2 rounded bg-black/70 px-2 py-0.5 text-xs font-bold">Now</span>
+        <span className={`${TAG_DARK} absolute top-2 left-2`}>{year}</span>
+        <span className={`${TAG_DARK} absolute top-2 right-2`}>Now</span>
 
         <div
           role="slider"
@@ -111,16 +112,16 @@ export function ThenNowSlider({ thenUrl, nowUrl, year, landmarkName, onClose }: 
           aria-valuenow={Math.round(percent)}
           aria-valuetext={`${Math.round(percent)}% ${year}`}
           onKeyDown={onKeyDown}
-          className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-amber-400 outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-(--gold) outline-none focus-visible:ring-2 focus-visible:ring-(--paper)"
           style={{ left: `${percent}%` }}
         >
-          <span className="absolute top-1/2 left-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-amber-400 text-sm font-bold text-black">
+          <span className="absolute top-1/2 left-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-(--gold) text-sm font-bold text-(--ink) shadow-(--pixel-frame)">
             ‹›
           </span>
         </div>
       </div>
 
-      <p className="px-4 pt-3 text-center text-xs text-white/60">Drag to compare. The {year} view is an AI reconstruction.</p>
+      <p className="m-0! px-4 pt-3 text-center text-xs text-(--paper)/70">Drag to compare. The {year} view is an AI reconstruction.</p>
     </div>
   );
 }

@@ -10,9 +10,11 @@ Owner: Agent 4. The `/time/[landmarkId]` screen (MASTER.md section 1.2 part 2, t
 - `GuidePlayer.tsx`: walk_on, talk, walk_off back to back (`segmentPlayer.ts`), or the narration
   until a video exists, with captions from `captions.ts`.
 - `ProgressSheet.tsx`: the job's stages with model ids and seconds. Collapses to a pill for the video tier.
-- `YearBar.tsx`: one button per era with a state dot.
+- `YearBar.tsx`: one button per era with a state marker.
+- `pixel.ts`: class strings for the game look (pixel font, pixel frames, ink, paper and gold) built on
+  Agent 3's CSS variables in `globals.css`. The chat imports it too.
 - `ThenNowSlider.tsx` (A4-06): reference photo vs scene image with a draggable divider, maths in
-  `thenNow.ts`. Opened from the header's "Then / Now" button once the era has a scene image.
+  `thenNow.ts`. Opened from the header's "Then/Now" button once the era has a scene image.
 - `SourcesDrawer.tsx` (A4-09): summary, fun facts and sources from the Era. Only http(s) links are
   rendered (`sources.ts`), because the Historian's URLs come from the open web.
 
@@ -31,4 +33,6 @@ then follow `spikes/agent-4/PHONE_TEST.md` Test 4.
 - PanoramaView's `className` sets its position. Do not add `relative` inside it: it beat `absolute` once.
 - Sound starts only from a tap ("Meet …"). SegmentPlayer primes its standby video inside that tap for iOS.
 - Agent 3's `globals.css` styles bare `h2` and `p` outside any layer, so they beat Tailwind classes.
+  Use Tailwind's important suffix (`m-0!`) where a `p` margin gets in the way.
+- A pixel frame is a box-shadow 3 px outside the box: a parent with `overflow` clips it unless it has padding.
 - No lookbehind regexes: Safari before iOS 16.4 cannot parse them and the whole page would fail.

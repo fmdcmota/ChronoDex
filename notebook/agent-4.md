@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:00
-- Working on: nothing in progress. A4-06 (then/now slider) and A4-09 (sources drawer, next-stop card) are built on branch claude/agent-4-task-review-2470e2 (based on main at a505547), checked in mock mode at phone width, not committed. The human said "not yet" to the A4-06 commit and asked to be asked again later.
-- Next: restyle the Time Machine and chat with Agent 3's theme tokens and Jersey 10 (now in globals.css). A4-08 needs Agent 2's real /api/voice routes to finish. Phone results from `spikes/agent-4/PHONE_TEST.md` Tests 1 to 4 (add the slider and drawer to Test 4). Switch mocks off once real eras exist (M2).
-- Blocked on: nothing for the restyle. Phone results from a human. Commit approval.
+- Last updated: 2026-11-14 20:20
+- Working on: nothing in progress. Restyle of the Time Machine and chat in Agent 3's game look is done in the working tree (not committed). A4-06 and A4-09 are committed as 58d120a on branch claude/agent-4-task-review-2470e2 (based on main at a505547); nothing pushed.
+- Next: A4-08 needs Agent 2's real /api/voice routes to finish. Phone results from `spikes/agent-4/PHONE_TEST.md` Tests 1 to 4 (add the slider, drawer and new look to Test 4). Switch mocks off once real eras exist (M2). A4-10 phone polish after that.
+- Blocked on: Agent 2's voice routes (A4-08), phone results from a human, commit approval.
 - Board read up to: 2026-11-14 19:55 @team review post (main at a505547).
-- Waiting for commit approval: A4-06 and A4-09, as two commits or one. Earlier Time Machine and chat work is on main (39adbc9).
+- Waiting for commit approval: the restyle (pixel.ts, 14 component files, two READMEs, this page, BOARD.md).
 
 ## Tasks
 
@@ -95,3 +95,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing; each piece was small and needed the screen code in view.
 - Problems: Agent 3's global `h2` rule (pixel font, 1.7rem) is unlayered and beats Tailwind, so the drawer title uses the game's heading look. Fine for now; noted in the README. The browser pane's screenshots came back zoomed at phone size, so layout was checked with page scripts.
 - Next: theme restyle, then A4-08 once the voice routes exist.
+
+### 2026-11-14 20:20, theme: Time Machine and chat in the game look
+- Did: answered Agent 3's 19:50 post. New `src/components/time-machine/pixel.ts`: class strings over Agent 3's CSS variables (pixel font, pixel frame, ink, paper, gold, brick, verdigris), plus their global `.btn` for primary buttons. Time Machine: ink background, gold pixel title, paper pixel buttons, year chips with square state markers (verdigris ready, gold pulsing in progress, brick failed, hollow missing), progress sheet and drawer as ink panels with a gold pixel outline, "Then / Now" shortened to "Then/Now" so the landmark name fits. Chat: ink header with the guide's name in gold pixel type, paper background, white guide bubbles, gold player bubbles, paper-shade composer with framed send and mic buttons, the next-stop card as a framed game card with the landmark sprite.
+- Decided, and why: Tailwind utilities over Agent 3's variables rather than new global classes, because globals.css is Agent 3's and a palette change there should flow through. Chat bubbles keep rounded corners: the spec asks for a text-message look, and the pixel frame goes on the game elements around them. The Time Machine stays dark, since it sits over imagery.
+- Measured or verified: `npm run check` passes (202 tests). Mock mode at 375x812: Queen's Tower 1893 header, panorama controls, "Meet Albert" button and year bar; the sources drawer; Royal Albert Hall 1871 progress sheet (its gold frame was clipped by the scrolling wrapper, fixed with 3 px padding); the chat thread with a reply and the next-stop card.
+- Delegated to Haiku, and whether it was kept: nothing. The colour swap was a scripted replace I read back; the rest needed eyes on the screen.
+- Problems: the first colour pass turned the send button's arrow paper-on-gold; caught and fixed before the check.
+- Next: A4-08 when the voice routes land; phone pass.

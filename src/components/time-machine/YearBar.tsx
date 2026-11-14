@@ -6,6 +6,7 @@
 'use client';
 
 import type { AssetState, Era, EraId } from '@/lib/contracts';
+import { PIXEL_FONT, PIXEL_FRAME } from './pixel';
 
 /** Props for YearBar. */
 export interface YearBarProps {
@@ -16,11 +17,11 @@ export interface YearBarProps {
 
 /** Dot colour per core-tier state: ready is solid, in progress pulses, never visited is hollow. */
 const DOT_CLASS: Record<AssetState, string> = {
-  ready: 'bg-emerald-400',
-  queued: 'bg-amber-300 animate-pulse',
-  generating: 'bg-amber-300 animate-pulse',
-  failed: 'bg-red-500',
-  missing: 'border border-white/70',
+  ready: 'bg-(--verdigris)',
+  queued: 'bg-(--gold) animate-pulse',
+  generating: 'bg-(--gold) animate-pulse',
+  failed: 'bg-(--brick)',
+  missing: 'border-2 border-current',
 };
 
 /**
@@ -34,7 +35,7 @@ const DOT_CLASS: Record<AssetState, string> = {
  */
 export function YearBar({ eras, selectedId, onSelect }: YearBarProps) {
   return (
-    <nav aria-label="Choose a year" className="flex gap-2 overflow-x-auto px-3 py-2">
+    <nav aria-label="Choose a year" className="flex gap-3 overflow-x-auto px-4 py-3">
       {eras.map((era) => {
         const selected = era.id === selectedId;
         return (
@@ -43,11 +44,11 @@ export function YearBar({ eras, selectedId, onSelect }: YearBarProps) {
             type="button"
             onClick={() => onSelect(era.id)}
             aria-pressed={selected}
-            className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold tabular-nums ${
-              selected ? 'bg-amber-400 text-black' : 'bg-white/10 text-white'
+            className={`${PIXEL_FONT} ${PIXEL_FRAME} m-[3px] flex shrink-0 items-center gap-2 px-3 py-1.5 text-2xl ${
+              selected ? 'bg-(--gold) text-(--ink)' : 'bg-(--paper) text-(--ink-soft)'
             }`}
           >
-            <span className={`inline-block h-2 w-2 rounded-full ${DOT_CLASS[era.state]}`} aria-hidden />
+            <span className={`inline-block h-2.5 w-2.5 ${DOT_CLASS[era.state]}`} aria-hidden />
             {era.year}
           </button>
         );
