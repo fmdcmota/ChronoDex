@@ -7,13 +7,29 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:40
-- Working on: A2-11 voice routes (tts and stt) written, tested live over HTTP, not yet committed. A2-07 to A2-09 are committed (latest 12fb887). A2-04 to A2-06 still wait on the human's voice and talk-model picks
-- Next: (1) a human runs `node spikes/agent-2/voice-test.mjs` in Chrome to prove a real WebM recording through stt. (2) A2-11 uploads route (`POST /api/uploads`, needed by Agent 3's capture screen). (3) A2-10 worker. Then A2-12, A2-13, A2-14
-- Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is in `spikes/agent-2/.env.local`; Node v26.13.1 at `C:\Program Files\nodejs`.
+- Last updated: 2026-11-14 20:50
+- Working on: A2-11 is complete: voice routes committed (ba010ee), uploads route written and tested live, not yet committed. A2-04 to A2-06 still wait on the human's voice and talk-model picks
+- Next: A2-10 worker (`src/worker/index.ts`: claim loop calling runEraJob, clean shutdown, `npm run worker`). Then A2-12 Claude image checks (horizon, seam, leftover grey and modern objects), A2-13 pregenerate and backup scripts, A2-14 stitch. A human should run `node spikes/agent-2/voice-test.mjs` in Chrome to prove a real WebM recording
+- Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-14 19:55 (@team review)
-- Waiting for commit approval: A2-11 voice routes (src/app/api/voice/*, src/lib/fal/audio.ts and guards.ts, spikes/agent-2/voice-test.mjs, this page, a board post)
+- Waiting for commit approval: A2-11 uploads route (src/app/api/uploads/*, this page, a board post)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
+
+## Wanted from the human (compile into one list when asked)
+
+The human said not to chase these now: note them here and give them the full list when they ask. Add to it as new ones appear; tick them off when answered.
+
+| # | What | Why | How, in short |
+|---|---|---|---|
+| H-A | Pick 4 to 6 voices and one talk model | Unblocks `VOICE_CATALOG` (currently provisional) and the 45 s clip | Open `spikes/agent-2/out/review.html`: 16 voice clips, Kling vs Fabric 10 s clips, the walk-on clip |
+| H-B | Real microphone test of speech to text in Chrome (and Safari on a Mac) | Only MP3 is proven; Chrome records WebM and Safari MP4, and the route renames them by their bytes | Run `npm run dev` and `node spikes/agent-2/voice-test.mjs`, open http://localhost:4000 in Chrome, record, report the output |
+| H-C | The same on a real iPhone and Android phone | Phones need HTTPS, so this goes through the deployed app (A1-12) | Use the chat screen's hold to talk once deployed |
+| H-D | Look at the panorama in Agent 4's 360 viewer on an iPhone and an Android phone | MASTER M1 gate; the panorama has never been seen on a phone | `?src=<url>&vfov=180`, URL in the A2-03 log entry |
+| H-E | How many fal credits do we have? | Decides one video per landmark or all 18 eras (about $77 at list) | fal dashboard |
+| H-F | Ask fal support to enable `fal-ai/ffmpeg-api/extract-frame` on our key (403 today) | Cleaner walk_off and for judging video as stills | Optional |
+| H-G | Reference photos must be 16:9 (H1 photos) | The edit models centre-crop anything else | Agent 1's seed normalises; check the result by eye |
+| H-H | Whose machine runs the worker, and an Anthropic key and MongoDB Atlas for a live end-to-end run | runEraJob has never run live end to end | MASTER Q5, H2 |
+| H-I | Read the first real brief before the pipeline spends on video (H7) | Accuracy of the 45 s script | Later, at M4 |
 
 ## Chosen models
 
@@ -44,7 +60,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [x] A2-08 Stage functions and prompt builders (stitch comes with A2-14, image checks with A2-12)
 - [x] A2-09 `runEraJob` orchestrator (never run live end to end: needs ANTHROPIC_API_KEY, a root FAL_KEY and, to share jobs with the dev server, MONGODB_URI)
 - [ ] A2-10 Worker
-- [ ] A2-11 Routes: uploads, voice tts, voice stt (tts and stt done; uploads not started)
+- [x] A2-11 Routes: uploads, voice tts, voice stt (a real Chrome WebM and iOS MP4 recording through stt is still unproven)
 - [ ] A2-12 Image checks with one corrective retry
 - [ ] A2-13 Pregenerate and backup-media scripts
 - [ ] A2-14 Stitch stage
@@ -175,3 +191,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: Next only allows HTTP-method exports from a route file, so the helper `isAcceptableAudioType` lives in `_lib`. Two shell heredocs failed on quoting; the files were written with the file tool instead.
 - Next: uploads route, then the worker (A2-10).
+
+### 2026-11-14 20:50, A2-11 (uploads route): done
+- Did: `POST /api/uploads` in `src/app/api/uploads/` (route, `_lib/limits.ts`, README, 7 tests). Multipart `file`, JPEG only, up to 4 MB, returns `{ url }`.
+- Decided, and why: JPEG is checked from the file's first bytes (FF D8 FF), not the claimed MIME type, because a browser's type is not trusted and the contract allows JPEG only. The upload is stored as `capture.jpg` whatever the browser called it. 20 uploads per caller per minute. It reuses the voice routes' 429, 502 and 503 helpers, so the 503 code is `voice_unavailable` (slightly odd name, same meaning: no key on this server).
+- Measured or verified: `npm run check` passes (246 tests). Live with the real key: a 731 KB JPEG uploaded in 3.0 s, and the returned fal URL fetched back as 748,172 bytes of image/jpeg.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: none.
+- Next: A2-10, the worker.
