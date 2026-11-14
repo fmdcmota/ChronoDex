@@ -46,7 +46,7 @@ that is the answer. Then follow section 0 of this file, not section 0 of `MASTER
 
 ## 1. Mission
 
-Everything the app shows about the past is generated from data: the Historian (Claude) writes each
+Everything the app shows about the past is generated from data: the Historian (an LLM; DeepSeek since Agent 1's commit a76fc33, see `DEV_NOTEBOOK.md`) writes each
 year's facts and the guide's script from research, and the fal image models repaint a present-day
 photo into that year using a written change list and period reference images. **Bad or missing input
 data is now the biggest risk to the demo.** The judges will ask "how do you know it looked like
@@ -56,7 +56,7 @@ Your job: for the six seeded landmarks (`MASTER.md` section 12), find, acquire a
 piece of input data the pipeline needs, in exactly the formats the code reads, with a receipt for
 every claim and every image. Keep going until each item is either valid or provably unavailable.
 
-You do not generate images, call fal, call the Anthropic API from code, or write app code. You do
+You do not generate images, call fal, call any model API (Anthropic, DeepSeek) from code, or write app code. You do
 research, fetch metadata and files, check them, and write data files plus a validator.
 
 ## 2. What the system needs from you
@@ -557,8 +557,12 @@ Agent 1's fixtures and the database, and changing it changes what players see.
   Only the first row of `MASTER.md` section 12 was checked against a source, and even that should be
   re-checked: confirm which building "Huxley Building, 180 Queen's Gate" refers to in each year.
   Treat every year as a hypothesis.
-- **Historian** (Agent 1, `src/lib/historian/`): code complete, never run against the API (key
-  rejected). Its research notes are the format in 5.4. Its validator strips Google image URLs.
+- **Historian** (Agent 1, `src/lib/historian/`): moved from Claude to DeepSeek (commit a76fc33), with
+  web search and page reading. Its research notes keep the format in 5.4. Its validator strips Google
+  image URLs. Check `notebook/agent-1.md` for whether it has run against the real API yet.
+- **Pipeline and voice** (Agent 2): `src/lib/fal`, the pipeline stages, `runEraJob`, the worker and the
+  upload and voice routes landed on `main` at 20:40. Read `src/lib/pipeline/` for how
+  `referenceImageUrls` and the reference photo are actually passed to the models before A5-08.
 - **Image models** (Agent 2): the edit models centre-crop non-16:9 input; panorama is Nano Banana Pro
   outpainting a 2:1 canvas with the scene at the centre (`centreBearingDeg` = bearing from photo spot
   to subject). Agent 2's spikes used one Commons photo of Exhibition Road (CC BY-SA 4.0).
