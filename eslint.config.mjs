@@ -69,6 +69,11 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Throwaway experiments with their own package.json (MASTER.md section 3).
     "spikes/**",
+    // Claude Code internals: skills (markdown) and transient git worktrees, whose `.next` and
+    // `node_modules` are generated and must never be linted as app source.
+    ".claude/**",
+    // Static assets served as-is, including the vendored maplibre-gl worker bundle.
+    "public/**",
   ]),
 ]);
 

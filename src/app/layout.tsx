@@ -1,11 +1,17 @@
 /**
  * Root layout: the app shell every screen renders inside.
  *
- * Owner: Agent 3 (Explorer). Created by Agent 1 as the M0 placeholder (task A1-06).
- * TODO(agent-3): A3-03 adds the bottom bar with the capture button and the main menu.
+ * Owner: Agent 3 (Explorer). Implements MASTER.md task A3-03. Each screen is a full-viewport
+ * phone page, so this shell is minimal: the document plus global CSS, MapLibre's CSS and the
+ * pixel font. The map screen positions itself with `position: fixed`, so no header or bottom
+ * bar lives here.
+ *
+ * maplibre-gl.css and @fontsource/jersey-10 are global CSS, and Next.js only allows global CSS
+ * from the root layout, so both are imported here (never from a component).
  */
 import type { Metadata, Viewport } from "next";
-import Link from "next/link";
+import "maplibre-gl/dist/maplibre-gl.css";
+import "@fontsource/jersey-10/400.css";
 import "./globals.css";
 
 /** Page title and description. */
@@ -14,7 +20,7 @@ export const metadata: Metadata = {
   description: "Collect landmarks, then step back in time and meet a guide from the past.",
 };
 
-/** Phone-first viewport. */
+/** Phone-first viewport, sized to the safe area so the map fills the screen edge to edge. */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -22,7 +28,7 @@ export const viewport: Viewport = {
 };
 
 /**
- * Wrap every page with a placeholder header and navigation.
+ * Wrap every page in the document shell.
  *
  * @param props - Next.js layout props.
  * @param props.children - The page.
@@ -31,19 +37,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">
-        <header className="flex items-center justify-between gap-4 border-b-4 border-foreground px-4 py-3">
-          <Link href="/" className="font-bold tracking-widest">
-            CHRONODEX
-          </Link>
-          <nav className="flex gap-4 text-sm">
-            <Link href="/">Map</Link>
-            <Link href="/capture">Capture</Link>
-            <Link href="/dex">Dex</Link>
-          </nav>
-        </header>
-        <main className="flex-1 p-4">{children}</main>
-      </body>
+      <body className="h-full">{children}</body>
     </html>
   );
 }
