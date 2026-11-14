@@ -4,7 +4,11 @@
   "description": "Agent 2 (Studio) throwaway fal spikes, A2-01 to A2-06. Never imported by src/. See MASTER.md section 3.",
   "type": "module",
   "scripts": {
-    "hello": "tsx hello-fal.ts"
+    "hello": "tsx hello-fal.ts",
+    "scene": "tsx scene-spike.ts",
+    "pano": "tsx pano-spike.ts",
+    "upload": "tsx upload.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fal-ai/client": "^1.0.0",
