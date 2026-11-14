@@ -1,0 +1,8 @@
+# Dependencies live here and are never committed.
+node_modules/
+# Build output and local secrets.
+dist/
+.env
+.env.local
+# Raw fal downloads are large. Only the finished PNGs in art/sprites and art/badges are committed.
+art/fal/raw/

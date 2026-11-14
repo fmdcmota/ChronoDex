@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  Agent 3 map spike (MASTER.md task A3-02, with the logic of A3-04, A3-05 and A3-09).
+  Owner: Agent 3. Throwaway page; the app's real map screen is src/app/page.tsx.
+  Add ?dev=1 to the URL to show the location-spoof panel.
+-->
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#1e1a2b" />
+    <title>Chronodex map spike</title>
+  </head>
+  <body>
+    <div id="map" aria-label="Map of landmarks"></div>
+
+    <header class="hud-top">
+      <div class="title-chip">CHRONODEX</div>
+      <div id="dex-count" class="chip" aria-live="polite">0 / 6</div>
+    </header>
+
+    <div id="location-banner" class="banner" role="status" hidden>
+      <span id="location-text"></span>
+      <button id="location-button" class="btn btn-small" type="button">Share location</button>
+    </div>
+
+    <section id="card" class="sheet" aria-live="polite" hidden>
+      <button id="card-close" class="sheet-close" type="button" aria-label="Close">&times;</button>
+      <div class="card-head">
+        <img id="card-badge" class="card-badge" alt="" />
+        <div>
+          <h2 id="card-name"></h2>
+          <div id="card-rarity" class="rarity"></div>
+        </div>
+      </div>
+      <p id="card-blurb"></p>
+      <p id="card-distance" class="muted"></p>
+      <p id="card-years" class="muted"></p>
+      <button id="card-action" class="btn" type="button"></button>
+    </section>
+
+    <details id="dev-panel" class="dev-panel" hidden>
+      <summary>DEV: spoof location</summary>
+      <p class="muted">Tap the map to stand there, or jump to a photo spot.</p>
+      <div id="dev-jumps" class="dev-jumps"></div>
+      <label>Accuracy <span id="dev-acc-label">10 m</span>
+        <input id="dev-acc" type="range" min="3" max="80" step="1" value="10" />
+      </label>
+      <button id="dev-clear" class="btn btn-small" type="button">Use real GPS</button>
+    </details>
+
+    <footer class="hud-bottom">
+      <div id="hint" class="hint" aria-live="polite"></div>
+      <button id="capture" class="capture" type="button" disabled>
+        <span class="capture-icon" aria-hidden="true"></span>
+        <span id="capture-label">Capture</span>
+      </button>
+    </footer>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
