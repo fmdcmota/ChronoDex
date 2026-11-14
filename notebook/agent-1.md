@@ -7,13 +7,13 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:40
-- Working on: DeepSeek replaces Claude for the chat and the Historian (D-026), on branch `agent-1`, not committed. `npm run check` passes (214 tests, 18 files). A real brief and a real chat reply both worked.
-- Next: on a yes, commit and push. Then, once Atlas Network Access allows this machine (uncomment `MONGODB_URI` in `.env.local`): run the MongoDB verification against a throwaway database, then `npm run seed`. Then A1-16 (a brief for every demo era, each read by a human), A1-12 (Vercel), A1-15 (gates).
-- Blocked on: Atlas Network Access (TLS alert 80, F-025). Everything else for Agent 1 is unblocked: the DeepSeek key works.
-- Board read up to: 2026-11-14 20:31 (agent-4 A5 FYI: a fifth agent, the Archivist, briefed in AGENT5.md). Nothing addressed to agent-1 is open. Agent 5 says to expect two ASKs: have `scripts/seed.ts` read `data/landmarks/*.json`, and let `writeEraBrief` take `data/eras/<eraId>.notes.txt` instead of searching. Not built until asked.
-- Waiting for commit approval: the DeepSeek switch for the Historian and the chat (rebased onto 095423b, 268 tests pass).
-- Keys: `.env.local` (git-ignored) holds `DEEPSEEK_API_KEY` (the second key given, working), `CHAT_MODEL=deepseek-flash`, `MONGODB_DB=chronodex_dev_alex`, and `MONGODB_URI` commented out so the app uses the in-memory store. No Anthropic key is needed.
+- Last updated: 2026-11-14 21:50
+- Working on: MongoDB verified on Atlas and `chronodex_dev_alex` seeded; Agent 2's three asks done (`releaseJob`, worker env vars, voice keys). Rebased onto 0dfd515. 343 tests pass. Not committed.
+- Next: A1-16 (a brief for every demo era with `writeEraBrief`, saved for a human to read, H7). A1-12 (Vercel deploy: set the env vars there, `MONGODB_URI` and `DEEPSEEK_API_KEY`). A1-08 part 2 (photo GPS and 16:9) when the H1 photos arrive. A1-15 (walk the gates). Agent 5 may ask the seed to read `data/landmarks/*.json` and the Historian to take supplied notes.
+- Blocked on: nothing for code. Needs a human: the H1 photos, `MASTER.md` sections 7 and 8.2 edited to say DeepSeek, and the Vercel project (H2).
+- Board read up to: 2026-11-14 21:10 (agent-2 A2-10 ASK, answered in this commit; also agent-2 A2-07 to A2-11, the team dev-server note, and agent-4 A5 notes). Agent 5 may ask the seed to read `data/landmarks/*.json` and the Historian to take supplied notes; not built until asked.
+- Waiting for commit approval: this notebook update and one board post.
+- Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working), `CHAT_MODEL=deepseek-flash`. The Atlas database password is weak and was pasted into a chat: rotate it after the weekend.
 - Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted. Committed files are checked out with CRLF (git autocrlf), so scripted string replacements must allow for \r\n.
 
 ## Tasks
@@ -25,9 +25,9 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [x] A1-05 Typed API client with mock mode
 - [x] A1-06 Stubs for cross-agent functions, placeholder pages
 - [x] A1-07 Tooling, `.env.example`, README run section. Push. Announce M0
-- [ ] A1-08 Database layer and seed script (code done, MongoDB unverified; photo GPS and 16:9 step waits for H1)
+- [ ] A1-08 Database layer and seed script (database layer and seed done and verified on Atlas; photo GPS and 16:9 step waits for H1)
 - [x] A1-09 API routes: landmarks, eras, generate, captures, dex
-- [ ] A1-10 Jobs library (code done, MongoDB unverified)
+- [x] A1-10 Jobs library (verified against Atlas, 21:30)
 - [ ] A1-11 Historian: `writeEraBrief` (code done and unit tested with a fake client; no real call yet, needs a key)
 - [ ] A1-12 Deploy to Vercel, check on a phone
 - [ ] A1-13 Chat route (code done and unit tested with a fake client; no real call yet, needs a key)
@@ -99,3 +99,12 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: DeepSeek reports mid-stream failures inside a 200 stream, which my client first ignored and returned empty notes. Fixed and tested.
 - Next: commit on a yes.
+
+### 2026-11-14 21:30, MongoDB verified and seeded
+- Did: the human opened Atlas Network Access. Pinged Atlas (ok). Ran a verification script of 16 checks against a throwaway database `chronodex_verify_tmp`, which the script drops at the end. Seeded `chronodex_dev_alex` and ran the seed again. Ran the real website API against Atlas and then removed my test capture.
+- Verified on real Atlas: landmarks come back in seed order with no storage fields; upserts are idempotent; `insertEraIfMissing` never overwrites; `patchEra` keeps identity fields; the unique index keeps a player's first capture; two racing `enqueueEraJob` calls share one job (the partial unique index works); an atomic claim marks it running and a second claim finds nothing; `patchStage` updates the right stage; a finished job stops being active; generating after a failure makes a new queued job. The seed writes 6 landmarks and 10 eras the first time and 0 new eras the second. Over HTTP with mocks off: landmarks, eras, a capture at the Queen's Tower photo spot, the same capture again (`alreadyCollected: true`), the Dex, a too-far capture (nearest: Royal Albert Hall, 110 m), and the chat route's 409 for an era with no guide yet.
+- Not verified: the 2dsphere index is created but nothing queries it yet. A claim by a second real worker process, and lease expiry, were tested only in memory.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: none. The earlier TLS refusal (F-025) was Network Access, as suspected.
+- Next: A1-16, A1-12.
+- 21:50, Agent 2's asks (A2-10 ASK, posted 21:10): added `releaseJob(jobId)` to `src/lib/jobs` (running job back to queued; stages and fal request ids kept; stays the era's active job; null if not running). Documented `WORKER_CONCURRENCY` and `WORKER_ALLOW_MEMORY` in `.env.example`, reading the worker source for the meaning. Renamed the fixtures' `placeholder-*` voice keys to `eleven-george` and `eleven-alice`, and the example in the Historian prompt comment. The two `placeholder-*` entries in `src/lib/fal/voices.ts` are Agent 2's to remove. Verified: 343 tests pass (2 new for `releaseJob`), and 8 checks of `releaseJob` pass on real Atlas in a throwaway database that the script dropped. Not verified: the worker itself against Atlas, which is Agent 2's. Note for the worker: `FAL_KEY` is still empty in the root `.env.local`, so a real run needs it.

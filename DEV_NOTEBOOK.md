@@ -109,6 +109,7 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-031 | 14 Nov | DeepSeek reports a mid-stream failure inside the stream, as HTTP 200 with an `error` field on the last chunk ("The model failed to generate a complete response. Please retry."). `deepseek-v4-pro` did this on the Historian's web-search research request twice out of two. `deepseek-flash` completed it in 140 s and 174 s end to end. The Historian therefore defaults to flash | Seen at A1-11 |
 | F-032 | 14 Nov | DeepSeek web tools: declare `tools: [{ "type": "deepseek_web_search" }, { "type": "deepseek_read_url" }]`. The server runs the searches inside one request. The last chunk's delta carries `server_tool_calls` (with `sources[].url`) and `annotations` (`url_citation.url`). They cannot be combined with `response_format: json_object` (400). One research request read about 850k tokens, nearly all cache hits, and used 2 to 3 searches. Tool prices are on DeepSeek's pricing page and are not known here | api-docs.deepseek.com guides web_tools and build_a_chatbot, and a real run at A1-11 |
 | F-033 | 14 Nov | DeepSeek JSON mode (`response_format: json_object`) needs the word "json" and an example in the prompt, and blanks a reply that is not valid JSON, returning empty content with `finish_reason: stop` | api-docs.deepseek.com guides json_mode |
+| F-034 | 14 Nov | Resolves F-025: opening Atlas Network Access fixed the TLS refusal. The MongoDB backend now passes 16 checks on real Atlas (partial unique index for one active job per era, atomic claim, unique capture index, idempotent seed). The dev database `chronodex_dev_alex` on cluster0 is seeded: 6 landmarks and 10 eras, all `missing`. Seeding never overwrites an existing era | Agent 1, 14 Nov 21:30 |
 
 ## Session log
 
@@ -162,3 +163,13 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 - Did: the Historian now runs on DeepSeek with web search; the chat is on DeepSeek again. A real Historian brief (Queen's Tower 1893, 174 s) and a real chat reply (1.5 s) both worked. Anthropic dependency and variables removed.
 - Decided: D-026.
 - Not done: MongoDB (Atlas still refuses this machine, F-025), so no seed and no verification against Atlas. MASTER.md sections 7 and 8.2 still say Claude.
+
+### 2026-11-14 21:30, MongoDB verified and seeded (Agent 1)
+
+- Did: A1-10 verified on Atlas. A1-08's database layer and seed verified and run on `chronodex_dev_alex`. The photo GPS and 16:9 step still waits for the H1 photos.
+- Next: real briefs for the demo eras (A1-16), then the Vercel deploy (A1-12).
+
+### 2026-11-14 21:50, Agent 2's asks answered (Agent 1)
+
+- Did: `releaseJob` added and verified on Atlas, `WORKER_CONCURRENCY` and `WORKER_ALLOW_MEMORY` documented, fixture voice keys renamed to the real catalogue keys.
+- Next: real briefs for the demo eras (A1-16), the Vercel deploy (A1-12).

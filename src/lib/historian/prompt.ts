@@ -116,7 +116,7 @@ export function briefJsonExample(voiceKeys: readonly string[]): string {
  *       "sources": [{ "title": "Imperial Institute, Wikipedia", "url": "https://..." }],
  *       "sceneBrief": { "description": "...", "changes": { "persists": [...], ... }, ... },
  *       "guide": { "name": "Albert Finch", "role": "Porter at the Imperial Institute", ...,
- *                  "voiceKey": "placeholder-male-older", "script": "Good day! My name is Albert Finch ..." } }
+ *                  "voiceKey": "eleven-george", "script": "Good day! My name is Albert Finch ..." } }
  *
  * @param landmark - The landmark.
  * @param year - The year.

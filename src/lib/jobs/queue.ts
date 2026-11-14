@@ -243,6 +243,37 @@ export async function heartbeatJob(jobId: string): Promise<void> {
 }
 
 /**
+ * Put a running job back in the queue, for example when a worker shuts down on purpose, so the next
+ * worker takes it at once instead of waiting out the 10 minute lease.
+ *
+ * The job keeps its stages and their saved fal request ids, so the next worker resumes rather
+ * than paying twice (MASTER.md 5.3 rule 2). It keeps its place in the queue (claiming is by
+ * creation time) and it stays the era's active job, so nobody can queue a second one meanwhile.
+ * A job that is not running (queued, or already finished) is left alone.
+ *
+ * @param jobId - Job id.
+ * @returns The job after the change, or null when it was not running or does not exist.
+ */
+export async function releaseJob(jobId: string): Promise<Job | null> {
+  const now = new Date().toISOString();
+  if (!usingMongo()) {
+    const entry = memory().get(jobId);
+    if (!entry || entry.job.state !== 'running') return null;
+    entry.job.state = 'queued';
+    entry.job.updatedAt = now;
+    entry.workerId = null;
+    return structuredClone(entry.job);
+  }
+  const { jobs } = await collections();
+  const doc = await jobs.findOneAndUpdate(
+    { _id: jobId, state: 'running' },
+    { $set: { state: 'queued', updatedAt: now }, $unset: { workerId: '' } },
+    { returnDocument: 'after' },
+  );
+  return doc ? fromJobDoc(doc) : null;
+}
+
+/**
  * Mark a job finished. It stops being the era's active job, so the era can be generated again.
  *
  * @param jobId - Job id.

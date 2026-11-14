@@ -13,6 +13,7 @@ export {
   getJob,
   heartbeatJob,
   patchStage,
+  releaseJob,
   resetMemoryJobs,
 } from './queue';
 export { requestEraGeneration, videoGenerationEnabled, type GenerationOutcome } from './generate';

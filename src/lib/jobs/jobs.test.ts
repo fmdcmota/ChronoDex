@@ -16,6 +16,7 @@ import {
   getActiveJob,
   heartbeatJob,
   patchStage,
+  releaseJob,
   requestEraGeneration,
   resetMemoryJobs,
 } from './index';
@@ -74,6 +75,34 @@ describe('job queue', () => {
     vi.advanceTimersByTime(2000);
     const reclaimed = await claimNextJob('w2');
     expect(reclaimed?.id).toBe(job.id);
+  });
+
+  it('releases a running job so the next worker takes it at once, with its stages and request ids', async () => {
+    const eraId = eraIdOf('v-and-a', 1941);
+    const job = await enqueueEraJob(eraId, false);
+    await claimNextJob('w1');
+    await patchStage(job.id, 'scene', { state: 'running', falRequestId: 'fal-123' });
+
+    const released = await releaseJob(job.id);
+    expect(released?.state).toBe('queued');
+    expect(released?.stages.find((s) => s.key === 'scene')).toMatchObject({ state: 'running', falRequestId: 'fal-123' });
+    // Still the era's active job, so nobody can queue a second one in the gap.
+    expect((await getActiveJob(eraId))?.id).toBe(job.id);
+    expect((await enqueueEraJob(eraId, true)).id).toBe(job.id);
+
+    const resumed = await claimNextJob('w2');
+    expect(resumed?.id).toBe(job.id);
+    expect(resumed?.stages.find((s) => s.key === 'scene')?.falRequestId).toBe('fal-123');
+  });
+
+  it('leaves jobs that are not running alone', async () => {
+    const job = await enqueueEraJob(eraIdOf('royal-albert-hall', 1871), false);
+    expect(await releaseJob(job.id)).toBeNull(); // still queued
+    await claimNextJob('w');
+    await finishJob(job.id, 'succeeded');
+    expect(await releaseJob(job.id)).toBeNull(); // finished
+    expect((await getActiveJob(job.eraId))).toBeNull();
+    expect(await releaseJob('nope')).toBeNull();
   });
 });
 
