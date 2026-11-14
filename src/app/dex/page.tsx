@@ -1,50 +1,20 @@
-/**
- * Route `/dex`: the grid of badges, collected and not (MASTER.md section 1.1).
- *
- * Owner: Agent 3 (Explorer). Created by Agent 1 as the M0 placeholder (task A1-06).
- * TODO(agent-3): A3-07 replaces this with the badge grid.
- */
 'use client';
 
-import { useEffect, useState } from 'react';
-import type { Capture, Landmark } from '@/lib/contracts';
-import { api, getPlayerId } from '@/lib/client';
+/**
+ * Route `/dex`: the grid of badges, collected and not (MASTER.md section 1.1, task A3-07).
+ *
+ * Owner: Agent 3 (Explorer). Replaces the Agent 1 M0 placeholder.
+ *
+ * A client component because the player id and the cached Dex live in the browser's localStorage.
+ * The screen itself is in src/components/explore/DexScreen.tsx.
+ */
+import DexScreen from '@/components/explore/DexScreen';
 
 /**
- * Placeholder Dex: every landmark with whether this player has collected it.
+ * The Dex page.
  *
- * @returns The page.
+ * @returns The Dex screen.
  */
 export default function DexPage() {
-  const [data, setData] = useState<{ landmarks: Landmark[]; captures: Capture[] } | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    Promise.all([api.listLandmarks(), api.getDex(getPlayerId())]).then(
-      ([landmarks, captures]) => setData({ landmarks, captures }),
-      (err: Error) => setError(err.message),
-    );
-  }, []);
-
-  return (
-    <section className="space-y-4">
-      <h1 className="text-xl font-bold">Dex (placeholder)</h1>
-      {error && <p className="text-red-700">Could not load the Dex: {error}</p>}
-      {!data && !error && <p>Loading…</p>}
-      {data && (
-        <>
-          <p>
-            {data.captures.length} of {data.landmarks.length} collected
-          </p>
-          <ul className="space-y-1">
-            {data.landmarks.map((landmark) => (
-              <li key={landmark.id}>
-                {data.captures.some((c) => c.landmarkId === landmark.id) ? '★' : '☆'} {landmark.name}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </section>
-  );
+  return <DexScreen />;
 }

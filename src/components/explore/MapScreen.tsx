@@ -21,6 +21,7 @@ import { api, getPlayerId } from '@/lib/client';
 import { haversineM, withinCaptureRange, type Landmark, type LandmarkId } from '@/lib/contracts';
 import { buildGameMapStyle } from './lib/game-map-style';
 import { LocationTracker, locationMessage, type LocationState, type PlayerFix } from './lib/location';
+import { clearFix, saveFix } from './lib/fix-store';
 import { directionHint, formatDistance, nearestLandmark } from './lib/geo-format';
 import { circlePolygon } from './lib/map-geometry';
 import { PALETTE } from './lib/palette';
@@ -144,8 +145,11 @@ export default function MapScreen() {
       if (state.status === 'ready') {
         lastFixRef.current = state.fix;
         drawPlayer(state.fix);
+        // The Capture screen starts from this position, including a dev spoof (see lib/fix-store.ts).
+        saveFix(state.fix);
       } else if (state.status === 'idle' || state.status === 'denied') {
         lastFixRef.current = null;
+        clearFix();
       }
     },
     [drawPlayer],
@@ -170,6 +174,7 @@ export default function MapScreen() {
 
   // Track the player's position for the life of the screen.
   useEffect(() => {
+    let cancelled = false;
     const tracker = new LocationTracker();
     trackerRef.current = tracker;
     const unsubscribe = tracker.subscribe(onLocation);
@@ -178,12 +183,15 @@ export default function MapScreen() {
     void (async () => {
       try {
         const status = await navigator.permissions?.query({ name: 'geolocation' });
-        if (status?.state === 'granted') tracker.start();
+        // Not if the screen closed (or React re-ran this effect) while the query was pending:
+        // that would leave a GPS watch running that nothing can stop.
+        if (!cancelled && status?.state === 'granted') tracker.start();
       } catch {
         // Permissions API missing or refusing the query (older Safari): wait for the button.
       }
     })();
     return () => {
+      cancelled = true;
       unsubscribe();
       tracker.stop();
       trackerRef.current = null;
@@ -355,7 +363,10 @@ export default function MapScreen() {
 
       <div className="hud-top">
         <div className="title-chip">CHRONODEX</div>
-        <div className="chip">{landmarks ? `${collected.size} / ${landmarks.length}` : ''}</div>
+        {/* The counter doubles as the way into the Dex. */}
+        <Link href="/dex" className="chip chip-link" aria-label={landmarks ? `Dex: ${collected.size} of ${landmarks.length} collected` : 'Dex'}>
+          {landmarks ? `Dex ${collected.size} / ${landmarks.length}` : 'Dex'}
+        </Link>
       </div>
 
       {(error || bannerMessage) && (
