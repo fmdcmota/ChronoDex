@@ -1,0 +1,37 @@
+{
+  "name": "chronodex-spike-agent-3",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Agent 3 (Explorer) spikes: game-style map and pixel art. Throwaway, never imported by the app's src/.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:phone": "vite --host --mode phone",
+    "build": "vite build",
+    "art": "tsx scripts/make-pixel-art.ts",
+    "art:fal": "tsx scripts/fal-art.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test"
+  },
+  "dependencies": {
+    "@fontsource/jersey-10": "^5.3.0",
+    "maplibre-gl": "^6.18.0"
+  },
+  "devDependencies": {
+    "@fal-ai/client": "^1.11.0",
+    "@maplibre/maplibre-gl-style-spec": "^26.7.0",
+    "@types/node": "^22.20.5",
+    "@types/pngjs": "^6.0.5",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "dotenv": "^18.0.10",
+    "pngjs": "^7.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  }
+}

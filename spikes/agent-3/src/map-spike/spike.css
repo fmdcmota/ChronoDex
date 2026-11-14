@@ -1,0 +1,386 @@
+/*
+ * Styles for the Agent 3 map spike (MASTER.md tasks A3-02, A3-03 preview). Owner: Agent 3.
+ *
+ * The custom properties at the top are the theme tokens planned for the app's
+ * src/app/globals.css, with the same values as src/lib/palette.ts. Keep the two in step.
+ * Look: flat colours, hard 3 px ink borders, stepped "pixel" corners made with box-shadow,
+ * the Jersey 10 pixel font (OFL licence; chosen over Pixelify Sans, whose bold C reads as O)
+ * for headings and buttons, the system font for body text.
+ */
+:root {
+  --ink: #1e1a2b;
+  --ink-soft: #4a4360;
+  --paper: #f6efd9;
+  --paper-shade: #dfd2ac;
+  --ground: #b9dc8a;
+  --brick: #c8553d;
+  --gold: #f2b43c;
+  --gold-dark: #b97b1e;
+  --verdigris: #4fa58f;
+  --player: #e8466e;
+  --rarity-common: #9aa3ad;
+  --rarity-rare: #3f8fd6;
+  --rarity-epic: #9b59d0;
+  --rarity-legendary: #f2b43c;
+
+  --font-pixel: 'Jersey 10', ui-monospace, monospace;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --border: 3px;
+  /* Stepped corners: an outline drawn with four offset shadows instead of border-radius. */
+  --pixel-frame: 0 calc(-1 * var(--border)) 0 0 var(--ink), 0 var(--border) 0 0 var(--ink),
+    calc(-1 * var(--border)) 0 0 0 var(--ink), var(--border) 0 0 0 var(--ink);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+#map {
+  position: fixed;
+  inset: 0;
+}
+
+h2 {
+  font-family: var(--font-pixel);
+  font-size: 1.7rem;
+  font-weight: 400;
+  line-height: 1;
+  margin: 0;
+}
+
+p {
+  margin: 0.4rem 0;
+}
+
+.muted {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* ---- Buttons ---- */
+
+.btn {
+  font-family: var(--font-pixel);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--gold);
+  border: 0;
+  margin: var(--border);
+  padding: 0.6rem 1rem;
+  box-shadow: var(--pixel-frame), inset -3px -3px 0 0 var(--gold-dark);
+  cursor: pointer;
+}
+
+.btn:active {
+  box-shadow: var(--pixel-frame), inset 3px 3px 0 0 var(--gold-dark);
+}
+
+.btn-small {
+  font-size: 1.1rem;
+  padding: 0.35rem 0.6rem;
+}
+
+/* ---- Top HUD ---- */
+
+.hud-top {
+  position: fixed;
+  top: calc(var(--safe-top) + 10px);
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.title-chip,
+.chip {
+  font-family: var(--font-pixel);
+  font-size: 1.4rem;
+  line-height: 1;
+  background: var(--paper);
+  margin: var(--border);
+  padding: 0.3rem 0.6rem;
+  box-shadow: var(--pixel-frame);
+}
+
+.title-chip {
+  background: var(--ink);
+  color: var(--gold);
+  letter-spacing: 0.08em;
+}
+
+.banner {
+  position: fixed;
+  top: calc(var(--safe-top) + 58px);
+  left: 13px;
+  right: 13px;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--paper);
+  padding: 0.5rem 0.7rem;
+  box-shadow: var(--pixel-frame);
+  font-size: 0.9rem;
+}
+
+/* ---- Markers ----
+ * MapLibre sets position: absolute and transform on each marker's root element. Never style
+ * position, transform or display on .marker or .player themselves; style the inner elements.
+ */
+
+.marker {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.marker-body {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+
+.marker img {
+  display: block;
+  width: 64px;
+  height: 64px;
+  /* 32 px art shown at 64 CSS px: whole-number scale, so pixels stay sharp. */
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Uncollected: slightly faded, so collected ones stand out. */
+.marker:not(.collected) img {
+  filter: saturate(0.55) brightness(0.95);
+}
+
+.marker-flag {
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  font-size: 14px;
+  line-height: 20px;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  background: var(--gold);
+  color: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink);
+  display: none;
+}
+
+.marker.collected .marker-flag {
+  display: block;
+}
+
+.player-dot {
+  width: 18px;
+  height: 18px;
+  background: var(--player);
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--ink);
+  animation: bob 1.2s steps(2) infinite;
+}
+
+.player.spoofed .player-dot {
+  background: repeating-linear-gradient(45deg, var(--player) 0 4px, var(--paper) 4px 8px);
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* ---- Bottom HUD ---- */
+
+.hud-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 13px calc(var(--safe-bottom) + 14px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.hud-bottom > * {
+  pointer-events: auto;
+}
+
+.hint {
+  max-width: 100%;
+  background: var(--paper);
+  padding: 0.4rem 0.7rem;
+  box-shadow: var(--pixel-frame);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.capture {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-pixel);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--gold);
+  border: 0;
+  padding: 0.8rem 1.4rem;
+  margin: var(--border);
+  box-shadow: var(--pixel-frame), inset -4px -4px 0 0 var(--gold-dark);
+  cursor: pointer;
+}
+
+.capture:disabled {
+  background: var(--paper-shade);
+  box-shadow: var(--pixel-frame), inset -4px -4px 0 0 #bfae86;
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+.capture-icon {
+  width: 22px;
+  height: 16px;
+  background: var(--ink);
+  box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 6px var(--paper);
+}
+
+/* ---- Landmark card ---- */
+
+.sheet {
+  position: fixed;
+  left: 13px;
+  right: 13px;
+  bottom: calc(var(--safe-bottom) + 130px);
+  background: var(--paper);
+  padding: 0.8rem 1rem 1rem;
+  box-shadow: var(--pixel-frame);
+}
+
+.sheet-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 1.6rem;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.card-head {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.card-badge {
+  width: 72px;
+  height: 72px;
+  image-rendering: pixelated;
+}
+
+.rarity {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  padding: 0.1rem 0.4rem;
+  color: var(--paper);
+  background: var(--ink-soft);
+}
+
+/* Scoped to .rarity so the pill colours never leak onto other elements. */
+.rarity.rarity-common {
+  background: #5f6873;
+}
+.rarity.rarity-rare {
+  background: #245f99;
+}
+.rarity.rarity-epic {
+  background: #663690;
+}
+.rarity.rarity-legendary {
+  background: #b97b1e;
+}
+
+/* ---- Toast ---- */
+
+.toast {
+  position: fixed;
+  top: calc(var(--safe-top) + 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 1.35rem;
+  background: var(--ink);
+  color: var(--gold);
+  padding: 0.6rem 1rem;
+  box-shadow: 0 0 0 3px var(--gold);
+  z-index: 10;
+  white-space: nowrap;
+}
+
+/* ---- Dev panel ---- */
+
+.dev-panel {
+  position: fixed;
+  top: calc(var(--safe-top) + 110px);
+  right: 13px;
+  width: min(240px, calc(100% - 26px));
+  background: #fff8;
+  backdrop-filter: blur(4px);
+  padding: 0.5rem;
+  box-shadow: var(--pixel-frame);
+  font-size: 0.8rem;
+}
+
+.dev-jumps {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.3rem 0;
+}
+
+.dev-panel summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dev-panel label {
+  display: block;
+  margin: 0.3rem 0;
+}
+
+.dev-panel input {
+  width: 100%;
+}
+
+/* MapLibre's attribution sits above the bottom HUD so it is never hidden (the licence requires it). */
+.maplibregl-ctrl-bottom-right {
+  bottom: calc(var(--safe-bottom) + 120px);
+}
+
+[hidden] {
+  display: none !important;
+}

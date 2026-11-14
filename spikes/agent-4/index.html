@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>A4-01 360 spike</title>
+  </head>
+  <body>
+    <div id="viewer"></div>
+    <div id="label">AI reconstruction</div>
+    <div id="panel">
+      <select id="mode" aria-label="Test panorama">
+        <option value="full">Full 2:1, vFov 180</option>
+        <option value="band360">21:9 band, full turn (vFov 154)</option>
+        <option value="band180">21:9 band, half turn (vFov 77)</option>
+      </select>
+      <button id="motion">Enable motion</button>
+      <button id="reset">Reset</button>
+      <pre id="log"></pre>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

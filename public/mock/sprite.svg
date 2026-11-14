@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Placeholder for mock mode. Owner: Agent 1 (fixtures). Replaced by real media from H1 photos and the fal pipeline. -->
+  <rect width="64" height="64" fill="#2f6f3e"/>
+  <rect x="4" y="4" width="56" height="56" fill="none" stroke="#fff8dc" stroke-width="4" stroke-dasharray="16 8"/>
+  <text x="50%" y="50%" fill="#fff8dc" font-family="monospace" font-size="12" text-anchor="middle" dominant-baseline="middle">SPRITE</text>
+</svg>

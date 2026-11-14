@@ -21,7 +21,7 @@ Agent 1 updates this when a human has walked through the gate (`MASTER.md` secti
 
 | | Milestone | Target | Status | Passed at | Notes |
 |---|---|---|---|---|---|
-| M0 | Foundation | Sat 16:15 | Not started | | |
+| M0 | Foundation | Sat 16:15 | Built on branch agent-1, awaiting commit approval and a human walk-through | | With mocks on, the six landmarks list and a fake job advances (unit tested). Not yet seen in a browser |
 | M1 | Risky parts proven | Sat 17:45 | Not started | | |
 | M2 | Vertical slice | Sat 20:00 | Not started | | |
 | M3 | Full loop | Sat 23:00 | Not started | | |
@@ -47,13 +47,24 @@ Every row is proposed until the team has reviewed plan v1.
 | D-011 | 14 Nov | Agents talk on `BOARD.md`. Every commit adds one post that @-mentions the agents it affects | Team request. One place to see who changed what and who is waiting on whom |
 | D-012 | 14 Nov | An agent asks its human before every commit and every push. There is no standing approval | Team request |
 | D-013 | 14 Nov | Each agent may hand mechanical work to a Haiku subagent, within the limits of its delegation sheet | Team request. Saves the main agent's time and context |
+| D-014 | 14 Nov | `cacheComponents` and `partialPrefetching` are off in `next.config.ts` | Next 16's scaffold turns them on. Our screens are client components over a dynamic API, and the prerender rules they add are a trap for agents trained on earlier Next.js |
+| D-015 | 14 Nov | Node 24 line: `.nvmrc` is 24 and `@types/node` is 24. Node 26 also works locally | vitest 5 needs @types/node 22 or later. Vercel is certain to support 24 |
+| D-016 | 14 Nov | Fixtures are TypeScript modules (`fixtures/*.ts`), imported as `@fixtures/index` | The type checker enforces their shape. JSON imports widen string unions |
+| D-017 | 14 Nov | Without `MONGODB_URI`, `src/lib/db` and `src/lib/jobs` use an in-memory store seeded from fixtures. On Vercel a missing `MONGODB_URI` is an error | Real routes work locally before Atlas exists. A silent fallback in production would lose every capture |
+| D-018 | 14 Nov | One active job per era is enforced by a unique partial index on `eraId` where `active` is true. A running job not updated for 10 minutes may be claimed by another worker | Never pay fal twice. A crashed worker must not block an era for ever |
+| D-019 | 14 Nov | Generate with `includeVideo: true` returns 403 `video_disabled` unless `VIDEO_GENERATION=on`. A spoofed capture returns 403 `spoofed_location` unless `ALLOW_SPOOFED_LOCATION=1` | Explicit refusals are easier to debug than silent downgrades |
+| D-020 | 14 Nov | `npm run seed` seeds every era as `missing` and never overwrites an existing era | The fixture hero era is placeholder content. Re-seeding must never wipe generated media |
+| D-021 | 14 Nov | The Historian runs in two Claude calls: research with web search (free-text notes, `pause_turn` resumed), then writing with structured output and no tools, with one corrective retry. Both use `fallbacks: "default"` | A retry never repeats the searches, and search citations never meet structured output in one response |
+| D-022 | 14 Nov | The Historian has no placeholder fallback without credentials; the pipeline stub uses `placeholderBrief` itself | Placeholder text must never be stored as a real era |
+| D-023 | 14 Nov | Fixture coordinates and art come from Agent 3's map spike: OSM-checked subjects, estimated photo spots, `/sprites/<id>.png`, `/sprites/badges/<id>.png` | One set of points for the map and the capture rule. Photo spots are still replaced by the H1 GPS |
 
 ## Contract changes
 
-None. The contracts in `MASTER.md` section 4 freeze at M0.
+The contracts in `MASTER.md` section 4 freeze at M0. Additions made while building M0, before the freeze, are logged here so nobody is surprised.
 
 | # | Date | Change | Asked by | Approved by |
 |---|---|---|---|---|
+| C-001 | 14 Nov | Pre-freeze additions. No 4.1 type changed. `src/lib/contracts/api.ts` holds request and response types for 4.3. `CaptureRequest.location` is `LatLng \| null` so the server can answer `location_missing`, plus optional `spoofed` for A1-14. New `resolveCapture` helper. New `stages.ts` (stage order, labels, `buildStages`, `eraNeedsGeneration`). `db.listEras` and `jobs.getActiveJob` added beyond 4.4. `patchEra` returns the updated Era | Agent 1, while building M0 | Pending human review with the M0 commit |
 
 ## Verified facts and traps
 
@@ -74,6 +85,17 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-011 | 14 Nov | The Next.js scaffolder is expected to refuse a folder that already has files. Not tested here: confirm at A1-01 | From memory |
 | F-012 | 14 Nov | `BOARD.md` is set to git's union merge in `.gitattributes`. A local merge and a local rebase of two branches that each added a post kept both posts with no conflict. GitHub's merge button is not tested and may ignore the setting | Tested in a throwaway repo, 14 Nov |
 | F-013 | 14 Nov | An `@name` in a commit message, pull request or issue can notify the GitHub user of that name. Handles belong in `BOARD.md` only | From memory |
+| F-014 | 14 Nov | `next dev` in Next 16 writes a managed block into `AGENTS.md` when it detects an AI agent. `agentRules: false` in `next.config.ts` turns it off | `node_modules/next/dist/server/lib/app-info-log.js` and the `agentRules` doc page |
+| F-015 | 14 Nov | npm 11 warns that esbuild's postinstall is not in `allowScripts` and skips it. tsx and vitest still work through esbuild's prebuilt platform package | Tried at A1-02 |
+| F-016 | 14 Nov | `crypto.randomUUID` exists only in secure contexts, so a phone on plain-HTTP LAN would crash. `randomUuid()` in `src/lib/client/player.ts` falls back to `getRandomValues` | MDN, from memory |
+| F-017 | 14 Nov | `@photo-sphere-viewer/core` and `@photo-sphere-viewer/gyroscope-plugin` exist on npm at 5.15.1. Resolves one item in `MASTER.md` section 14 | npm install at A1-02 |
+| F-018 | 14 Nov | Next 16's global `LayoutProps`, `PageProps` and `RouteContext` types are generated. `npm run typecheck` runs `next typegen` first, so a fresh clone type-checks | Tried at A1-07 |
+| F-019 | 14 Nov | Next 16 page and route `params` are Promises. In client pages use `useParams()`. In route handlers `await ctx.params` | `node_modules/next/dist/docs` |
+| F-020 | 14 Nov | mongodb 7.9: `findOneAndUpdate` returns the document or null by default (no `value` wrapper). Duplicate key errors are `MongoServerError` with code 11000 | `node_modules/mongodb/mongodb.d.ts` |
+| F-021 | 14 Nov | @anthropic-ai/sdk 1.8.0 does not throw at `new Anthropic()` without credentials. The first request fails with "Could not resolve authentication method", before any network call | Seen at A1-13 |
+| F-022 | 14 Nov | @anthropic-ai/sdk 1.8.0 has `betaZodOutputFormat` in `@anthropic-ai/sdk/helpers/beta/zod` (built on `zod/v4`), `fallbacks: 'default'` on beta messages, and `parsed_output` on a stream's `finalMessage()` | Its typings |
+| F-023 | 14 Nov | After a rebase, git (autocrlf on Windows) checks files out with CRLF. Scripted string replacements written with \n then fail to match | Seen at A1-13 |
+| F-024 | 14 Nov | Twice, `npm run check` showed every test file failing with "Tests no tests" straight after a file write. Every rerun passed and it could not be reproduced. Rerun before debugging | Seen at A1-13, cause unknown |
 
 ## Session log
 
@@ -91,3 +113,22 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 - Decided: D-011 to D-013 above, at the team's request.
 - Not done: the approval rule is written down, not enforced by any tool. `MASTER.md` question Q8 covers that. Still no application code and nothing committed.
 - Next: unchanged. Photos and keys first, then review.
+
+### 2026-11-14 16:30, M0 build (Agent 1)
+
+- Did: tasks A1-01 to A1-07 on branch `agent-1`. The detail is in `notebook/agent-1.md`.
+- Decided: D-014 to D-016. Contract additions C-001.
+- Not done: no commit or push yet (waiting for a human yes). Placeholder pages not yet seen in a browser or on a phone.
+- Next: commit, push, announce M0 on the board. Then the MongoDB layer (A1-08).
+
+### 2026-11-14 16:45, database, routes, jobs (Agent 1)
+
+- Did: A1-09 and A1-14 done. A1-08 and A1-10 code done, MongoDB path not yet run against a live server. The detail is in `notebook/agent-1.md`.
+- Decided: D-017 to D-020.
+- Next: commit, then seed and verify against Atlas once `MONGODB_URI` exists (H2).
+
+### 2026-11-14 16:55, Historian and chat (Agent 1)
+
+- Did: A1-11 and A1-13 code, unit tested with a fake client. No real Claude call yet (no key). Fixtures moved to Agent 3's art and coordinates.
+- Decided: D-021 to D-023.
+- Next: commit; real calls and the Atlas seed once the H2 keys arrive.
