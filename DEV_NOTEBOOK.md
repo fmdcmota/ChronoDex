@@ -21,7 +21,7 @@ Agent 1 updates this when a human has walked through the gate (`MASTER.md` secti
 
 | | Milestone | Target | Status | Passed at | Notes |
 |---|---|---|---|---|---|
-| M0 | Foundation | Sat 16:15 | Not started | | |
+| M0 | Foundation | Sat 16:15 | Built on branch agent-1, awaiting commit approval and a human walk-through | | With mocks on, the six landmarks list and a fake job advances (unit tested). Not yet seen in a browser |
 | M1 | Risky parts proven | Sat 17:45 | Not started | | |
 | M2 | Vertical slice | Sat 20:00 | Not started | | |
 | M3 | Full loop | Sat 23:00 | Not started | | |
@@ -47,13 +47,17 @@ Every row is proposed until the team has reviewed plan v1.
 | D-011 | 14 Nov | Agents talk on `BOARD.md`. Every commit adds one post that @-mentions the agents it affects | Team request. One place to see who changed what and who is waiting on whom |
 | D-012 | 14 Nov | An agent asks its human before every commit and every push. There is no standing approval | Team request |
 | D-013 | 14 Nov | Each agent may hand mechanical work to a Haiku subagent, within the limits of its delegation sheet | Team request. Saves the main agent's time and context |
+| D-014 | 14 Nov | `cacheComponents` and `partialPrefetching` are off in `next.config.ts` | Next 16's scaffold turns them on. Our screens are client components over a dynamic API, and the prerender rules they add are a trap for agents trained on earlier Next.js |
+| D-015 | 14 Nov | Node 24 line: `.nvmrc` is 24 and `@types/node` is 24. Node 26 also works locally | vitest 5 needs @types/node 22 or later. Vercel is certain to support 24 |
+| D-016 | 14 Nov | Fixtures are TypeScript modules (`fixtures/*.ts`), imported as `@fixtures/index` | The type checker enforces their shape. JSON imports widen string unions |
 
 ## Contract changes
 
-None. The contracts in `MASTER.md` section 4 freeze at M0.
+The contracts in `MASTER.md` section 4 freeze at M0. Additions made while building M0, before the freeze, are logged here so nobody is surprised.
 
 | # | Date | Change | Asked by | Approved by |
 |---|---|---|---|---|
+| C-001 | 14 Nov | Pre-freeze additions. No 4.1 type changed. `src/lib/contracts/api.ts` holds request and response types for 4.3. `CaptureRequest.location` is `LatLng \| null` so the server can answer `location_missing`, plus optional `spoofed` for A1-14. New `resolveCapture` helper. New `stages.ts` (stage order, labels, `buildStages`, `eraNeedsGeneration`). `db.listEras` and `jobs.getActiveJob` added beyond 4.4. `patchEra` returns the updated Era | Agent 1, while building M0 | Pending human review with the M0 commit |
 
 ## Verified facts and traps
 
@@ -74,6 +78,12 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-011 | 14 Nov | The Next.js scaffolder is expected to refuse a folder that already has files. Not tested here: confirm at A1-01 | From memory |
 | F-012 | 14 Nov | `BOARD.md` is set to git's union merge in `.gitattributes`. A local merge and a local rebase of two branches that each added a post kept both posts with no conflict. GitHub's merge button is not tested and may ignore the setting | Tested in a throwaway repo, 14 Nov |
 | F-013 | 14 Nov | An `@name` in a commit message, pull request or issue can notify the GitHub user of that name. Handles belong in `BOARD.md` only | From memory |
+| F-014 | 14 Nov | `next dev` in Next 16 writes a managed block into `AGENTS.md` when it detects an AI agent. `agentRules: false` in `next.config.ts` turns it off | `node_modules/next/dist/server/lib/app-info-log.js` and the `agentRules` doc page |
+| F-015 | 14 Nov | npm 11 warns that esbuild's postinstall is not in `allowScripts` and skips it. tsx and vitest still work through esbuild's prebuilt platform package | Tried at A1-02 |
+| F-016 | 14 Nov | `crypto.randomUUID` exists only in secure contexts, so a phone on plain-HTTP LAN would crash. `randomUuid()` in `src/lib/client/player.ts` falls back to `getRandomValues` | MDN, from memory |
+| F-017 | 14 Nov | `@photo-sphere-viewer/core` and `@photo-sphere-viewer/gyroscope-plugin` exist on npm at 5.15.1. Resolves one item in `MASTER.md` section 14 | npm install at A1-02 |
+| F-018 | 14 Nov | Next 16's global `LayoutProps`, `PageProps` and `RouteContext` types are generated. `npm run typecheck` runs `next typegen` first, so a fresh clone type-checks | Tried at A1-07 |
+| F-019 | 14 Nov | Next 16 page and route `params` are Promises. In client pages use `useParams()`. In route handlers `await ctx.params` | `node_modules/next/dist/docs` |
 
 ## Session log
 
@@ -91,3 +101,10 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 - Decided: D-011 to D-013 above, at the team's request.
 - Not done: the approval rule is written down, not enforced by any tool. `MASTER.md` question Q8 covers that. Still no application code and nothing committed.
 - Next: unchanged. Photos and keys first, then review.
+
+### 2026-11-14 16:30, M0 build (Agent 1)
+
+- Did: tasks A1-01 to A1-07 on branch `agent-1`. The detail is in `notebook/agent-1.md`.
+- Decided: D-014 to D-016. Contract additions C-001.
+- Not done: no commit or push yet (waiting for a human yes). Placeholder pages not yet seen in a browser or on a phone.
+- Next: commit, push, announce M0 on the board. Then the MongoDB layer (A1-08).
