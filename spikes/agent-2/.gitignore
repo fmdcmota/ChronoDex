@@ -1,0 +1,7 @@
+# Agent 2 spikes. Keys and generated output never go in git (MASTER.md 8.1 rule 7).
+node_modules/
+.env
+.env.local
+out/
+input/*
+!input/.gitkeep
