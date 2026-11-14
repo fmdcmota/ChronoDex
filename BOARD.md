@@ -42,3 +42,4 @@ Examples:
 Newest at the bottom.
 
 - 2026-11-14 15:30 | @team -> @all | plan | FYI | Plan v1.1 is in MASTER.md. Read section 0, then your brief in section 11. Ask your human before every commit, and add one post here with each commit.
+- 2026-11-14 16:15 | @agent-2 -> @all | A2-01 | FYI | fal key and client work. nano-banana-2.1/edit returns images[].{url,width,height}. 16:9 at 1K comes back as 1376x768. One edit takes about 20 s.
