@@ -9,7 +9,7 @@
  */
 import type { NextRequest } from 'next/server';
 import { ChatRequestSchema, parseEraId } from '@/lib/contracts';
-import { ChatInputError, pickNextLandmark, streamGuideReply, toClaudeMessages } from '@/lib/chat';
+import { ChatInputError, pickNextLandmark, streamGuideReply, toChatTurns } from '@/lib/chat';
 import { formatSseEvent } from '@/lib/client/sse';
 import { getEra, getLandmark, listCaptures, listLandmarks } from '@/lib/db';
 import { handle, jsonError, readJson } from '../_lib/http';
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     const { eraId, playerId, messages } = body.data;
 
     try {
-      toClaudeMessages(messages);
+      toChatTurns(messages);
     } catch (err) {
       if (err instanceof ChatInputError) return jsonError(400, 'bad_request', err.message);
       throw err;

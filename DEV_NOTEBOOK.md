@@ -57,6 +57,7 @@ Every row is proposed until the team has reviewed plan v1.
 | D-021 | 14 Nov | The Historian runs in two Claude calls: research with web search (free-text notes, `pause_turn` resumed), then writing with structured output and no tools, with one corrective retry. Both use `fallbacks: "default"` | A retry never repeats the searches, and search citations never meet structured output in one response |
 | D-022 | 14 Nov | The Historian has no placeholder fallback without credentials; the pipeline stub uses `placeholderBrief` itself | Placeholder text must never be stored as a real era |
 | D-023 | 14 Nov | Fixture coordinates and art come from Agent 3's map spike: OSM-checked subjects, estimated photo spots, `/sprites/<id>.png`, `/sprites/badges/<id>.png` | One set of points for the map and the capture rule. Photo spots are still replaced by the H1 GPS |
+| D-024 | 14 Nov | The guide chat uses DeepSeek (`deepseek-flash`, thinking off) instead of Claude Haiku. The Historian and the image checks stay on Claude. `MASTER.md` section 7 still says Claude for the chat: a human must update it | Team decision (Agent 1's human), 14 Nov 17:15 |
 
 ## Contract changes
 
@@ -96,6 +97,10 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-022 | 14 Nov | @anthropic-ai/sdk 1.8.0 has `betaZodOutputFormat` in `@anthropic-ai/sdk/helpers/beta/zod` (built on `zod/v4`), `fallbacks: 'default'` on beta messages, and `parsed_output` on a stream's `finalMessage()` | Its typings |
 | F-023 | 14 Nov | After a rebase, git (autocrlf on Windows) checks files out with CRLF. Scripted string replacements written with \n then fail to match | Seen at A1-13 |
 | F-024 | 14 Nov | Twice, `npm run check` showed every test file failing with "Tests no tests" straight after a file write. Every rerun passed and it could not be reproduced. Rerun before debugging | Seen at A1-13, cause unknown |
+| F-025 | 14 Nov | MongoDB Atlas answers a client whose IP is not on the Network Access list with a TLS failure ("tlsv1 alert internal error", SSL alert number 80), not with an auth error. Open Network Access (`0.0.0.0/0` for the weekend) | Seen at A1-08 |
+| F-026 | 14 Nov | DeepSeek: `POST https://api.deepseek.com/chat/completions`, `Authorization: Bearer`, OpenAI-style SSE ending in `data: [DONE]`. Models `deepseek-flash` and `deepseek-v4-pro`; thinking is on by default and `reasoning_effort: "none"` turns it off. Flash is $0.30 in and | F-024 | 14 Nov | Twice, `npm run check` showed every test file failing with "Tests no tests" straight after a file write. Every rerun passed and it could not be reproduced. Rerun before debugging | Seen at A1-13, cause unknown |
+.20 out per million tokens at peak, half off-peak and at weekends | api-docs.deepseek.com, 14 Nov |
+| F-027 | 14 Nov | An Anthropic Console value starting `apikey_01` is the key's id, not the secret. The secret starts `sk-ant-` and is shown once, at creation | 401 from models.list at A1-11 |
 
 ## Session log
 
@@ -132,3 +137,9 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 - Did: A1-11 and A1-13 code, unit tested with a fake client. No real Claude call yet (no key). Fixtures moved to Agent 3's art and coordinates.
 - Decided: D-021 to D-023.
 - Next: commit; real calls and the Atlas seed once the H2 keys arrive.
+
+### 2026-11-14 17:20, chat moves to DeepSeek (Agent 1)
+
+- Did: the guide chat now calls DeepSeek; the Historian stays on Claude. MongoDB connection string received, but Atlas refuses this machine until Network Access is opened.
+- Decided: D-024.
+- Next: commit; Atlas verification and seed; real DeepSeek and Claude calls once the keys arrive.

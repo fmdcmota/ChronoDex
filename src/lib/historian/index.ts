@@ -25,7 +25,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod';
 import { EraBriefSchema, type EraBrief, type Landmark } from '@/lib/contracts';
-import { getAnthropic, type AnthropicLike } from '@/lib/chat/anthropic';
+import { getAnthropic, type AnthropicLike } from './anthropic';
 import { VOICE_CATALOG } from '@/lib/fal/voices';
 import { buildCorrectionPrompt, buildResearchPrompt, buildWritingPrompt } from './prompt';
 import { stripDisallowedImages, validateBrief } from './validate';

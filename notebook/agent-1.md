@@ -7,12 +7,13 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 16:55
-- Working on: A1-11 (Historian) and A1-13 (chat route) written on branch `agent-1`, plus fixtures switched to Agent 3's art and coordinates. Not yet committed. `npm run check` passes (97 tests).
-- Next: on a yes, commit and push. When keys arrive (H2): `npm run seed` against Atlas and verify the MongoDB backend; one real chat reply and one real Historian brief, measuring cost and time, then A1-16 (briefs for every demo era, human-checked). A1-12 (Vercel deploy) also needs the keys.
-- Blocked on: H2 keys (`MONGODB_URI`, `ANTHROPIC_API_KEY`). H1 photos for A1-08 part 2.
-- Board read up to: 2026-11-14 16:35 (agent-3, A3-01 ASK, answered in this commit).
-- Waiting for commit approval: the A1-11/A1-13 commit.
+- Last updated: 2026-11-14 17:20
+- Working on: the guide chat moved from Claude to DeepSeek (team decision D-024), on branch `agent-1`, not yet committed. `npm run check` passes (99 tests).
+- Next: on a yes, commit and push. Then, once the human opens Atlas Network Access: run the MongoDB verification (a throwaway database, dropped afterwards), then `npm run seed` into `chronodex_dev_alex`. With a DeepSeek key, one real chat reply. With a real Anthropic secret (`sk-ant-...`), one Historian brief. Then A1-12 (Vercel).
+- Blocked on: Atlas Network Access does not allow this machine (TLS alert 80, F-025). `DEEPSEEK_API_KEY` not given yet. The Anthropic value given (`apikey_01...`) is a key id, not the secret: 401.
+- Board read up to: 2026-11-14 18:02 (agent-3, progress summary FYI). Nothing addressed to agent-1 is open.
+- Waiting for commit approval: the DeepSeek switch.
+- Keys: `.env.local` (git-ignored) holds MONGODB_URI, MONGODB_DB=chronodex_dev_alex, CHAT_MODEL=deepseek-flash, and the invalid Anthropic id. The Atlas Admin API key pair was removed from it: the app does not use it.
 - Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted. Committed files are checked out with CRLF (git autocrlf), so scripted string replacements must allow for \r\n.
 
 ## Tasks
@@ -73,3 +74,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: twice, `npm run check` failed every test file straight after a file write, with no message shown; every rerun passed and I could not reproduce it. If you see "Tests no tests", rerun before debugging. Committed files are checked out with CRLF, which broke one scripted edit.
 - Next: commit on a yes; real calls once the key arrives.
+
+### 2026-11-14 17:20, keys, and the chat moves to DeepSeek
+- Did: put the MongoDB connection string in `.env.local` with database `chronodex_dev_alex`. Tested the Anthropic value with a free models.list call: 401, because `apikey_01...` is the key id, not the secret. Moved the guide chat from Claude to DeepSeek at the human's request. `src/lib/chat/deepseek.ts` is a small fetch client for `POST https://api.deepseek.com/chat/completions` (OpenAI-style SSE ending in `data: [DONE]`). `streamGuideReply` now sends a system message and the turns to `deepseek-flash` (CHAT_MODEL) with `reasoning_effort: "none"`. `toClaudeMessages` was renamed `toChatTurns`. The Anthropic client and test fake moved to `src/lib/historian/`, which stays on Claude. Added `DEEPSEEK_API_KEY` to `.env.example`; CHAT_MODEL now defaults to `deepseek-flash`. The route, the SSE events and the typed client are unchanged, so Agent 4 is not affected.
+- Decided, and why: plain fetch, not a vendor SDK, so no new dependency for one endpoint. Thinking off, because replies are a few sentences and DeepSeek thinks by default, which would delay the first word. `max_tokens` 1024. A `content_filter` finish becomes the in-character refusal message. A missing key ends the stream with an error event and makes no request.
+- Measured or verified: DeepSeek's endpoint, auth header, stream format, `reasoning_effort` values and prices were read from api-docs.deepseek.com (model page, chat completion reference, pricing page) on 14 Nov. `npm run check` passes, 99 tests. The stream parser is tested with the body split at 1, 3, 7 and 1000 characters. No real DeepSeek call yet (no key).
+- Problems: MongoDB Atlas refused the TLS handshake twice ("SSL alert number 80"), which is what Atlas does when the client IP is not on the Network Access list (F-025). Nothing was written. A verification script against a throwaway database `chronodex_verify_tmp` is ready to run and drop that database afterwards.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Next: commit on a yes; Atlas once Network Access is open.

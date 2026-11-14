@@ -1,5 +1,5 @@
 /**
- * The shared Anthropic client for the Historian and the guide chat. Server and worker only.
+ * The Anthropic client for the Historian (and, later, the image checks). Server and worker only.
  *
  * Owner: Agent 1 (Core). Implements MASTER.md section 7.
  * Credentials: the SDK resolves ANTHROPIC_API_KEY (or an `ant auth login` profile) itself.
@@ -23,5 +23,5 @@ export function getAnthropic(): Anthropic {
   return g[GLOBAL_KEY];
 }
 
-/** The minimal client surface the chat and Historian use, so tests can pass a fake. */
+/** The minimal client surface the Historian uses, so tests can pass a fake. */
 export type AnthropicLike = Pick<Anthropic, 'messages' | 'beta'>;

@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import type { EraBrief } from '@/lib/contracts';
 import { VOICE_CATALOG } from '@/lib/fal/voices';
 import { heroBrief, landmarks } from '@fixtures/index';
-import { fakeAnthropic } from '@/lib/chat/test-fakes';
+import { fakeAnthropic } from './test-fakes';
 import {
   HistorianError,
   buildResearchPrompt,
