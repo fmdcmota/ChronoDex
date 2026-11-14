@@ -7,13 +7,29 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 (human-directed full-repo review)
-- Working on: A2-04, A2-05 and A2-06 are generated and waiting for a human to listen and watch (`spikes/agent-2/out/review.html`). The agent-2 branch is merged to `main` (PR #1).
-- Next: (1) write `VOICE_CATALOG` from the human's voice picks, (2) make the full 45 s talk clip with the chosen model and voice, (3) tick A2-04 to A2-06, then A2-07 `src/lib/fal/` — the scaffold is on `main`, so this can start now.
-- Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is in `spikes/agent-2/.env.local`; Node v26.13.1 at `C:\Program Files\nodejs`.
-- Board read up to: 2026-11-14 15:55. Not re-read since: the human said not to track the other agents for now.
-- Waiting for commit approval: the A2-04 to A2-06 spikes plus this notebook (if not already covered by PR #1).
+- Last updated: 2026-11-14 21:10
+- Working on: A2-10 worker written and tested, not yet committed. main was merged into agent-2 (16dc14b); the Historian is now DeepSeek (Agent 1), so runEraJob uses historianModel() and a live run needs DEEPSEEK_API_KEY, not ANTHROPIC_API_KEY. A2-07 to A2-11 are committed (latest 059a5f2)
+- Next: A2-12 image checks with one corrective retry (what to judge: the panorama horizon height, seam, leftover grey and modern objects; scene framing against the reference; guide frame face size and identity). Then A2-13 pregenerate and backup scripts, A2-14 stitch. The notebook table "Wanted from the human" holds every open human ask
+- Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
+- Board read up to: 2026-11-14 19:55 (@team review)
+- Waiting for commit approval: A2-10 (src/worker/*, the Historian-name updates in src/lib/pipeline, this page, a board post)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
+
+## Wanted from the human (compile into one list when asked)
+
+The human said not to chase these now: note them here and give them the full list when they ask. Add to it as new ones appear; tick them off when answered.
+
+| # | What | Why | How, in short |
+|---|---|---|---|
+| H-A | Pick 4 to 6 voices and one talk model | Unblocks `VOICE_CATALOG` (currently provisional) and the 45 s clip | Open `spikes/agent-2/out/review.html`: 16 voice clips, Kling vs Fabric 10 s clips, the walk-on clip |
+| H-B | Real microphone test of speech to text in Chrome (and Safari on a Mac) | Only MP3 is proven; Chrome records WebM and Safari MP4, and the route renames them by their bytes | Run `npm run dev` and `node spikes/agent-2/voice-test.mjs`, open http://localhost:4000 in Chrome, record, report the output |
+| H-C | The same on a real iPhone and Android phone | Phones need HTTPS, so this goes through the deployed app (A1-12) | Use the chat screen's hold to talk once deployed |
+| H-D | Look at the panorama in Agent 4's 360 viewer on an iPhone and an Android phone | MASTER M1 gate; the panorama has never been seen on a phone | `?src=<url>&vfov=180`, URL in the A2-03 log entry |
+| H-E | How many fal credits do we have? | Decides one video per landmark or all 18 eras (about $77 at list) | fal dashboard |
+| H-F | Ask fal support to enable `fal-ai/ffmpeg-api/extract-frame` on our key (403 today) | Cleaner walk_off and for judging video as stills | Optional |
+| H-G | Reference photos must be 16:9 (H1 photos) | The edit models centre-crop anything else | Agent 1's seed normalises; check the result by eye |
+| H-H | Whose machine runs the worker, and an Anthropic key and MongoDB Atlas for a live end-to-end run | runEraJob has never run live end to end | MASTER Q5, H2 |
+| H-I | Read the first real brief before the pipeline spends on video (H7) | Accuracy of the 45 s script | Later, at M4 |
 
 ## Chosen models
 
@@ -28,8 +44,8 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 | guide_frame | `fal-ai/nano-banana-pro/edit` with [scene, headshot] | `google/nano-banana-2.1/edit` (untested) | ~20 | $0.15 list | A2-05 |
 | talk | waiting for the human's eye: Kling avatar v2 standard vs Fabric 480p | | Kling 226 s / Fabric 53 s per 10 s clip | $0.056/s / $0.08/s | A2-05 |
 | walk_on, walk_off | `kling/v4/image-to-video` 5 s 720p (made, waiting for the human's eye) | `blackforestlabs/flux-3/first-last-frame-to-video` | 163 | ~$0.79 | A2-06 |
-| chat speech | | | | | A2-04 |
-| speech to text | `fal-ai/elevenlabs/speech-to-text/scribe-v2` (works on MP3 and 24 kHz WAV) | | 2-4 | $0.008/min | A2-04 |
+| chat speech | `elevenlabs/tts/eleven-v4-turbo` | `elevenlabs/tts/eleven-v4` | 2.9 for 48 characters (v4: 3.9) | $0.04 per 1,000 characters | A2-07 |
+| speech to text | `fal-ai/elevenlabs/speech-to-text/scribe-v2` (MP3 and 24 kHz WAV proven; rejects .webm and .mp4 file names, so the route renames uploads) | | 2-4 | $0.008/min | A2-04, A2-11 |
 | stitch | | | | | A2-14 |
 
 ## Tasks
@@ -40,11 +56,11 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [ ] A2-04 Voice bake-off, write `VOICE_CATALOG`
 - [ ] A2-05 Talking-guide bake-off, one full 45 s clip
 - [ ] A2-06 Walk-on spike
-- [ ] A2-07 fal library: `runFal`, models, voices, upload, speech, transcribe
-- [ ] A2-08 Stage functions and prompt builders
-- [ ] A2-09 `runEraJob` orchestrator
-- [ ] A2-10 Worker
-- [ ] A2-11 Routes: uploads, voice tts, voice stt
+- [x] A2-07 fal library: `runFal`, models, voices, upload, speech, transcribe
+- [x] A2-08 Stage functions and prompt builders (stitch comes with A2-14, image checks with A2-12)
+- [x] A2-09 `runEraJob` orchestrator (never run live end to end: needs ANTHROPIC_API_KEY, a root FAL_KEY and, to share jobs with the dev server, MONGODB_URI)
+- [x] A2-10 Worker (not run live: needs Atlas and keys; real Ctrl+C untested on Windows)
+- [x] A2-11 Routes: uploads, voice tts, voice stt (a real Chrome WebM and iOS MP4 recording through stt is still unproven)
 - [ ] A2-12 Image checks with one corrective retry
 - [ ] A2-13 Pregenerate and backup-media scripts
 - [ ] A2-14 Stitch stage
@@ -124,3 +140,75 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Spend so far (list prices): A2-01 to A2-03 about $1, voices about $0.70, guide frame ×2 $0.30, talk tests about $1.40, walk-on about $0.79. **About $4.20 in total.**
 - Next: the human's picks, then `VOICE_CATALOG`, then the 45 s clip.
+
+### 2026-11-14 20:05, A2-07: src/lib/fal (done)
+- Did: brought `main` into `agent-2` (a fast-forward: PR #1 had already merged agent-2 into main). Replaced the M0 stubs in `src/lib/fal/` with `run.ts` (`runFal`, `FalStageError`), `models.ts` (the registry, from the chosen-models table), `voices.ts` (provisional catalogue with provider voice name and stability, plus `getVoice`), and real `uploadToFal`, `synthesizeSpeech(text, key, { fast }, ctx?)` and `transcribe(url, ctx?)` in `index.ts`. Signatures from MASTER 4.4 are unchanged; the optional `ctx` parameter is an addition that lets the pipeline save request ids. Added `fal.test.ts` (15 tests) and a README.
+- Decided, and why:
+  - `runFal` uses `fal.queue.submit/status/result` and calls `onRequestId` before the first poll, so a restart resumes the same request (MASTER 5.3 rule 2). `onPoll` exists so the pipeline can call `heartbeatJob` during the 15-minute talk wait.
+  - `VOICE_CATALOG` keeps the two `placeholder-*` keys, now mapped to real voices, because Agent 1's fixtures and tests name them. Agent 1 should rename them in `fixtures/eras.ts`.
+  - The catalogue is Alice, Lily, George, Daniel. British accent is from memory and unconfirmed until a human listens.
+- Measured or verified: `npm run check` passes (typecheck, lint, 195 tests). A live smoke run with the spike key: TTS of a 48-character line took 3.9 s on `eleven-v4` and 2.9 s on `eleven-v4-turbo`; Scribe transcribed both back correctly in 2.2 s and 1.7 s. Request ids were saved once per call. Cost is under one cent.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the root `node_modules` held Linux-only native binaries (rolldown), so vitest would not start on Windows. A plain `npm install` fixed it and did not touch the lockfile. If another Windows machine hits "Cannot find native binding", run `npm install` there too. The first lint run failed on a missing doc description in `run.ts`; fixed.
+- Next: A2-08.
+
+### 2026-11-14 20:15, A2-08: pipeline stages (done)
+- Did: `src/lib/pipeline/stages/` with one function per stage (scene, panorama, headshot, narration, guide_frame, walk on and off, talk), `prompts.ts` (the spike prompts ported as exported builders), `inputs.ts` (model input shapes, with the fallback models' different fields), `image.ts` (panorama canvas, resize to exact 2:1, leftover-grey measure), `types.ts`, a README and 18 tests. `src/lib/fal/index.ts` now also re-exports the size constants. Added `sharp` as a direct dependency: Next already installs it, but it was not declared, and the panorama stage needs it.
+- Decided, and why:
+  - Stages take plain inputs and return `{ url, model, requestId, elapsedMs }`, so the orchestrator owns all state and every stage is testable with a fake queue.
+  - Walk off starts at the guide frame, not the last frame of talk, because `extract-frame` is 403 on our key.
+  - The panorama prompt now repeats `notYetBuilt` (the first spike drew modern road markings).
+  - Default horizon fraction 0.55 for a typical phone photo (the spike's 0.69 was for a tilted-up photo). Untested on other photos.
+- Measured or verified: `npm run check` passes (typecheck, lint, 213 tests). **Live run of `runPanorama` through the production code, three times:** 34.7 s, 35.4 s and 36.0 s. Results: one good sphere (0.3% grey), one valid sphere with the horizon about 10% too low (1% grey), and one bad picture, a mirrored two-row layout with the bottom third left as grey canvas (12.6% grey). Only one of three was fully good, so the model is not reliable here.
+- Fixed because of it: `runPanorama` now measures leftover grey and retries once above 3% (worst case two requests, about $0.30), keeping the better one, and reports `attempts` and `unpaintedFraction`. The grey measure separates the runs cleanly (0.3% and 1% against 12.6%). The low horizon is not caught: A2-12's Claude check should judge horizon height, the seam and leftover modern objects.
+- Bug the tests caught: a portrait-shaped scene made `sharp` refuse to composite onto the canvas; the scene is now fitted inside it.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Spend this session: panorama runs about $0.45, voice smoke test under $0.01. Total so far about $4.70 at list prices.
+- Next: A2-09.
+
+### 2026-11-14 20:25, A2-09: runEraJob (done, not run live end to end)
+- Did: `src/lib/pipeline/run.ts` (the orchestrator), `deps.ts` (the Historian plus eight stage functions as one swappable object, with a real set and a no-spend dry-run set), `index.ts`, a README and 10 tests on the in-memory database and queue. Stages now also return `durationS` for video clips.
+- Decided, and why:
+  - **Never pay twice, two ways.** A core stage whose output is already on the Era is skipped. Every stage saves its request id on the job stage and a re-claimed job passes it back to `runFal`, so fal returns the finished result. The guide frame has no Era field (contracts are frozen), so this is the only way it survives a worker restart.
+  - **A failed stage does not stop independent ones.** Dependants are `skipped`. Core `state` is `failed` unless scene, panorama, headshot and narration all exist; `videoState` is separate. Asking again repeats only what is missing.
+  - **Reused outputs are marked `skipped`, not `done`**, since nothing ran. If the progress sheet should show them as done, say so.
+  - **Dry run is chosen by `NEXT_PUBLIC_USE_MOCKS=1`**, not by a missing key: a deployment that lost its key must fail loudly, not store "Placeholder" text as a real era.
+  - **Edited Agent 1's `src/lib/jobs/jobs.test.ts`** (3 lines: stub the mocks flag for its 'pipeline stub, end to end' test, and unstub in afterEach). It ran `runEraJob` with no keys and expected fixtures. The human approved this exception to the ownership rule; Agent 1 is told on the board.
+  - Talk clip length: the model's `duration` if given, otherwise words divided by 2.9 per second.
+- Measured or verified: `npm run check` passes (typecheck, lint, 224 tests). The tests cover the happy path with both tiers, stage records (model, request id, times), a failed scene (panorama skipped, headshot and narration kept), a failed brief, a failed clip, a failed guide frame, a second job repeating only what is missing, a re-claimed job passing saved request ids (including the guide frame), and the dry run. No live end-to-end run: that needs `ANTHROPIC_API_KEY` for the brief and about $0.50 plus $0.25-0.60 for the core tier alone, and about $4 more for the video tier.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the first lint run wanted doc comments on arrow functions inside exported objects; fixed by naming them. `stitch` stays `skipped` until A2-14.
+- Next: A2-10.
+
+### 2026-11-14 20:40, A2-11 (voice routes): tts and stt done, uploads still to do
+- Did: `POST /api/voice/tts` and `POST /api/voice/stt` in `src/app/api/voice/` (moved to the front of the queue because Agent 4's voice screens were blocked on them), shared helpers in `_lib/voice.ts`, spend guards in `src/lib/fal/guards.ts` (a per-caller rate limit and a speech cache), audio sniffing and upload naming in `src/lib/fal/audio.ts`, a README, 25 tests, and `spikes/agent-2/voice-test.mjs` (a browser page that records with a real microphone and posts to the app).
+- Decided, and why:
+  - The tts route takes only `{ eraId, text }` and picks the voice from the era's guide, as the contract says. It uses the chat model (`eleven-v4-turbo`), 404s an unknown era and 409s an era with no guide.
+  - Two spend guards, because these are public endpoints on our credits (MASTER 5.3 rule 1): 30 tts and 20 stt per caller per minute, and a cache so replaying a reply costs nothing. Both are per process; on Vercel the true ceiling is a multiple.
+  - 503 `voice_unavailable` when there is no FAL_KEY and mocks are off, so a missing key reads as "not configured", not a crash.
+- Measured or verified (live, `next dev` with the real key, in-memory database): tts for `queens-tower_1893` answered in 5.4 s, and the same text again in 34 ms from the cache. stt transcribed "Good afternoon. Mind your step on the pavement" correctly in 3.9 s.
+- **Found live: fal's speech to text rejects `.webm` and `.mp4` with a 422** ("Supported formats are .mp3, .wav, .m4a, .ogg, .flac, .aac"). Chrome records WebM and iOS Safari records MP4, and the client names the file by that, so voice input would have failed on both. The check is on the file name only: the same MP3 bytes under `.ogg`, `.m4a` and `.aac` transcribed fine, under `.mp4` and `.webm` they were refused. So the route renames the upload from the real bytes (WebM becomes `.ogg`, MP4 becomes `.m4a`). Verified: MP3 bytes labelled webm, mp4 and ogg all transcribe. **Not verified:** a real Chrome WebM/Opus or iOS MP4/AAC recording, because there is no encoder on this machine. `voice-test.mjs` is for that.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: Next only allows HTTP-method exports from a route file, so the helper `isAcceptableAudioType` lives in `_lib`. Two shell heredocs failed on quoting; the files were written with the file tool instead.
+- Next: uploads route, then the worker (A2-10).
+
+### 2026-11-14 20:50, A2-11 (uploads route): done
+- Did: `POST /api/uploads` in `src/app/api/uploads/` (route, `_lib/limits.ts`, README, 7 tests). Multipart `file`, JPEG only, up to 4 MB, returns `{ url }`.
+- Decided, and why: JPEG is checked from the file's first bytes (FF D8 FF), not the claimed MIME type, because a browser's type is not trusted and the contract allows JPEG only. The upload is stored as `capture.jpg` whatever the browser called it. 20 uploads per caller per minute. It reuses the voice routes' 429, 502 and 503 helpers, so the 503 code is `voice_unavailable` (slightly odd name, same meaning: no key on this server).
+- Measured or verified: `npm run check` passes (246 tests). Live with the real key: a 731 KB JPEG uploaded in 3.0 s, and the returned fal URL fetched back as 748,172 bytes of image/jpeg.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: none.
+- Next: A2-10, the worker.
+
+### 2026-11-14 21:10, A2-10: worker (done, not run live)
+- Did: merged `main` into `agent-2` (a merge, not a rebase, as asked). Agent 1 had replaced the Historian's Claude call with DeepSeek and removed `HISTORIAN_MODEL`, which broke my `run.ts` import; fixed by calling `historianModel()`, and updated my comments, README and one test that named Claude. Then built `src/worker/loop.ts` (`runWorker`: N slots that claim, run, repeat, with abortable sleeps and a summary), `src/worker/index.ts` (startup checks, signals, logging), a README and 8 tests.
+- Decided, and why:
+  - The loop is separate from the entry point so it can be tested with fake claim and run functions. The entry point does the process-level work.
+  - Fail fast at startup: no `MONGODB_URI` (the worker could not see the API's jobs), or mocks off with no `FAL_KEY` or `DEEPSEEK_API_KEY`. The first log line states dry run or real, because real mode spends money.
+  - Concurrency defaults to 1 (`WORKER_CONCURRENCY` raises it). Jobs mostly wait on fal, so more is cheap, but one is the safe default for credits.
+  - Shutdown: stop claiming, 20 s grace for a running job, then exit. The job keeps its saved fal request ids and is re-claimed after its 10 minute lease. I did not add a way to release the lease because `src/lib/jobs` is Agent 1's: a `releaseJob` would make a restart resume at once.
+- Measured or verified: `npm run check` passes (typecheck, lint, 341 tests, 8 of them the loop). Ran the real entry point: it refuses without `MONGODB_URI` (exit 1), starts and idles in dry-run mode on a private queue, and names a missing `DEEPSEEK_API_KEY` when mocks are off. The unit tests cover queue order, concurrency limit, stop on abort, a running job finishing after abort, an idle slot waking at once on abort, surviving a failed claim and a crashing run, and one end-to-end dry run of a core and video job on the in-memory queue.
+- Not verified: a live run against Atlas with real keys, and a real Ctrl+C (a bash shell on Windows cannot deliver SIGINT to the process, so the signal path is untested; only the loop behind it is).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the merge briefly broke the typecheck (above). `WORKER_CONCURRENCY` and `WORKER_ALLOW_MEMORY` are not in `.env.example`, which is Agent 1's file (MASTER 8.4 rule 8): asked on the board.
+- Next: A2-12.

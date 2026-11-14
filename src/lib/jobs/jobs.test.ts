@@ -26,6 +26,7 @@ beforeEach(() => {
   resetMemoryJobs();
 });
 afterEach(() => {
+  vi.unstubAllEnvs();
   vi.useRealTimers();
   delete process.env.VIDEO_GENERATION;
 });
@@ -110,6 +111,8 @@ describe('requestEraGeneration', () => {
 describe('pipeline stub, end to end', () => {
   it('runs a whole job and fills the era', async () => {
     const eraId = eraIdOf('natural-history-museum', 1862);
+    // The real pipeline (Agent 2) calls Claude and fal; mocks switch it to its no-spend dry run.
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
     process.env.VIDEO_GENERATION = 'on';
     await requestEraGeneration(eraId, true);
     const job = await claimNextJob('w');
