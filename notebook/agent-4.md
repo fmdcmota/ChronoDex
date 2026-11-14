@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 15:55
-- Working on: A4-01. Spike built and checked on desktop. Not yet seen on a real phone.
-- Next: a human opens the spike on an iPhone and an Android phone (README in `spikes/agent-4/`) and reports back. Then tick A4-01. While waiting for M0, A4-02 to A4-07 need the scaffold, so nothing else can start in `src/` yet. When M0 lands, lift `spikes/agent-4/src/panoData.ts` into `src/components/time-machine/` for A4-03.
-- Blocked on: M0 scaffold from Agent 1 (for A4-02 onward). Phone check from a human (for A4-01).
-- Board read up to: 2026-11-14 15:30 @team plan post
-- Waiting for commit approval: A4-01 spike commit (spikes/agent-4/, this page, one board post). Not committed.
+- Last updated: 2026-11-14 16:25
+- Working on: waiting for M0. Spikes for A4-01 (360°), A4-04 (clip player) and A4-08 (mic, delayed reply audio) are built in `spikes/agent-4/` and checked on desktop.
+- Next: a human runs `spikes/agent-4/PHONE_TEST.md` (Tests 1 and 2) on an iPhone and an Android phone. Tick A4-01 on a pass. When M0 lands on main: A4-02, lifting `panoData.ts` (A4-03), `media/segmentPlayer.ts` (A4-04) and `media/recorder.ts` (A4-08) into `src/components/`.
+- Blocked on: M0 scaffold from Agent 1 (A4-02 onward). Phone results from a human.
+- Board read up to: 2026-11-14 15:55 @agent-4 A4-01 post
+- Waiting for commit approval: nothing. Media spike committed on branch agent-4, not pushed. (A4-01 spike is on main as 7de1d9b.)
 
 ## Tasks
 
@@ -48,3 +48,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing. The viewer and gyroscope are on the keep-for-yourself list.
 - Problems: the browser pane does not trust the self-signed cert, so desktop checks use `HTTP=1`. Phones must accept the cert warning; if iOS refuses motion over a self-signed cert, use a tunnel or wait for the Vercel deploy (A1-12). Also: the haiku-delegate skill lives in `skills/`, not `.claude/skills/` as MASTER says.
 - Next: phone check by a human, then A4-02 once M0 lands.
+
+### 2026-11-14 16:25, A4-04 and A4-08 spikes, phone test sheet
+- Did: wrote `spikes/agent-4/PHONE_TEST.md`, a step-by-step check sheet for the human (360° viewer and media page, what passes, what to report). Added `media.html` with three tests: (2A) `SegmentPlayer`, two stacked videos with the next clip preloaded underneath and swapped on `ended`; test clips are made in the browser from a canvas plus a tone with MediaRecorder, since there is no ffmpeg here and no downloads; `?clips=` takes real fal clips. (2B) `HoldToTalkRecorder`, MediaRecorder with pointer capture, picks webm/opus or audio/mp4, keeps the mic open between presses, drops presses under 400 ms. (2C) a beep 3 s after a tap, once from a new Audio element and once from an element unlocked by the tap, to show which pattern iOS allows for TTS replies.
+- Decided, and why: two video elements rather than one with `src` swaps (one element blanks while loading). The standby element is primed inside the first tap, because iOS only allows sound on elements first played from a gesture. Chat replies will reuse one element unlocked on the send tap, for the same reason.
+- Measured or verified: `npm run check` passes (11 tests). Desktop Chrome in the browser pane: the clips record as `video/mp4;codecs=avc1,opus` (the first as vp9 in mp4); gaps between clips measured 1 ms and 2 ms; both delayed beeps played (desktop does not block, as expected). Mic not tried on desktop. Nothing seen on a phone yet.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: `TaskStop` on an `npx vite` background job left the server process running; it had to be stopped by PID.
+- Next: phone results, then M0.

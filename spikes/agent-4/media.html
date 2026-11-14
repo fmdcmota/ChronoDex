@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>A4 media spike</title>
+  </head>
+  <body class="media">
+    <h1>Test 2: guide clips and microphone</h1>
+
+    <section>
+      <h2>2A. Clips back to back</h2>
+      <div id="stage"></div>
+      <div class="row">
+        <button id="make">Make test clips</button>
+        <button id="play" disabled>Play</button>
+      </div>
+      <p class="hint">Watch and listen at each change of colour. There should be no black flash and no silence.</p>
+    </section>
+
+    <section>
+      <h2>2B. Hold to talk</h2>
+      <button id="talk" class="talk">Hold to talk</button>
+      <audio id="playback" controls></audio>
+      <a id="save" hidden>Save recording</a>
+    </section>
+
+    <section>
+      <h2>2C. Reply plays after a delay</h2>
+      <button id="delayed">Tap, then wait 3 s</button>
+      <p class="hint">A beep should play 3 seconds after the tap, like a guide reply arriving from the server.</p>
+    </section>
+
+    <pre id="log"></pre>
+    <script type="module" src="/src/media/media.ts"></script>
+  </body>
+</html>

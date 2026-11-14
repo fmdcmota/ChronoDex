@@ -12,4 +12,6 @@ const plainHttp = process.env.HTTP === '1';
 export default defineConfig({
   plugins: plainHttp ? [] : [basicSsl()],
   server: { host: true, port: 5173 },
+  // Two pages: the 360 viewer (A4-01) and the media spike (A4-04, A4-08).
+  build: { rolldownOptions: { input: { main: 'index.html', media: 'media.html' } } },
 });

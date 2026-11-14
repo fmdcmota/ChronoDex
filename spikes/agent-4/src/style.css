@@ -17,3 +17,18 @@ html, body { margin: 0; height: 100%; background: #000; font-family: system-ui, 
   margin: 0; max-height: 30vh; overflow: auto; font-size: 10px; color: #cfc;
   background: rgba(0,0,0,.6); padding: 4px; white-space: pre-wrap;
 }
+
+/* Media spike page (media.html). Scrolling page, not full-screen. */
+body.media { overflow: auto; color: #eee; padding: 12px; padding-top: calc(env(safe-area-inset-top) + 12px); }
+body.media h1 { font-size: 18px; }
+body.media h2 { font-size: 15px; margin: 18px 0 8px; }
+body.media button { font-size: 16px; padding: 10px 14px; border-radius: 8px; border: 0; background: #f4c542; font-weight: 600; }
+body.media button:disabled { opacity: .5; }
+body.media .row { display: flex; gap: 8px; margin-top: 8px; }
+body.media .hint { font-size: 13px; color: #aaa; }
+body.media #stage { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #222; overflow: hidden; }
+body.media .talk { width: 100%; padding: 22px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: none; }
+body.media .talk.on { background: #d0202a; color: #fff; }
+body.media audio { width: 100%; margin-top: 8px; }
+body.media a { color: #8cf; display: block; margin-top: 6px; }
+body.media #log { max-height: none; margin-top: 16px; font-size: 11px; }
