@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:20
-- Working on: nothing in progress. Restyle of the Time Machine and chat in Agent 3's game look is done in the working tree (not committed). A4-06 and A4-09 are committed as 58d120a on branch claude/agent-4-task-review-2470e2 (based on main at a505547); nothing pushed.
-- Next: A4-08 needs Agent 2's real /api/voice routes to finish. Phone results from `spikes/agent-4/PHONE_TEST.md` Tests 1 to 4 (add the slider, drawer and new look to Test 4). Switch mocks off once real eras exist (M2). A4-10 phone polish after that.
-- Blocked on: Agent 2's voice routes (A4-08), phone results from a human, commit approval.
-- Board read up to: 2026-11-14 19:55 @team review post (main at a505547).
-- Waiting for commit approval: the restyle (pixel.ts, 14 component files, two READMEs, this page, BOARD.md).
+- Last updated: 2026-11-14 20:30
+- Working on: nothing in progress. Everything up to the restyle is on main (4382e09). This session's last commit adds the real-API fixes below and the PHONE_TEST.md Test 4 rows.
+- Next: A4-08 once Agent 2 lands `/api/voice/tts` and `/api/voice/stt` (neither exists on main or origin/agent-2 at 20:25). Phone results from `spikes/agent-4/PHONE_TEST.md` Tests 1 to 4. When Atlas and a worker run, check one real era end to end with mocks off. A4-10 phone polish after that.
+- Blocked on: Agent 2's voice routes (A4-08), phone results from a human.
+- Board read up to: 2026-11-14 19:55 @team review post (origin/main at a505547 when fetched at 20:25).
+- Standing instruction from the human (20:25): commit and push to main without asking each time; stop only to flag a merge conflict or a failing check. Never force-push.
 
 ## Tasks
 
@@ -103,3 +103,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing. The colour swap was a scripted replace I read back; the rest needed eyes on the screen.
 - Problems: the first colour pass turned the send button's arrow paper-on-gold; caught and fixed before the check.
 - Next: A4-08 when the voice routes land; phone pass.
+
+### 2026-11-14 20:30, real API check with mocks off, small fixes
+- Did: pushed 58d120a and 4382e09 to main (fast-forward, no conflict). Ran both screens with `NEXT_PUBLIC_USE_MOCKS=0` against Agent 1's routes on the in-memory store (no keys, so no spend). Time Machine: the hero era loads from /api, a missing year sends one POST generate and then polls every 3 s. Chat: /api/chat with no DeepSeek key ends with an error event, shown as a notice, no hang. Fixed three things this showed: (1) `queueNote` in ProgressSheet: a queued job says "Waiting in line for the studio", and after 60 s that the studio may be offline, because with no worker a job stays queued for ever and "0/5" looked frozen; (2) the in-progress year marker is a pulsing ink dot, because the gold one vanished on the selected gold chip; (3) `failureNotice` in chat/notice.ts stops "Try asking again in a moment. Try again." Added rows 4.7 to 4.10 to PHONE_TEST.md Test 4.
+- Decided, and why: the queue note says "studio" not "worker", in the game's words; it does not offer a retry, since the job is already queued and generate would return the same job.
+- Measured or verified: `npm run check` passes (210 tests). All three fixes seen in the browser pane at 375x812 with mocks off.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: none new. A4-08 still waits on Agent 2.
+- Next: see Current state.

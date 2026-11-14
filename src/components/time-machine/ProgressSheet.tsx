@@ -46,6 +46,28 @@ export function stageSeconds(stage: Pick<JobStage, 'startedAt' | 'finishedAt'>, 
   return Math.max(0, Math.round((endMs - startMs) / 1000));
 }
 
+/** After this long in the queue, say the generator may be offline (the worker runs on a laptop, section 2). */
+export const QUEUE_SLOW_S = 60;
+
+/**
+ * What to tell the player while a job waits for the worker to claim it.
+ *
+ * Why: the worker is a separate process (MASTER.md section 2). When it is down a job stays queued
+ * for ever, and a list of grey stages with "0/5" looks frozen. This says what is happening.
+ *
+ * @param job - The active job.
+ * @param nowMs - Current time.
+ * @returns A sentence while the job is queued, else null.
+ */
+export function queueNote(job: Pick<Job, 'state' | 'createdAt'>, nowMs: number): string | null {
+  if (job.state !== 'queued') return null;
+  const waitedMs = nowMs - Date.parse(job.createdAt);
+  if (Number.isFinite(waitedMs) && waitedMs >= QUEUE_SLOW_S * 1000) {
+    return 'Still waiting for the studio. It may be offline; anything already made still works.';
+  }
+  return 'Waiting in line for the studio…';
+}
+
 /**
  * The stage list.
  *
@@ -59,6 +81,7 @@ export function ProgressSheet({ job, nowMs, startCollapsed = false }: ProgressSh
   const [collapsed, setCollapsed] = useState(startCollapsed);
   const doneCount = job.stages.filter((s) => s.state === 'done' || s.state === 'skipped').length;
   const running = job.stages.find((s) => s.state === 'running');
+  const waiting = queueNote(job, nowMs);
 
   if (collapsed) {
     return (
@@ -69,7 +92,7 @@ export function ProgressSheet({ job, nowMs, startCollapsed = false }: ProgressSh
         className={`${PANEL_DARK} flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs`}
       >
         <span className="animate-spin" aria-hidden>◐</span>
-        <span className="min-w-0 flex-1 truncate">{running?.label ?? 'Waiting for the studio'}</span>
+        <span className="min-w-0 flex-1 truncate">{running?.label ?? waiting ?? 'Waiting for the studio'}</span>
         <span className="tabular-nums text-(--paper)/70">{doneCount}/{job.stages.length}</span>
       </button>
     );
@@ -83,6 +106,7 @@ export function ProgressSheet({ job, nowMs, startCollapsed = false }: ProgressSh
           {doneCount}/{job.stages.length} ▴
         </button>
       </div>
+      {waiting && <p className="m-0! mb-2! text-xs text-(--paper)/80">{waiting}</p>}
       <ol className="space-y-1.5">
         {job.stages.map((stage) => {
           const seconds = stageSeconds(stage, nowMs);

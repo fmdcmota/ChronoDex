@@ -10,6 +10,7 @@ Owner: Agent 4. The `/time/[landmarkId]` screen (MASTER.md section 1.2 part 2, t
 - `GuidePlayer.tsx`: walk_on, talk, walk_off back to back (`segmentPlayer.ts`), or the narration
   until a video exists, with captions from `captions.ts`.
 - `ProgressSheet.tsx`: the job's stages with model ids and seconds. Collapses to a pill for the video tier.
+  While the job is queued it says so, and after a minute that the studio (worker) may be offline.
 - `YearBar.tsx`: one button per era with a state marker.
 - `pixel.ts`: class strings for the game look (pixel font, pixel frames, ink, paper and gold) built on
   Agent 3's CSS variables in `globals.css`. The chat imports it too.

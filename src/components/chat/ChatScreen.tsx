@@ -21,6 +21,7 @@ import { ApiError, api, getPlayerId } from '@/lib/client';
 import { ChatHeader } from './ChatHeader';
 import { Composer } from './Composer';
 import { MessageBubble } from './MessageBubble';
+import { failureNotice } from './notice';
 import { NextStopCard } from './NextStopCard';
 import { chatHasExchange } from './nextStop';
 import { TypingIndicator } from './TypingIndicator';
@@ -198,8 +199,7 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
         if (readAloud) void playMessage(all.length - 1, reply);
       }
       if (errorText || !reply) {
-        const reason = (errorText ?? 'no reply').replace(/[.\s]+$/, '');
-        setNotice(`${guide.name.split(' ')[0]} could not answer: ${reason}. Try again.`);
+        setNotice(failureNotice(guide.name, errorText));
       }
     },
     [messages, eraId, guide.name, readAloud, playMessage],

@@ -15,12 +15,16 @@ export interface YearBarProps {
   onSelect: (eraId: EraId) => void;
 }
 
-/** Dot colour per core-tier state: ready is solid, in progress pulses, never visited is hollow. */
+/**
+ * Marker per core-tier state: ready is solid, in progress pulses, never visited is hollow.
+ * In progress is an ink dot, not gold, so it still shows on the selected (gold) chip. Ready and
+ * failed get an ink ring for the same reason.
+ */
 const DOT_CLASS: Record<AssetState, string> = {
-  ready: 'bg-(--verdigris)',
-  queued: 'bg-(--gold) animate-pulse',
-  generating: 'bg-(--gold) animate-pulse',
-  failed: 'bg-(--brick)',
+  ready: 'bg-(--verdigris) ring-2 ring-(--ink)',
+  queued: 'bg-(--ink-soft) animate-pulse',
+  generating: 'bg-(--ink-soft) animate-pulse',
+  failed: 'bg-(--brick) ring-2 ring-(--ink)',
   missing: 'border-2 border-current',
 };
 
