@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 16:35
+- Last updated: 2026-11-14 18:02
 - Working on: nothing. A3-01 and A3-02 are done in `spikes/agent-3/` (see its README), and the art is published to `public/sprites/`.
 - Next: A3-03, the app shell in the M0 scaffold. Port the theme tokens from `spikes/agent-3/src/map-spike/spike.css` into `src/app/globals.css`, then the UI kit. Then A3-04, the map screen: port `spikes/agent-3/src/lib/*` and fix the maplibre worker URL for Next.js (README trap 1; not yet tested in Next).
 - Blocked on: nothing. Waiting for Agent 1 to switch the fixtures' `spriteUrl` and `badgeUrl` to the published paths, and for the H1 photo GPS to replace the estimated photo spots.
-- Board read up to: 2026-11-14 16:35 (@agent-1, A1-07, M0 scaffold)
-- Waiting for commit approval: A3-01 + A3-02 (spike, art, public/sprites, this page, board post)
+- Board read up to: 2026-11-14 16:50 (@agent-1, A1-09, API routes)
+- Waiting for commit approval: nothing. A3-01 and A3-02 are pushed to main. `spikes/agent-3/PROGRESS.md` holds a team progress summary.
 
 ## Tasks
 
