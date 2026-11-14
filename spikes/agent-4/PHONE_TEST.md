@@ -51,9 +51,29 @@ everything: when a line below says "log says", read it there.
 | 2.8 | Tap **Save recording** (optional, if Agent 2 asks for a sample) | A file downloads. Send it to Agent 2's human for the speech-to-text test |
 | 2.9 | Tap **Tap, then wait 3 s**. Do not touch the phone | Within about 5 s the log shows `beep 1` and `beep 2`, each `played` or `BLOCKED`. **Report both lines exactly.** On iPhone we expect beep 1 may be blocked; beep 2 must play |
 
+## Test 3: guide chat (A4-07, A4-08)
+
+Page: same address plus `/chat.html`. Replies are canned for now (no server yet), so judge how it
+looks and behaves, not what the guide says. Ask about clothes, food or "where next" for different
+replies; type a message containing "error" to see the error message.
+
+| # | Do this | Pass if |
+|---|---|---|
+| 3.1 | Open the page | It looks like a text-message app: header with "EM" picture, name and role, a grey greeting bubble, a message box and a mic button at the bottom. Nothing hidden behind the notch or the home bar |
+| 3.2 | Tap the message box | The keyboard opens, the page does **not** zoom in, and the message box stays visible above the keyboard |
+| 3.3 | Type "what did people wear?" and send | Your blue bubble appears, then three typing dots, then the reply appears word by word. The thread scrolls to follow it |
+| 3.4 | Send a few more until the thread is longer than the screen. Scroll up and down | Smooth scrolling. The header and message box stay put |
+| 3.5 | Reload the page | The whole conversation is still there |
+| 3.6 | Tap **listen** under a guide bubble | You hear a short beep (the stand-in for the guide's voice) |
+| 3.7 | Tap **Voice off** so it says **Voice on**, then send a message. Do not touch the phone while the reply arrives | A beep plays by itself when the reply finishes. **This is the key iPhone check** |
+| 3.8 | With the message box empty, hold the mic button, speak, release | The button grows and turns red while held. Then "Listening back…", then a message "What did people wear around here back then?" is sent for you (canned text for now) |
+| 3.9 | Tap ↺ at the top right | The chat goes back to just the greeting |
+
 ## How to report
 
 Paste lines like these to the agent:
 
     iPhone 15, iOS 18: 1.1 pass, 1.2 pass, 1.3 fail - log says "gyroscope refused: NotAllowedError", ...
     Pixel 8, Chrome: all pass
+
+Or just say which numbers failed and what you saw.

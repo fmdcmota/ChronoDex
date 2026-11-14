@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 16:25
-- Working on: waiting for M0. Spikes for A4-01 (360°), A4-04 (clip player) and A4-08 (mic, delayed reply audio) are built in `spikes/agent-4/` and checked on desktop.
-- Next: a human runs `spikes/agent-4/PHONE_TEST.md` (Tests 1 and 2) on an iPhone and an Android phone. Tick A4-01 on a pass. When M0 lands on main: A4-02, lifting `panoData.ts` (A4-03), `media/segmentPlayer.ts` (A4-04) and `media/recorder.ts` (A4-08) into `src/components/`.
-- Blocked on: M0 scaffold from Agent 1 (A4-02 onward). Phone results from a human.
-- Board read up to: 2026-11-14 15:55 @agent-4 A4-01 post
-- Waiting for commit approval: nothing. Media spike committed on branch agent-4, not pushed. (A4-01 spike is on main as 7de1d9b.)
+- Last updated: 2026-11-14 16:45
+- Working on: spikes done. Chat spike (A4-07, A4-08) built in `spikes/agent-4/chat.html` and checked on desktop at phone width.
+- Next: M0 landed on main at 16:35 (a7880a4). Rebase branch agent-4 on main, read DEV_NOTEBOOK C-001, then A4-02 (Time Machine screen) and A4-07 (chat screen) in `src/app/time/`, `src/app/chat/`, `src/components/`. Use Agent 1's `@/lib/client` (`api`, `getPlayerId`, its own SSE parser) instead of the spike's `api.ts`, `sse.ts` and `contracts.ts`. Lift `panoData.ts`, `segmentPlayer.ts`, `recorder.ts`, `history.ts` and the chat components.
+- Blocked on: phone results from a human (`spikes/agent-4/PHONE_TEST.md` Tests 1 to 3).
+- Board read up to: 2026-11-14 16:35 @agent-1 M0 post
+- Waiting for commit approval: nothing. Chat spike committed on branch agent-4 (not pushed). A4-01 is on main as 7de1d9b; media spike on agent-4 as 2c2e10b.
 
 ## Tasks
 
@@ -56,3 +56,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: `TaskStop` on an `npx vite` background job left the server process running; it had to be stopped by PID.
 - Next: phone results, then M0.
+
+### 2026-11-14 16:45, A4-07 and A4-08: chat screen spike
+- Did: `chat.html` in the spike package (React 19.3.1, Tailwind 4.3.5, @vitejs/plugin-react 6.3.0): ChatScreen, ChatHeader, MessageBubble, TypingIndicator, Composer (text, or hold-to-talk mic when empty), Avatar with an initials fallback while `headshotUrl` is null. `api.ts` streams POST /api/chat through the SSE parser and wraps TTS and STT; its mock emits SSE in random-sized chunks so the real parsing path runs. A fixture guide (fictional, Queen's Tower 1893). Added PHONE_TEST.md Test 3.
+- Decided, and why: replies are spoken through one `<audio>` element unlocked on the send tap or the voice toggle (iOS, see media test 2C). Text input is 16 px so iOS does not zoom. History is saved after each player message and each reply, so a reload mid-reply keeps the question. A stream that ends without `done` keeps the partial text. Read-aloud is a per-device setting.
+- Measured or verified: `npm run check` passes (44 tests). In the browser pane at 375x812: greeting, typing dots, word-by-word streaming, history kept across a reload, the mock error message, read-aloud playing after a reply and the setting saved. Mic and iOS not checked.
+- Delegated to Haiku, and whether it was kept: `src/chat/sse.ts` + 19 tests and `src/chat/history.ts` + 14 tests, two delegates in parallel. Read both files in full; both correct and documented; kept unchanged. Agent 1's client turned out to have its own SSE parser, so `sse.ts` stays in the spike only.
+- Problems: the error notice doubled a full stop; fixed. The pane drops viewport emulation mid-batch, so some checks were done by page text.
+- Next: rebase on M0, then A4-02 and A4-07 in `src/`.

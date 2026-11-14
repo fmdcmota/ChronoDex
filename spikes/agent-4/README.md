@@ -1,7 +1,6 @@
-# Agent 4 spikes: 360° viewer (A4-01), guide clips and voice (A4-04, A4-08)
+# Agent 4 spikes: 360° viewer (A4-01), guide clips and voice (A4-04, A4-08), chat (A4-07)
 
-Throwaway. Never imported by `src/`. Owner: Agent 4. Proves Photo Sphere Viewer 5.15.1 and its
-gyroscope plugin on a phone, for a full 2:1 panorama and for a cropped band placed by `vFovDeg`.
+Throwaway, never imported by `src/`. Owner: Agent 4. Proves the phone-only risks before M0.
 
 ## Run
 
@@ -14,7 +13,8 @@ On a phone on the same Wi-Fi open `https://<laptop LAN IP>:5173`, accept the cer
 warning, tap **Enable motion** (iOS asks for motion permission here), then move the phone.
 Try a real panorama with `?src=<image url>&vfov=<degrees>`.
 `/media.html` tests back-to-back clips, hold-to-talk and delayed reply audio
-(real clips: `media.html?clips=<url1>,<url2>,<url3>`). What a person must check is in `PHONE_TEST.md`.
+(real clips: `media.html?clips=<url1>,<url2>,<url3>`). `/chat.html` is the guide chat in React + Tailwind, mock replies unless `?api=<origin>`.
+What a person must check is in `PHONE_TEST.md`.
 
 ## Files
 
@@ -24,6 +24,8 @@ Try a real panorama with `?src=<image url>&vfov=<degrees>`.
 - `src/media/segmentPlayer.ts`: two stacked videos, next clip preloaded underneath. Lifts into A4-04.
 - `src/media/recorder.ts`: hold-to-talk with MediaRecorder. Lifts into A4-08.
 - `src/media/testClips.ts`, `tone.ts`: test clips and beeps made in the browser.
+- `src/chat/`: ChatScreen and parts, `api.ts` (stream, TTS, STT, mock), `sse.ts`, `history.ts`.
+  `contracts.ts` is a local copy of MASTER 4.1: replace with `@/lib/contracts` when lifting.
 
 ## Traps
 
