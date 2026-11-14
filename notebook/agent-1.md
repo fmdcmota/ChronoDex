@@ -7,13 +7,13 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 19:45
-- Working on: the guide chat is back on Claude Haiku (D-025, reverses D-024), on branch `agent-1`, not committed. `npm run check` passes (179 tests, 15 files, Node 26.13.1, clean `npm ci`). Review commits (a505547) pulled and read: nothing else is addressed to Agent 1.
-- Next: once the human opens Atlas Network Access: run the MongoDB verification (a throwaway database, dropped afterwards), then `npm run seed` into `chronodex_dev_alex`. With a DeepSeek key, one real chat reply. With a real Anthropic secret (`sk-ant-...`), one Historian brief. Then A1-12 (Vercel).
-- Blocked on: Atlas Network Access (TLS alert 80, F-025). A valid Anthropic secret: the value given (`sk-b339...`) gets 401 from Anthropic (F-029). No DEEPSEEK_API_KEY is needed any more.
-- Board read up to: 2026-11-14 19:55 (review FYI from the team, and agent-3 A3-03/A3-04). Nothing addressed to agent-1 is open.
-- Waiting for commit approval: the switch back to Claude Haiku, the review follow-up (F-028) and one board post.
-- Keys: `.env.local` (git-ignored) holds MONGODB_URI, MONGODB_DB=chronodex_dev_alex, CHAT_MODEL=claude-haiku-5-5, and ANTHROPIC_API_KEY set to the rejected `sk-b339...` value.
+- Last updated: 2026-11-14 20:40
+- Working on: DeepSeek replaces Claude for the chat and the Historian (D-026), on branch `agent-1`, not committed. `npm run check` passes (214 tests, 18 files). A real brief and a real chat reply both worked.
+- Next: on a yes, commit and push. Then, once Atlas Network Access allows this machine (uncomment `MONGODB_URI` in `.env.local`): run the MongoDB verification against a throwaway database, then `npm run seed`. Then A1-16 (a brief for every demo era, each read by a human), A1-12 (Vercel), A1-15 (gates).
+- Blocked on: Atlas Network Access (TLS alert 80, F-025). Everything else for Agent 1 is unblocked: the DeepSeek key works.
+- Board read up to: 2026-11-14 20:31 (agent-4 A5 FYI: a fifth agent, the Archivist, briefed in AGENT5.md). Nothing addressed to agent-1 is open. Agent 5 says to expect two ASKs: have `scripts/seed.ts` read `data/landmarks/*.json`, and let `writeEraBrief` take `data/eras/<eraId>.notes.txt` instead of searching. Not built until asked.
+- Waiting for commit approval: the DeepSeek switch for the Historian and the chat (rebased onto 095423b, 268 tests pass).
+- Keys: `.env.local` (git-ignored) holds `DEEPSEEK_API_KEY` (the second key given, working), `CHAT_MODEL=deepseek-flash`, `MONGODB_DB=chronodex_dev_alex`, and `MONGODB_URI` commented out so the app uses the in-memory store. No Anthropic key is needed.
 - Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted. Committed files are checked out with CRLF (git autocrlf), so scripted string replacements must allow for \r\n.
 
 ## Tasks
@@ -90,3 +90,12 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Next: unchanged. Waiting for Atlas Network Access, `DEEPSEEK_API_KEY`, and the real Anthropic secret.
 - 19:45, switch back to Claude Haiku: the human decided to use Claude for the chat again, and said to make sure it is Haiku. Restored the pre-DeepSeek chat module, route and tests from commit cc03cb8's parent, pointed them at the shared Anthropic client in `src/lib/historian/`, and removed `src/lib/chat/deepseek.ts` and the DEEPSEEK variable. Added `chatModel()`: `CHAT_MODEL` is honoured only if it starts `claude-haiku`, otherwise ignored with a warning, so a leftover `deepseek-flash` can never reach Claude (tested). `.env.local` CHAT_MODEL was `deepseek-flash`: set back to `claude-haiku-5-5`. The route, SSE events and typed client are unchanged. Verified: check passes (179 tests); with the memory db and the given key, `POST /api/chat` reaches Anthropic, gets 401, and streams one clean error event. With the Atlas URI set the route returns the documented 500 instead, because it reads the era from Atlas and Atlas refuses this machine. Problem: the key given is not an Anthropic key (F-029).
+
+### 2026-11-14 20:40, DeepSeek for the chat and the Historian
+- Did: the human replaced all Anthropic requirements with DeepSeek, and gave a second key (the first was invalid for both providers, F-030). Tested the key with the free models call. Read DeepSeek's web tools docs. Extended `src/lib/chat/deepseek.ts` (tools, JSON mode, the URLs and citations DeepSeek reports, in-stream errors). Rewrote the Historian: research with `deepseek_web_search` and `deepseek_read_url`, then JSON-mode writing, then the checks; sources are kept only if the research tools found them. Chat restored on DeepSeek with a guard so only `deepseek-` models are used. Removed the Anthropic client, its test fake, `@anthropic-ai/sdk` and `ANTHROPIC_API_KEY`. New shared test fakes in `src/lib/chat/test-fakes.ts`.
+- Decided, and why: flash, not pro, for the Historian (pro failed mid-stream with the tools twice out of two, F-031). Two calls, because JSON mode cannot be combined with the web tools (F-032). Only URLs the tools reported count as found, which is a stronger "every claim has a source" check than before: it drops a URL the model wrote from memory. A failed in-stream request is retried twice with backoff, and a 401 is not retried.
+- Measured or verified: `npm run check` passes, 214 tests. One real Historian run, Queen's Tower 1893 on flash: 174 s, 108-word script opening with the guide's name, 4 real sources (imperial.ac.uk, the Royal Collection, Grace's Guide, Victorian London). Research read about 850k tokens, nearly all cache hits, about $0.04 of tokens; the web tool fees are not known. One real chat reply through `POST /api/chat` on the in-memory store: 1.5 s, streamed, in character.
+- Not verified: Atlas (still refuses this machine). The Historian on the other five landmarks. The web tool cost. Whether the facts are right: the 1893 brief has a repeated sentence, and every brief needs a human read (H7).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: DeepSeek reports mid-stream failures inside a 200 stream, which my client first ignored and returned empty notes. Fixed and tested.
+- Next: commit on a yes.

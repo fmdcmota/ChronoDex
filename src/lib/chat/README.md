@@ -1,16 +1,17 @@
 # src/lib/chat
 
-The guide chat: an in-character, streamed reply from Claude Haiku. Server only. Owner: Agent 1. MASTER.md section 7, task A1-13. The chat briefly used DeepSeek (D-024, commit cc03cb8) and went back to Claude Haiku (D-025).
+The guide chat: an in-character, streamed reply from DeepSeek. Server only. Owner: Agent 1. MASTER.md section 7 (chat rules), task A1-13. The chat went DeepSeek (D-024), Claude Haiku (D-025), and is on DeepSeek again (D-026), at the human's direction.
 
-**Entry points** (`import { ... } from '@/lib/chat'`): `streamGuideReply(input)` (async stream of `ChatStreamEvent`), `pickNextLandmark`, `buildGuideSystemPrompt`, `toClaudeMessages`, `getAnthropic()` (shared client, also used by the Historian).
+**Entry points** (`import { ... } from '@/lib/chat'`): `streamGuideReply(input)` (async stream of `ChatStreamEvent`), `pickNextLandmark`, `buildGuideSystemPrompt`, `toChatTurns`.
 
-**Call:** `claude-haiku-5-5`, streaming, effort `low`, system prompt prompt-cached, through the Anthropic client in `src/lib/historian/anthropic.ts`. `CHAT_MODEL` may name another Haiku model; any other value is ignored with a warning (`chatModel()`), so the chat always stays on Haiku (decision D-025). About $0.001 per reply (estimate).
+**Call:** `deepseek-flash` (override with `CHAT_MODEL`; any value not starting `deepseek-` is ignored with a warning by `chatModel()`), streaming, thinking off (`reasoning_effort: "none"`), through `deepseek.ts`, a small fetch client with no SDK, shared with the Historian. Needs `DEEPSEEK_API_KEY`. Measured on 14 Nov 2026: a full in-character reply in 1.5 s through `POST /api/chat`. About $0.0006 per reply at peak prices, half off-peak (estimate).
 
 **Route:** `POST /api/chat` in `src/app/api/chat/route.ts` turns the stream into SSE with `formatSseEvent` from `src/lib/client/sse.ts`, which the typed client parses.
 
-**Test:** `npm run test` (`chat.test.ts`, with the fake client in `test-fakes.ts`; no API calls).
+**Test:** `npm run test` (`chat.test.ts`, with a fake fetch; no network).
 
 **Traps**
-- The history must end with a player message (no assistant prefill on current models). The greeting is dropped from the messages and put in the system prompt, because the conversation must start with the user.
-- Failures and refusals end the stream with an `error` event; the generator never throws once it is running. Haiku 5.5 has no server-side refusal fallback.
-- Never write SDK calls from memory: load the `claude-api` skill first (MASTER.md section 7).
+- The history must end with a player message. The greeting is dropped from the turns and put in the system prompt, so the conversation starts with the player.
+- Failures, a missing key and content-filter stops end the stream with an `error` event; the generator never throws once it is running.
+- DeepSeek's stream is OpenAI-style: `data:` lines, text in `choices[0].delta.content`, ending with `data: [DONE]`. Keep-alive comment lines are ignored.
+- Without `DEEPSEEK_API_KEY` every reply is an error event, so keep mocks on for chat UI work.

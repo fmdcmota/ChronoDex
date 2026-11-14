@@ -68,6 +68,54 @@ export function stripDisallowedImages(brief: EraBrief): EraBrief {
 }
 
 /**
+ * Reduce a URL to a form that compares equal across harmless differences: scheme, a leading
+ * "www.", the fragment, a trailing slash and the case of the host.
+ *
+ * @param url - Any URL string.
+ * @returns A comparison key, or the trimmed input when it cannot be parsed.
+ */
+export function normalizeUrl(url: string): string {
+  try {
+    const u = new URL(url.trim());
+    const host = u.hostname.toLowerCase().replace(/^www\./, '');
+    const path = u.pathname.replace(/\/+$/, '');
+    return `${host}${path}${u.search}`;
+  } catch {
+    return url.trim();
+  }
+}
+
+/**
+ * Keep only the sources and reference images the research tools actually found.
+ *
+ * This is the check behind "every claim has a source" (MASTER.md section 7): a model writing
+ * from memory can produce a plausible URL that was never opened, and this drops it. Sources keep
+ * the URL as the model wrote it, so the stored link is the one that was found. Reference images
+ * must also be found URLs, because the pipeline will fetch them.
+ *
+ * @param brief - The brief. Not modified.
+ * @param foundUrls - Every URL the research reported searching, reading or citing.
+ * @returns A copy with only found sources and images, and the URLs that were dropped.
+ */
+export function keepFoundUrls(brief: EraBrief, foundUrls: readonly string[]): { brief: EraBrief; dropped: string[] } {
+  const found = new Set(foundUrls.map(normalizeUrl));
+  const dropped: string[] = [];
+  const known = (url: string): boolean => {
+    const ok = found.has(normalizeUrl(url));
+    if (!ok) dropped.push(url);
+    return ok;
+  };
+  return {
+    brief: {
+      ...brief,
+      sources: brief.sources.filter((s) => known(s.url)),
+      sceneBrief: { ...brief.sceneBrief, referenceImageUrls: brief.sceneBrief.referenceImageUrls.filter(known) },
+    },
+    dropped,
+  };
+}
+
+/**
  * Check a brief against the Historian rules.
  *
  * @param brief - A brief that already matches EraBriefSchema.
