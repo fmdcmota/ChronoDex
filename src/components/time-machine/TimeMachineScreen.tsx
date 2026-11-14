@@ -23,6 +23,9 @@ import { api } from '@/lib/client';
 import { GuidePlayer } from './GuidePlayer';
 import { PanoramaView } from './PanoramaView';
 import { ProgressSheet } from './ProgressSheet';
+import { SourcesDrawer } from './SourcesDrawer';
+import { ThenNowSlider } from './ThenNowSlider';
+import { hasSourceNotes } from './sources';
 import { YearBar } from './YearBar';
 
 /** Props for TimeMachineScreen. */
@@ -59,6 +62,10 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   const [current, setCurrent] = useState<EraResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [guideDone, setGuideDone] = useState(false);
+  /** A4-06: the then/now slider is open. */
+  const [comparing, setComparing] = useState(false);
+  /** A4-09: the sources drawer is open. */
+  const [showSources, setShowSources] = useState(false);
   const [nowMs, setNowMs] = useState(() => Date.now());
   /** `${eraId}:core` and `${eraId}:video` once asked for, so each is requested at most once. */
   const asked = useRef(new Set<string>());
@@ -144,6 +151,8 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
     if (eraId === selectedId) return;
     setSelectedId(eraId);
     setGuideDone(false);
+    setComparing(false);
+    setShowSources(false);
     setError(null);
   };
 
@@ -155,6 +164,8 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   };
 
   const guideName = era?.guide?.name.split(' ')[0];
+  /** A4-06: the slider needs both images, and they share framing (section 5.1). */
+  const canCompare = Boolean(era?.sceneImageUrl && landmark?.referencePhotoUrl);
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-zinc-950 font-sans text-white">
@@ -166,6 +177,25 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
           <h1 className="truncate text-base font-bold">{landmark?.name ?? 'Time Machine'}</h1>
           <p className="truncate text-xs text-white/60">{era?.title ?? (era ? `${era.year}` : 'Choose a year')}</p>
         </div>
+        {era && hasSourceNotes(era) && (
+          <button
+            type="button"
+            onClick={() => setShowSources(true)}
+            aria-label="Sources and facts for this year"
+            className="shrink-0 rounded-full bg-white/15 px-3 py-1 text-xs font-bold"
+          >
+            Sources
+          </button>
+        )}
+        {canCompare && (
+          <button
+            type="button"
+            onClick={() => setComparing(true)}
+            className="shrink-0 rounded-full bg-white/15 px-3 py-1 text-xs font-bold"
+          >
+            Then / Now
+          </button>
+        )}
       </header>
 
       <main className="relative flex-1 overflow-hidden">
@@ -197,6 +227,18 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
             </button>
           </div>
         )}
+
+        {comparing && canCompare && era?.sceneImageUrl && landmark && (
+          <ThenNowSlider
+            thenUrl={era.sceneImageUrl}
+            nowUrl={landmark.referencePhotoUrl}
+            year={era.year}
+            landmarkName={landmark.name}
+            onClose={() => setComparing(false)}
+          />
+        )}
+
+        {showSources && era && <SourcesDrawer era={era} onClose={() => setShowSources(false)} />}
 
         {error && (
           <p role="alert" className="absolute inset-x-3 bottom-3 z-30 rounded bg-red-900/90 p-2 text-center text-xs">

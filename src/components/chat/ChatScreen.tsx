@@ -21,6 +21,8 @@ import { ApiError, api, getPlayerId } from '@/lib/client';
 import { ChatHeader } from './ChatHeader';
 import { Composer } from './Composer';
 import { MessageBubble } from './MessageBubble';
+import { NextStopCard } from './NextStopCard';
+import { chatHasExchange } from './nextStop';
 import { TypingIndicator } from './TypingIndicator';
 import { clearHistory, loadHistory, saveHistory } from './history';
 import type { Recording } from './recorder';
@@ -267,6 +269,7 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
             {notice}
           </p>
         )}
+        {phase === 'idle' && chatHasExchange(messages) && <NextStopCard landmarkId={era.landmarkId} />}
         <div ref={bottom} />
       </main>
       <Composer

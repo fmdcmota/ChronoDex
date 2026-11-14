@@ -1,6 +1,6 @@
 # Time Machine components
 
-Owner: Agent 4. The `/time/[landmarkId]` screen (MASTER.md section 1.2 part 2, tasks A4-02 to A4-05).
+Owner: Agent 4. The `/time/[landmarkId]` screen (MASTER.md section 1.2 part 2, tasks A4-02 to A4-06 and A4-09).
 
 ## Entry points
 
@@ -11,6 +11,10 @@ Owner: Agent 4. The `/time/[landmarkId]` screen (MASTER.md section 1.2 part 2, t
   until a video exists, with captions from `captions.ts`.
 - `ProgressSheet.tsx`: the job's stages with model ids and seconds. Collapses to a pill for the video tier.
 - `YearBar.tsx`: one button per era with a state dot.
+- `ThenNowSlider.tsx` (A4-06): reference photo vs scene image with a draggable divider, maths in
+  `thenNow.ts`. Opened from the header's "Then / Now" button once the era has a scene image.
+- `SourcesDrawer.tsx` (A4-09): summary, fun facts and sources from the Era. Only http(s) links are
+  rendered (`sources.ts`), because the Historian's URLs come from the open web.
 
 ## Run and test
 
@@ -26,4 +30,5 @@ then follow `spikes/agent-4/PHONE_TEST.md` Test 4.
 - PSV touches `window`: it is imported inside an effect, never at module top.
 - PanoramaView's `className` sets its position. Do not add `relative` inside it: it beat `absolute` once.
 - Sound starts only from a tap ("Meet …"). SegmentPlayer primes its standby video inside that tap for iOS.
+- Agent 3's `globals.css` styles bare `h2` and `p` outside any layer, so they beat Tailwind classes.
 - No lookbehind regexes: Safari before iOS 16.4 cannot parse them and the whole page would fail.

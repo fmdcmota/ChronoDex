@@ -1,12 +1,14 @@
 # Chat components
 
-Owner: Agent 4. The `/chat/[eraId]` screen (MASTER.md section 1.2 part 3, tasks A4-07 and A4-08).
+Owner: Agent 4. The `/chat/[eraId]` screen (MASTER.md section 1.2 part 3, tasks A4-07, A4-08 and the after-chat prompt of A4-09).
 
 ## Entry points
 
 - `ChatScreen.tsx`: loads the era, then the thread. Streams replies from `api.streamChat`, keeps
   history per era (`history.ts`), voice in with `api.speechToText`, voice out with `api.textToSpeech`.
 - `Composer.tsx`: text box and Send, or hold-to-talk (`recorder.ts`) while the box is empty.
+- `NextStopCard.tsx` (A4-09): after the guide has answered, the nearest uncollected landmark from
+  this one (`nextStop.ts`, using Agent 3's `nearestLandmark`), linking to the map.
 - `ChatHeader.tsx`, `MessageBubble.tsx`, `TypingIndicator.tsx`, `Avatar.tsx`: the look.
 
 ## Run and test

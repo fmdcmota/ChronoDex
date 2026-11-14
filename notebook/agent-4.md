@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 18:10
-- Working on: nothing in progress. Time Machine (A4-02 to A4-05) and chat (A4-07, voice parts of A4-08) are built in `src/` on branch agent-4, rebased on M0, checked in mock mode on desktop at phone width.
-- Next: A4-06 then/now slider, A4-09 sources drawer and next-landmark prompt. A4-08 needs Agent 2's real /api/voice routes to finish. Phone results from `spikes/agent-4/PHONE_TEST.md` Tests 1 to 4. Switch mocks off once Agent 1's API and real eras exist (M2).
-- Blocked on: nothing for A4-06 and A4-09. Phone results from a human.
-- Board read up to: 2026-11-14 18:02 @agent-3 progress summary (read on main at db4e25e; this branch is not yet rebased onto it)
-- Waiting for commit approval: nothing. Time Machine and chat in src/ committed at 18:10 on branch claude/elated-bohr-7cf6f2 (the session moved to that worktree; it builds on agent-4). Nothing pushed; only A4-01 (7de1d9b) is on main. Short progress report: notebook/agent-4-report.md.
+- Last updated: 2026-11-14 20:00
+- Working on: nothing in progress. A4-06 (then/now slider) and A4-09 (sources drawer, next-stop card) are built on branch claude/agent-4-task-review-2470e2 (based on main at a505547), checked in mock mode at phone width, not committed. The human said "not yet" to the A4-06 commit and asked to be asked again later.
+- Next: restyle the Time Machine and chat with Agent 3's theme tokens and Jersey 10 (now in globals.css). A4-08 needs Agent 2's real /api/voice routes to finish. Phone results from `spikes/agent-4/PHONE_TEST.md` Tests 1 to 4 (add the slider and drawer to Test 4). Switch mocks off once real eras exist (M2).
+- Blocked on: nothing for the restyle. Phone results from a human. Commit approval.
+- Board read up to: 2026-11-14 19:55 @team review post (main at a505547).
+- Waiting for commit approval: A4-06 and A4-09, as two commits or one. Earlier Time Machine and chat work is on main (39adbc9).
 
 ## Tasks
 
@@ -21,10 +21,10 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [x] A4-03 360° view component (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
 - [x] A4-04 Guide player: clips in order, narration fallback, captions (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
 - [x] A4-05 Progress sheet (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
-- [ ] A4-06 Then/now slider
+- [x] A4-06 Then/now slider (desktop, mock mode; phone check still to ask)
 - [x] A4-07 Chat screen (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
 - [ ] A4-08 Voice in and out
-- [ ] A4-09 Sources drawer and next-step prompts
+- [x] A4-09 Sources drawer and next-step prompts (desktop, mock mode; phone check still to ask)
 - [ ] A4-10 Phone pass and polish
 - [ ] A4-S1 Stretch: overlay on the live camera (after M4 only)
 - [ ] A4-S2 Stretch: compass-aligned panorama (after M4 only)
@@ -79,3 +79,19 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Checked: main since a7880a4 touches none of Agent 4's files, nor `src/lib/client`, `src/lib/contracts`, the layout or package.json, so a later rebase should be clean.
 - Problems: a script edited the old worktree's notebook and board (timestamp fixes) before the worktree guard stopped file writes there. Those edits are the ones carried into this commit. The old worktree still holds the same changes uncommitted.
 - Next: the human decides when to bring this onto main. Then try Agent 2's real panorama, A4-06, A4-09.
+
+### 2026-11-14 19:55, A4-06: then/now slider
+- Did: `ThenNowSlider.tsx`, a full-screen overlay inside the Time Machine: the reference photo underneath, the era scene on top clipped with `clip-path: inset()` to the left of a divider. Drag anywhere on the image (pointer capture), or focus the divider (role slider) and use arrows, Home and End. Pure maths in `thenNow.ts` with 8 unit tests. A "Then / Now" button in the header appears when the era has `sceneImageUrl` and the landmark has `referencePhotoUrl`; changing year closes it.
+- Decided, and why: clip-path rather than resizing the top image's width, so the two images never drift out of alignment; both are `object-cover` in one 16:9 box (D-007, both images are 16:9 by design). Then on the left, now on the right, like a timeline. An overlay rather than a mode of the panorama: the panorama is 360° and has no fixed framing to compare against.
+- Measured or verified: `npm run check` passes (189 tests). Mock mode in the browser pane at 375x812, /time/queens-tower 1893: button shows, overlay opens with both mock images and labels, a drag to x=150 put the divider at 20 %, End moved it to 100 %.
+- Delegated to Haiku, and whether it was kept: nothing; too small to be worth a hand-off.
+- Problems: the jsdoc lint wants each destructured prop as its own @param; added.
+- Next: A4-09.
+
+### 2026-11-14 20:00, A4-09: sources drawer and next-step prompts
+- Did: `SourcesDrawer.tsx`, a bottom sheet opened from a "Sources" button in the Time Machine header (shown when the era has a summary, a fact or a source): title, year, summary, fun facts, sources with their host, and the AI reconstruction and fictional-guide note (assumption A9). `sources.ts` + 7 tests. In the chat, `NextStopCard.tsx` appears once the player has asked something and the guide has answered: "Next stop: <landmark> is 200 m north-west from here", linking to the map, or "Every badge collected" linking to the Dex. `nextStop.ts` + 7 tests. The after-video prompt to chat already existed from A4-04.
+- Decided, and why: source links pass through `safeSourceUrl` (http and https only) and open with noopener, because the Historian takes URLs from web search. The next stop is measured from the current landmark's photo spot, not live GPS: the chat never asks for location and the player has usually just captured this landmark. Reused Agent 3's `nearestLandmark` and `directionHint` (imported, not edited) so the chat and the map hint agree. The card fails silently: a missing suggestion is not worth an error in a chat thread.
+- Measured or verified: `npm run check` passes (202 tests). Mock mode at 375x812: the drawer lists the hero era's summary, three facts and two Wikipedia links with target _blank and rel noopener noreferrer; a mock chat reply was followed by "Huxley Building is 200 m north-west from here. Map ›".
+- Delegated to Haiku, and whether it was kept: nothing; each piece was small and needed the screen code in view.
+- Problems: Agent 3's global `h2` rule (pixel font, 1.7rem) is unlayered and beats Tailwind, so the drawer title uses the game's heading look. Fine for now; noted in the README. The browser pane's screenshots came back zoomed at phone size, so layout was checked with page scripts.
+- Next: theme restyle, then A4-08 once the voice routes exist.
