@@ -7,13 +7,13 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 17:20
-- Working on: the guide chat moved from Claude to DeepSeek (team decision D-024), on branch `agent-1`, not yet committed. `npm run check` passes (99 tests).
-- Next: on a yes, commit and push. Then, once the human opens Atlas Network Access: run the MongoDB verification (a throwaway database, dropped afterwards), then `npm run seed` into `chronodex_dev_alex`. With a DeepSeek key, one real chat reply. With a real Anthropic secret (`sk-ant-...`), one Historian brief. Then A1-12 (Vercel).
-- Blocked on: Atlas Network Access does not allow this machine (TLS alert 80, F-025). `DEEPSEEK_API_KEY` not given yet. The Anthropic value given (`apikey_01...`) is a key id, not the secret: 401.
-- Board read up to: 2026-11-14 18:02 (agent-3, progress summary FYI). Nothing addressed to agent-1 is open.
-- Waiting for commit approval: the DeepSeek switch.
-- Keys: `.env.local` (git-ignored) holds MONGODB_URI, MONGODB_DB=chronodex_dev_alex, CHAT_MODEL=deepseek-flash, and the invalid Anthropic id. The Atlas Admin API key pair was removed from it: the app does not use it.
+- Last updated: 2026-11-14 19:45
+- Working on: the guide chat is back on Claude Haiku (D-025, reverses D-024), on branch `agent-1`, not committed. `npm run check` passes (179 tests, 15 files, Node 26.13.1, clean `npm ci`). Review commits (a505547) pulled and read: nothing else is addressed to Agent 1.
+- Next: once the human opens Atlas Network Access: run the MongoDB verification (a throwaway database, dropped afterwards), then `npm run seed` into `chronodex_dev_alex`. With a DeepSeek key, one real chat reply. With a real Anthropic secret (`sk-ant-...`), one Historian brief. Then A1-12 (Vercel).
+- Blocked on: Atlas Network Access (TLS alert 80, F-025). A valid Anthropic secret: the value given (`sk-b339...`) gets 401 from Anthropic (F-029). No DEEPSEEK_API_KEY is needed any more.
+- Board read up to: 2026-11-14 19:55 (review FYI from the team, and agent-3 A3-03/A3-04). Nothing addressed to agent-1 is open.
+- Waiting for commit approval: the switch back to Claude Haiku, the review follow-up (F-028) and one board post.
+- Keys: `.env.local` (git-ignored) holds MONGODB_URI, MONGODB_DB=chronodex_dev_alex, CHAT_MODEL=claude-haiku-5-5, and ANTHROPIC_API_KEY set to the rejected `sk-b339...` value.
 - Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted. Committed files are checked out with CRLF (git autocrlf), so scripted string replacements must allow for \r\n.
 
 ## Tasks
@@ -82,3 +82,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Problems: MongoDB Atlas refused the TLS handshake twice ("SSL alert number 80"), which is what Atlas does when the client IP is not on the Network Access list (F-025). Nothing was written. A verification script against a throwaway database `chronodex_verify_tmp` is ready to run and drop that database afterwards.
 - Delegated to Haiku, and whether it was kept: nothing.
 - Next: commit on a yes; Atlas once Network Access is open.
+
+### 2026-11-14 19:30, review follow-up
+- Did: pulled the review commits and Agent 3's map. Read the review and the human brief. Reran the whole suite from a clean `npm ci`. Retried Atlas.
+- Verified: `npm run check` passes on the merged tree on Node 26.13.1, with 181 tests in 15 files, including the map and the Time Machine and chat code. The review's claim that vitest cannot start on Node 26 does not reproduce here (F-028).
+- Not changed: the `.nvmrc` stays at 24, which is what Vercel runs. Atlas still refuses this machine (TLS alert 80, F-025), so the MongoDB verification and the seed have not run.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Next: unchanged. Waiting for Atlas Network Access, `DEEPSEEK_API_KEY`, and the real Anthropic secret.
+- 19:45, switch back to Claude Haiku: the human decided to use Claude for the chat again, and said to make sure it is Haiku. Restored the pre-DeepSeek chat module, route and tests from commit cc03cb8's parent, pointed them at the shared Anthropic client in `src/lib/historian/`, and removed `src/lib/chat/deepseek.ts` and the DEEPSEEK variable. Added `chatModel()`: `CHAT_MODEL` is honoured only if it starts `claude-haiku`, otherwise ignored with a warning, so a leftover `deepseek-flash` can never reach Claude (tested). `.env.local` CHAT_MODEL was `deepseek-flash`: set back to `claude-haiku-5-5`. The route, SSE events and typed client are unchanged. Verified: check passes (179 tests); with the memory db and the given key, `POST /api/chat` reaches Anthropic, gets 401, and streams one clean error event. With the Atlas URI set the route returns the documented 500 instead, because it reads the era from Atlas and Atlas refuses this machine. Problem: the key given is not an Anthropic key (F-029).

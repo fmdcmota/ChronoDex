@@ -2,9 +2,9 @@
  * Prompt builders for the guide chat. Prompts are code (MASTER.md 8.4 rule 4).
  *
  * Owner: Agent 1 (Core). Implements the chat rules of MASTER.md section 7, task A1-13.
- * Unit tested in chat.test.ts.
+ * Unit tested in prompt.test.ts.
  */
-import type { DeepSeekMessage } from './deepseek';
+import type Anthropic from '@anthropic-ai/sdk';
 import type { ChatMessage, Era, Guide, Landmark } from '@/lib/contracts';
 
 /** A landmark the guide may suggest next: the nearest one the player has not collected. */
@@ -99,7 +99,7 @@ function roundDistance(distanceM: number): number {
 export class ChatInputError extends Error {}
 
 /**
- * Convert the app's chat history to chat turns for the model.
+ * Convert the app's chat history to Claude messages.
  *
  * Guide messages before the player's first message (the greeting) are dropped, because the
  * conversation must start with a user turn; the greeting is in the system prompt instead.
@@ -108,11 +108,11 @@ export class ChatInputError extends Error {}
  * Empty messages are ignored.
  *
  * @param messages - History, oldest first.
- * @returns User and assistant turns, oldest first. The caller adds the system prompt in front.
+ * @returns Messages for the Messages API.
  * @throws ChatInputError when there is no player message or the last message is not the player's
- *   (the guide only ever answers the player; continuing a guide message is not a feature).
+ *   (the model cannot continue a guide message: assistant prefill is not supported).
  */
-export function toChatTurns(messages: readonly ChatMessage[]): DeepSeekMessage[] {
+export function toClaudeMessages(messages: readonly ChatMessage[]): Anthropic.MessageParam[] {
   const nonEmpty = messages.filter((m) => m.text.trim().length > 0);
   const firstPlayer = nonEmpty.findIndex((m) => m.role === 'player');
   if (firstPlayer === -1) throw new ChatInputError('The chat has no message from the player');
@@ -121,5 +121,5 @@ export function toChatTurns(messages: readonly ChatMessage[]): DeepSeekMessage[]
   }
   return nonEmpty
     .slice(firstPlayer)
-    .map((m): DeepSeekMessage => ({ role: m.role === 'player' ? 'user' : 'assistant', content: m.text }));
+    .map((m) => ({ role: m.role === 'player' ? 'user' : 'assistant', content: m.text }));
 }

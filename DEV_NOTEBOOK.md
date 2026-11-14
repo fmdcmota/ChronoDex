@@ -58,6 +58,7 @@ Every row is proposed until the team has reviewed plan v1.
 | D-022 | 14 Nov | The Historian has no placeholder fallback without credentials; the pipeline stub uses `placeholderBrief` itself | Placeholder text must never be stored as a real era |
 | D-023 | 14 Nov | Fixture coordinates and art come from Agent 3's map spike: OSM-checked subjects, estimated photo spots, `/sprites/<id>.png`, `/sprites/badges/<id>.png` | One set of points for the map and the capture rule. Photo spots are still replaced by the H1 GPS |
 | D-024 | 14 Nov | The guide chat uses DeepSeek (`deepseek-flash`, thinking off) instead of Claude Haiku. The Historian and the image checks stay on Claude. `MASTER.md` section 7 still says Claude for the chat: a human must update it | Team decision (Agent 1's human), 14 Nov 17:15 |
+| D-025 | 14 Nov | Reverses D-024: the guide chat is back on Claude Haiku (`claude-haiku-5-5`). `CHAT_MODEL` is honoured only if it names a Haiku model; any other value is ignored with a warning, so the chat cannot drift off Haiku. `MASTER.md` section 7 is correct again as written, and the human edit D-024 asked for is no longer needed. The DeepSeek client was removed (it is in commit cc03cb8) | Team decision (Agent 1's human), 14 Nov 19:40 |
 
 ## Contract changes
 
@@ -101,6 +102,8 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-026 | 14 Nov | DeepSeek: `POST https://api.deepseek.com/chat/completions`, `Authorization: Bearer`, OpenAI-style SSE ending in `data: [DONE]`. Models `deepseek-flash` and `deepseek-v4-pro`; thinking is on by default and `reasoning_effort: "none"` turns it off. Flash is $0.30 in and | F-024 | 14 Nov | Twice, `npm run check` showed every test file failing with "Tests no tests" straight after a file write. Every rerun passed and it could not be reproduced. Rerun before debugging | Seen at A1-13, cause unknown |
 .20 out per million tokens at peak, half off-peak and at weekends | api-docs.deepseek.com, 14 Nov |
 | F-027 | 14 Nov | An Anthropic Console value starting `apikey_01` is the key's id, not the secret. The secret starts `sk-ant-` and is shown once, at creation | 401 from models.list at A1-11 |
+| F-028 | 14 Nov | On a clean `npm ci` with Node 26.13.1, vitest 5.1.0 starts and `npm run check` passes (181 tests, 15 files). `TECHNICAL_REVIEW.md` reports vitest failing to find its runner on Node 26 in every file. That machine's `node_modules` may be damaged (the review also reports iCloud writing conflict copies into it). Try `rm -rf node_modules && npm ci` before changing Node | Agent 1, 14 Nov 19:30 |
+| F-029 | 14 Nov | The key `sk-b339...` given as an Anthropic key is rejected by Anthropic (401 `invalid x-api-key`). Its shape (`sk-` and 32 hex characters, no `ant`) matches a DeepSeek key, not an Anthropic one, which starts `sk-ant-`. It was not tested against DeepSeek | models.list at A1-13 |
 
 ## Session log
 
@@ -143,3 +146,8 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 - Did: the guide chat now calls DeepSeek; the Historian stays on Claude. MongoDB connection string received, but Atlas refuses this machine until Network Access is opened.
 - Decided: D-024.
 - Next: commit; Atlas verification and seed; real DeepSeek and Claude calls once the keys arrive.
+
+### 2026-11-14 19:30, review follow-up (Agent 1)
+
+- Did: reviewed TECHNICAL_REVIEW.md and HUMAN_BRIEF.md. Nothing is addressed to Agent 1 beyond the keys. The suite passes from a clean install on Node 26.13.1 (F-028). Then the human moved the guide chat back to Claude Haiku (D-025, reverses D-024) and gave a key that Anthropic rejects (F-029).
+- Not done: Atlas still refuses this machine, so the MongoDB verification, the seed, the real Historian brief and the real chat reply wait on the keys and on Network Access.

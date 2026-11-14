@@ -1,32 +1,47 @@
 /**
- * The guide chat: stream an in-character reply from DeepSeek as ChatStreamEvents.
+ * The guide chat: stream an in-character reply from Claude as ChatStreamEvents.
  *
- * Owner: Agent 1 (Core). Implements the chat rules of MASTER.md section 7, task A1-13. The team
- * chose DeepSeek instead of Claude for the chat (decision D-024); the Historian stays on Claude.
+ * Owner: Agent 1 (Core). Implements MASTER.md section 7 (guide chat), task A1-13.
  *
- * External call: DeepSeek chat completions (./deepseek.ts), streaming, model CHAT_MODEL (default
- * deepseek-flash), thinking off (`reasoning_effort: "none"`) so the first words come quickly.
- * Typical cost: about $0.0006 per reply at peak prices (about 1.5k input tokens at $0.30 and 100
- * output tokens at $1.20 per million; half that off-peak and at weekends). Not yet measured.
- * On failure the stream ends with an `error` event; nothing is thrown to the caller once it runs.
+ * External call: Claude Messages API, streaming, model CHAT_MODEL (default claude-haiku-5-5) at
+ * effort `low`, which suits short chat replies. Typical cost: under $0.001 per reply (about 2k
+ * input and 100 output tokens at $0.10 / $0.50 per million). Typical time: first words in about a
+ * second. On failure the stream ends with an `error` event; nothing is thrown to the caller.
+ * Claude Haiku 5.5 has no server-side refusal fallback, so a refusal also ends with `error`.
  */
+import Anthropic from '@anthropic-ai/sdk';
 import { haversineM, type ChatMessage, type ChatStreamEvent, type Era, type Guide, type Landmark } from '@/lib/contracts';
-import { streamDeepSeek } from './deepseek';
-import { buildGuideSystemPrompt, toChatTurns, type NextLandmarkSuggestion } from './prompt';
+import { getAnthropic, type AnthropicLike } from '@/lib/historian/anthropic';
+import { buildGuideSystemPrompt, toClaudeMessages, type NextLandmarkSuggestion } from './prompt';
 
-export { ChatInputError, buildGuideSystemPrompt, toChatTurns, type NextLandmarkSuggestion } from './prompt';
-export { DeepSeekError, DEEPSEEK_CHAT_URL } from './deepseek';
+export { ChatInputError, buildGuideSystemPrompt, toClaudeMessages, type NextLandmarkSuggestion } from './prompt';
+export { getAnthropic } from '@/lib/historian/anthropic';
 
-/** Default chat model. Override with CHAT_MODEL. */
-export const DEFAULT_CHAT_MODEL = 'deepseek-flash';
+/** The chat model (MASTER.md section 7, decision D-025): Claude Haiku 5.5. */
+export const DEFAULT_CHAT_MODEL = 'claude-haiku-5-5';
 
 /**
- * Ceiling on output tokens per reply. Replies are a few sentences; this only stops a runaway
- * reply. Reaching it ends the reply where it stopped.
+ * Pick the chat model. CHAT_MODEL may name another Haiku model, but anything else is ignored with
+ * a warning, so a leftover value such as `deepseek-flash` can never be sent to Claude and the
+ * chat stays on Haiku.
+ *
+ * @returns A model id that starts with `claude-haiku`.
  */
-const CHAT_MAX_TOKENS = 1024;
+export function chatModel(): string {
+  const requested = process.env.CHAT_MODEL;
+  if (!requested) return DEFAULT_CHAT_MODEL;
+  if (requested.startsWith('claude-haiku')) return requested;
+  console.warn(`CHAT_MODEL "${requested}" is not a Haiku model: using ${DEFAULT_CHAT_MODEL}`);
+  return DEFAULT_CHAT_MODEL;
+}
 
-/** Shown when the model cannot be reached or declines. In character, because the player sees it. */
+/**
+ * Ceiling on output tokens per reply, thinking included. Replies are a few sentences; this only
+ * stops a runaway reply. Reaching it ends the reply where it stopped.
+ */
+const CHAT_MAX_TOKENS = 4096;
+
+/** Shown when Claude cannot be reached or declines. In character, because the player sees it. */
 const CHAT_FAILED_MESSAGE = 'The guide seems lost for words. Try asking again in a moment.';
 const CHAT_REFUSED_MESSAGE = 'The guide would rather not answer that one. Try asking something else.';
 
@@ -59,8 +74,8 @@ export interface GuideReplyInput {
   messages: readonly ChatMessage[];
   /** Abort to stop generating, for example when the player closes the chat. */
   signal?: AbortSignal;
-  /** Injected in tests. Defaults to the global fetch. */
-  fetchImpl?: typeof fetch;
+  /** Injected in tests. Defaults to the shared client. */
+  client?: AnthropicLike;
 }
 
 /**
@@ -73,42 +88,39 @@ export interface GuideReplyInput {
  * @returns An async stream of ChatStreamEvent.
  * @throws ChatInputError on the first read, before any request is made, when the history cannot
  *   be sent. A generator runs only when read, so callers that need a clean 400 should check the
- *   history with toChatTurns first, as POST /api/chat does.
+ *   history with toClaudeMessages first, as POST /api/chat does.
  */
 export async function* streamGuideReply(input: GuideReplyInput): AsyncGenerator<ChatStreamEvent> {
-  const turns = toChatTurns(input.messages);
+  const messages = toClaudeMessages(input.messages);
   const system = buildGuideSystemPrompt(input);
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  if (!apiKey) {
-    console.error('Guide chat failed: DEEPSEEK_API_KEY is not set');
-    yield { type: 'error', message: CHAT_FAILED_MESSAGE };
-    return;
-  }
-
   let text = '';
   try {
-    for await (const event of streamDeepSeek({
-      model: process.env.CHAT_MODEL || DEFAULT_CHAT_MODEL,
-      // The system prompt goes first and is the same for every turn of an era, so DeepSeek's
-      // automatic prefix cache can serve it at the cache-hit price.
-      messages: [{ role: 'system', content: system }, ...turns],
-      maxTokens: CHAT_MAX_TOKENS,
-      reasoningEffort: 'none',
-      apiKey,
-      signal: input.signal,
-      fetchImpl: input.fetchImpl,
-    })) {
-      if (event.type === 'text') {
-        text += event.text;
-        yield { type: 'delta', text: event.text };
-      } else if (event.reason === 'content_filter') {
-        yield { type: 'error', message: CHAT_REFUSED_MESSAGE };
-        return;
+    const client = input.client ?? getAnthropic();
+    const stream = client.messages.stream(
+      {
+        model: chatModel(),
+        max_tokens: CHAT_MAX_TOKENS,
+        // The system prompt is stable for an era; caching it makes later turns cheaper.
+        system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
+        messages,
+        output_config: { effort: 'low' },
+      },
+      { signal: input.signal },
+    );
+    for await (const event of stream) {
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+        text += event.delta.text;
+        yield { type: 'delta', text: event.delta.text };
       }
+    }
+    const final = await stream.finalMessage();
+    if (final.stop_reason === 'refusal') {
+      yield { type: 'error', message: CHAT_REFUSED_MESSAGE };
+      return;
     }
     yield { type: 'done', text };
   } catch (err) {
-    if (input.signal?.aborted) return;
+    if (err instanceof Anthropic.APIUserAbortError || input.signal?.aborted) return;
     console.error('Guide chat failed', err);
     yield { type: 'error', message: CHAT_FAILED_MESSAGE };
   }

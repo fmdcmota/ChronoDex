@@ -1,5 +1,5 @@
 /**
- * A fake Anthropic client for unit tests of the Historian. Never used in the app.
+ * A fake Anthropic client for unit tests of the Historian and the guide chat. Never used in the app.
  *
  * Owner: Agent 1 (Core). Each call to `messages.stream` or `beta.messages.stream` takes the next
  * scripted response, records the request, and replays the response's text as stream events.

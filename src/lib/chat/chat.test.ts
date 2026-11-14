@@ -1,58 +1,27 @@
 /**
- * Unit tests for the guide chat: prompt, message conversion, the DeepSeek stream parser, and
- * failure handling. Owner: Agent 1. Uses a fake fetch: no network calls.
+ * Unit tests for the guide chat: prompt, message conversion, streaming and failure handling.
+ * Owner: Agent 1. Uses a fake client: no API calls.
  */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { ChatStreamEvent, Era, Guide } from '@/lib/contracts';
 import { HERO_ERA_ID, eras, landmarks } from '@fixtures/index';
-import { ChatInputError, buildGuideSystemPrompt, pickNextLandmark, streamGuideReply, toChatTurns } from './index';
-import { DEEPSEEK_CHAT_URL, DeepSeekError, streamDeepSeek } from './deepseek';
+import { ChatInputError, buildGuideSystemPrompt, pickNextLandmark, streamGuideReply, toClaudeMessages } from './index';
+import { fakeAnthropic } from '@/lib/historian/test-fakes';
 
 const hero = eras.find((e) => e.id === HERO_ERA_ID) as Era & { guide: Guide };
 const queensTower = landmarks.find((l) => l.id === 'queens-tower')!;
 
 /** Collect every event of a stream. */
-async function collect<T>(stream: AsyncGenerator<T>): Promise<T[]> {
-  const out: T[] = [];
+async function collect(stream: AsyncGenerator<ChatStreamEvent>): Promise<ChatStreamEvent[]> {
+  const out: ChatStreamEvent[] = [];
   for await (const e of stream) out.push(e);
   return out;
 }
 
-/** An SSE body in DeepSeek's format, split into the given chunk sizes to test buffering. */
-function sse(deltas: string[], finish = 'stop', chunkSize = 7): string[] {
-  const lines = [
-    ...deltas.map((t) => `data: ${JSON.stringify({ object: 'chat.completion.chunk', choices: [{ index: 0, delta: { content: t }, finish_reason: null }] })}\n\n`),
-    `data: ${JSON.stringify({ choices: [{ index: 0, delta: {}, finish_reason: finish }] })}\n\n`,
-    ': keep-alive\n\n',
-    'data: [DONE]\n\n',
-  ].join('');
-  const parts: string[] = [];
-  for (let i = 0; i < lines.length; i += chunkSize) parts.push(lines.slice(i, i + chunkSize));
-  return parts;
-}
-
-/** A fake fetch that records requests and answers with a streamed body or an error status. */
-function fakeFetch(body: string[] | { status: number; text: string }) {
-  const calls: Array<{ url: string; init: RequestInit }> = [];
-  const impl = (async (url: string, init: RequestInit) => {
-    calls.push({ url, init });
-    if (!Array.isArray(body)) return new Response(body.text, { status: body.status });
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream<Uint8Array>({
-      start(controller) {
-        for (const part of body) controller.enqueue(encoder.encode(part));
-        controller.close();
-      },
-    });
-    return new Response(stream, { status: 200, headers: { 'Content-Type': 'text/event-stream' } });
-  }) as unknown as typeof fetch;
-  return { impl, calls };
-}
-
-describe('toChatTurns', () => {
+describe('toClaudeMessages', () => {
   it('drops the leading greeting and maps roles', () => {
     expect(
-      toChatTurns([
+      toClaudeMessages([
         { role: 'guide', text: 'Hello!' },
         { role: 'player', text: 'Hi' },
         { role: 'guide', text: 'How can I help?' },
@@ -66,9 +35,9 @@ describe('toChatTurns', () => {
   });
 
   it('rejects a history with no player message or ending with the guide', () => {
-    expect(() => toChatTurns([{ role: 'guide', text: 'Hello' }])).toThrow(ChatInputError);
-    expect(() => toChatTurns([{ role: 'player', text: 'Hi' }, { role: 'guide', text: 'Yes?' }])).toThrow(ChatInputError);
-    expect(() => toChatTurns([{ role: 'player', text: 'Hi' }, { role: 'player', text: '  ' }])).not.toThrow();
+    expect(() => toClaudeMessages([{ role: 'guide', text: 'Hello' }])).toThrow(ChatInputError);
+    expect(() => toClaudeMessages([{ role: 'player', text: 'Hi' }, { role: 'guide', text: 'Yes?' }])).toThrow(ChatInputError);
+    expect(() => toClaudeMessages([{ role: 'player', text: 'Hi' }, { role: 'player', text: '  ' }])).not.toThrow();
   });
 });
 
@@ -92,73 +61,46 @@ describe('prompt and suggestion', () => {
   });
 });
 
-describe('streamDeepSeek', () => {
-  it('reassembles text split across chunks and reports the finish reason', async () => {
-    for (const size of [1, 3, 7, 1000]) {
-      const fetch = fakeFetch(sse(['Good ', 'day, ', 'sir!'], 'stop', size));
-      const events = await collect(streamDeepSeek({ model: 'm', messages: [], maxTokens: 10, reasoningEffort: 'none', apiKey: 'k', fetchImpl: fetch.impl }));
-      expect(events).toEqual([
-        { type: 'text', text: 'Good ' },
-        { type: 'text', text: 'day, ' },
-        { type: 'text', text: 'sir!' },
-        { type: 'finish', reason: 'stop' },
-      ]);
-    }
-  });
-
-  it('throws DeepSeekError with the status on an error response', async () => {
-    const fetch = fakeFetch({ status: 401, text: '{"error":{"message":"bad key"}}' });
-    await expect(
-      collect(streamDeepSeek({ model: 'm', messages: [], maxTokens: 10, reasoningEffort: 'none', apiKey: 'k', fetchImpl: fetch.impl })),
-    ).rejects.toMatchObject({ name: 'DeepSeekError', status: 401 });
-    expect(new DeepSeekError(500, 'x')).toBeInstanceOf(Error);
-  });
-});
-
 describe('streamGuideReply', () => {
   const base = { era: hero, landmark: queensTower, suggestion: null, messages: [{ role: 'player' as const, text: 'Hello' }] };
-  beforeEach(() => {
-    process.env.DEEPSEEK_API_KEY = 'test-key';
-  });
-  afterEach(() => {
-    delete process.env.DEEPSEEK_API_KEY;
-    delete process.env.CHAT_MODEL;
-  });
 
-  it('streams deltas then done, sending the system prompt first, thinking off, and the key', async () => {
-    const fetch = fakeFetch(sse(['Good ', 'day!']));
-    const events = await collect<ChatStreamEvent>(streamGuideReply({ ...base, fetchImpl: fetch.impl }));
+  it('streams deltas then done, with the chat model, low effort and a cached system prompt', async () => {
+    const fake = fakeAnthropic([{ text: ['Good ', 'day!'] }]);
+    const events = await collect(streamGuideReply({ ...base, client: fake.client }));
     expect(events).toEqual([
       { type: 'delta', text: 'Good ' },
       { type: 'delta', text: 'day!' },
       { type: 'done', text: 'Good day!' },
     ]);
-    const { url, init } = fetch.calls[0];
-    expect(url).toBe(DEEPSEEK_CHAT_URL);
-    expect((init.headers as Record<string, string>).Authorization).toBe('Bearer test-key');
-    const body = JSON.parse(String(init.body));
-    expect(body).toMatchObject({ model: 'deepseek-flash', stream: true, reasoning_effort: 'none' });
-    expect(body.messages[0].role).toBe('system');
-    expect(body.messages[0].content).toContain('Albert Finch');
-    expect(body.messages.slice(1)).toEqual([{ role: 'user', content: 'Hello' }]);
+    const req = fake.requests[0];
+    expect(req.model).toBe('claude-haiku-5-5');
+    expect(req.output_config).toEqual({ effort: 'low' });
+    expect((req.system as Array<{ cache_control: unknown }>)[0].cache_control).toEqual({ type: 'ephemeral' });
+    expect(req).not.toHaveProperty('thinking');
   });
 
-  it('honours CHAT_MODEL', async () => {
-    process.env.CHAT_MODEL = 'deepseek-v4-pro';
-    const fetch = fakeFetch(sse(['x']));
-    await collect(streamGuideReply({ ...base, fetchImpl: fetch.impl }));
-    expect(JSON.parse(String(fetch.calls[0].init.body)).model).toBe('deepseek-v4-pro');
+  it('stays on Haiku: accepts another Haiku in CHAT_MODEL and ignores anything else', async () => {
+    const modelFor = async (value: string | undefined): Promise<unknown> => {
+      if (value === undefined) delete process.env.CHAT_MODEL;
+      else process.env.CHAT_MODEL = value;
+      const fake = fakeAnthropic([{ text: ['x'] }]);
+      await collect(streamGuideReply({ ...base, client: fake.client }));
+      return fake.requests[0].model;
+    };
+    try {
+      expect(await modelFor(undefined)).toBe('claude-haiku-5-5');
+      expect(await modelFor('claude-haiku-4-5')).toBe('claude-haiku-4-5');
+      expect(await modelFor('deepseek-flash')).toBe('claude-haiku-5-5');
+      expect(await modelFor('claude-sonnet-5-5')).toBe('claude-haiku-5-5');
+    } finally {
+      delete process.env.CHAT_MODEL;
+    }
   });
 
-  it('ends with an error event on a content filter, an API error, or a missing key, never throwing', async () => {
-    const filtered = await collect<ChatStreamEvent>(streamGuideReply({ ...base, fetchImpl: fakeFetch(sse(['Hm'], 'content_filter')).impl }));
-    expect(filtered.at(-1)?.type).toBe('error');
-    const failed = await collect<ChatStreamEvent>(streamGuideReply({ ...base, fetchImpl: fakeFetch({ status: 500, text: 'down' }).impl }));
+  it('ends with an error event on refusal or API failure, never throwing', async () => {
+    const refused = await collect(streamGuideReply({ ...base, client: fakeAnthropic([{ text: ['Hm'], stop_reason: 'refusal' }]).client }));
+    expect(refused.at(-1)?.type).toBe('error');
+    const failed = await collect(streamGuideReply({ ...base, client: fakeAnthropic([{ error: new Error('boom') }]).client }));
     expect(failed).toEqual([{ type: 'error', message: expect.any(String) }]);
-    delete process.env.DEEPSEEK_API_KEY;
-    const fetch = fakeFetch(sse(['x']));
-    const noKey = await collect<ChatStreamEvent>(streamGuideReply({ ...base, fetchImpl: fetch.impl }));
-    expect(noKey).toEqual([{ type: 'error', message: expect.any(String) }]);
-    expect(fetch.calls).toHaveLength(0);
   });
 });
