@@ -137,5 +137,5 @@ export async function runVideoModel(
   const result = await runFal<FalVideoResult>(endpoint, buildInput(endpoint), runContext);
   const url = result.data.video?.url;
   if (!url) throw new FalStageError(`${endpoint} returned no video for stage ${stage}`, { endpoint, requestId: result.requestId });
-  return { url, model: endpoint, requestId: result.requestId, elapsedMs: result.elapsedMs };
+  return { url, model: endpoint, requestId: result.requestId, elapsedMs: result.elapsedMs, durationS: result.data.duration ?? null };
 }

@@ -24,6 +24,8 @@ export interface StageOutput {
   requestId: string | null;
   /** Wall-clock milliseconds the stage took. */
   elapsedMs: number;
+  /** Length of a video stage's clip in seconds, when the model reports it. */
+  durationS?: number | null;
 }
 
 /** The panorama stage also reports the picture size, which the Era's Panorama needs. */

@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:15
-- Working on: A2-07 committed (6c2ac35). A2-08 written and passing, not yet committed. A2-04 to A2-06 still wait on the human's voice and talk-model picks
-- Next: A2-09 `runEraJob` in `src/lib/pipeline/index.ts`: brief (writeEraBrief) then scene, panorama, headshot, narration in parallel where the graph allows, each result written with patchEra, stage state with patchStage (set `model` as each stage starts: Agent 4 asked), then the video tier. Then A2-10 worker, A2-11 routes
+- Last updated: 2026-11-14 20:25
+- Working on: A2-09 written and passing, not yet committed. A2-07 and A2-08 are committed (6c2ac35, ca65e9a, 233d4e8). A2-04 to A2-06 still wait on the human's voice and talk-model picks
+- Next: A2-10 `src/worker/index.ts`: claim loop calling `runEraJob`, clean shutdown (finish or release the current job), resume from saved request ids (already handled in runEraJob), `npm run worker` entry. Then A2-11 routes (uploads, voice tts, voice stt), A2-12 Claude image checks, A2-13 pregenerate and backup scripts, A2-14 stitch
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is in `spikes/agent-2/.env.local`; Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-14 19:55 (@team review)
-- Waiting for commit approval: two commits on `agent-2`: (1) the `sharp` dependency alone (package.json, lockfile), (2) A2-08 stages + `src/lib/fal/index.ts` re-exports + this page
+- Waiting for commit approval: A2-09 (src/lib/pipeline/*, a 3-line edit to Agent 1's jobs.test.ts that the human approved, stages `durationS`, this page, a board post)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Chosen models
@@ -42,7 +42,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [ ] A2-06 Walk-on spike
 - [x] A2-07 fal library: `runFal`, models, voices, upload, speech, transcribe
 - [x] A2-08 Stage functions and prompt builders (stitch comes with A2-14, image checks with A2-12)
-- [ ] A2-09 `runEraJob` orchestrator
+- [x] A2-09 `runEraJob` orchestrator (never run live end to end: needs ANTHROPIC_API_KEY, a root FAL_KEY and, to share jobs with the dev server, MONGODB_URI)
 - [ ] A2-10 Worker
 - [ ] A2-11 Routes: uploads, voice tts, voice stt
 - [ ] A2-12 Image checks with one corrective retry
@@ -149,3 +149,17 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Spend this session: panorama runs about $0.45, voice smoke test under $0.01. Total so far about $4.70 at list prices.
 - Next: A2-09.
+
+### 2026-11-14 20:25, A2-09: runEraJob (done, not run live end to end)
+- Did: `src/lib/pipeline/run.ts` (the orchestrator), `deps.ts` (the Historian plus eight stage functions as one swappable object, with a real set and a no-spend dry-run set), `index.ts`, a README and 10 tests on the in-memory database and queue. Stages now also return `durationS` for video clips.
+- Decided, and why:
+  - **Never pay twice, two ways.** A core stage whose output is already on the Era is skipped. Every stage saves its request id on the job stage and a re-claimed job passes it back to `runFal`, so fal returns the finished result. The guide frame has no Era field (contracts are frozen), so this is the only way it survives a worker restart.
+  - **A failed stage does not stop independent ones.** Dependants are `skipped`. Core `state` is `failed` unless scene, panorama, headshot and narration all exist; `videoState` is separate. Asking again repeats only what is missing.
+  - **Reused outputs are marked `skipped`, not `done`**, since nothing ran. If the progress sheet should show them as done, say so.
+  - **Dry run is chosen by `NEXT_PUBLIC_USE_MOCKS=1`**, not by a missing key: a deployment that lost its key must fail loudly, not store "Placeholder" text as a real era.
+  - **Edited Agent 1's `src/lib/jobs/jobs.test.ts`** (3 lines: stub the mocks flag for its 'pipeline stub, end to end' test, and unstub in afterEach). It ran `runEraJob` with no keys and expected fixtures. The human approved this exception to the ownership rule; Agent 1 is told on the board.
+  - Talk clip length: the model's `duration` if given, otherwise words divided by 2.9 per second.
+- Measured or verified: `npm run check` passes (typecheck, lint, 224 tests). The tests cover the happy path with both tiers, stage records (model, request id, times), a failed scene (panorama skipped, headshot and narration kept), a failed brief, a failed clip, a failed guide frame, a second job repeating only what is missing, a re-claimed job passing saved request ids (including the guide frame), and the dry run. No live end-to-end run: that needs `ANTHROPIC_API_KEY` for the brief and about $0.50 plus $0.25-0.60 for the core tier alone, and about $4 more for the video tier.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the first lint run wanted doc comments on arrow functions inside exported objects; fixed by naming them. `stitch` stays `skipped` until A2-14.
+- Next: A2-10.
