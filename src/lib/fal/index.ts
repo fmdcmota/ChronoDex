@@ -26,6 +26,8 @@ export {
   type FalStageKey,
   type ModelChoice,
 } from './models';
+export { SNIFF_BYTES, sniffAudio, uploadNameFor, type AudioKind } from './audio';
+export { createRateLimiter, createSpeechCache, type RateDecision, type RateLimiter, type SpeechCache } from './guards';
 export { runFal, FalStageError, type FalRunContext, type FalRunResult, type FalQueueLike } from './run';
 
 /** Longest text one ElevenLabs request accepts, in characters (the schema page says 5,000). */

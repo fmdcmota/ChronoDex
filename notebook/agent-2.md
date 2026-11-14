@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:25
-- Working on: A2-09 written and passing, not yet committed. A2-07 and A2-08 are committed (6c2ac35, ca65e9a, 233d4e8). A2-04 to A2-06 still wait on the human's voice and talk-model picks
-- Next: A2-10 `src/worker/index.ts`: claim loop calling `runEraJob`, clean shutdown (finish or release the current job), resume from saved request ids (already handled in runEraJob), `npm run worker` entry. Then A2-11 routes (uploads, voice tts, voice stt), A2-12 Claude image checks, A2-13 pregenerate and backup scripts, A2-14 stitch
+- Last updated: 2026-11-14 20:40
+- Working on: A2-11 voice routes (tts and stt) written, tested live over HTTP, not yet committed. A2-07 to A2-09 are committed (latest 12fb887). A2-04 to A2-06 still wait on the human's voice and talk-model picks
+- Next: (1) a human runs `node spikes/agent-2/voice-test.mjs` in Chrome to prove a real WebM recording through stt. (2) A2-11 uploads route (`POST /api/uploads`, needed by Agent 3's capture screen). (3) A2-10 worker. Then A2-12, A2-13, A2-14
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is in `spikes/agent-2/.env.local`; Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-14 19:55 (@team review)
-- Waiting for commit approval: A2-09 (src/lib/pipeline/*, a 3-line edit to Agent 1's jobs.test.ts that the human approved, stages `durationS`, this page, a board post)
+- Waiting for commit approval: A2-11 voice routes (src/app/api/voice/*, src/lib/fal/audio.ts and guards.ts, spikes/agent-2/voice-test.mjs, this page, a board post)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Chosen models
@@ -29,7 +29,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 | talk | waiting for the human's eye: Kling avatar v2 standard vs Fabric 480p | | Kling 226 s / Fabric 53 s per 10 s clip | $0.056/s / $0.08/s | A2-05 |
 | walk_on, walk_off | `kling/v4/image-to-video` 5 s 720p (made, waiting for the human's eye) | `blackforestlabs/flux-3/first-last-frame-to-video` | 163 | ~$0.79 | A2-06 |
 | chat speech | `elevenlabs/tts/eleven-v4-turbo` | `elevenlabs/tts/eleven-v4` | 2.9 for 48 characters (v4: 3.9) | $0.04 per 1,000 characters | A2-07 |
-| speech to text | `fal-ai/elevenlabs/speech-to-text/scribe-v2` (works on MP3 and 24 kHz WAV) | | 2-4 | $0.008/min | A2-04 |
+| speech to text | `fal-ai/elevenlabs/speech-to-text/scribe-v2` (MP3 and 24 kHz WAV proven; rejects .webm and .mp4 file names, so the route renames uploads) | | 2-4 | $0.008/min | A2-04, A2-11 |
 | stitch | | | | | A2-14 |
 
 ## Tasks
@@ -44,7 +44,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [x] A2-08 Stage functions and prompt builders (stitch comes with A2-14, image checks with A2-12)
 - [x] A2-09 `runEraJob` orchestrator (never run live end to end: needs ANTHROPIC_API_KEY, a root FAL_KEY and, to share jobs with the dev server, MONGODB_URI)
 - [ ] A2-10 Worker
-- [ ] A2-11 Routes: uploads, voice tts, voice stt
+- [ ] A2-11 Routes: uploads, voice tts, voice stt (tts and stt done; uploads not started)
 - [ ] A2-12 Image checks with one corrective retry
 - [ ] A2-13 Pregenerate and backup-media scripts
 - [ ] A2-14 Stitch stage
@@ -163,3 +163,15 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: the first lint run wanted doc comments on arrow functions inside exported objects; fixed by naming them. `stitch` stays `skipped` until A2-14.
 - Next: A2-10.
+
+### 2026-11-14 20:40, A2-11 (voice routes): tts and stt done, uploads still to do
+- Did: `POST /api/voice/tts` and `POST /api/voice/stt` in `src/app/api/voice/` (moved to the front of the queue because Agent 4's voice screens were blocked on them), shared helpers in `_lib/voice.ts`, spend guards in `src/lib/fal/guards.ts` (a per-caller rate limit and a speech cache), audio sniffing and upload naming in `src/lib/fal/audio.ts`, a README, 25 tests, and `spikes/agent-2/voice-test.mjs` (a browser page that records with a real microphone and posts to the app).
+- Decided, and why:
+  - The tts route takes only `{ eraId, text }` and picks the voice from the era's guide, as the contract says. It uses the chat model (`eleven-v4-turbo`), 404s an unknown era and 409s an era with no guide.
+  - Two spend guards, because these are public endpoints on our credits (MASTER 5.3 rule 1): 30 tts and 20 stt per caller per minute, and a cache so replaying a reply costs nothing. Both are per process; on Vercel the true ceiling is a multiple.
+  - 503 `voice_unavailable` when there is no FAL_KEY and mocks are off, so a missing key reads as "not configured", not a crash.
+- Measured or verified (live, `next dev` with the real key, in-memory database): tts for `queens-tower_1893` answered in 5.4 s, and the same text again in 34 ms from the cache. stt transcribed "Good afternoon. Mind your step on the pavement" correctly in 3.9 s.
+- **Found live: fal's speech to text rejects `.webm` and `.mp4` with a 422** ("Supported formats are .mp3, .wav, .m4a, .ogg, .flac, .aac"). Chrome records WebM and iOS Safari records MP4, and the client names the file by that, so voice input would have failed on both. The check is on the file name only: the same MP3 bytes under `.ogg`, `.m4a` and `.aac` transcribed fine, under `.mp4` and `.webm` they were refused. So the route renames the upload from the real bytes (WebM becomes `.ogg`, MP4 becomes `.m4a`). Verified: MP3 bytes labelled webm, mp4 and ogg all transcribe. **Not verified:** a real Chrome WebM/Opus or iOS MP4/AAC recording, because there is no encoder on this machine. `voice-test.mjs` is for that.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: Next only allows HTTP-method exports from a route file, so the helper `isAcceptableAudioType` lives in `_lib`. Two shell heredocs failed on quoting; the files were written with the file tool instead.
+- Next: uploads route, then the worker (A2-10).
