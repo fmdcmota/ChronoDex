@@ -3,6 +3,37 @@
 Only Agent 2 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
+
+Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.
+
+**The key finding for everyone.** The chat test (Part 6) ran on Agent 4's spike page, and the voice test (Part 2) ran with `NEXT_PUBLIC_USE_MOCKS=1`. The canned replies, the beep instead of a voice and the fixed transcript were mock behaviour, not bugs in the real routes. **The real chat, TTS and STT have not yet been seen working from a phone.**
+
+Results that concern you:
+
+- **Test 8, the human's words: "the AI panoramic 360 reconstruction is very unrealistic".** They want it much more realistic and true to the chosen era. This is your top item.
+- **Part 2, STT:** the human recorded `32174 bytes as audio/webm;codecs=opus` in Chrome and got `HTTP 200 in 76 ms {"text":"What was daily life like here?"}`. That is your mock `transcribe()`, so real STT from a browser is still unproven (H-B). They tried several sentences and always got the same text.
+- **iPhone iOS 26.5.1 Safari records `audio/webm;codecs=opus`**, not `audio/mp4` as we assumed (MEDIA-5). Check that `isAcceptableAudioType` and `uploadNameFor` accept it.
+- On the iPhone, a second recording sometimes comes out at **5 bytes** (Agent 4 is fixing the recorder).
+- Clips recorded on the iPhone came out as `video/mp4; codecs=avc1.42000a,mp4a.40.2`. Gaps between the three clips were 20 to 21 ms, which is fine for the three-clip guide video.
+- MEDIA-9: both delayed beeps played on the iPhone, so TTS replies can play on their own after a reply arrives.
+- H-D (panorama on a phone, VIEW-10): the viewer works. The image itself is the problem.
+
+Next, in order:
+
+1. **Panorama realism (new, top).** Today `nano-banana-pro/edit` outpaints a 2:1 canvas around the scene with `buildPanoramaPrompt`. Bake off on one era (Queen's Tower 1893) and show the best two to the human on a phone through Agent 4's viewer (`?src=<url>&vfov=180`). Log the cost of each try. Things to try:
+   - a. **A period-specific prompt.** Turn `sceneBrief.surroundings` and `changes` into concrete period detail: the street surface, the lighting (gas lamps or none), the traffic (horse-drawn cabs, carts), shop signs, what passers-by wear, the weather and the light. Ask for a documentary photograph. Rule out the CGI look in words: no gloss, no oversaturation, no HDR, no illustration, no painting, no fantasy architecture. Keep it a named builder with a unit test (MASTER 8.4 rule 4). Apply the same rules to `buildScenePrompt`, because the scene is what the panorama grows from.
+   - b. **Real period images as references.** Pass `sceneBrief.referenceImageUrls` (public-domain archive photos, which Agent 5 collects in `data/`) as extra `image_urls`, so the model copies real textures. Never Google imagery.
+   - c. **Sharper output.** Try 2K, or `fal-ai/seedvr/upscale/image` (read its llms.txt first). The viewer shows a small part of the image at a time, so softness reads as fake.
+   - d. **The catalogue again.** Search for a model that turns an image into a panorama or 360° view (`https://api.fal.ai/v1/models?q=panorama`, `?q=360`). `hunyuan_world` was not being served earlier.
+   - e. **A2-12 as a realism critic.** Look for anachronisms, modern objects, a CGI look, the seam and the horizon, with one corrective retry.
+   - **Ask the human on the board:** should eras before about 1900 look like colour photographs (the current prompts ban sepia) or like real monochrome photographs of the period? It changes every prompt.
+2. **Make mock mode impossible to mistake.** Have mock `transcribe()` return text that says it is a mock, for example `[mock transcript] What was daily life like here?`, and update `voice.test.ts`. Log one warning at server start when mocks are on and `FAL_KEY` is also set. That is the setup that fooled the human.
+3. **STT guard.** Refuse a recording under about 1 KB with `400 empty_recording` before spending on fal. Tell Agent 4 the code.
+4. **Live end to end.** Once Agent 1 seeds `chronodex`, run the worker on Queen's Tower 1893's core tier: brief, scene, panorama, headshot, narration. The headshot is the chat profile picture the human missed. The narration and TTS are the guide's real voice, in place of the spike's beep. Then ask the human to rerun Part 2 with mocks off and paste the output.
+5. **Ambience loops (new, for Agent 4).** The human wants period music and ambience playing in the chat. Find a music or sound model in the catalogue (`?q=music`, `?q=sound effects`, `?category=text-to-audio`) and read its llms.txt. Generate one quiet loop of 30 to 60 s for each period bucket: `1850-1899` (Victorian street: hooves, carriage wheels, a distant brass band or music-hall piano), `1900-1945` (a 1940s dance band on a wireless, distant traffic), `1946-1979` (a 1960s street, period-style pop on a distant radio), `1980-now`. Instrumental only, original, no vocals, nothing that imitates a real song. Script it as `scripts/ambience.ts` (yours, logs the cost) and download the MP3s to `public/audio/ambience/<bucket>.mp3`. The human gives you that folder; Agent 4 owns playback. Post the file names to Agent 4. It also adds to the "made with fal" story.
+6. Then the queue as before: A2-12, A2-13, A2-14. The voice and talk-model picks (H-A) and the credit count (H-E) are still open with the human.
+
 ## Current state
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.

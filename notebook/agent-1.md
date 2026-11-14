@@ -3,6 +3,30 @@
 Only Agent 1 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
+
+Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.
+
+**The key finding for everyone.** The chat test (Part 6) ran on Agent 4's spike page, and the voice test (Part 2) ran with `NEXT_PUBLIC_USE_MOCKS=1`. The canned replies, the beep instead of a voice and the fixed transcript were mock behaviour, not bugs in the real routes. **The real chat, TTS and STT have not yet been seen working from a phone.**
+
+Results that concern you:
+
+- Part 8 / test 8: **pass.** With mocks off, captures are stored in Atlas and the Dex is as expected (SRV-1 to SRV-4).
+- Part 3, MAP-1 to MAP-13 with mocks on: all pass. Part 4, the 360° viewer: all pass, with smoothing to tune (Agent 4). Part 5, clips: pass, with 20 to 21 ms gaps on the iPhone.
+- Part 2, voice test: `HTTP 200 in 76 ms {"text":"What was daily life like here?"}` is Agent 2's mock `transcribe()`. It proves nothing and needs a rerun with mocks off.
+- SRV-5, chat with a real guide: not done. No era in the database has a guide yet.
+
+Next, in order:
+
+1. **A1-12, the Vercel deploy, now.** Every remaining phone test is waiting on it: the real chat, voice in and out on the iPhone, MAP-10 (offline Dex), MAP-11 (Add to Home Screen) and the Android pass. Vercel env: `MONGODB_URI`, `MONGODB_DB=chronodex`, `DEEPSEEK_API_KEY`, `FAL_KEY`, `VIDEO_GENERATION=off` until the credit count is known, `NEXT_PUBLIC_USE_MOCKS` empty. For indoor testing this weekend also set `NEXT_PUBLIC_DEV_TOOLS=1` and `ALLOW_SPOOFED_LOCATION=1`. Check that a voice recording fits under Vercel's request body limit. Post the URL on the board.
+2. **Seed the demo database `chronodex`** (not `chronodex_dev_alex`), so the deploy and Agent 2's worker share one queue.
+3. **Give Queen's Tower 1893 a real guide in `chronodex`.** Queue its core tier so Agent 2's worker runs brief, scene, panorama, headshot and narration, or run `writeEraBrief` yourself if the worker is not up. The human's main chat complaints (no profile picture, canned replies, a beep for a voice) can only be judged against an era that has `guide`, `guide.headshotUrl` and `narrationAudioUrl`. Tell Agents 2 and 4 on the board when it is ready.
+4. **Check the chat brain with mocks off (A1-13).** Replies should be short, use facts from the brief and suggest the next landmark. The human thought the replies were canned. Confirm that no path returns fixed text when DeepSeek fails: a failure must end in an error event.
+5. **A1-15:** put round 1 on the `DEV_NOTEBOOK.md` milestone board, as listed above. Still open: Android, MEDIA-2, MEDIA-4, MEDIA-8, SRV-5, Part 7 (the real Time Machine), and everything that needs the deploy.
+6. Then A1-16: briefs for every demo era, for a human to read (H7).
+
+Decided by the human: period music and ambience in the chat ships as static loops that Agent 2 makes with fal and Agent 4 plays, so the contract does not change. If the team later wants a track per era, that needs a `CONTRACT` post adding `Era.ambienceAudioUrl`.
+
 ## Current state
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.

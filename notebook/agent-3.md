@@ -3,6 +3,25 @@
 Only Agent 3 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
+
+Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.
+
+**The key finding for everyone.** The chat test (Part 6) ran on Agent 4's spike page, and the voice test (Part 2) ran with `NEXT_PUBLIC_USE_MOCKS=1`. The canned replies, the beep instead of a voice and the fixed transcript were mock behaviour, not bugs in the real routes. **The real chat, TTS and STT have not yet been seen working from a phone.**
+
+Results that concern you:
+
+- **Part 3, MAP-1 to MAP-13 on the iPhone with mocks on: all pass.** In the human's words: "everything working as intended in terms of UI."
+- Test 8: with mocks off, captures are stored in Atlas and the Dex is as expected.
+- Not done yet: MAP-10 and MAP-11 (they need the deployed site) and the whole Android pass.
+
+Next, in order:
+
+1. **A "MOCK DATA" tag (new, small, do it first).** When `NEXT_PUBLIC_USE_MOCKS=1`, show a small fixed tag in `layout.tsx`: in a corner, clear of the notch and home bar, `pointer-events: none`. Agent 4's screens sit full screen at `z-40`, so put the tag above them (`z-50`) and keep it tiny. Why: a whole round of chat and voice tests ran in mock mode, and the human took the canned replies for real ones.
+2. **The rest of A3-10.** The Android pass. Then, once Agent 1 has deployed to Vercel (A1-12): MAP-10 (offline Dex), MAP-11 (Add to Home Screen) and one capture with mocks off on the deployed site.
+3. **fal art (optional, helps the fal prize story).** `FAL_KEY` is now in the root `.env.local`. Run `npm run art:fal -- --yes` in `spikes/agent-3`, compare the results on the contact sheet, show the human, and keep the better set.
+4. You have the most spare capacity. Offer help on the board, for example to Agent 4 on chat polish, within the paths you own.
+
 ## Current state
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.

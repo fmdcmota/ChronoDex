@@ -3,6 +3,50 @@
 Only Agent 4 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
+
+Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.
+
+**The key finding for everyone.** The chat test (Part 6) ran on your spike page, and the voice test (Part 2) ran with `NEXT_PUBLIC_USE_MOCKS=1`. The canned replies, the beep instead of a voice and the fixed transcript were mock behaviour, not bugs in the real routes. **The real chat, TTS and STT have not yet been seen working from a phone.** The fixes below go into the real app (`src/components/chat`, `src/components/time-machine`). Mirror them in the spike only where a retest needs it.
+
+**Part 4, the 360° viewer spike: VIEW-1 to VIEW-10 all work.** The human's notes: the delay and smoothing are a bit strong, so reduce the anti-jitter; and the field of view is a bit wide, so narrow it a little.
+
+**Part 5, the media spike:**
+
+- MEDIA-1: `made walk_on`, `made talk` and `made walk_off` all came out as `video/mp4; codecs=avc1.42000a,mp4a.40.2`.
+- MEDIA-3: `clip 1 talk playing, gap 20 ms`, `clip 2 walk_off playing, gap 21 ms`, then `all clips finished`. Pass.
+- MEDIA-5: `secure context: true, MediaRecorder: true, audio type: audio/webm; codecs=opus`. **iOS 26.5.1 records WebM/Opus, not MP4.** The first recording was `4.0s, 92278 bytes`. **Bug:** later recordings sometimes come out at 5 bytes. It did not happen after a refresh.
+- MEDIA-6: **Bug:** the recording plays sound only the second time play is tapped.
+- MEDIA-7 works, and the human said MEDIA-6 is otherwise "good". MEDIA-9: `beep 1 (new element): played` and `beep 2 (unlocked element): played`, so delayed reply audio works on this iPhone.
+- MEDIA-2, MEDIA-4 and MEDIA-8 were not reported.
+
+**Part 6, the chat spike (Edith).** The human's list, in their words:
+
+1. Edith has no profile picture.
+2. Speaking into the mic does not recognise what was said; it sends a sample message.
+3. Edith does not give real AI replies; they come from a set of sample replies.
+4. Make it play music; give it more ambience for the time.
+5. When she speaks it is just a bleep.
+6. On reset, make her send the first message again: short typing dots, then the message.
+7. Pressing voice on or off plays a sound that is not nice. Make it a proper mic-on or mic-off sound.
+8. When reloading, the chat stays.
+
+Items 1, 2, 3 and 5 are what the spike does by design (initials avatar, canned STT, canned replies, beep for TTS). The human expects the real thing, so the job is to make sure the real chat does it, and to put it in front of them.
+
+Next, in order:
+
+1. **360° view (`PanoramaView.tsx`).** Change the gyroscope plugin's `moveMode: 'smooth'` to `'fast'`, or a lighter smoothing if PSV 5.15 has a setting for it (check the plugin's options). Narrow the view by raising `DEFAULT_ZOOM_LVL` from 30 to about 45, and tune it on a phone. Make the same change in the spike so the human can retest VIEW-4 like for like.
+2. **Recorder (`recorder.ts`): the 5-byte recordings.** The likely cause is that the mic stream stays open between presses and iOS ends or mutes the track. Before `start()`, check that every audio track is `readyState === 'live'` and not muted, and reopen `getUserMedia` if not. Start with a timeslice (for example 250 ms) so data flushes as it goes. A blob under about 1 KB is never sent: show "Didn't catch that, hold the mic again". Agent 2 will also answer `400 empty_recording`. Add `audio/webm;codecs=opus` from iOS 26 to your type table, named `voice.webm`.
+3. **Audio that only plays on the second tap.** After setting `src` on an audio element, call `load()` before `play()`. Await `play()` and retry once if it fails. Check the reply player in `ChatScreen` too, or the first spoken reply may be silent.
+4. **The voice on/off sound (item 7).** The unlock tone is audible and harsh. Replace it with two short, soft earcons: "mic on" is two rising notes of about 80 ms each, faded in and out so it does not click; "mic off" is the same falling. Play them inside the tap so they still unlock iOS. Use them for hold-to-talk start and stop too, if that fits.
+5. **Reset (item 6).** After ↺, clear the thread, show the typing dots for about 1 s, then the greeting arrives as a new bubble, read aloud if voice is on.
+6. **Profile picture (item 1).** Check that the real header shows `guide.headshotUrl` when there is one (the mock hero era has `MOCK_HEADSHOT_URL`). Keep polling the era while its headshot stage runs, so the picture appears without a reload. If it is quick, make the fallback a period silhouette rather than initials.
+7. **Ambience (item 4, new).** A quiet period loop under the chat, and under the Time Machine if it fits. Agent 2 is making `public/audio/ambience/<bucket>.mp3` with fal, with buckets `1850-1899`, `1900-1945`, `1946-1979` and `1980-now`; pick the bucket from the era's year. Start it on the first tap (iOS), loop it, keep it low (about 0.15 volume), and drop it to about 0.05 while the guide speaks (TTS reply, narration or talk clip). Add a mute toggle saved per device. Build against a placeholder until Agent 2's files land.
+8. **Real voice and replies (items 2, 3 and 5).** With mocks off and a real era (Agents 1 and 2 are making Queen's Tower 1893 real), test the whole path: hold to talk, `/api/voice/stt`, your own words appear as the player's bubble, a streamed DeepSeek reply, then TTS in the guide's voice. On an empty transcript show "Didn't catch that" rather than sending. A phone needs the deploy (A1-12).
+9. **Item 8.** Keeping history across a reload is CHAT-5's pass mark, and the human listed it without asking for a change. Keep it unless they say otherwise on the board.
+
+Then A4-10, the phone pass.
+
 ## Current state
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
