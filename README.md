@@ -34,7 +34,7 @@ npm run dev                  # http://localhost:3000
 | `npm run test` | Unit tests only (`npm run test:watch` to keep running) |
 | `npm run build` | Production build |
 | `npm run worker` | The generation worker (`src/worker/`, Agent 2) |
-| `npm run seed` | Load fixtures into MongoDB. At M0 it is a dry run that validates the fixtures |
+| `npm run seed` | Load landmarks and eras into MongoDB (needs `MONGODB_URI`). `npm run seed -- --dry-run` only validates |
 
 **Mock mode.** With `NEXT_PUBLIC_USE_MOCKS=1` the typed client in `src/lib/client` answers from `fixtures/` with no network or database. `queens-tower_1893` is fully populated. Generating any other era runs a fake job for about 20 seconds.
 

@@ -7,13 +7,13 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 16:30
-- Working on: M0 is built on branch `agent-1` (A1-01 to A1-07), not yet committed. `npm run check` passes (59 tests).
-- Next: on a yes, commit, `git pull --rebase origin main`, rerun `npm run check`, push to `main`, announce M0. Then A1-08 (MongoDB db layer and seed), A1-10 (jobs on MongoDB), A1-09 (routes).
-- Blocked on: nothing for code. A1-08 needs `MONGODB_URI` (H2) and the H1 photos for real photo spots.
-- Board read up to: 2026-11-14 15:55 (agent-4, A4-01)
-- Waiting for commit approval: the M0 commit (scaffold, contracts, fixtures, client, stubs, placeholder pages, tooling).
-- Local machine: Node 26.13.1 was installed with winget this session. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted.
+- Last updated: 2026-11-14 16:45
+- Working on: database, jobs, routes and dev flags written on branch `agent-1` (A1-08, A1-09, A1-10, A1-14), not yet committed. `npm run check` passes (78 tests).
+- Next: on a yes, commit and push. Then, once `MONGODB_URI` exists: `npm run seed`, then run the API against Atlas to verify the MongoDB backend (it has never touched a live server). Then A1-11 (Historian) and A1-13 (chat), which need `ANTHROPIC_API_KEY`.
+- Blocked on: H2 keys (`MONGODB_URI`, `ANTHROPIC_API_KEY`). H1 photos for A1-08 part 2 (GPS into photoSpot, 16:9 normalising).
+- Board read up to: 2026-11-14 15:55 (agent-4, A4-01). Nothing newer on origin/main at 16:45.
+- Waiting for commit approval: the A1-08/09/10/14 commit.
+- Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted.
 
 ## Tasks
 
@@ -23,14 +23,14 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [x] A1-04 Fixtures
 - [x] A1-05 Typed API client with mock mode
 - [x] A1-06 Stubs for cross-agent functions, placeholder pages
-- [ ] A1-07 Tooling, `.env.example`, README run section. Push. Announce M0
-- [ ] A1-08 Database layer and seed script
-- [ ] A1-09 API routes: landmarks, eras, generate, captures, dex
-- [ ] A1-10 Jobs library
+- [x] A1-07 Tooling, `.env.example`, README run section. Push. Announce M0
+- [ ] A1-08 Database layer and seed script (code done, MongoDB unverified; photo GPS and 16:9 step waits for H1)
+- [x] A1-09 API routes: landmarks, eras, generate, captures, dex
+- [ ] A1-10 Jobs library (code done, MongoDB unverified)
 - [ ] A1-11 Historian: `writeEraBrief`
 - [ ] A1-12 Deploy to Vercel, check on a phone
 - [ ] A1-13 Chat route
-- [ ] A1-14 Development flags
+- [x] A1-14 Development flags
 - [ ] A1-15 Run each gate with a human, log results on the front page
 - [ ] A1-16 Briefs for every demo era, human-checked
 
@@ -55,3 +55,12 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing. The work was mostly contract and mock design, which the sheet says to keep, and the rest was quicker to write than to brief and review.
 - Problems: Node was not installed on this machine, so I installed Node 26.13.1 LTS with winget. npm 11 skips esbuild's postinstall by default (F-015); tsx and vitest work without it. `npm run worker` fails until Agent 2 adds `src/worker/index.ts` (asked on the board).
 - Next: commit and push on a yes, then A1-08.
+
+### 2026-11-14 16:45, A1-08, A1-09, A1-10, A1-14: database, routes, jobs, dev flags
+- Did: `src/lib/db` now has two backends behind the same functions: MongoDB (`mongo.ts`: cached client, small pool, 8 s server-selection timeout, indexes on first use) when `MONGODB_URI` is set, the in-memory fixture store otherwise. Added `listCaptures`, `insertCapture` (keeps the first capture per player and landmark), `upsertLandmark`, `insertEraIfMissing`, `closeMongo`. `src/lib/jobs` split into `queue.ts` (enqueue, claim, patchStage, heartbeatJob, finishJob, getJob) and `generate.ts` (`requestEraGeneration`, the whole generate rule including `VIDEO_GENERATION`). Six routes in `src/app/api` with shared helpers in `_lib/http.ts`. `scripts/seed.ts` writes to MongoDB, with `--dry-run`. READMEs for db, jobs and api.
+- Decided, and why: one active job per era through a unique partial index on `eraId` where `active: true` (removed on finish), not a filter on `state`, because a storage-only boolean flag is the simplest partial filter to rely on. A 10-minute job lease so a crashed worker's job is picked up again; `patchStage` renews it, `heartbeatJob` is for long waits. Seed writes every era as `missing`, including queens-tower_1893, because the fixture's placeholder hero would block real generation. Landmarks carry a storage-only `seedOrder` because MongoDB's natural order is not guaranteed. Captures: 400 for a non-http(s) `photoUrl` so no `javascript:` URL is stored, 403 `spoofed_location` unless `ALLOW_SPOOFED_LOCATION=1`. Generate with `includeVideo: true` returns 403 `video_disabled` unless `VIDEO_GENERATION=on`, instead of quietly downgrading to core. On Vercel a missing `MONGODB_URI` throws rather than falling back to memory.
+- Measured or verified: `npm run check` passes, 78 tests (19 new: queue, lease expiry with fake timers, generate rule, captures, routes called directly). `next build` succeeds and every API route is dynamic. With mocks off, `next dev` served every route over HTTP as expected: landmarks, eras, generate (job queued, then returned again), the 403 for video, capture, Dex, 404.
+- Not verified: the MongoDB backend has never run against a live server. I tried to install `mongodb-memory-server` to test it locally, and that action was denied, so I left it. The code follows the mongodb 7.9 typings (findOneAndUpdate returns the document or null; duplicate key is code 11000).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: without MongoDB, the worker and the dev server are separate processes with separate memory, so a job queued through the API never reaches the worker. Documented in the jobs README.
+- Next: commit on a yes. Then seed and verify against Atlas when the keys arrive.

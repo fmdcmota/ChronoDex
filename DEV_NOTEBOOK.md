@@ -50,6 +50,10 @@ Every row is proposed until the team has reviewed plan v1.
 | D-014 | 14 Nov | `cacheComponents` and `partialPrefetching` are off in `next.config.ts` | Next 16's scaffold turns them on. Our screens are client components over a dynamic API, and the prerender rules they add are a trap for agents trained on earlier Next.js |
 | D-015 | 14 Nov | Node 24 line: `.nvmrc` is 24 and `@types/node` is 24. Node 26 also works locally | vitest 5 needs @types/node 22 or later. Vercel is certain to support 24 |
 | D-016 | 14 Nov | Fixtures are TypeScript modules (`fixtures/*.ts`), imported as `@fixtures/index` | The type checker enforces their shape. JSON imports widen string unions |
+| D-017 | 14 Nov | Without `MONGODB_URI`, `src/lib/db` and `src/lib/jobs` use an in-memory store seeded from fixtures. On Vercel a missing `MONGODB_URI` is an error | Real routes work locally before Atlas exists. A silent fallback in production would lose every capture |
+| D-018 | 14 Nov | One active job per era is enforced by a unique partial index on `eraId` where `active` is true. A running job not updated for 10 minutes may be claimed by another worker | Never pay fal twice. A crashed worker must not block an era for ever |
+| D-019 | 14 Nov | Generate with `includeVideo: true` returns 403 `video_disabled` unless `VIDEO_GENERATION=on`. A spoofed capture returns 403 `spoofed_location` unless `ALLOW_SPOOFED_LOCATION=1` | Explicit refusals are easier to debug than silent downgrades |
+| D-020 | 14 Nov | `npm run seed` seeds every era as `missing` and never overwrites an existing era | The fixture hero era is placeholder content. Re-seeding must never wipe generated media |
 
 ## Contract changes
 
@@ -84,6 +88,7 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-017 | 14 Nov | `@photo-sphere-viewer/core` and `@photo-sphere-viewer/gyroscope-plugin` exist on npm at 5.15.1. Resolves one item in `MASTER.md` section 14 | npm install at A1-02 |
 | F-018 | 14 Nov | Next 16's global `LayoutProps`, `PageProps` and `RouteContext` types are generated. `npm run typecheck` runs `next typegen` first, so a fresh clone type-checks | Tried at A1-07 |
 | F-019 | 14 Nov | Next 16 page and route `params` are Promises. In client pages use `useParams()`. In route handlers `await ctx.params` | `node_modules/next/dist/docs` |
+| F-020 | 14 Nov | mongodb 7.9: `findOneAndUpdate` returns the document or null by default (no `value` wrapper). Duplicate key errors are `MongoServerError` with code 11000 | `node_modules/mongodb/mongodb.d.ts` |
 
 ## Session log
 
@@ -108,3 +113,9 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 - Decided: D-014 to D-016. Contract additions C-001.
 - Not done: no commit or push yet (waiting for a human yes). Placeholder pages not yet seen in a browser or on a phone.
 - Next: commit, push, announce M0 on the board. Then the MongoDB layer (A1-08).
+
+### 2026-11-14 16:45, database, routes, jobs (Agent 1)
+
+- Did: A1-09 and A1-14 done. A1-08 and A1-10 code done, MongoDB path not yet run against a live server. The detail is in `notebook/agent-1.md`.
+- Decided: D-017 to D-020.
+- Next: commit, then seed and verify against Atlas once `MONGODB_URI` exists (H2).

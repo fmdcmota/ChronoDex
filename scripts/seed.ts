@@ -1,23 +1,61 @@
 /**
- * `npm run seed`: load the fixtures into the database.
+ * `npm run seed`: load the landmarks and their eras into MongoDB.
  *
  * Owner: Agent 1 (Core). Task A1-08 (MASTER.md section 11).
  *
- * M0 STATE: a dry run. It validates every fixture against its schema and prints what it would
- * insert, then exits. TODO(agent-1): A1-08 writes landmarks and eras to MongoDB, reads GPS from
- * the H1 reference photos into photoSpot, and normalises each reference photo to 16:9.
- * Side effects today: none. It reads .env.local if present but uses no keys.
+ * Usage:
+ *   npm run seed              write to the database named by MONGODB_URI and MONGODB_DB
+ *   npm run seed -- --dry-run validate the fixtures and print what would be written
+ *
+ * What it writes:
+ * - Landmarks: created or fully replaced from fixtures/landmarks.ts, so edits there take effect.
+ * - Eras: one per landmark year, inserted only when missing. Re-seeding never touches an era that
+ *   already exists, so generated content is safe. Every era is seeded `missing`, including
+ *   queens-tower_1893: the fixture's placeholder hero content is for mock mode only and would
+ *   otherwise block real generation.
+ *
+ * Not yet: reading GPS from the H1 reference photos into photoSpot and normalising each photo to
+ * 16:9. That waits for the photos (TODO(agent-1), A1-08 part 2).
+ * Side effects: database writes only. Costs nothing.
  */
-import { EraSchema, LandmarkSchema } from '@/lib/contracts';
-import { eras, landmarks } from '@fixtures/index';
+import { EraSchema, LandmarkSchema, type Era } from '@/lib/contracts';
+import { closeMongo, insertEraIfMissing, mongoConfigured, upsertLandmark } from '@/lib/db';
+import { landmarks, missingEra } from '@fixtures/index';
 
-/** Validate the fixtures and report. Exits non-zero on the first invalid fixture. */
-function main(): void {
+/** Validate everything first, so a bad fixture never leaves the database half seeded. */
+function plan(): { eras: Era[] } {
   for (const landmark of landmarks) LandmarkSchema.parse(landmark);
+  const eras = landmarks.flatMap((landmark) => landmark.eraYears.map((year) => missingEra(landmark, year)));
   for (const era of eras) EraSchema.parse(era);
-  const ready = eras.filter((e) => e.state === 'ready').length;
-  console.log(`Dry run: ${landmarks.length} landmarks and ${eras.length} eras (${ready} ready) are valid.`);
-  console.log('Nothing was written. The MongoDB seed arrives with task A1-08.');
+  return { eras };
 }
 
-main();
+/** Seed, or describe the seed when --dry-run is passed. */
+async function main(): Promise<void> {
+  const dryRun = process.argv.includes('--dry-run');
+  const { eras } = plan();
+
+  if (dryRun) {
+    console.log(`Dry run: ${landmarks.length} landmarks and ${eras.length} eras are valid. Nothing was written.`);
+    return;
+  }
+  if (!mongoConfigured()) {
+    console.error('MONGODB_URI is not set. Put it in .env.local, or pass --dry-run to only validate.');
+    process.exitCode = 1;
+    return;
+  }
+
+  const db = process.env.MONGODB_DB || 'chronodex_dev';
+  console.log(`Seeding database "${db}"...`);
+  for (const [order, landmark] of landmarks.entries()) await upsertLandmark(landmark, order);
+  let inserted = 0;
+  for (const era of eras) if (await insertEraIfMissing(era)) inserted++;
+  console.log(`Landmarks written: ${landmarks.length}. Eras inserted: ${inserted}. Eras already present and left alone: ${eras.length - inserted}.`);
+}
+
+main()
+  .catch((err: unknown) => {
+    console.error('Seed failed:', err);
+    process.exitCode = 1;
+  })
+  .finally(() => closeMongo());
