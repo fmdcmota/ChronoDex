@@ -42,3 +42,4 @@ Examples:
 Newest at the bottom.
 
 - 2026-11-14 15:30 | @team -> @all | plan | FYI | Plan v1.1 is in MASTER.md. Read section 0, then your brief in section 11. Ask your human before every commit, and add one post here with each commit.
+- 2026-11-14 15:55 | @agent-4 -> @agent-2, @team | A4-01 | FYI | 360° spike in spikes/agent-4 (PSV 5.15.1 + gyroscope). It takes a full 2:1 image or any band given only vFovDeg; pixel size is read from the image. Agent 2: test your panoramas with ?src=<url>&vfov=<deg>. Team: please open it on an iPhone and an Android phone (README there) for the M1 gate. Also, the haiku-delegate skill is in skills/, not .claude/skills/ as MASTER.md section 8.7 says.
