@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 (human-directed full-repo review)
-- Working on: A2-04, A2-05 and A2-06 are generated and waiting for a human to listen and watch (`spikes/agent-2/out/review.html`). The agent-2 branch is merged to `main` (PR #1).
-- Next: (1) write `VOICE_CATALOG` from the human's voice picks, (2) make the full 45 s talk clip with the chosen model and voice, (3) tick A2-04 to A2-06, then A2-07 `src/lib/fal/` — the scaffold is on `main`, so this can start now.
+- Last updated: 2026-11-14 20:05
+- Working on: A2-07 done on branch `agent-2` (merged up to `main` a505547 first). A2-04 to A2-06 still wait on the human's voice and talk-model picks
+- Next: A2-08 `src/lib/pipeline/stages/` (one file per stage, prompt builders from `spikes/agent-2/prompts.ts` plus panorama canvas building and the 2:1 resize), then A2-09 `runEraJob`, A2-10 worker, A2-11 routes
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is in `spikes/agent-2/.env.local`; Node v26.13.1 at `C:\Program Files\nodejs`.
-- Board read up to: 2026-11-14 15:55. Not re-read since: the human said not to track the other agents for now.
-- Waiting for commit approval: the A2-04 to A2-06 spikes plus this notebook (if not already covered by PR #1).
+- Board read up to: 2026-11-14 19:55 (@team review)
+- Waiting for commit approval: A2-07 (src/lib/fal/*, this page, a board post)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Chosen models
@@ -28,7 +28,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 | guide_frame | `fal-ai/nano-banana-pro/edit` with [scene, headshot] | `google/nano-banana-2.1/edit` (untested) | ~20 | $0.15 list | A2-05 |
 | talk | waiting for the human's eye: Kling avatar v2 standard vs Fabric 480p | | Kling 226 s / Fabric 53 s per 10 s clip | $0.056/s / $0.08/s | A2-05 |
 | walk_on, walk_off | `kling/v4/image-to-video` 5 s 720p (made, waiting for the human's eye) | `blackforestlabs/flux-3/first-last-frame-to-video` | 163 | ~$0.79 | A2-06 |
-| chat speech | | | | | A2-04 |
+| chat speech | `elevenlabs/tts/eleven-v4-turbo` | `elevenlabs/tts/eleven-v4` | 2.9 for 48 characters (v4: 3.9) | $0.04 per 1,000 characters | A2-07 |
 | speech to text | `fal-ai/elevenlabs/speech-to-text/scribe-v2` (works on MP3 and 24 kHz WAV) | | 2-4 | $0.008/min | A2-04 |
 | stitch | | | | | A2-14 |
 
@@ -40,7 +40,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [ ] A2-04 Voice bake-off, write `VOICE_CATALOG`
 - [ ] A2-05 Talking-guide bake-off, one full 45 s clip
 - [ ] A2-06 Walk-on spike
-- [ ] A2-07 fal library: `runFal`, models, voices, upload, speech, transcribe
+- [x] A2-07 fal library: `runFal`, models, voices, upload, speech, transcribe
 - [ ] A2-08 Stage functions and prompt builders
 - [ ] A2-09 `runEraJob` orchestrator
 - [ ] A2-10 Worker
@@ -124,3 +124,14 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Spend so far (list prices): A2-01 to A2-03 about $1, voices about $0.70, guide frame ×2 $0.30, talk tests about $1.40, walk-on about $0.79. **About $4.20 in total.**
 - Next: the human's picks, then `VOICE_CATALOG`, then the 45 s clip.
+
+### 2026-11-14 20:05, A2-07: src/lib/fal (done)
+- Did: brought `main` into `agent-2` (a fast-forward: PR #1 had already merged agent-2 into main). Replaced the M0 stubs in `src/lib/fal/` with `run.ts` (`runFal`, `FalStageError`), `models.ts` (the registry, from the chosen-models table), `voices.ts` (provisional catalogue with provider voice name and stability, plus `getVoice`), and real `uploadToFal`, `synthesizeSpeech(text, key, { fast }, ctx?)` and `transcribe(url, ctx?)` in `index.ts`. Signatures from MASTER 4.4 are unchanged; the optional `ctx` parameter is an addition that lets the pipeline save request ids. Added `fal.test.ts` (15 tests) and a README.
+- Decided, and why:
+  - `runFal` uses `fal.queue.submit/status/result` and calls `onRequestId` before the first poll, so a restart resumes the same request (MASTER 5.3 rule 2). `onPoll` exists so the pipeline can call `heartbeatJob` during the 15-minute talk wait.
+  - `VOICE_CATALOG` keeps the two `placeholder-*` keys, now mapped to real voices, because Agent 1's fixtures and tests name them. Agent 1 should rename them in `fixtures/eras.ts`.
+  - The catalogue is Alice, Lily, George, Daniel. British accent is from memory and unconfirmed until a human listens.
+- Measured or verified: `npm run check` passes (typecheck, lint, 195 tests). A live smoke run with the spike key: TTS of a 48-character line took 3.9 s on `eleven-v4` and 2.9 s on `eleven-v4-turbo`; Scribe transcribed both back correctly in 2.2 s and 1.7 s. Request ids were saved once per call. Cost is under one cent.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the root `node_modules` held Linux-only native binaries (rolldown), so vitest would not start on Windows. A plain `npm install` fixed it and did not touch the lockfile. If another Windows machine hits "Cannot find native binding", run `npm install` there too. The first lint run failed on a missing doc description in `run.ts`; fixed.
+- Next: A2-08.
