@@ -2,7 +2,7 @@
  * What runEraJob depends on, as one swappable object: the Historian and the eight stage functions.
  *
  * Owner: Agent 2 (Studio). Implements MASTER.md section 5.1, task A2-09. Two sets exist: the real one
- * (Claude and fal, which spend money) and a dry-run set that returns fixture media and spends
+ * (the Historian and fal, which spend money) and a dry-run set that returns fixture media and spends
  * nothing, used by tests and by `NEXT_PUBLIC_USE_MOCKS=1`. runEraJob takes the set as an argument so
  * its tests can also inject fakes that fail on purpose.
  */
@@ -32,7 +32,7 @@ import type { PanoramaOutput, StageOutput } from './stages';
 
 /** The Historian and every stage function. Each is replaceable in tests. */
 export interface PipelineDeps {
-  /** Writes the text half of an era. Real: Claude with web search. */
+  /** Writes the text half of an era. Real: the Historian in src/lib/historian. */
   writeBrief(landmark: Landmark, year: number): Promise<EraBrief>;
   /** The stage functions, with the same signatures as in ./stages. */
   stages: {
@@ -48,7 +48,7 @@ export interface PipelineDeps {
 }
 
 /**
- * The real brief writer: Claude Opus with web search, one to three minutes and roughly $0.25 to $0.60.
+ * The real brief writer: the Historian (DeepSeek, per Agent 1). See src/lib/historian for its time and cost.
  *
  * @param landmark - The landmark.
  * @param year - The era's year.
@@ -58,7 +58,7 @@ function realWriteBrief(landmark: Landmark, year: number): Promise<EraBrief> {
   return writeEraBrief(landmark, year);
 }
 
-/** The real dependencies: Claude for the brief and fal for every stage. Spends money. */
+/** The real dependencies: the Historian for the brief and fal for every stage. Spends money. */
 export const realDeps: PipelineDeps = {
   writeBrief: realWriteBrief,
   stages: {

@@ -1,10 +1,11 @@
 /**
  * Tests for runEraJob on the in-memory database and queue, with fake stages that record how they
- * were called. Owner: Agent 2 (Studio). Task A2-09. Nothing here calls Claude or fal.
+ * were called. Owner: Agent 2 (Studio). Task A2-09. Nothing here calls the Historian or fal.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { eraIdOf, type EraBrief, type Job, type StageKey } from '@/lib/contracts';
 import { getEra, resetMemoryDb } from '@/lib/db';
+import { historianModel } from '@/lib/historian';
 import { claimNextJob, getJob, requestEraGeneration, resetMemoryJobs } from '@/lib/jobs';
 import { placeholderBrief } from '@fixtures/index';
 import { dryRunDeps, type PipelineDeps } from './deps';
@@ -106,7 +107,7 @@ describe('runEraJob, core tier', () => {
     expect(scene).toMatchObject({ state: 'done', model: 'model-scene.jpg', falRequestId: 'scene-req' });
     expect(scene?.startedAt).toBeTruthy();
     expect(scene?.finishedAt).toBeTruthy();
-    expect(await stageOf(job, 'brief')).toMatchObject({ state: 'done', model: 'claude-opus-5-5' });
+    expect(await stageOf(job, 'brief')).toMatchObject({ state: 'done', model: historianModel() });
   });
 
   it('a failed scene skips the panorama but headshot and narration still run; the era is failed', async () => {
@@ -124,10 +125,10 @@ describe('runEraJob, core tier', () => {
 
   it('a failed brief skips every other stage', async () => {
     const job = await claim(true);
-    const { deps, ran } = makeDeps({ brief: 'Claude declined' });
+    const { deps, ran } = makeDeps({ brief: 'Historian declined' });
     await runEraJob(job, deps);
     expect(ran()).toEqual([]);
-    expect(await stageOf(job, 'brief')).toMatchObject({ state: 'failed', error: 'Claude declined' });
+    expect(await stageOf(job, 'brief')).toMatchObject({ state: 'failed', error: 'Historian declined' });
     expect(await stageOf(job, 'scene')).toMatchObject({ state: 'skipped' });
     expect(await stageOf(job, 'guide_frame')).toMatchObject({ state: 'skipped' });
     expect(await getEra(ERA_ID)).toMatchObject({ state: 'failed', videoState: 'failed' });

@@ -5,7 +5,7 @@
  * and section 4.4 (runEraJob), task A2-09.
  *
  * The graph:
- *   brief (Claude) ─┬─ scene ── panorama
+ *   brief (Historian) ─┬─ scene ── panorama
  *                   ├─ headshot
  *                   └─ narration
  *   video tier, once scene + headshot + narration exist:
@@ -28,7 +28,7 @@
 import { bearingDeg, type Era, type EraBrief, type Guide, type Job, type StageKey, parseEraId } from '@/lib/contracts';
 import { getEra, getLandmark, patchEra } from '@/lib/db';
 import { finishJob, heartbeatJob, patchStage } from '@/lib/jobs';
-import { HISTORIAN_MODEL } from '@/lib/historian';
+import { historianModel } from '@/lib/historian';
 import { MODELS, WALK_DURATION_S } from '@/lib/fal';
 import { defaultDeps, PANORAMA_VFOV_DEG, type PipelineDeps } from './deps';
 import type { StageContext, StageOutput } from './stages';
@@ -65,7 +65,7 @@ function wordCount(text: string): number {
 /**
  * Run a claimed job to the end.
  *
- * Side effects: Claude and fal requests (none in dry-run mode), writes to the era and the job, and
+ * Side effects: Historian and fal requests (none in dry-run mode), writes to the era and the job, and
  * always finishes the job, `succeeded` only when every requested tier is complete.
  * Never throws: an unexpected error is logged and the job is finished as `failed`.
  *
@@ -134,10 +134,10 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
     briefBox.value = briefFromEra(startEra);
     await skip('brief', null);
   } else {
-    await step('brief', HISTORIAN_MODEL, async () => {
+    await step('brief', historianModel(), async () => {
       const startedMs = Date.now();
       briefBox.value = await deps.writeBrief(landmark, year);
-      return { url: '', model: HISTORIAN_MODEL, requestId: null, elapsedMs: Date.now() - startedMs };
+      return { url: '', model: historianModel(), requestId: null, elapsedMs: Date.now() - startedMs };
     });
     if (briefBox.value) {
       const written = briefBox.value;

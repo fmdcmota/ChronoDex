@@ -4,7 +4,7 @@ Owner: Agent 2 (Studio). `runEraJob(job)` runs one generation job and writes eac
 
 ## The graph
 
-    brief (Claude) -+- scene -- panorama
+    brief (Historian) -+- scene -- panorama
                     +- headshot
                     +- narration
     video tier, once scene + headshot + narration exist:
@@ -33,6 +33,6 @@ Owner: Agent 2 (Studio). `runEraJob(job)` runs one generation job and writes eac
 
 ## Traps
 
-- With no `NEXT_PUBLIC_USE_MOCKS`, `runEraJob` calls Claude and fal and costs money. Dry-run text says "Placeholder" on purpose.
-- Not run live end to end yet: it needs `ANTHROPIC_API_KEY` and a root `FAL_KEY`.
+- With no `NEXT_PUBLIC_USE_MOCKS`, `runEraJob` calls the Historian and fal and costs money. Dry-run text says "Placeholder" on purpose.
+- Not run live end to end yet: it needs `DEEPSEEK_API_KEY` for the brief and a root `FAL_KEY` (now set).
 - The worker (`src/worker/`, A2-10) is what calls it. A job from `npm run dev` is only visible to a worker when both use Atlas.

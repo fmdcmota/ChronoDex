@@ -7,12 +7,12 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:50
-- Working on: A2-11 is complete: voice routes committed (ba010ee), uploads route written and tested live, not yet committed. A2-04 to A2-06 still wait on the human's voice and talk-model picks
-- Next: A2-10 worker (`src/worker/index.ts`: claim loop calling runEraJob, clean shutdown, `npm run worker`). Then A2-12 Claude image checks (horizon, seam, leftover grey and modern objects), A2-13 pregenerate and backup scripts, A2-14 stitch. A human should run `node spikes/agent-2/voice-test.mjs` in Chrome to prove a real WebM recording
+- Last updated: 2026-11-14 21:10
+- Working on: A2-10 worker written and tested, not yet committed. main was merged into agent-2 (16dc14b); the Historian is now DeepSeek (Agent 1), so runEraJob uses historianModel() and a live run needs DEEPSEEK_API_KEY, not ANTHROPIC_API_KEY. A2-07 to A2-11 are committed (latest 059a5f2)
+- Next: A2-12 image checks with one corrective retry (what to judge: the panorama horizon height, seam, leftover grey and modern objects; scene framing against the reference; guide frame face size and identity). Then A2-13 pregenerate and backup scripts, A2-14 stitch. The notebook table "Wanted from the human" holds every open human ask
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-14 19:55 (@team review)
-- Waiting for commit approval: A2-11 uploads route (src/app/api/uploads/*, this page, a board post)
+- Waiting for commit approval: A2-10 (src/worker/*, the Historian-name updates in src/lib/pipeline, this page, a board post)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Wanted from the human (compile into one list when asked)
@@ -59,7 +59,7 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [x] A2-07 fal library: `runFal`, models, voices, upload, speech, transcribe
 - [x] A2-08 Stage functions and prompt builders (stitch comes with A2-14, image checks with A2-12)
 - [x] A2-09 `runEraJob` orchestrator (never run live end to end: needs ANTHROPIC_API_KEY, a root FAL_KEY and, to share jobs with the dev server, MONGODB_URI)
-- [ ] A2-10 Worker
+- [x] A2-10 Worker (not run live: needs Atlas and keys; real Ctrl+C untested on Windows)
 - [x] A2-11 Routes: uploads, voice tts, voice stt (a real Chrome WebM and iOS MP4 recording through stt is still unproven)
 - [ ] A2-12 Image checks with one corrective retry
 - [ ] A2-13 Pregenerate and backup-media scripts
@@ -199,3 +199,16 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: none.
 - Next: A2-10, the worker.
+
+### 2026-11-14 21:10, A2-10: worker (done, not run live)
+- Did: merged `main` into `agent-2` (a merge, not a rebase, as asked). Agent 1 had replaced the Historian's Claude call with DeepSeek and removed `HISTORIAN_MODEL`, which broke my `run.ts` import; fixed by calling `historianModel()`, and updated my comments, README and one test that named Claude. Then built `src/worker/loop.ts` (`runWorker`: N slots that claim, run, repeat, with abortable sleeps and a summary), `src/worker/index.ts` (startup checks, signals, logging), a README and 8 tests.
+- Decided, and why:
+  - The loop is separate from the entry point so it can be tested with fake claim and run functions. The entry point does the process-level work.
+  - Fail fast at startup: no `MONGODB_URI` (the worker could not see the API's jobs), or mocks off with no `FAL_KEY` or `DEEPSEEK_API_KEY`. The first log line states dry run or real, because real mode spends money.
+  - Concurrency defaults to 1 (`WORKER_CONCURRENCY` raises it). Jobs mostly wait on fal, so more is cheap, but one is the safe default for credits.
+  - Shutdown: stop claiming, 20 s grace for a running job, then exit. The job keeps its saved fal request ids and is re-claimed after its 10 minute lease. I did not add a way to release the lease because `src/lib/jobs` is Agent 1's: a `releaseJob` would make a restart resume at once.
+- Measured or verified: `npm run check` passes (typecheck, lint, 341 tests, 8 of them the loop). Ran the real entry point: it refuses without `MONGODB_URI` (exit 1), starts and idles in dry-run mode on a private queue, and names a missing `DEEPSEEK_API_KEY` when mocks are off. The unit tests cover queue order, concurrency limit, stop on abort, a running job finishing after abort, an idle slot waking at once on abort, surviving a failed claim and a crashing run, and one end-to-end dry run of a core and video job on the in-memory queue.
+- Not verified: a live run against Atlas with real keys, and a real Ctrl+C (a bash shell on Windows cannot deliver SIGINT to the process, so the signal path is untested; only the loop behind it is).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the merge briefly broke the typecheck (above). `WORKER_CONCURRENCY` and `WORKER_ALLOW_MEMORY` are not in `.env.example`, which is Agent 1's file (MASTER 8.4 rule 8): asked on the board.
+- Next: A2-12.
