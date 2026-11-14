@@ -13,6 +13,7 @@ Your own sheet lists what to hand over and what to keep:
 - Agent 2, Studio: [agent-2.md](agent-2.md)
 - Agent 3, Explorer: [agent-3.md](agent-3.md)
 - Agent 4, Time Machine: [agent-4.md](agent-4.md)
+- Agent 5, Archivist: [agent-5.md](agent-5.md) (brief in `AGENT5.md`)
 
 Read your sheet before you delegate anything.
 

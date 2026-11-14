@@ -111,3 +111,9 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: none new. A4-08 still waits on Agent 2.
 - Next: see Current state.
+
+### 2026-11-14 20:31, outside my tasks: Agent 5 brief, phone tunnel
+- Did: at the human's request, put the app online for a phone test (production build in mock mode on port 3105, SSH tunnel through localhost.run; no keys in .env.local, so nothing can spend). Then, also at the human's request, wrote `AGENT5.md`: a brief for a fifth agent that finds, acquires and validates the pipeline's input data, with output formats matched to the contracts and to the Historian's research-notes format, a validator spec, a source catalogue, a work loop and ready prompts. Created `notebook/agent-5.md` and `skills/haiku-delegate/agent-5.md`, and added Agent 5 to the skill's index.
+- Decided, and why: Agent 5 writes data files only; its data reaches the app through small ASKs to Agents 1 and 2 (seed reads data/landmarks, Historian accepts pre-made notes), so no frozen contract changes. I did not edit MASTER.md or CLAUDE.md (human-owned); the human was told what to add.
+- Problems: AGENT5.md section 7's API parameters were written from memory and not run; the brief tells Agent 5 to verify them first.
+- Next: unchanged (A4-08 when the voice routes land; phone results).
