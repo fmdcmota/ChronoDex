@@ -33,7 +33,7 @@ export function Avatar({ name, url, sizePx }: AvatarProps) {
       role="img"
       aria-label={name}
       style={{ ...style, fontSize: sizePx * 0.4 }}
-      className="flex shrink-0 items-center justify-center rounded-full bg-amber-700 font-semibold text-amber-50"
+      className="flex shrink-0 items-center justify-center rounded-full bg-(--brick) font-semibold text-(--paper)"
     >
       {initials}
     </div>

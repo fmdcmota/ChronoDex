@@ -21,10 +21,14 @@ import { ApiError, api, getPlayerId } from '@/lib/client';
 import { ChatHeader } from './ChatHeader';
 import { Composer } from './Composer';
 import { MessageBubble } from './MessageBubble';
+import { failureNotice } from './notice';
+import { NextStopCard } from './NextStopCard';
+import { chatHasExchange } from './nextStop';
 import { TypingIndicator } from './TypingIndicator';
 import { clearHistory, loadHistory, saveHistory } from './history';
 import type { Recording } from './recorder';
 import { sineWav } from './tone';
+import { BTN_PRIMARY } from '@/components/time-machine/pixel';
 
 /** Props for ChatScreen. */
 export interface ChatScreenProps {
@@ -66,10 +70,10 @@ export function ChatScreen({ eraId }: ChatScreenProps) {
   if (!era?.guide) {
     const message = loadError ?? (era ? 'This guide has not arrived yet. Open the Time Machine for this year first.' : 'Finding your guide…');
     return (
-      <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-white p-6 text-center font-sans text-zinc-600">
+      <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-(--paper) p-6 text-center text-(--ink-soft)">
         <p>{message}</p>
         {(loadError || era) && (
-          <a href={backHref} className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white">
+          <a href={backHref} className={BTN_PRIMARY}>
             Back to the Time Machine
           </a>
         )}
@@ -195,8 +199,7 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
         if (readAloud) void playMessage(all.length - 1, reply);
       }
       if (errorText || !reply) {
-        const reason = (errorText ?? 'no reply').replace(/[.\s]+$/, '');
-        setNotice(`${guide.name.split(' ')[0]} could not answer: ${reason}. Try again.`);
+        setNotice(failureNotice(guide.name, errorText));
       }
     },
     [messages, eraId, guide.name, readAloud, playMessage],
@@ -238,10 +241,10 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-white font-sans">
+    <div className="fixed inset-0 z-40 flex flex-col bg-(--paper) text-(--ink)">
       <ChatHeader guide={guide} year={year} backHref={backHref} readAloud={readAloud} onToggleReadAloud={toggleReadAloud} onReset={reset} />
       <main className="flex-1 space-y-2 overflow-y-auto overscroll-contain px-3 py-4">
-        <p className="pb-2 text-center text-[11px] text-zinc-400">
+        <p className="m-0! pb-2 text-center text-[11px] text-(--ink-soft)">
           {guide.name} is a fictional guide. Answers draw on the era&apos;s sources but may be wrong.
         </p>
         {messages.map((m, i) => (
@@ -261,12 +264,13 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
         ))}
         {phase === 'waiting' && <TypingIndicator />}
         {phase === 'streaming' && <MessageBubble message={{ role: 'guide', text: streamText }} streaming />}
-        {phase === 'transcribing' && <p className="text-right text-xs text-zinc-400">Listening back…</p>}
+        {phase === 'transcribing' && <p className="m-0! text-right text-xs text-(--ink-soft)">Listening back…</p>}
         {notice && (
-          <p role="alert" className="mx-auto max-w-[90%] rounded-lg bg-amber-50 px-3 py-2 text-center text-xs text-amber-800">
+          <p role="alert" className="mx-auto! max-w-[90%] bg-(--paper-shade) px-3 py-2 text-center text-xs text-(--ink)">
             {notice}
           </p>
         )}
+        {phase === 'idle' && chatHasExchange(messages) && <NextStopCard landmarkId={era.landmarkId} />}
         <div ref={bottom} />
       </main>
       <Composer

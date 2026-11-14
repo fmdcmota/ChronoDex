@@ -7,24 +7,24 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 (human-directed full-repo review)
-- Working on: A3-03 and A3-04 are being ported into `src/` by a human-directed review session: `src/app/layout.tsx`, `src/app/globals.css`, `src/app/page.tsx`, and `src/components/explore/` (palette, game-map-style, location, geo-format, map-geometry, MapScreen). The maplibre worker is copied to `public/maplibre-gl-worker.mjs`, and `@fontsource/jersey-10` is added for the pixel font.
-- Next: finish the port and run `npm run check`, then A3-06 (capture), A3-07 (Dex), A3-08 (manifest/icons/attribution) and A3-10 (phone pass). A3-05 and A3-09 logic are already ported.
-- Blocked on: H1 photo GPS to replace the estimated photo spots; real-phone checks.
-- Board read up to: 2026-11-14 16:50 (@agent-1, A1-09, API routes)
-- Waiting for commit approval: the map port (this review), once finished.
+- Last updated: 2026-11-14 20:28
+- Working on: nothing. A3-03 to A3-09 are built, verified in headless Chrome at phone size (fake camera and GPS) and unit tested. `npm run check` passes (227 tests). Waiting for commit approval.
+- Next: A3-10, the phone pass on iOS Safari and Android Chrome. It needs a human with real phones: camera, GPS, "Add to Home Screen", pull-to-refresh and safe-area insets are the unknowns. Then polish what that finds. After that, anything the team asks for: for example swap the hand-drawn sprites for fal ones (`npm run art:fal -- --yes` in `spikes/agent-3`, needs `FAL_KEY`), or real H1 photo GPS into `fixtures/landmarks.ts` (Agent 1's file) once the photos exist.
+- Blocked on: real phones (A3-10). `POST /api/uploads` does not exist yet (Agent 2, A2-11), so with mocks off a capture stops at "The server cannot take photos yet" and offers Try again. With mocks on the whole flow works.
+- Board read up to: 2026-11-14 20:30 (@agent-4, A4-05, A4-07)
+- Waiting for commit approval: all A3-03 to A3-09 work (UI kit, capture, Dex, manifest and icons, map hand-off), this page and one board post.
 
 ## Tasks
 
 - [x] A3-01 Art direction, sprites and badges (drawn in code; the fal route is written, not yet run: no key)
 - [x] A3-02 Map spike
-- [ ] A3-03 App shell, theme tokens, UI kit
-- [ ] A3-04 Map screen
-- [ ] A3-05 Location handling and spoof panel
-- [ ] A3-06 Capture flow
-- [ ] A3-07 Dex screen
-- [ ] A3-08 Resilience: cached Dex, loading and error states, manifest, attribution
-- [ ] A3-09 Next-landmark hint
+- [x] A3-03 App shell, theme tokens, UI kit (kit in src/components/ui)
+- [x] A3-04 Map screen
+- [x] A3-05 Location handling and spoof panel
+- [x] A3-06 Capture flow
+- [x] A3-07 Dex screen
+- [x] A3-08 Resilience: cached Dex, loading and error states, manifest, attribution
+- [x] A3-09 Next-landmark hint
 - [ ] A3-10 Phone pass and polish
 
 ## Log
@@ -54,3 +54,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: (1) maplibre-gl 6 loads `dist/maplibre-gl-worker.mjs` as a separate file. Bundlers skip it, so the map stays blank. Fixed in Vite with `?url` and `setWorkerUrl`. The Next.js fix is not yet tested. (2) Styling a marker's root element (`position: relative`, or an animated `transform`) moved every marker away from its point. Fixed by styling inner elements only. (3) MapLibre's 512 px tiles make zoom 16 only about 290 m across a phone. (4) This repo is inside iCloud Drive's synced Documents folder. iCloud created "file 2.js" conflict copies inside node_modules. I reinstalled clean with `npm ci`, but `.git` is at risk too, so I told the team.
 - Next: A3-03.
+
+### 2026-11-14 20:28, A3-03, A3-06, A3-07, A3-08, A3-09 (and checking A3-04, A3-05): UI kit, capture, Dex, offline, manifest
+- Did: `src/components/ui/` (Button, Card, Sheet, Spinner, ProgressList, Toast, with a README). Capture screen (`CaptureScreen.tsx`): rear camera, file-input fallback, photo shrunk to 1600 px JPEG under 4 MB, upload then `POST /api/captures`, badge award, or "You are 750 m from Royal Albert Hall. Head south-west". Dex screen (`DexScreen.tsx`): badge grid, photos and dates, progress bar, empty, loading, error and offline states, last Dex cached in localStorage. Manifest, four icons (drawn from the Queen's Tower sprite, `npm run icons` in the spike) and layout metadata. The Map now links to the Dex and hands its position (including a dev spoof) to Capture through sessionStorage. Pure logic with tests: `fix-store`, `image-resize`, `dex-cache`, `dex-view`, `capture-messages`. The next-landmark hint (A3-09) and location handling (A3-05) were already ported by the review session; I checked both in the real app.
+- Decided, and why: the server alone decides a capture; the screen only shows the outcome. The UI kit uses new `ui-` classes and leaves the Map's old `.sheet` alone, so nothing Agent 4 or the Map relied on changed. Upload failures are worded by which step failed, because the same status means different things. The player never sees a raw server message. The Dex cache is tied to the player id and read through `useSyncExternalStore`, because React's lint rule forbids setting state in an effect.
+- Measured or verified: headless Chrome at 390x844, DPR 2, fake camera and emulated GPS, against `next dev`. Mocks on: map, capture button, camera live (1920 px wide), shutter, review, upload, badge award, mock Dex store, Dex 1 / 6. Too far (750 m, direction checked by hand). No camera permission: clear message plus a working file picker (a PNG was decoded, shrunk to JPEG, captured). Mocks off: upload missing gives "The server cannot take photos yet" and Try again re-runs it. Dex offline: "Offline copy" with cached cards. No cache and no network: friendly error and Try again. Map attribution does not overlap the bottom HUD. `npm run check`: type check, lint and 227 tests pass. **Not seen on a real phone.**
+- Delegated to Haiku, and whether it was kept: nothing. Each piece needed judgement or a visual check.
+- Problems: (1) iCloud: 19 "file 2" duplicates appeared in `src/` (all byte-identical to tracked files, removed by exact name) and my `node_modules` lost its native vitest binding (fixed with `npm ci`). Worse, in real-API mode `next dev` inside the iCloud folder reloads the page forever (hundreds of "Compiled in 1ms"; mock mode is fine). The same repo copied to /tmp does not do it, so the folder location is the cause. (2) Bug found by testing: Map to Capture lost the recent position because the tracker's "locating" state wiped the fallback; fixed. (3) Bug found by testing: starting the tracker after the async permission check could leave a GPS watch running after unmount (also in the Map); fixed with a cancelled flag in both. (4) Light-on-light GPS chip on the camera screen; fixed. (5) A multipart POST to a missing route returns 409 from Next, not 404; wording now covers it. (6) The `package-lock.json` in my tree had lost its `libc` fields (npm on a Mac); I restored the committed one.
+- Next: A3-10, the phone pass.

@@ -8,6 +8,7 @@
 
 import { useState } from 'react';
 import type { Job, JobStage } from '@/lib/contracts';
+import { PANEL_DARK, SECTION_LABEL } from './pixel';
 
 /** Props for ProgressSheet. */
 export interface ProgressSheetProps {
@@ -45,6 +46,28 @@ export function stageSeconds(stage: Pick<JobStage, 'startedAt' | 'finishedAt'>, 
   return Math.max(0, Math.round((endMs - startMs) / 1000));
 }
 
+/** After this long in the queue, say the generator may be offline (the worker runs on a laptop, section 2). */
+export const QUEUE_SLOW_S = 60;
+
+/**
+ * What to tell the player while a job waits for the worker to claim it.
+ *
+ * Why: the worker is a separate process (MASTER.md section 2). When it is down a job stays queued
+ * for ever, and a list of grey stages with "0/5" looks frozen. This says what is happening.
+ *
+ * @param job - The active job.
+ * @param nowMs - Current time.
+ * @returns A sentence while the job is queued, else null.
+ */
+export function queueNote(job: Pick<Job, 'state' | 'createdAt'>, nowMs: number): string | null {
+  if (job.state !== 'queued') return null;
+  const waitedMs = nowMs - Date.parse(job.createdAt);
+  if (Number.isFinite(waitedMs) && waitedMs >= QUEUE_SLOW_S * 1000) {
+    return 'Still waiting for the studio. It may be offline; anything already made still works.';
+  }
+  return 'Waiting in line for the studio…';
+}
+
 /**
  * The stage list.
  *
@@ -58,6 +81,7 @@ export function ProgressSheet({ job, nowMs, startCollapsed = false }: ProgressSh
   const [collapsed, setCollapsed] = useState(startCollapsed);
   const doneCount = job.stages.filter((s) => s.state === 'done' || s.state === 'skipped').length;
   const running = job.stages.find((s) => s.state === 'running');
+  const waiting = queueNote(job, nowMs);
 
   if (collapsed) {
     return (
@@ -65,37 +89,38 @@ export function ProgressSheet({ job, nowMs, startCollapsed = false }: ProgressSh
         type="button"
         onClick={() => setCollapsed(false)}
         aria-label="Show generation progress"
-        className="flex w-full items-center gap-2 rounded-full bg-black/70 px-3 py-1.5 text-left text-xs text-white backdrop-blur"
+        className={`${PANEL_DARK} flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs`}
       >
         <span className="animate-spin" aria-hidden>◐</span>
-        <span className="min-w-0 flex-1 truncate">{running?.label ?? 'Waiting for the studio'}</span>
-        <span className="tabular-nums text-white/70">{doneCount}/{job.stages.length}</span>
+        <span className="min-w-0 flex-1 truncate">{running?.label ?? waiting ?? 'Waiting for the studio'}</span>
+        <span className="tabular-nums text-(--paper)/70">{doneCount}/{job.stages.length}</span>
       </button>
     );
   }
 
   return (
-    <section aria-label="Generation progress" className="rounded-2xl bg-black/75 p-3 text-white backdrop-blur">
+    <section aria-label="Generation progress" className={`${PANEL_DARK} p-3`}>
       <div className="mb-2 flex items-baseline justify-between text-xs">
-        <span className="font-bold uppercase tracking-wider">Travelling back</span>
-        <button type="button" onClick={() => setCollapsed(true)} className="tabular-nums text-white/70" aria-label="Hide generation progress">
+        <span className={SECTION_LABEL}>Travelling back</span>
+        <button type="button" onClick={() => setCollapsed(true)} className="tabular-nums text-(--paper)/70" aria-label="Hide generation progress">
           {doneCount}/{job.stages.length} ▴
         </button>
       </div>
+      {waiting && <p className="m-0! mb-2! text-xs text-(--paper)/80">{waiting}</p>}
       <ol className="space-y-1.5">
         {job.stages.map((stage) => {
           const seconds = stageSeconds(stage, nowMs);
           return (
-            <li key={stage.key} className={`flex gap-2 text-sm ${stage.state === 'pending' ? 'text-white/45' : ''}`}>
-              <span className={`w-4 text-center ${stage.state === 'running' ? 'animate-spin' : ''} ${stage.state === 'failed' ? 'text-red-400' : ''}`} aria-label={stage.state}>
+            <li key={stage.key} className={`flex gap-2 text-sm ${stage.state === 'pending' ? 'text-(--paper)/50' : ''}`}>
+              <span className={`w-4 text-center ${stage.state === 'running' ? 'animate-spin' : ''} ${stage.state === 'failed' ? 'text-(--brick)' : ''}`} aria-label={stage.state}>
                 {STATE_ICON[stage.state]}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block leading-tight">{stage.label}</span>
-                {stage.model && <span className="block truncate font-mono text-[10px] text-white/55">{stage.model}</span>}
-                {stage.error && <span className="block text-[11px] text-red-300">{stage.error}</span>}
+                {stage.model && <span className="block truncate font-mono text-[10px] text-(--paper)/60">{stage.model}</span>}
+                {stage.error && <span className="block text-[11px] text-(--brick)">{stage.error}</span>}
               </span>
-              {seconds !== null && <span className="text-xs tabular-nums text-white/60">{seconds}s</span>}
+              {seconds !== null && <span className="text-xs tabular-nums text-(--paper)/70">{seconds}s</span>}
             </li>
           );
         })}

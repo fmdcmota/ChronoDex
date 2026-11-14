@@ -17,6 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Era, Guide } from '@/lib/contracts';
 import { buildCaptions, captionAt, type Caption } from './captions';
 import { SegmentPlayer, type PlayableSegment } from './segmentPlayer';
+import { BTN_PRIMARY, BTN_SECONDARY } from './pixel';
 
 /** Props for GuidePlayer. */
 export interface GuidePlayerProps {
@@ -132,14 +133,14 @@ export function GuidePlayer({ era, onFinished }: GuidePlayerProps) {
     <>
       {/* Video layer: covers the 360° view while the clips play. */}
       {hasVideo && (
-        <div ref={stage} className={`absolute inset-0 z-20 bg-black ${phase === 'playing' ? '' : 'hidden'}`} />
+        <div ref={stage} className={`absolute inset-0 z-20 bg-(--ink) ${phase === 'playing' ? '' : 'hidden'}`} />
       )}
 
       {phase === 'ready' && (
         <button
           type="button"
           onClick={start}
-          className="absolute bottom-16 left-1/2 z-30 -translate-x-1/2 rounded-full bg-amber-400 px-5 py-3 text-sm font-bold text-black shadow-lg"
+          className={`${BTN_PRIMARY} absolute bottom-16 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap`}
         >
           ▶ Meet {guide.name.split(' ')[0]}
         </button>
@@ -148,14 +149,14 @@ export function GuidePlayer({ era, onFinished }: GuidePlayerProps) {
       {phase === 'playing' && (
         <>
           {caption && (
-            <p className="absolute inset-x-3 bottom-14 z-30 mx-auto max-w-md rounded bg-black/70 px-3 py-1.5 text-center text-sm leading-snug text-white">
+            <p className="absolute inset-x-3 bottom-14 z-30 m-0! mx-auto! max-w-md bg-(--ink)/80 px-3 py-1.5 text-center text-sm leading-snug text-(--paper)">
               {caption.text}
             </p>
           )}
           <button
             type="button"
             onClick={skip}
-            className="absolute top-2 right-2 z-30 rounded-full bg-black/60 px-3 py-1.5 text-xs font-semibold text-white"
+            className={`${BTN_SECONDARY} absolute top-2 right-2 z-30`}
           >
             Skip ›
           </button>
@@ -163,7 +164,7 @@ export function GuidePlayer({ era, onFinished }: GuidePlayerProps) {
       )}
 
       {problem && (
-        <p role="alert" className="absolute inset-x-3 top-12 z-30 rounded bg-black/75 p-2 text-center text-xs text-white">
+        <p role="alert" className="absolute inset-x-3 top-12 z-30 m-0! bg-(--ink)/80 p-2 text-center text-xs text-(--paper)">
           {problem}
         </p>
       )}

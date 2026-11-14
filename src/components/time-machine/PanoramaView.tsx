@@ -18,6 +18,7 @@ import type { Viewer } from '@photo-sphere-viewer/core';
 import type { GyroscopePlugin } from '@photo-sphere-viewer/gyroscope-plugin';
 import type { Panorama } from '@/lib/contracts';
 import { hFovDegOf, maxOffsetRad, panoDataFor } from './panoData';
+import { BTN_SECONDARY, TAG_DARK } from './pixel';
 
 /** Starting zoom, 0 (widest) to 100. Wide enough to read the scene on a phone held upright. */
 const DEFAULT_ZOOM_LVL = 30;
@@ -137,9 +138,9 @@ export function PanoramaView({ panorama, className = 'relative h-64' }: Panorama
   };
 
   return (
-    <div className={`overflow-hidden bg-black ${className}`}>
+    <div className={`overflow-hidden bg-(--ink) ${className}`}>
       <div ref={box} className="absolute inset-0" />
-      <span className="pointer-events-none absolute top-2 left-2 z-10 rounded bg-black/55 px-2 py-0.5 text-[11px] text-white">
+      <span className={`${TAG_DARK} pointer-events-none absolute top-2 left-2 z-10`}>
         AI reconstruction
       </span>
       <div className="absolute right-2 bottom-2 z-10 flex gap-2">
@@ -148,16 +149,16 @@ export function PanoramaView({ panorama, className = 'relative h-64' }: Panorama
             type="button"
             onClick={toggleGyro}
             aria-pressed={gyroOn}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold shadow ${gyroOn ? 'bg-amber-400 text-black' : 'bg-black/60 text-white'}`}
+            className={`${BTN_SECONDARY} ${gyroOn ? 'bg-(--gold)!' : ''}`}
           >
             {gyroOn ? 'Motion on' : 'Look around'}
           </button>
         )}
-        <button type="button" onClick={reset} className="rounded-full bg-black/60 px-3 py-1.5 text-xs font-semibold text-white shadow">
+        <button type="button" onClick={reset} className={BTN_SECONDARY}>
           Reset
         </button>
       </div>
-      {error && <p className="absolute inset-x-2 top-10 z-10 rounded bg-black/70 p-2 text-center text-xs text-white">{error}</p>}
+      {error && <p className="absolute inset-x-2 top-10 z-10 m-0! bg-(--ink)/80 p-2 text-center text-xs text-(--paper)">{error}</p>}
     </div>
   );
 }

@@ -69,20 +69,24 @@ replies; type a message containing "error" to see the error message.
 | 3.8 | With the message box empty, hold the mic button, speak, release | The button grows and turns red while held. Then "Listening back…", then a message "What did people wear around here back then?" is sent for you (canned text for now) |
 | 3.9 | Tap ↺ at the top right | The chat goes back to just the greeting |
 
-## Test 4: the real app (A4-02 to A4-08)
+## Test 4: the real app (A4-02 to A4-09)
 
-Same idea as Tests 1 to 3, inside the real app with mock data. On the laptop, at the repo root:
-`npm install` once, then `npx next dev --experimental-https`. Open `https://<laptop LAN IP>:3000`
+Same idea as Tests 1 to 3, inside the real app with mock data (`NEXT_PUBLIC_USE_MOCKS=1` in `.env.local`).
+On the laptop, at the repo root: `npm install` once, then `npx next dev --experimental-https`. Open `https://<laptop LAN IP>:3000`
 on the phone and accept the certificate warning.
 
 | # | Do this | Pass if |
 |---|---|---|
 | 4.1 | Open `/time/queens-tower` | Header "Queen's Tower", a 360° picture, "Meet Albert", years 1893 and 1962 at the bottom |
 | 4.2 | Tap **Look around**, move the phone | As Test 1: iPhone asks for motion access, the view follows the phone |
-| 4.3 | Tap **Meet Albert** with sound on | Three short sample clips play one after another (a flower video for now), with captions during the middle one, then a yellow **Chat with Albert** bar appears |
+| 4.3 | Tap **Meet Albert** with sound on | Three short sample clips play one after another (a flower video for now), with captions during the middle one, then a gold **Chat with Albert** button appears |
 | 4.4 | Tap **1962** | A dark panel lists steps ("Researching 1962 in the archives" …) ticking along with seconds. After about 20 s the picture appears; a small one-line bar then shows the video steps |
 | 4.5 | Tap **Chat with Albert** (from 4.3) | The chat opens with Albert's picture and greeting. Then repeat Test 3 steps 3.2 to 3.9 here |
 | 4.6 | Tap ‹ in the chat, then ‹ in the Time Machine | Back to the Time Machine, then to the map |
+| 4.7 | On 1893, tap **Then/Now**, then drag across the picture with one finger | Two pictures line up; the line follows your finger all the way to both edges and the page does not scroll. **Close** shuts it |
+| 4.8 | Tap **Sources** | A panel slides up with a summary, fun facts and two Wikipedia links. A link opens in a new tab. Tapping the dark area above closes it |
+| 4.9 | In the chat, send any message and wait for the reply | Under the reply, a **Next stop** card names another landmark with a distance and direction. Tapping it opens the map |
+| 4.10 | Look at both screens overall | Pixel font and gold/ink colours like the map; nothing cut off at the top (notch) or bottom (home bar); text readable outdoors |
 
 ## How to report
 

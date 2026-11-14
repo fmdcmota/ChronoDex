@@ -23,7 +23,11 @@ import { api } from '@/lib/client';
 import { GuidePlayer } from './GuidePlayer';
 import { PanoramaView } from './PanoramaView';
 import { ProgressSheet } from './ProgressSheet';
+import { SourcesDrawer } from './SourcesDrawer';
+import { ThenNowSlider } from './ThenNowSlider';
+import { hasSourceNotes } from './sources';
 import { YearBar } from './YearBar';
+import { BTN_PRIMARY, BTN_SECONDARY_SMALL, PANEL_DARK, PIXEL_FONT } from './pixel';
 
 /** Props for TimeMachineScreen. */
 export interface TimeMachineScreenProps {
@@ -59,6 +63,10 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   const [current, setCurrent] = useState<EraResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [guideDone, setGuideDone] = useState(false);
+  /** A4-06: the then/now slider is open. */
+  const [comparing, setComparing] = useState(false);
+  /** A4-09: the sources drawer is open. */
+  const [showSources, setShowSources] = useState(false);
   const [nowMs, setNowMs] = useState(() => Date.now());
   /** `${eraId}:core` and `${eraId}:video` once asked for, so each is requested at most once. */
   const asked = useRef(new Set<string>());
@@ -144,6 +152,8 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
     if (eraId === selectedId) return;
     setSelectedId(eraId);
     setGuideDone(false);
+    setComparing(false);
+    setShowSources(false);
     setError(null);
   };
 
@@ -155,17 +165,38 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   };
 
   const guideName = era?.guide?.name.split(' ')[0];
+  /** A4-06: the slider needs both images, and they share framing (section 5.1). */
+  const canCompare = Boolean(era?.sceneImageUrl && landmark?.referencePhotoUrl);
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-zinc-950 font-sans text-white">
-      <header className="flex items-center gap-3 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2">
-        <Link href="/" className="px-1 text-2xl leading-none text-amber-400" aria-label="Back to the map">
+    <div className="fixed inset-0 z-40 flex flex-col bg-(--ink) text-(--paper)">
+      <header className="flex items-center gap-2 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2">
+        <Link href="/" className={`${PIXEL_FONT} px-1 text-4xl text-(--gold)`} aria-label="Back to the map">
           ‹
         </Link>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-base font-bold">{landmark?.name ?? 'Time Machine'}</h1>
-          <p className="truncate text-xs text-white/60">{era?.title ?? (era ? `${era.year}` : 'Choose a year')}</p>
+          <h1 className={`${PIXEL_FONT} truncate text-2xl text-(--gold)`}>{landmark?.name ?? 'Time Machine'}</h1>
+          <p className="m-0! truncate text-xs text-(--paper)/70">{era?.title ?? (era ? `${era.year}` : 'Choose a year')}</p>
         </div>
+        {era && hasSourceNotes(era) && (
+          <button
+            type="button"
+            onClick={() => setShowSources(true)}
+            aria-label="Sources and facts for this year"
+            className={`${BTN_SECONDARY_SMALL} shrink-0`}
+          >
+            Sources
+          </button>
+        )}
+        {canCompare && (
+          <button
+            type="button"
+            onClick={() => setComparing(true)}
+            className={`${BTN_SECONDARY_SMALL} shrink-0`}
+          >
+            Then/Now
+          </button>
+        )}
       </header>
 
       <main className="relative flex-1 overflow-hidden">
@@ -176,7 +207,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={era.sceneImageUrl} alt={`${landmark?.name ?? 'The landmark'} in ${era.year}, AI reconstruction`} className="absolute inset-0 h-full w-full object-cover" />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-6xl font-black text-white/10 tabular-nums">{era?.year ?? ''}</div>
+          <div className={`${PIXEL_FONT} absolute inset-0 flex items-center justify-center text-8xl text-(--paper)/10`}>{era?.year ?? ''}</div>
         )}
 
         {era?.guide && (era.narrationAudioUrl || era.guideVideo) && !job?.stages.some((s) => s.state === 'running' && s.key === 'narration') && (
@@ -184,22 +215,34 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
         )}
 
         {job && (
-          <div className="absolute inset-x-3 top-3 z-30 max-h-[70%] overflow-y-auto">
+          <div className="absolute inset-x-2 top-2 z-30 max-h-[70%] overflow-y-auto p-[3px]">
             <ProgressSheet key={job.id} job={job} nowMs={nowMs} startCollapsed={era?.state === 'ready'} />
           </div>
         )}
 
         {era?.state === 'failed' && !job && (
-          <div className="absolute inset-x-6 top-1/3 z-30 rounded-2xl bg-black/80 p-4 text-center">
+          <div className={`${PANEL_DARK} absolute inset-x-6 top-1/3 z-30 p-4 text-center`}>
             <p className="text-sm">This trip to {era.year} did not work.</p>
-            <button type="button" onClick={retry} className="mt-3 rounded-full bg-amber-400 px-4 py-2 text-sm font-bold text-black">
+            <button type="button" onClick={retry} className={`${BTN_PRIMARY} mt-3`}>
               Try again
             </button>
           </div>
         )}
 
+        {comparing && canCompare && era?.sceneImageUrl && landmark && (
+          <ThenNowSlider
+            thenUrl={era.sceneImageUrl}
+            nowUrl={landmark.referencePhotoUrl}
+            year={era.year}
+            landmarkName={landmark.name}
+            onClose={() => setComparing(false)}
+          />
+        )}
+
+        {showSources && era && <SourcesDrawer era={era} onClose={() => setShowSources(false)} />}
+
         {error && (
-          <p role="alert" className="absolute inset-x-3 bottom-3 z-30 rounded bg-red-900/90 p-2 text-center text-xs">
+          <p role="alert" className="absolute inset-x-3 bottom-3 z-30 m-0! bg-(--brick) p-2 text-center text-xs text-(--paper)">
             {error}
           </p>
         )}
@@ -208,7 +251,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
       {guideDone && era?.guide && (
         <Link
           href={`/chat/${era.id}`}
-          className="mx-3 mt-2 flex items-center gap-3 rounded-2xl bg-amber-400 px-4 py-3 font-bold text-black"
+          className={`${BTN_PRIMARY} mx-3 mt-2 flex items-center gap-3 text-2xl`}
         >
           <span className="flex-1">Chat with {guideName}</span>
           <span aria-hidden>›</span>
@@ -217,7 +260,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
 
       <div className="pb-[env(safe-area-inset-bottom)]">
         {eras && <YearBar eras={eras} selectedId={selectedId} onSelect={selectEra} />}
-        {!eras && !error && <p className="px-3 py-3 text-sm text-white/60">Warming up the Time Machine…</p>}
+        {!eras && !error && <p className="m-0! px-3 py-3 text-sm text-(--paper)/70">Warming up the Time Machine…</p>}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@
 import Link from 'next/link';
 import type { Guide } from '@/lib/contracts';
 import { Avatar } from './Avatar';
+import { BTN_SECONDARY_SMALL, PIXEL_FONT } from '@/components/time-machine/pixel';
 
 /** Props for ChatHeader. */
 export interface ChatHeaderProps {
@@ -37,14 +38,14 @@ export interface ChatHeaderProps {
  */
 export function ChatHeader({ guide, year, backHref, readAloud, onToggleReadAloud, onReset }: ChatHeaderProps) {
   return (
-    <header className="flex items-center gap-3 border-b border-zinc-200 bg-white/95 px-3 py-2 backdrop-blur">
-      <Link href={backHref} className="px-1 text-2xl leading-none text-blue-500" aria-label="Back to the Time Machine">
+    <header className="flex items-center gap-3 bg-(--ink) px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 text-(--paper)">
+      <Link href={backHref} className={`${PIXEL_FONT} px-1 text-4xl text-(--gold)`} aria-label="Back to the Time Machine">
         ‹
       </Link>
       <Avatar name={guide.name} url={guide.headshotUrl} sizePx={40} />
       <div className="min-w-0 flex-1">
-        <div className="truncate font-semibold text-zinc-900">{guide.name}</div>
-        <div className="truncate text-xs text-zinc-500">
+        <div className={`${PIXEL_FONT} truncate text-2xl text-(--gold)`}>{guide.name}</div>
+        <div className="truncate text-xs text-(--paper)/70">
           {guide.role}, {year}
         </div>
       </div>
@@ -52,11 +53,11 @@ export function ChatHeader({ guide, year, backHref, readAloud, onToggleReadAloud
         type="button"
         onClick={onToggleReadAloud}
         aria-pressed={readAloud}
-        className={`rounded-full px-3 py-1 text-xs font-medium ${readAloud ? 'bg-blue-500 text-white' : 'bg-zinc-100 text-zinc-600'}`}
+        className={`${BTN_SECONDARY_SMALL} shrink-0 ${readAloud ? 'bg-(--gold)!' : ''}`}
       >
         {readAloud ? '🔊 Voice on' : '🔈 Voice off'}
       </button>
-      <button type="button" onClick={onReset} className="text-xs text-zinc-400" aria-label="Start the chat over">
+      <button type="button" onClick={onReset} className="px-1 text-lg text-(--paper)/70" aria-label="Start the chat over">
         ↺
       </button>
     </header>

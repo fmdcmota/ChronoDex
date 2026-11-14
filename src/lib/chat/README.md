@@ -1,10 +1,10 @@
 # src/lib/chat
 
-The guide chat: an in-character, streamed reply from DeepSeek. Server only. Owner: Agent 1. MASTER.md section 7 (chat rules), task A1-13. The team chose DeepSeek over Claude for the chat (decision D-024); the Historian stays on Claude.
+The guide chat: an in-character, streamed reply from DeepSeek. Server only. Owner: Agent 1. MASTER.md section 7 (chat rules), task A1-13. The chat went DeepSeek (D-024), Claude Haiku (D-025), and is on DeepSeek again (D-026), at the human's direction.
 
 **Entry points** (`import { ... } from '@/lib/chat'`): `streamGuideReply(input)` (async stream of `ChatStreamEvent`), `pickNextLandmark`, `buildGuideSystemPrompt`, `toChatTurns`.
 
-**Call:** `deepseek-flash` (override with `CHAT_MODEL`), streaming, thinking off (`reasoning_effort: "none"`), through `deepseek.ts`, a small fetch client with no SDK. Needs `DEEPSEEK_API_KEY`. About $0.0006 per reply at peak prices, half off-peak (estimate).
+**Call:** `deepseek-flash` (override with `CHAT_MODEL`; any value not starting `deepseek-` is ignored with a warning by `chatModel()`), streaming, thinking off (`reasoning_effort: "none"`), through `deepseek.ts`, a small fetch client with no SDK, shared with the Historian. Needs `DEEPSEEK_API_KEY`. Measured on 14 Nov 2026: a full in-character reply in 1.5 s through `POST /api/chat`. About $0.0006 per reply at peak prices, half off-peak (estimate).
 
 **Route:** `POST /api/chat` in `src/app/api/chat/route.ts` turns the stream into SSE with `formatSseEvent` from `src/lib/client/sse.ts`, which the typed client parses.
 

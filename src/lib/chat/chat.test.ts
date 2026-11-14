@@ -6,7 +6,8 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { ChatStreamEvent, Era, Guide } from '@/lib/contracts';
 import { HERO_ERA_ID, eras, landmarks } from '@fixtures/index';
 import { ChatInputError, buildGuideSystemPrompt, pickNextLandmark, streamGuideReply, toChatTurns } from './index';
-import { DEEPSEEK_CHAT_URL, DeepSeekError, streamDeepSeek } from './deepseek';
+import { DEEPSEEK_CHAT_URL, DeepSeekError, collectUrls, completeDeepSeek, streamDeepSeek } from './deepseek';
+import { fakeFetch, sse } from './test-fakes';
 
 const hero = eras.find((e) => e.id === HERO_ERA_ID) as Era & { guide: Guide };
 const queensTower = landmarks.find((l) => l.id === 'queens-tower')!;
@@ -16,37 +17,6 @@ async function collect<T>(stream: AsyncGenerator<T>): Promise<T[]> {
   const out: T[] = [];
   for await (const e of stream) out.push(e);
   return out;
-}
-
-/** An SSE body in DeepSeek's format, split into the given chunk sizes to test buffering. */
-function sse(deltas: string[], finish = 'stop', chunkSize = 7): string[] {
-  const lines = [
-    ...deltas.map((t) => `data: ${JSON.stringify({ object: 'chat.completion.chunk', choices: [{ index: 0, delta: { content: t }, finish_reason: null }] })}\n\n`),
-    `data: ${JSON.stringify({ choices: [{ index: 0, delta: {}, finish_reason: finish }] })}\n\n`,
-    ': keep-alive\n\n',
-    'data: [DONE]\n\n',
-  ].join('');
-  const parts: string[] = [];
-  for (let i = 0; i < lines.length; i += chunkSize) parts.push(lines.slice(i, i + chunkSize));
-  return parts;
-}
-
-/** A fake fetch that records requests and answers with a streamed body or an error status. */
-function fakeFetch(body: string[] | { status: number; text: string }) {
-  const calls: Array<{ url: string; init: RequestInit }> = [];
-  const impl = (async (url: string, init: RequestInit) => {
-    calls.push({ url, init });
-    if (!Array.isArray(body)) return new Response(body.text, { status: body.status });
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream<Uint8Array>({
-      start(controller) {
-        for (const part of body) controller.enqueue(encoder.encode(part));
-        controller.close();
-      },
-    });
-    return new Response(stream, { status: 200, headers: { 'Content-Type': 'text/event-stream' } });
-  }) as unknown as typeof fetch;
-  return { impl, calls };
 }
 
 describe('toChatTurns', () => {
@@ -115,6 +85,37 @@ describe('streamDeepSeek', () => {
   });
 });
 
+describe('DeepSeek web-tool streams', () => {
+  const req = { model: 'm', messages: [], maxTokens: 10, reasoningEffort: 'high' as const, apiKey: 'k' };
+  const toolCalls = [{ calls: [{ sources: [{ url: 'https://a.example/one', title: 'One' }], page: { url: 'https://b.example/two' } }] }];
+  const annotations = [{ type: 'url_citation', url_citation: { url: 'https://c.example/three', title: 'Three' } }];
+
+  it('sends tools and JSON mode only when asked, and reports the URLs DeepSeek found', async () => {
+    const fetch = fakeFetch(sse(['notes'], 'stop', 5, { annotations, serverToolCalls: toolCalls }));
+    const done = await completeDeepSeek({ ...req, tools: [{ type: 'deepseek_web_search' }], fetchImpl: fetch.impl });
+    expect(done).toMatchObject({ text: 'notes', finishReason: 'stop' });
+    expect(done.urls.sort()).toEqual(['https://a.example/one', 'https://b.example/two', 'https://c.example/three']);
+    expect(fetch.calls[0].body.tools).toEqual([{ type: 'deepseek_web_search' }]);
+    expect(fetch.calls[0].body).not.toHaveProperty('response_format');
+
+    const json = fakeFetch(sse(['{}']));
+    await completeDeepSeek({ ...req, json: true, fetchImpl: json.impl });
+    expect(json.calls[0].body.response_format).toEqual({ type: 'json_object' });
+    expect(json.calls[0].body).not.toHaveProperty('tools');
+  });
+
+  it('throws a retryable error when DeepSeek fails inside the stream', async () => {
+    const fetch = fakeFetch(sse(['partial'], 'stop', 1000, { error: 'The model failed to generate a complete response. Please retry.' }));
+    await expect(completeDeepSeek({ ...req, fetchImpl: fetch.impl })).rejects.toMatchObject({ name: 'DeepSeekError', retryable: true });
+    const other = fakeFetch(sse([], 'stop', 1000, { error: 'Content blocked' }));
+    await expect(completeDeepSeek({ ...req, fetchImpl: other.impl })).rejects.toMatchObject({ retryable: false });
+  });
+
+  it('collects URLs at any depth, only under a key named url, only http(s)', () => {
+    expect(collectUrls({ a: [{ url: 'https://x.example/1' }, { b: { url: 'ftp://nope' } }], url: 'not a url', c: { url: 'http://y.example/2' }, title: 'https://z.example/ignored' }).sort()).toEqual(['http://y.example/2', 'https://x.example/1']);
+  });
+});
+
 describe('streamGuideReply', () => {
   const base = { era: hero, landmark: queensTower, suggestion: null, messages: [{ role: 'player' as const, text: 'Hello' }] };
   beforeEach(() => {
@@ -143,11 +144,17 @@ describe('streamGuideReply', () => {
     expect(body.messages.slice(1)).toEqual([{ role: 'user', content: 'Hello' }]);
   });
 
-  it('honours CHAT_MODEL', async () => {
-    process.env.CHAT_MODEL = 'deepseek-v4-pro';
-    const fetch = fakeFetch(sse(['x']));
-    await collect(streamGuideReply({ ...base, fetchImpl: fetch.impl }));
-    expect(JSON.parse(String(fetch.calls[0].init.body)).model).toBe('deepseek-v4-pro');
+  it('honours another DeepSeek model in CHAT_MODEL and ignores anything else', async () => {
+    const modelFor = async (value: string | undefined): Promise<unknown> => {
+      if (value === undefined) delete process.env.CHAT_MODEL;
+      else process.env.CHAT_MODEL = value;
+      const fetch = fakeFetch(sse(['x']));
+      await collect(streamGuideReply({ ...base, fetchImpl: fetch.impl }));
+      return fetch.calls[0].body.model;
+    };
+    expect(await modelFor(undefined)).toBe('deepseek-flash');
+    expect(await modelFor('deepseek-v4-pro')).toBe('deepseek-v4-pro');
+    expect(await modelFor('claude-haiku-5-5')).toBe('deepseek-flash');
   });
 
   it('ends with an error event on a content filter, an API error, or a missing key, never throwing', async () => {

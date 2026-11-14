@@ -10,6 +10,7 @@ Owner: Agent 3. Throwaway (MASTER.md section 3): the app never imports anything 
 | `src/map-spike/` | The map page: `index.html`, `main.ts`, `spike.css` (planned theme tokens) |
 | `scripts/pixel/` | Pixel canvas, the six sprites, badges, and the pixelate step used for fal output |
 | `scripts/make-pixel-art.ts` | `npm run art`: writes every PNG in `art/`. Free. `-- --publish` also copies them to the app's `public/sprites/` |
+| `scripts/make-icons.ts` | `npm run icons`: writes the web app icons into the app's `public/icons/`. Free |
 | `scripts/fal-art.ts` | `npm run art:fal -- --yes`: fal candidates into `art/fal/`. **Spends credits.** Needs `FAL_KEY` |
 | `art/` | Sprites, badges, contact sheet, `art-direction.md` |
 

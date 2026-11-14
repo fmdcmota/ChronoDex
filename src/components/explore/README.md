@@ -1,40 +1,38 @@
 # src/components/explore
 
-The Explorer (Agent 3) screen code for the map and, soon, the capture and Dex flows.
+Agent 3 (Explorer): the Map, Capture and Dex screens. Shared pixel UI kit is in `../ui/`.
 
-## What lives here
+## Screens (each loaded by a thin page in `src/app/`)
 
-- `MapScreen.tsx` — the main screen (`/`): MapLibre game map, landmark markers, the player's
-  position, capture zones, the hint, the capture button, the landmark card, and the dev spoof
-  panel. Loaded with `ssr: false` from `src/app/page.tsx`.
-- `lib/` — portable, unit-tested logic ported from `spikes/agent-3/`:
-  - `palette.ts` — the flat colour palette (mirrored in `src/app/globals.css`).
-  - `game-map-style.ts` — the 19-layer game-look MapLibre style over OpenFreeMap tiles.
-  - `location.ts` — the browser geolocation state machine and the dev spoof.
-  - `geo-format.ts` — distance/compass wording and the nearest-landmark hint.
-  - `map-geometry.ts` — the true-metres accuracy ring polygon.
+- `MapScreen.tsx` (`/`): MapLibre game map, markers, your position, capture rings, hint, landmark
+  card, dev spoof panel. `ssr: false`. Saves your position for Capture (`lib/fix-store.ts`).
+- `CaptureScreen.tsx` (`/capture`): rear camera (file-input fallback), review, upload, `POST
+  /api/captures`, badge award or "how far, which way". Never decides the capture: the server does.
+- `DexScreen.tsx` (`/dex`): badge grid, progress bar, cached copy when offline, all states.
 
-## Entry points
+## `lib/` (pure logic, unit tested)
 
-- Route: `src/app/page.tsx` (dynamic, `ssr: false`).
-- Theme/styles: `src/app/globals.css` (the `:root` tokens must match `lib/palette.ts`).
-- Worker: `public/maplibre-gl-worker.mjs`.
+`palette`, `game-map-style`, `map-geometry`, `geo-format` (distance, compass, hint), `location`
+(GPS state machine plus dev spoof), `fix-store` (Map to Capture hand-off), `image-resize` (1600 px
+JPEG), `capture-messages` (refusal and API-failure wording), `dex-cache` (localStorage), `dex-view`.
 
 ## Run and test
 
-- `npm run dev` then open `/`. With `.env.local` set to `NEXT_PUBLIC_USE_MOCKS=1` it uses fixtures;
-  otherwise the API (in-memory store) serves the same landmarks.
-- `NEXT_PUBLIC_DEV_TOOLS=1` shows the location-spoof panel (`?dev` is not used here; the flag is).
-- `npm run test` runs `lib/geo-format.test.ts` and `lib/map-geometry.test.ts` (plus the rest of
-  the suite). `npm run check` also type-checks and lints.
+- `npm run dev`. `.env.local` with `NEXT_PUBLIC_USE_MOCKS=1` uses fixtures; `0` uses the API.
+- `NEXT_PUBLIC_DEV_TOOLS=1` shows the location-spoof panel (carried over to Capture).
+- Camera and GPS need HTTPS or localhost. On a phone use `spikes/agent-3` `npm run dev:phone`, or
+  the Vercel deploy.
+- `npm run check` runs type check, lint and all tests.
 
 ## Known traps
 
-1. **maplibre-gl 6 worker.** The bundler drops `maplibre-gl/dist/maplibre-gl-worker.mjs`, so it is
-   copied to `public/` and loaded with `setWorkerUrl('/maplibre-gl-worker.mjs')`. If the map is
-   blank and the console says "Worker failed to load", the copy is missing or stale.
-2. **Never style a MapLibre marker's root element** with `position`, `transform` or `display` —
-   MapLibre owns those. Style `.marker-body` / `.player-dot` instead.
-3. **MapLibre tiles are 512 px**, so a fixed zoom is the wrong way to frame the six landmarks; the
-   map uses `bounds`.
-4. **Photo spots are estimates** until the H1 photo GPS replaces them (`fixtures/landmarks.ts`).
+1. **maplibre-gl 6 worker.** Bundlers drop it, so it is copied to `public/maplibre-gl-worker.mjs`
+   and loaded with `setWorkerUrl`. Blank map plus "Worker failed to load" means it is missing.
+2. **Never style a MapLibre marker's root element** (`position`, `transform`, `display`). Style
+   `.marker-body` / `.player-dot`.
+3. **Always guard async `tracker.start()` with a cancelled flag.** Starting after unmount leaks a GPS
+   watch that stalls later fixes.
+4. **A multipart POST to a missing route returns 409** ("Server Action unavailable"), not 404.
+5. **Do not keep the clone in iCloud.** It makes `next dev` reload forever in real-API mode and
+   writes "file 2" copies into the tree.
+6. Photo spots are estimates until the H1 photo GPS lands (`fixtures/landmarks.ts`).

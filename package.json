@@ -15,7 +15,6 @@
     "seed": "tsx --env-file-if-exists=.env.local scripts/seed.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^1.8.0",
     "@fal-ai/client": "^1.11.0",
     "@fontsource/jersey-10": "^5.3.0",
     "@photo-sphere-viewer/core": "^5.15.1",

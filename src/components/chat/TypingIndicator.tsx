@@ -12,9 +12,9 @@
 export function TypingIndicator() {
   return (
     <div className="flex items-start" role="status" aria-label="The guide is typing">
-      <div className="flex gap-1 rounded-2xl rounded-bl-md bg-zinc-200 px-4 py-3">
+      <div className="flex gap-1 rounded-2xl rounded-bl-md bg-white px-4 py-3">
         {[0, 150, 300].map((delayMs) => (
-          <span key={delayMs} style={{ animationDelay: `${delayMs}ms` }} className="h-2 w-2 animate-bounce rounded-full bg-zinc-500" />
+          <span key={delayMs} style={{ animationDelay: `${delayMs}ms` }} className="h-2 w-2 animate-bounce rounded-full bg-(--ink-soft)" />
         ))}
       </div>
     </div>

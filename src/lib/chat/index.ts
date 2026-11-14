@@ -17,8 +17,22 @@ import { buildGuideSystemPrompt, toChatTurns, type NextLandmarkSuggestion } from
 export { ChatInputError, buildGuideSystemPrompt, toChatTurns, type NextLandmarkSuggestion } from './prompt';
 export { DeepSeekError, DEEPSEEK_CHAT_URL } from './deepseek';
 
-/** Default chat model. Override with CHAT_MODEL. */
+/** Default chat model (decision D-026). */
 export const DEFAULT_CHAT_MODEL = 'deepseek-flash';
+
+/**
+ * Pick the chat model. CHAT_MODEL may name another DeepSeek model, but anything else is ignored
+ * with a warning, so a leftover value such as `claude-haiku-5-5` can never be sent to DeepSeek.
+ *
+ * @returns A model id that starts with `deepseek-`.
+ */
+export function chatModel(): string {
+  const requested = process.env.CHAT_MODEL;
+  if (!requested) return DEFAULT_CHAT_MODEL;
+  if (requested.startsWith('deepseek-')) return requested;
+  console.warn(`CHAT_MODEL "${requested}" is not a DeepSeek model: using ${DEFAULT_CHAT_MODEL}`);
+  return DEFAULT_CHAT_MODEL;
+}
 
 /**
  * Ceiling on output tokens per reply. Replies are a few sentences; this only stops a runaway
@@ -88,7 +102,7 @@ export async function* streamGuideReply(input: GuideReplyInput): AsyncGenerator<
   let text = '';
   try {
     for await (const event of streamDeepSeek({
-      model: process.env.CHAT_MODEL || DEFAULT_CHAT_MODEL,
+      model: chatModel(),
       // The system prompt goes first and is the same for every turn of an era, so DeepSeek's
       // automatic prefix cache can serve it at the cache-hit price.
       messages: [{ role: 'system', content: system }, ...turns],
@@ -101,7 +115,7 @@ export async function* streamGuideReply(input: GuideReplyInput): AsyncGenerator<
       if (event.type === 'text') {
         text += event.text;
         yield { type: 'delta', text: event.text };
-      } else if (event.reason === 'content_filter') {
+      } else if (event.type === 'finish' && event.reason === 'content_filter') {
         yield { type: 'error', message: CHAT_REFUSED_MESSAGE };
         return;
       }
