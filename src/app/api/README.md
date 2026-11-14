@@ -10,7 +10,7 @@ HTTP routes of MASTER.md section 4.3. Owner: Agent 1, except `uploads/` and `voi
 | `POST /api/eras/[eraId]/generate` | `eras/[eraId]/generate/route.ts` |
 | `GET /api/players/[playerId]/dex` | `players/[playerId]/dex/route.ts` |
 | `POST /api/captures` | `captures/route.ts` |
-| `POST /api/chat` | Not yet (A1-13) |
+| `POST /api/chat` | `chat/route.ts` (SSE; 400 bad history, 404 unknown era, 409 `era_not_ready`) |
 
 `_lib/http.ts` has the shared helpers: `json`, `jsonError`, `readJson(request, schema)` and `handle(name, body)`. Every response is `Cache-Control: no-store`. Unexpected errors become a logged 500 with no internals in the body.
 

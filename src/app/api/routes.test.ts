@@ -14,6 +14,7 @@ import { POST as generate } from './eras/[eraId]/generate/route';
 import { GET as listLandmarks } from './landmarks/route';
 import { GET as listEras } from './landmarks/[landmarkId]/eras/route';
 import { GET as getDex } from './players/[playerId]/dex/route';
+import { POST as chat } from './chat/route';
 
 /** A JSON POST request. */
 function post(body: unknown): NextRequest {
@@ -141,5 +142,24 @@ describe('POST /api/captures and the Dex', () => {
     expect((await capture(spoofed)).status).toBe(403);
     process.env.ALLOW_SPOOFED_LOCATION = '1';
     expect((await capture(spoofed)).result).toMatchObject({ ok: true });
+  });
+});
+
+describe('POST /api/chat, before the stream starts', () => {
+  // Only the error paths: the streaming path would call Claude, which tests must never do.
+  // Streaming itself is covered with a fake client in src/lib/chat/chat.test.ts.
+  const hello = [{ role: 'player', text: 'Hello' }];
+
+  it('400s a bad body or a history that does not end with the player', async () => {
+    expect((await chat(post({ eraId: 'queens-tower_1893', playerId: 'p', messages: [] }))).status).toBe(400);
+    const endsWithGuide = await chat(post({ eraId: 'queens-tower_1893', playerId: 'p', messages: [...hello, { role: 'guide', text: 'Yes?' }] }));
+    expect(endsWithGuide.status).toBe(400);
+  });
+
+  it('404s an unknown era and 409s an era with no guide yet', async () => {
+    expect((await chat(post({ eraId: 'queens-tower_1700', playerId: 'p', messages: hello }))).status).toBe(404);
+    const notReady = await chat(post({ eraId: 'v-and-a_1941', playerId: 'p', messages: hello }));
+    expect(notReady.status).toBe(409);
+    expect(await notReady.json()).toMatchObject({ error: { code: 'era_not_ready' } });
   });
 });

@@ -54,6 +54,9 @@ Every row is proposed until the team has reviewed plan v1.
 | D-018 | 14 Nov | One active job per era is enforced by a unique partial index on `eraId` where `active` is true. A running job not updated for 10 minutes may be claimed by another worker | Never pay fal twice. A crashed worker must not block an era for ever |
 | D-019 | 14 Nov | Generate with `includeVideo: true` returns 403 `video_disabled` unless `VIDEO_GENERATION=on`. A spoofed capture returns 403 `spoofed_location` unless `ALLOW_SPOOFED_LOCATION=1` | Explicit refusals are easier to debug than silent downgrades |
 | D-020 | 14 Nov | `npm run seed` seeds every era as `missing` and never overwrites an existing era | The fixture hero era is placeholder content. Re-seeding must never wipe generated media |
+| D-021 | 14 Nov | The Historian runs in two Claude calls: research with web search (free-text notes, `pause_turn` resumed), then writing with structured output and no tools, with one corrective retry. Both use `fallbacks: "default"` | A retry never repeats the searches, and search citations never meet structured output in one response |
+| D-022 | 14 Nov | The Historian has no placeholder fallback without credentials; the pipeline stub uses `placeholderBrief` itself | Placeholder text must never be stored as a real era |
+| D-023 | 14 Nov | Fixture coordinates and art come from Agent 3's map spike: OSM-checked subjects, estimated photo spots, `/sprites/<id>.png`, `/sprites/badges/<id>.png` | One set of points for the map and the capture rule. Photo spots are still replaced by the H1 GPS |
 
 ## Contract changes
 
@@ -89,6 +92,10 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-018 | 14 Nov | Next 16's global `LayoutProps`, `PageProps` and `RouteContext` types are generated. `npm run typecheck` runs `next typegen` first, so a fresh clone type-checks | Tried at A1-07 |
 | F-019 | 14 Nov | Next 16 page and route `params` are Promises. In client pages use `useParams()`. In route handlers `await ctx.params` | `node_modules/next/dist/docs` |
 | F-020 | 14 Nov | mongodb 7.9: `findOneAndUpdate` returns the document or null by default (no `value` wrapper). Duplicate key errors are `MongoServerError` with code 11000 | `node_modules/mongodb/mongodb.d.ts` |
+| F-021 | 14 Nov | @anthropic-ai/sdk 1.8.0 does not throw at `new Anthropic()` without credentials. The first request fails with "Could not resolve authentication method", before any network call | Seen at A1-13 |
+| F-022 | 14 Nov | @anthropic-ai/sdk 1.8.0 has `betaZodOutputFormat` in `@anthropic-ai/sdk/helpers/beta/zod` (built on `zod/v4`), `fallbacks: 'default'` on beta messages, and `parsed_output` on a stream's `finalMessage()` | Its typings |
+| F-023 | 14 Nov | After a rebase, git (autocrlf on Windows) checks files out with CRLF. Scripted string replacements written with \n then fail to match | Seen at A1-13 |
+| F-024 | 14 Nov | Twice, `npm run check` showed every test file failing with "Tests no tests" straight after a file write. Every rerun passed and it could not be reproduced. Rerun before debugging | Seen at A1-13, cause unknown |
 
 ## Session log
 
@@ -119,3 +126,9 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 - Did: A1-09 and A1-14 done. A1-08 and A1-10 code done, MongoDB path not yet run against a live server. The detail is in `notebook/agent-1.md`.
 - Decided: D-017 to D-020.
 - Next: commit, then seed and verify against Atlas once `MONGODB_URI` exists (H2).
+
+### 2026-11-14 16:55, Historian and chat (Agent 1)
+
+- Did: A1-11 and A1-13 code, unit tested with a fake client. No real Claude call yet (no key). Fixtures moved to Agent 3's art and coordinates.
+- Decided: D-021 to D-023.
+- Next: commit; real calls and the Atlas seed once the H2 keys arrive.

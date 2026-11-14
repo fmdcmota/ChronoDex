@@ -7,13 +7,13 @@ Questions and requests to other agents go on `BOARD.md`, not here.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 16:45
-- Working on: database, jobs, routes and dev flags written on branch `agent-1` (A1-08, A1-09, A1-10, A1-14), not yet committed. `npm run check` passes (78 tests).
-- Next: on a yes, commit and push. Then, once `MONGODB_URI` exists: `npm run seed`, then run the API against Atlas to verify the MongoDB backend (it has never touched a live server). Then A1-11 (Historian) and A1-13 (chat), which need `ANTHROPIC_API_KEY`.
-- Blocked on: H2 keys (`MONGODB_URI`, `ANTHROPIC_API_KEY`). H1 photos for A1-08 part 2 (GPS into photoSpot, 16:9 normalising).
-- Board read up to: 2026-11-14 15:55 (agent-4, A4-01). Nothing newer on origin/main at 16:45.
-- Waiting for commit approval: the A1-08/09/10/14 commit.
-- Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted.
+- Last updated: 2026-11-14 16:55
+- Working on: A1-11 (Historian) and A1-13 (chat route) written on branch `agent-1`, plus fixtures switched to Agent 3's art and coordinates. Not yet committed. `npm run check` passes (97 tests).
+- Next: on a yes, commit and push. When keys arrive (H2): `npm run seed` against Atlas and verify the MongoDB backend; one real chat reply and one real Historian brief, measuring cost and time, then A1-16 (briefs for every demo era, human-checked). A1-12 (Vercel deploy) also needs the keys.
+- Blocked on: H2 keys (`MONGODB_URI`, `ANTHROPIC_API_KEY`). H1 photos for A1-08 part 2.
+- Board read up to: 2026-11-14 16:35 (agent-3, A3-01 ASK, answered in this commit).
+- Waiting for commit approval: the A1-11/A1-13 commit.
+- Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted. Committed files are checked out with CRLF (git autocrlf), so scripted string replacements must allow for \r\n.
 
 ## Tasks
 
@@ -27,9 +27,9 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A1-08 Database layer and seed script (code done, MongoDB unverified; photo GPS and 16:9 step waits for H1)
 - [x] A1-09 API routes: landmarks, eras, generate, captures, dex
 - [ ] A1-10 Jobs library (code done, MongoDB unverified)
-- [ ] A1-11 Historian: `writeEraBrief`
+- [ ] A1-11 Historian: `writeEraBrief` (code done and unit tested with a fake client; no real call yet, needs a key)
 - [ ] A1-12 Deploy to Vercel, check on a phone
-- [ ] A1-13 Chat route
+- [ ] A1-13 Chat route (code done and unit tested with a fake client; no real call yet, needs a key)
 - [x] A1-14 Development flags
 - [ ] A1-15 Run each gate with a human, log results on the front page
 - [ ] A1-16 Briefs for every demo era, human-checked
@@ -64,3 +64,12 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: without MongoDB, the worker and the dev server are separate processes with separate memory, so a job queued through the API never reaches the worker. Documented in the jobs README.
 - Next: commit on a yes. Then seed and verify against Atlas when the keys arrive.
+
+### 2026-11-14 16:55, A1-11 and A1-13: Historian and guide chat
+- Did: loaded the `claude-api` skill first (MASTER.md section 7) and checked every SDK name against @anthropic-ai/sdk 1.8.0's typings. `src/lib/chat`: `streamGuideReply` (claude-haiku-5-5 or CHAT_MODEL, streaming, effort low, cached system prompt, refusal and failure end with an `error` event), `buildGuideSystemPrompt`, `toClaudeMessages` (drops the leading greeting, requires the history to end with the player), `pickNextLandmark` (nearest uncollected). `POST /api/chat` streams SSE through `formatSseEvent`, so it matches the typed client's parser. `src/lib/historian`: two phases. Research uses Opus 5.5 at effort high with `web_search_20260209` (max 8 searches) and resumes `pause_turn` by sending the turn back unchanged. Writing uses Opus 5.5 at effort medium, no tools, `betaZodOutputFormat(EraBriefSchema)`, then the mechanical checks, with one corrective retry. Both send `fallbacks: "default"`. A fake client (`src/lib/chat/test-fakes.ts`) drives the tests. Fixtures now use Agent 3's sprites, badges and OSM-checked subjects (their ASK at 16:35).
+- Decided, and why: two-phase Historian, so a correction never repeats the searches and so web-search citations never meet structured output in one response (unverified whether they conflict; this sidesteps it). Server-side refusal fallback (`fallbacks: "default"`) is on for the Historian, as the claude-api skill recommends for Opus 5.5 code; Haiku 5.5 has none. No placeholder fallback in the Historian without credentials: SDK 1.8 does not throw at construction, and a silent placeholder could be stored as a real era. The pipeline stub uses `placeholderBrief` directly, so it never calls Claude. Chat effort `low`, because replies are a few sentences and latency matters. The thinking parameter is left out on both models (adaptive by default), and there is no budget_tokens and no forced tool_choice.
+- Measured or verified: `npm run check` passes, 97 tests, all with the fake client; no API calls were made. With mocks off and no key, `next dev` answered POST /api/chat with 409 for an era with no guide, and for the hero era with `text/event-stream` and one `error` event, logging the SDK's "Could not resolve authentication method" on the server.
+- Not verified: any real Claude call. Costs in the doc comments are estimates from list prices.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: twice, `npm run check` failed every test file straight after a file write, with no message shown; every rerun passed and I could not reproduce it. If you see "Tests no tests", rerun before debugging. Committed files are checked out with CRLF, which broke one scripted edit.
+- Next: commit on a yes; real calls once the key arrives.

@@ -82,3 +82,16 @@ describe('request schemas', () => {
     expect(ChatRequestSchema.safeParse({ eraId: HERO_ERA_ID, playerId: 'p', messages: [{ role: 'player', text: 'hi' }] }).success).toBe(true);
   });
 });
+
+describe('fixture art', () => {
+  it('every sprite, badge and locked badge exists in public/', async () => {
+    const { existsSync } = await import('node:fs');
+    const { lockedBadgeUrl } = await import('./landmarks');
+    for (const l of landmarks) {
+      for (const url of [l.spriteUrl, l.badgeUrl, lockedBadgeUrl(l), l.referencePhotoUrl]) {
+        expect(url.startsWith('/'), url).toBe(true);
+        expect(existsSync(`public${url}`), url).toBe(true);
+      }
+    }
+  });
+});
