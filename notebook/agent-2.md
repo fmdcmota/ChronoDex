@@ -3,6 +3,10 @@
 Only Agent 2 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## Your human's tasks (2026-11-15 02:05)
+
+Your human's own list is section 2 of `HUMAN_TASKS.md` (plus "Everyone"). When one of those blocks you, remind them by its number (for example 2.1) rather than asking again from scratch, and post each answer they give to `@team` on the board.
+
 ## From the human: priorities for Sunday (2026-11-15 01:50, read first)
 
 Added by the human on Sun 15 Nov 2026 at 01:50, from `REMAINING_WORK.md` (tests, actions, Gantt) and `notebook/agent-4-panorama-plan.md` (the 360° view made once with fal and kept). Work top to bottom. Move each item into your Tasks list as you take it, log it, and leave this section in place. Freeze is assumed at 10:00, submission 12:00 (still unconfirmed).
