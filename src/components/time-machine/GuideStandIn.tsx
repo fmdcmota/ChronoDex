@@ -1,6 +1,7 @@
 /**
- * A stand-in for the guide video while it does not exist: the guide's portrait walks on over the era's scene,
- * talks while the real narration plays (captions from GuidePlayer), then walks off.
+ * A stand-in for the guide video while it does not exist: the guide's portrait bounces up into view over the era's
+ * scene, bounces while the real narration plays (captions from GuidePlayer), then drops back out of view.
+ * (Bouncing rather than walking at the human's request, Agent 6, 15 Nov 2026.)
  *
  * Owner: Agent 4. Part of A4-04. The human asked for "a sample video, with audio of what the narrator would have
  * said, and captions" between the 360° view and the chat. The real three-clip video needs the video tier
@@ -20,12 +21,14 @@ import { PIXEL_FONT, TAG_DARK } from './pixel';
 /** Which part of the appearance is showing. */
 export type StandInStage = 'walk_on' | 'talk' | 'walk_off';
 
-/** How long the guide takes to walk on or off, ms. Short: the player is waiting to hear them. */
-export const WALK_MS = 1800;
-/** One step's bob while walking, ms. */
-const STEP_MS = 300;
-/** One "speaking" pulse while talking, ms. About the rhythm of syllables in calm speech. */
-const TALK_PULSE_MS = 420;
+/** How long the guide takes to bounce up into view, ms. Short: the player is waiting to hear them. */
+export const WALK_MS = 900;
+/** How long the guide takes to drop back out of view, ms. */
+const LEAVE_MS = 650;
+/** One bounce while talking, ms. About two syllables of calm speech. */
+const TALK_PULSE_MS = 560;
+/** Height of a talking bounce, CSS px. */
+const TALK_BOUNCE_PX = 14;
 /** Portrait diameter, CSS px. */
 const PORTRAIT_PX = 168;
 
@@ -83,31 +86,40 @@ export function GuideStandIn({ stage, name, role, headshotUrl, sceneUrl, year, o
     };
 
     if (stage === 'walk_on' || stage === 'walk_off') {
-      const onstage = { transform: 'translateX(0)', opacity: 1 };
-      const offstage = reduced ? { transform: 'translateX(0)', opacity: 0 } : { transform: `translateX(${stage === 'walk_on' ? '' : '-'}120vw)`, opacity: 1 };
-      const walk = run(fig, stage === 'walk_on' ? [offstage, onstage] : [onstage, offstage], {
-        duration: WALK_MS,
+      // Below the frame: far enough down that the portrait and its name plate are hidden.
+      const hidden = reduced ? { transform: 'translateY(0)', opacity: 0 } : { transform: 'translateY(110vh)', opacity: 1 };
+      const shown = { transform: 'translateY(0)', opacity: 1 };
+      const frames: Keyframe[] =
+        stage === 'walk_on'
+          ? reduced
+            ? [hidden, shown]
+            : // Pops up past its spot, then settles with a small bounce.
+              [hidden, { transform: 'translateY(-36px)', offset: 0.62 }, { transform: 'translateY(10px)', offset: 0.82 }, shown]
+          : reduced
+            ? [shown, hidden]
+            : // A little hop, then drops out of view.
+              [shown, { transform: 'translateY(-24px)', offset: 0.3 }, hidden];
+      const move = run(fig, frames, {
+        duration: stage === 'walk_on' ? WALK_MS : LEAVE_MS,
         easing: stage === 'walk_on' ? 'ease-out' : 'ease-in',
         fill: 'forwards',
       });
-      if (!reduced) {
-        // A step bob, like a sprite walking.
-        run(bod, [{ transform: 'translateY(0)' }, { transform: 'translateY(-10px)' }, { transform: 'translateY(0)' }], {
-          duration: STEP_MS,
-          iterations: Math.ceil(WALK_MS / STEP_MS),
-        });
-      }
-      walk.onfinish = () => (stage === 'walk_on' ? callbacks.current.onArrived() : callbacks.current.onLeft());
+      move.onfinish = () => (stage === 'walk_on' ? callbacks.current.onArrived() : callbacks.current.onLeft());
     } else {
-      fig.style.transform = 'translateX(0)';
+      fig.style.transform = 'translateY(0)';
       fig.style.opacity = '1';
       if (!reduced) {
-        // Speaking: a small rhythmic lift and swell.
-        run(bod, [{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-3px) scale(1.025)' }, { transform: 'translateY(0) scale(1)' }], {
-          duration: TALK_PULSE_MS,
-          iterations: Infinity,
-          easing: 'ease-in-out',
-        });
+        // Speaking: a steady bounce, squashing a little as it lands.
+        run(
+          bod,
+          [
+            { transform: 'translateY(0) scale(1, 1)' },
+            { transform: `translateY(-${TALK_BOUNCE_PX}px) scale(0.98, 1.03)`, offset: 0.45 },
+            { transform: 'translateY(0) scale(1.03, 0.97)', offset: 0.85 },
+            { transform: 'translateY(0) scale(1, 1)' },
+          ],
+          { duration: TALK_PULSE_MS, iterations: Infinity, easing: 'ease-in-out' },
+        );
       }
     }
     return () => running.forEach((a) => a.cancel());
@@ -120,7 +132,7 @@ export function GuideStandIn({ stage, name, role, headshotUrl, sceneUrl, year, o
         <img src={scene} alt={`The street in ${year}, AI reconstruction`} className="absolute inset-0 h-full w-full object-cover opacity-80" />
       )}
       <span className={`${TAG_DARK} absolute top-2 left-2 z-10`}>Preview · guide video coming</span>
-      <div ref={figure} className="absolute inset-x-0 bottom-28 flex justify-center" style={{ transform: 'translateX(120vw)' }}>
+      <div ref={figure} className="absolute inset-x-0 bottom-28 flex justify-center" style={{ transform: 'translateY(110vh)' }}>
         <div ref={body} className="flex flex-col items-center">
           <div className="rounded-full shadow-(--pixel-frame)">
             <Avatar name={name} url={headshotUrl} sizePx={PORTRAIT_PX} />
