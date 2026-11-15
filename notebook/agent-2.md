@@ -445,3 +445,8 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 - Symptom: the play button on a chat reply made no speech. Cause: with `NEXT_PUBLIC_USE_MOCKS=1` the mock client's `textToSpeech` never called the server and returned `MOCK_AUDIO_URL` (an MDN sample clip); and the real route, on a server using a Mongo dev database without the demo eras, answered 404 "No era".
 - Fix: the mock client (Agent 1's `src/lib/client/mock.ts`, new option `liveVoice`, default on in the browser) calls the real `POST /api/voice/tts`; the route looks the era up with `findEraForVoice` (database, then the shipped demo set over the fixtures) and asks `synthesizeSpeech` for `live` speech, which is real even in mock mode when the server has a FAL_KEY. Narration in the pipeline, uploads and speech-to-text stay mocked. The sample clip is never cached.
 - Tested: `npm run check` 574 passing (new: findEraForVoice fallback, live without a key stays the sample). Live call on the dev server reached fal with Edith's voice, then fal answered 403 "User is locked. Exhausted balance": the fal account needs a top-up before the button speaks.
+
+### 2026-11-15 11:05, map crashed with an empty landmark list (the human's report)
+- With mocks off against an empty dev database, `/api/landmarks` returned `[]`; the welcome-intro opening (mine, in Agent 3's MapScreen.tsx) asked an empty LngLatBounds for its centre and threw "Cannot read properties of undefined (reading 'lng')".
+- Fix: no landmarks opens the map on the globe; the City button and the locate fallback do nothing on an empty list. `npm run check` 574 passing.
+- The human chose mock mode back on for local use (chat voice is real through fal now). Server restarted with a clean `.next`.

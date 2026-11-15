@@ -247,14 +247,19 @@ export default function MapScreen() {
     // stays blank and the console reports "Worker failed to load".
     setWorkerUrl('/maplibre-gl-worker.mjs');
 
+    const region = openingRegion(landmarks);
     const map = new MapLibreMap({
       container: containerRef.current,
       style: buildGameMapStyle(),
       // Open framed on one region (city): the nearest to the player's last fix, else the biggest. During the welcome
       // intro, open on the whole globe above that region instead, so the intro can fall from space to the street.
-      ...(introOpenRef.current
-        ? { center: landmarkBounds(openingRegion(landmarks)).getCenter(), zoom: WORLD_ZOOM }
-        : { bounds: landmarkBounds(openingRegion(landmarks)), fitBoundsOptions: { padding: FIT_PADDING_PX } }),
+      // No landmarks at all (an empty database) leaves the bounds empty, and an empty box has no centre: open on
+      // the globe instead of crashing.
+      ...(region.length === 0
+        ? { center: [0, 20] as [number, number], zoom: WORLD_ZOOM }
+        : introOpenRef.current
+          ? { center: landmarkBounds(region).getCenter(), zoom: WORLD_ZOOM }
+          : { bounds: landmarkBounds(region), fitBoundsOptions: { padding: FIT_PADDING_PX } }),
       minZoom: MIN_ZOOM,
       maxZoom: 19,
       // A game map stays north-up and flat.
@@ -421,7 +426,7 @@ export default function MapScreen() {
   /** The World button: out to the whole globe, or back in to the player's city. */
   const toggleWorld = () => {
     const map = mapRef.current;
-    if (!map || !landmarks) return;
+    if (!map || !landmarks?.length) return;
     if (map.getZoom() >= WORLD_VIEW_BELOW) {
       map.flyTo({ center: map.getCenter(), zoom: WORLD_ZOOM, duration: 1800 });
       return;
@@ -535,7 +540,7 @@ export default function MapScreen() {
         <WelcomeIntro
           mapRef={mapRef}
           trackerRef={trackerRef}
-          fallbackBounds={() => (landmarks ? landmarkBounds(openingRegion(landmarks)) : null)}
+          fallbackBounds={() => (landmarks?.length ? landmarkBounds(openingRegion(landmarks)) : null)}
           landingZoom={FOUND_ZOOM}
           fitPadding={FIT_PADDING_PX}
           onDone={(centredOnPlayer) => {
