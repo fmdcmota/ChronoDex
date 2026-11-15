@@ -115,7 +115,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-r2-8 Cache /demo/ files in the browser
 - [ ] A4-r2-9 WAV narration and replies on iOS (Gemini voices)
 - [x] R3-4a Time Machine never asks for the video tier (V3, critical path)
-- [x] R3-4b Preview to real clips swap without a reload (V6; unit-tested, not yet seen in a browser with a fake guideVideo)
+- [x] R3-4b Preview to real clips swap without a reload (V6; seen in a browser with mocks, 04:40)
 - [ ] R3-4b Preview to real clips swap tested with a fake guideVideo (V6)
 - [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
 - [x] A4-r2-4 Map zoom-fade polish (Agent 3's handoff): tiles kept loading while zooming, bigger cache
@@ -302,4 +302,10 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Found: (1) GuidePlayer memoised its clips on the `guideVideo` object, and each 3 s poll brings a new object, so the SegmentPlayer was destroyed and rebuilt every poll while the job's last stages (stitch) still ran: playback would cut out. (2) If the clips landed while the preview was playing, the narration stopped and the player sat on a blank video layer with Skip only.
 - Did: `guideVideoKey(guideVideo)` (stable JSON of the clip list); GuidePlayer memoises on it; TimeMachineScreen keys GuidePlayer on `eraId|guideVideoKey`, so the clips' arrival remounts it to a fresh Meet button that plays the real video. Unmount now calls `onPlayingChange(false)` so the ambience duck lifts. Test `guideVideoKey.test.ts`.
 - Measured or verified: tsc (after `next typegen`, needed in a fresh worktree), eslint, vitest --pool=vmThreads on time-machine: 70 pass. Not yet run in a browser with a fake guideVideo landing mid-session.
+- Next: R3-4c Then/Now.
+
+### 2026-11-15 04:40, R3-4b browser check
+- Did: dev-tools-only hook `window.chronodexDev.requestVideo()` in TimeMachineScreen (only with NEXT_PUBLIC_DEV_TOOLS=1) that asks for the open era's video tier like the runbook script. Mock mode, Chrome: Queen's Tower 1962 core tier generated, Meet Edith started the preview, requestVideo() during it; after the mock job the screen showed Meet Edith again without a reload, and tapping it played the mock clips (video element playing, Skip shown).
+- Trap: a fresh worktree has an empty node_modules; npx found the main checkout's packages for tsc/lint/vitest, but `next dev` failed (Turbopack: next/package.json not found) until `npm ci` here.
+- Not checked: whether the preview had already ended before the clips landed (the mock narration is short), and captions on the talk clip.
 - Next: R3-4c Then/Now.
