@@ -22,16 +22,35 @@ export {
   IMAGE_RESOLUTION,
   PANORAMA_RESOLUTION,
   WALK_DURATION_S,
+  PANORAMA_UPSCALE_FACTOR,
+  MAX_REFERENCE_PHOTOS,
+  CRITIC_MODEL_ID,
+  MAX_CHECK_ATTEMPTS,
   WALK_RESOLUTION,
   type FalStageKey,
   type ModelChoice,
 } from './models';
+export {
+  AMBIENCE_BUCKETS,
+  MUSIC_LOOP_SECONDS,
+  STREET_LOOP_SECONDS,
+  ambienceBucketFor,
+  buildMusicPrompt,
+  buildStreetPrompt,
+  type AmbienceBucket,
+} from './ambience';
 export { SNIFF_BYTES, sniffAudio, uploadNameFor, type AudioKind } from './audio';
 export { createRateLimiter, createSpeechCache, type RateDecision, type RateLimiter, type SpeechCache } from './guards';
 export { runFal, FalStageError, type FalRunContext, type FalRunResult, type FalQueueLike } from './run';
 
 /** Longest text one ElevenLabs request accepts, in characters (the schema page says 5,000). */
 export const MAX_TTS_CHARACTERS = 5000;
+
+/**
+ * What the mock transcribe() returns. The tag is deliberate: in phone test round 1 a mock answer looked like
+ * a real one (the same sentence for every recording, in 76 ms), which proved nothing about speech to text.
+ */
+export const MOCK_TRANSCRIPT_TEXT = '[mock transcript] What was daily life like here?';
 
 /** Whether the app is running on fixtures. The same flag Agent 1's client uses. */
 function mocksOn(): boolean {
@@ -111,7 +130,7 @@ export async function synthesizeSpeech(
  * @throws FalStageError when fal fails or returns no text.
  */
 export async function transcribe(audioUrl: string, ctx?: FalRunContext): Promise<string> {
-  if (mocksOn()) return 'What was daily life like here?';
+  if (mocksOn()) return MOCK_TRANSCRIPT_TEXT;
   const endpoint = MODELS.speech_to_text.endpoint;
   const { data } = await runFal<{ text?: string }>(
     endpoint,
@@ -120,4 +139,31 @@ export async function transcribe(audioUrl: string, ctx?: FalRunContext): Promise
   );
   if (typeof data.text !== 'string') throw new FalStageError(`${endpoint} returned no text`, { endpoint });
   return data.text.trim();
+}
+
+/**
+ * Warn, once, when mock mode is on while a real FAL_KEY is also set.
+ *
+ * That is the setup that fooled the human in phone test round 1: the key suggests real voice, but
+ * NEXT_PUBLIC_USE_MOCKS=1 makes every voice and upload route answer from fixtures. Call it when the
+ * server starts (src/instrumentation.ts) and when the worker starts.
+ *
+ * @returns True when it printed the warning, false when there was nothing to warn about or it already had.
+ */
+export function warnIfMocksShadowKey(): boolean {
+  if (warnedAboutMocks || !mocksOn() || !process.env.FAL_KEY) return false;
+  warnedAboutMocks = true;
+  console.warn(
+    '[fal] NEXT_PUBLIC_USE_MOCKS=1 is set, so voice, upload and generation answer from FIXTURES even though FAL_KEY is set. ' +
+      'Nothing real is being called. Set NEXT_PUBLIC_USE_MOCKS= (empty) in .env.local and restart to use fal.',
+  );
+  return true;
+}
+
+/** Whether warnIfMocksShadowKey has already printed. */
+let warnedAboutMocks = false;
+
+/** Reset the once-only flag. For tests. */
+export function resetMockWarning(): void {
+  warnedAboutMocks = false;
 }

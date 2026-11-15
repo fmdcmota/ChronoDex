@@ -11,6 +11,11 @@ import { jsonError } from '../../_lib/http';
 export const TTS_PER_MINUTE = 30;
 /** Transcriptions allowed per caller per minute. One per spoken question. */
 export const STT_PER_MINUTE = 20;
+/**
+ * Smallest recording worth sending to fal, in bytes. A real second of speech is several kilobytes; the
+ * iPhone sometimes produced a 5-byte file on a second recording (phone test round 1).
+ */
+export const MIN_RECORDING_BYTES = 1024;
 /** One minute, in milliseconds. */
 const MINUTE_MS = 60_000;
 

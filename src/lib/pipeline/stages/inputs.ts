@@ -38,14 +38,15 @@ export function buildImageEditInput(
 }
 
 /**
- * Input for the panorama's image edit: one grey canvas, output shape set by the canvas.
+ * Input for the panorama's image edit: one grey canvas (and any period photographs), output shape set by the canvas.
  *
  * @param prompt - From buildPanoramaPrompt.
- * @param canvasUrl - URL of the uploaded canvas.
+ * @param canvasUrl - URL of the uploaded canvas. It must be image 1: the prompt says "the photograph in the middle".
+ * @param referenceUrls - Real period photographs, after the canvas. The prompt's "images 2 to N" refers to them.
  * @returns Input at PANORAMA_RESOLUTION with `aspect_ratio: "auto"`.
  */
-export function buildPanoramaInput(prompt: string, canvasUrl: string): Record<string, unknown> {
-  return buildImageEditInput(prompt, [canvasUrl], { aspectRatio: 'auto', resolution: PANORAMA_RESOLUTION });
+export function buildPanoramaInput(prompt: string, canvasUrl: string, referenceUrls: string[] = []): Record<string, unknown> {
+  return buildImageEditInput(prompt, [canvasUrl, ...referenceUrls], { aspectRatio: 'auto', resolution: PANORAMA_RESOLUTION });
 }
 
 /**
@@ -138,4 +139,34 @@ export async function runVideoModel(
   const url = result.data.video?.url;
   if (!url) throw new FalStageError(`${endpoint} returned no video for stage ${stage}`, { endpoint, requestId: result.requestId });
   return { url, model: endpoint, requestId: result.requestId, elapsedMs: result.elapsedMs, durationS: result.data.duration ?? null };
+}
+
+/**
+ * Input for the panorama upscaler (SeedVR2).
+ *
+ * @param imageUrl - The picture to enlarge.
+ * @param factor - Enlargement, 1 to 10. The panorama uses PANORAMA_UPSCALE_FACTOR.
+ * @returns Input for fal-ai/seedvr/upscale/image: a plain multiplication of both sides.
+ */
+export function buildUpscaleInput(imageUrl: string, factor: number): Record<string, unknown> {
+  return { image_url: imageUrl, upscale_mode: 'factor', upscale_factor: factor };
+}
+
+/**
+ * Run the upscaler and return the enlarged image's URL. Cost: $0.001 per output megapixel (about $0.02
+ * for the panorama) and about 35 s.
+ *
+ * @param imageUrl - The picture to enlarge.
+ * @param factor - Enlargement factor.
+ * @param ctx - Stage context. `ctx.endpoint` overrides the registry (for the fallback).
+ * @returns The stage output, with the model and timing.
+ * @throws FalStageError when fal fails or returns no image.
+ */
+export async function runUpscale(imageUrl: string, factor: number, ctx: StageContext = {}): Promise<StageOutput> {
+  const { endpoint: override, ...runContext } = ctx;
+  const endpoint = override ?? MODELS.panorama_upscale.endpoint;
+  const result = await runFal<{ image?: { url?: string } }>(endpoint, buildUpscaleInput(imageUrl, factor), runContext);
+  const url = result.data.image?.url;
+  if (!url) throw new FalStageError(`${endpoint} returned no image for the panorama upscale`, { endpoint, requestId: result.requestId });
+  return { url, model: endpoint, requestId: result.requestId, elapsedMs: result.elapsedMs };
 }

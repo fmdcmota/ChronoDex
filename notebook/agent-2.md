@@ -38,12 +38,12 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 21:10
-- Working on: A2-10 worker written and tested, not yet committed. main was merged into agent-2 (16dc14b); the Historian is now DeepSeek (Agent 1), so runEraJob uses historianModel() and a live run needs DEEPSEEK_API_KEY, not ANTHROPIC_API_KEY. A2-07 to A2-11 are committed (latest 059a5f2)
-- Next: A2-12 image checks with one corrective retry (what to judge: the panorama horizon height, seam, leftover grey and modern objects; scene framing against the reference; guide frame face size and identity). Then A2-13 pregenerate and backup scripts, A2-14 stitch. The notebook table "Wanted from the human" holds every open human ask
+- Last updated: 2026-11-15 01:15
+- Working on: the human's whole post-phone-test queue is built and uncommitted on `agent-2` (realism rework, mock-mode and STT guards, the image critic, ambience loops, `pregenerate` and `backup-media` scripts, the stitch stage). A2-01 to A2-14 are all done except where noted: A2-04 to A2-06 still wait on the human's voice and talk-model picks, and no 45 s talk clip has been made.
+- Next: (1) wait for the human's decisions in "Wanted from the human" (colour or monochrome, voice and talk-model picks, fal ffmpeg access, ambience listening). (2) Make the 45 s talk clip once the model is picked (A2-05). (3) Run `scripts/pregenerate.ts` for the demo eras when Agent 1 has seeded `chronodex` with real reference photos and Agent 5's period references. (4) Rename the two `placeholder-*` voice keys once Agent 1 does. (5) Stretch A2-S1 only after M4.
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-14 19:55 (@team review)
-- Waiting for commit approval: A2-10 (src/worker/*, the Historian-name updates in src/lib/pipeline, this page, a board post)
+- Waiting for commit approval: everything since A2-10 (committed as 9ad0ae3): realism rework, mock-mode and STT guards, image critic, ambience loops and audio, pregenerate and backup scripts, stitch stage, this page, a board post. The human asked for one commit at the end
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Wanted from the human (compile into one list when asked)
@@ -53,14 +53,18 @@ The human said not to chase these now: note them here and give them the full lis
 | # | What | Why | How, in short |
 |---|---|---|---|
 | H-A | Pick 4 to 6 voices and one talk model | Unblocks `VOICE_CATALOG` (currently provisional) and the 45 s clip | Open `spikes/agent-2/out/review.html`: 16 voice clips, Kling vs Fabric 10 s clips, the walk-on clip |
-| H-B | Real microphone test of speech to text in Chrome (and Safari on a Mac) | Only MP3 is proven; Chrome records WebM and Safari MP4, and the route renames them by their bytes | Run `npm run dev` and `node spikes/agent-2/voice-test.mjs`, open http://localhost:4000 in Chrome, record, report the output |
+| H-B | **DONE for WebM (2026-11-14).** The human supplied `recording.webm` (WebM/Opus, 152 KB); it transcribed correctly through the stt route. Still open: Safari MP4/AAC (a Mac or an iPhone) | Chrome records WebM and Safari MP4, and the route renames them by their bytes | Run `npm run dev` and `node spikes/agent-2/voice-test.mjs`, open http://localhost:4000 in Chrome, record, report the output |
 | H-C | The same on a real iPhone and Android phone | Phones need HTTPS, so this goes through the deployed app (A1-12) | Use the chat screen's hold to talk once deployed |
 | H-D | Look at the panorama in Agent 4's 360 viewer on an iPhone and an Android phone | MASTER M1 gate; the panorama has never been seen on a phone | `?src=<url>&vfov=180`, URL in the A2-03 log entry |
 | H-E | How many fal credits do we have? | Decides one video per landmark or all 18 eras (about $77 at list) | fal dashboard |
-| H-F | Ask fal support to enable `fal-ai/ffmpeg-api/extract-frame` on our key (403 today) | Cleaner walk_off and for judging video as stills | Optional |
+| H-F | Ask fal support to enable the `fal-ai/ffmpeg-api` endpoints on our key: merge-videos, extract-frame, compose (all 403 when they run) | Stitching the three guide clips into one file, a cleaner walk_off, judging video as stills | Optional. The stitch stage is built and starts working when access is enabled |
 | H-G | Reference photos must be 16:9 (H1 photos) | The edit models centre-crop anything else | Agent 1's seed normalises; check the result by eye |
-| H-H | Whose machine runs the worker, and an Anthropic key and MongoDB Atlas for a live end-to-end run | runEraJob has never run live end to end | MASTER Q5, H2 |
-| H-I | Read the first real brief before the pipeline spends on video (H7) | Accuracy of the 45 s script | Later, at M4 |
+| H-H | Whose machine runs the worker. (The live end-to-end run is DONE in a dev database with the DeepSeek and Atlas keys now in `.env.local`; no Anthropic key is needed.) | runEraJob has never run live end to end | MASTER Q5, H2 |
+| H-I | Read the first real brief before the pipeline spends on video (H7) | Accuracy of the 45 s script | Later, at M4. The real Queen's Tower 1893 brief is in my dev database and in `spikes/agent-2/out/e2e-era.json` |
+| H-J | **Colour or monochrome for eras before about 1900?** | Every pre-1900 prompt. Monochrome looks most like a real photograph; restrained colour is safer. Default is colour; `PERIOD_LOOK=monochrome` switches it | Compare `spikes/agent-2/out/realism/pano-colour-feather.jpg` with `pano-mono-ref.jpg`, or the scenes `scene-colour.jpg` and `scene-mono.jpg` |
+| H-K | Listen to the 8 ambience files and say which period sounds wrong | I could verify length and format only, not the sound | `public/audio/ambience/` (4 music `.m4a`, 4 street `.mp3`) |
+| H-L | Look at the live Queen's Tower 1893 era in the app on a phone | The first real generated era, never seen in the app | Run the app with `MONGODB_DB=chronodex_dev_agent2` and `NEXT_PUBLIC_USE_MOCKS=` empty |
+| H-M | A panorama still flat after the retry: keep it, or fail the stage so the era is retried? | About one run in five ends flat. Currently kept and flagged | Decide once |
 
 ## Chosen models
 
@@ -91,10 +95,10 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [x] A2-08 Stage functions and prompt builders (stitch comes with A2-14, image checks with A2-12)
 - [x] A2-09 `runEraJob` orchestrator (never run live end to end: needs ANTHROPIC_API_KEY, a root FAL_KEY and, to share jobs with the dev server, MONGODB_URI)
 - [x] A2-10 Worker (not run live: needs Atlas and keys; real Ctrl+C untested on Windows)
-- [x] A2-11 Routes: uploads, voice tts, voice stt (a real Chrome WebM and iOS MP4 recording through stt is still unproven)
-- [ ] A2-12 Image checks with one corrective retry
-- [ ] A2-13 Pregenerate and backup-media scripts
-- [ ] A2-14 Stitch stage
+- [x] A2-11 Routes: uploads, voice tts, voice stt (a real browser WebM/Opus recording is proven; only an iOS MP4/AAC one is still unproven)
+- [x] A2-12 Image checks with one corrective retry (Sonnet critic through fal; hard failures only)
+- [x] A2-13 Pregenerate and backup-media scripts
+- [x] A2-14 Stitch stage (built and tested; fal ffmpeg API returns 403 on our key, so it cannot stitch yet)
 - [ ] A2-S1 Stretch: walkable world (after M4 only)
 
 ## Log
@@ -243,3 +247,57 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: the merge briefly broke the typecheck (above). `WORKER_CONCURRENCY` and `WORKER_ALLOW_MEMORY` are not in `.env.example`, which is Agent 1's file (MASTER 8.4 rule 8): asked on the board.
 - Next: A2-12.
+
+### 2026-11-14 22:55, speech to text on a real WebM recording (human-supplied)
+- Did: the human put a real recording at the repo root as `recording.webm`. Checked its bytes (EBML header, an Opus audio track, 152,541 bytes) and ran it through the real `POST /api/voice/stt` handler with mocks off and the real fal key.
+- Measured or verified: HTTP 200 in 5.0 s with MIME type `audio/webm;codecs=opus` and 3.8 s with no type, both transcribing to "This is a file for Ishan. See if Falcon Voice recognize this. Bing bong, bing bong" (the speaker said "fal voice"; the model heard "Falcon Voice", the only slip). So a real browser WebM/Opus recording works end to end, renamed to `.ogg` by the route. This closes the Chrome half of the open risk from A2-11.
+- Still unproven: iOS Safari MP4/AAC (sent as `.m4a`). It needs an iPhone over HTTPS.
+- Housekeeping: `recording.webm` is untracked at the repo root. It is a personal voice recording, so it should not be committed; `spikes/agent-2/input/` is git-ignored and is a safe place for it.
+
+### 2026-11-15 00:30, human-assigned queue after phone test round 1: items 1 (realism), 2, 3, and A2-12
+
+Merged `main` into `agent-2` first (a fast-forward to b967460). Spend this session: about $2.75 at list prices (scenes and panoramas about $2.05, critic calibration about $0.21, SeedVR2 $0.017, smaller smoke tests the rest). Total for the project so far about $7.5.
+
+**Item 2, mock mode impossible to mistake (done).** Mock `transcribe()` now returns `[mock transcript] What was daily life like here?` (`MOCK_TRANSCRIPT_TEXT`). A new `src/instrumentation.ts` calls `warnIfMocksShadowKey()` once at server start, and the worker calls it at startup: when `NEXT_PUBLIC_USE_MOCKS=1` and a real `FAL_KEY` are both set it prints that voice, upload and generation answer from FIXTURES. Checked on a production build: the warning prints at start. Note Agent 1's client mock (`src/lib/client/mock.ts`, `MOCK_TRANSCRIPT`) still returns the untagged sentence; Agent 1 should tag it the same way.
+
+**Item 3, STT guard (done).** `POST /api/voice/stt` refuses a recording under 1 KB (`MIN_RECORDING_BYTES`) with `400 empty_recording` before anything is sent to fal, checked before the key check and the MIME type. Agent 4 should treat that code as "hold the button a little longer".
+
+**Item 1, panorama realism bake-off for Queen's Tower 1893 (done; the human must choose colour or monochrome).**
+- Inputs, all openly licensed from Wikimedia Commons: a present-day photo of the tower with the modern library (CC BY-SA 4.0) as the base, and three real photographs of the Imperial Institute as references (a Rijksmuseum print, CC0; a 1903 postcard and a 1897 to 1899 jubilee print, public domain). Files are in `spikes/agent-2/input/refs/` and `out/realism/` (git-ignored); `refs.json` there was overwritten by a later download, but the sources are: `RP-F-00-4232` (CC0), `1903-11-04 front Imperial Institute London.jpg` (PD), `Commonwealth Institute QE1 35.jpg` (PD), base `Imperial College Central Library, Imperial College Road.jpg` (CC BY-SA 4.0). Agent 5 had produced no photos yet.
+- Findings, 11 generations, about $1.5:
+  1. **The prompt rewrite is the biggest lever.** The old prompt invented a polished red-and-cream striped Dutch-gabled palace with a green dome: the film-set look the human called unrealistic. The new prompt (period cues, an explicit ban on gloss, HDR, oversaturation and fantasy architecture, a documentary look) with no references already gave a convincing period street.
+  2. **Real period photographs as references make the vanished building look like the real one** (pale stone, domed corner turrets, a tall tower, banded brick) instead of a plausible invention. Trade-off: with references the model reframes the view, so the camera position no longer matches the present-day photo and the then/now slider may not line up.
+  3. **Monochrome looks most like a real photograph** (the scene read as a genuine albumen print). Colour, done restrained ("colourised the way museum restorers do it"), is safer and more consistent. **Needs the human's choice (asked on the board).**
+  4. **The panorama inherits its realism from the scene.** References on the panorama itself made little visible difference once the scene was reference-guided.
+  5. **SeedVR2 upscaling makes faces, lamps and brickwork clearly sharper** for $0.001 per output megapixel. 2x gives 5760 px wide, which risks the 4096 px texture limit of older phones, so the pipeline uses 1.4x (4032x2016).
+  6. **A hard-edged pasted rectangle showed in the middle of the finished panorama.** Fading the pasted scene into the grey canvas (`featherPx`, 90 px) removed it: in the last six live runs with feathering, references and the period prompt, five were true spheres at the first attempt. It is now the default. One monochrome run earlier had returned a flat photo with feathering, so feathering alone does not guarantee a sphere.
+  7. `fal-ai/hunyuan_world` is still not served. No other panorama model exists in the catalogue. Topaz upscalers exist (`topaz/upscale/image/precision`, $0.08 per 24 MP) but are untested.
+- Built: `buildScenePrompt` and `buildPanoramaPrompt` take a `PromptStyle` (`look`, `referenceCount`); `periodCues(year)`; `scene` and `panorama` stages pass up to 3 `sceneBrief.referenceImageUrls` (Google addresses and anything but http(s) are dropped, including googleusercontent and gstatic); `PERIOD_LOOK=monochrome` in the environment switches the look (default colour); `runPanorama` upscales at 1.4x and keeps the unenlarged image if the upscale fails.
+- Bugs the new tests caught in my code: the Google filter missed `googleusercontent.com`; sharp's `removeAlpha` runs after `joinChannel` and silently stripped the feather's fade.
+
+**A2-12, the image critic (done, with an honest accuracy figure).**
+- The critic is a vision model through `openrouter/router/vision` on fal, so it needs only the fal key, not an Anthropic key. Default model `anthropic/claude-sonnet-5` (`CRITIC_MODEL_ID`, override with `IMAGE_CHECK_MODEL`). MASTER names Haiku; on eight labelled panoramas **Haiku agreed with me on 4 and Sonnet on 6** (cost $0.0006 against $0.0125 a picture), so Sonnet is the default. Opus 5.5 is not usable as-is: the endpoint insists on reasoning mode.
+- It judges the scene (anachronisms, a computer-generated look), the panorama (projection, seams, horizon, edges, anachronisms) and the guide frame (face large and clear, same person as the portrait, street undistorted). Each stage generates, judges, repeats once with the critic's one-line fix added to the prompt if it found a HARD failure, and keeps the better picture (`checked.ts`).
+- **Hard versus soft.** Sonnet raised soft opinions ("glossy, CGI look", "edges do not quite match") on every panorama, including ones that look right to a human, so acting on all of them regenerated everything for no gain. Only a wrong projection (flat photo, tiled panels), a visible seam, a leftover-grey canvas, an anachronism, a CGI look on a scene, or a wrong guide frame trigger the retry. Soft notes are kept in the report and the worker log.
+- Live result with the final rules, three runs: two passed at the first attempt (about 70 s, $0.19 each including the upscale), one was a flat wide photograph at both attempts and was kept, flagged, at about 109 s and $0.35. A critic that cannot answer counts as a pass and never blocks generation. `IMAGE_CHECKS=off` switches it off.
+- **Known weakness:** a panorama that is still flat after the retry is kept (it looks fine as a picture but is wrong on a sphere). A human decision is open: keep it, or fail the stage so the era is retried later.
+- A cheap pixel measure of the wrap seam did not separate real from flat panoramas (ratios overlapped), so it was not used.
+- Cost per checked picture about $0.0125; per era about $0.19 for the panorama, $0.16 for the scene and $0.16 for the guide frame when everything passes first time.
+
+Delegated to Haiku: nothing. Problems: two shell commands were blocked by the permission check (one with an `rm`, one that only contained `$$` inside a heredoc); worked around by writing files with the file tool and keeping temp scripts outside the repo, with no removal done.
+
+### 2026-11-15 01:15, items 4 and 5 of the human's queue, A2-13 and A2-14
+
+**Item 4, live end to end (done once, in my own dev database `chronodex_dev_agent2`, not the shared one).** Seeded that database with `npm run seed`, gave Queen's Tower a real reference photo (the present-day photo from the bake-off, because the H1 photos do not exist) and injected the three period photographs as `referenceImageUrls` (Agent 5's job later), then ran the real worker loop on `queens-tower_1893`, core tier. Result: **succeeded in 339 s**, era `ready`. The real Historian (DeepSeek) took 166 s and wrote "The Queen Opens the Imperial Institute", a guide "Albert Neale, hansom cab driver" (voice `eleven-daniel`), a 110-word script and 5 sources; scene 57 s (2 attempts, passed the critic), panorama 115 s (2 attempts; the critic's "flat" verdict was a false positive that the refined critic prompt later fixed), headshot 16 s, narration 12 s. The scene shows opening-day bunting and the Institute's stone lions, the panorama is a true sphere with the Royal Albert Hall dome behind the viewer. The era's media is saved locally by `scripts/backup-media.ts` under `spikes/agent-2/out/media-backup/`. Estimated spend about $0.85. The human can look at it by running the app with `MONGODB_DB=chronodex_dev_agent2` and `NEXT_PUBLIC_USE_MOCKS=` (empty); the shared `chronodex` database was not touched.
+- Findings for others: the Historian's script came out at 110 words, which is about 38 s spoken, not 45 (see the 130-word note; Agent 1). The Historian wrote an era-accurate scene brief by itself (flags on the Institute, the lions), so Agent 5's references mostly add architectural fidelity.
+- Critic fix found by this run: the first critic prompt called a real sphere "flat" (false positive, a $0.15 wasted retry). Describing what a gentle equirectangular curve looks like and what "one direction only" means fixed it: **10 of 10** on a labelled set of ten panoramas, for both Sonnet and Haiku. Caveat: tuned on the same ten images, so real accuracy on new ones is unproven. Haiku (20x cheaper) also gets projection right but falsely reports seams, so Sonnet stays the default.
+
+**Item 5, ambience loops (done, files made; nobody has listened yet).** `scripts/ambience.ts` made, for each of `1850-1899`, `1900-1945`, `1946-1979`, `1980-now`, a 45 s instrumental music loop (`<bucket>.m4a`, AAC, Sonilo text-to-music, licensed as commercial-use-safe, $0.11) and a 30 s street-sound loop (`<bucket>-street.mp3`, ElevenLabs sound effects with the smooth-loop option, $0.06), in `public/audio/ambience/`, with `manifest.json` (models, request ids, lengths, costs). Total $0.69, 7.4 MB. Prompts are named builders in `src/lib/fal/ambience.ts`: instrumental only, "an original composition, not based on any existing song", quiet and loopable, and a test checks no real artist or song is named. `ambienceBucketFor(year)` maps an era to its bucket. **For Agent 4:** the music files are `.m4a` (plays in Safari and Chrome), the street files `.mp3`; mix them as two layers. I could only verify length (exactly 45.0 s and 30.1 s) and format, not the sound: a human must listen, and the music loop may have an audible join when it repeats (Sonilo has no loop option), so a short crossfade in the player is advisable.
+
+**A2-13 (done).** `scripts/pregenerate.ts`: queues every era that is not ready through the API's own rule, runs the same worker loop and `runEraJob`, exits when the queue is empty, prints a table and writes `spikes/agent-2/out/pregenerate-log.json`. `--dry-run` prints the plan and an estimate (about $0.62 per era core, so about $5.6 for the nine eras not yet made), `--video` (needs `VIDEO_GENERATION=on`), `--only`, `--concurrency` (default 2), `--max-usd`. Safe to re-run: it repeats only what is missing. Dry run tested live against my dev database. `scripts/backup-media.ts`: downloads every media URL of every era plus landmark reference photos to `spikes/agent-2/out/media-backup/` (git-ignored) with `index.json`; `--dry-run` lists them; skips files already saved. Tested live: 5 files saved, second run skipped all. Bug found by running it: the dry run hung because an open MongoDB connection keeps the process alive; both scripts now always close it.
+
+**A2-14 (built, blocked by fal).** Probed the whole `fal-ai/ffmpeg-api` family: merge-videos, extract-frame, compose and merge-audio-video are accepted into the queue and then fail with **403 "You do not have permission to use this endpoint"**. So no clip joining and no last-frame extraction on our key (the human's list item H-F, now broader). Built `runStitch` anyway so it works the moment access is enabled: it merges at an explicit 1280x720, downloads the result, reads its MP4 boxes (`video.ts`, no ffmpeg needed, tested on a real Kling clip) and only accepts it if it has video and audio tracks and a length within 1.5 s of the clips' total, else it returns a null output and a reason. `runEraJob` marks the video ready from the three clips first, then tries the stitch, and records a failed stitch as `skipped` with the reason, so it can never fail the job. The player plays three clips in order (about 20 ms gap on an iPhone) meanwhile.
+
+**Open for the human (added to the table above):** colour or monochrome for pre-1900 eras (`PERIOD_LOOK`); listen to the ambience; ask fal for ffmpeg API access; keep or fail a panorama that is still flat after the retry; look at the live era in the app.
+
+Spend this session by my estimate: about $4.3 (bake-off $1.5, three-run panorama checks about $1.6, critic calibration about $0.35, live era about $0.85, ambience $0.69). Project total about $9.

@@ -24,11 +24,13 @@ import {
   runNarration,
   runPanorama,
   runScene,
+  runStitch,
   runTalk,
   runWalkOff,
   runWalkOn,
 } from './stages';
 import type { PanoramaOutput, StageOutput } from './stages';
+import type { StitchOutcome } from './stages/stitch';
 
 /** The Historian and every stage function. Each is replaceable in tests. */
 export interface PipelineDeps {
@@ -44,6 +46,7 @@ export interface PipelineDeps {
     walkOn: typeof runWalkOn;
     walkOff: typeof runWalkOff;
     talk: typeof runTalk;
+    stitch: typeof runStitch;
   };
 }
 
@@ -70,6 +73,7 @@ export const realDeps: PipelineDeps = {
     walkOn: runWalkOn,
     walkOff: runWalkOff,
     talk: runTalk,
+    stitch: runStitch,
   },
 };
 
@@ -115,6 +119,16 @@ async function dryPanorama(): Promise<PanoramaOutput> {
 }
 
 /**
+ * Dry-run stitch: never stitches, so the dry run exercises the same "play three clips in order" path the real
+ * pipeline takes today.
+ *
+ * @returns A skipped outcome.
+ */
+async function dryStitch(): Promise<StitchOutcome> {
+  return { output: null, reason: 'dry run: nothing is stitched' };
+}
+
+/**
  * Dependencies that return fixtures and spend nothing: placeholder brief text, placeholder pictures,
  * a sample clip. The worker uses them when NEXT_PUBLIC_USE_MOCKS=1 so the queue, the progress sheet
  * and the screens can be exercised with no keys. Never use them for a real era: the text says
@@ -131,6 +145,7 @@ export const dryRunDeps: PipelineDeps = {
     walkOn: dryStage(MOCK_VIDEO_URL, MOCK_VIDEO_DURATION_S),
     walkOff: dryStage(MOCK_VIDEO_URL, MOCK_VIDEO_DURATION_S),
     talk: dryStage(MOCK_VIDEO_URL, MOCK_VIDEO_DURATION_S),
+    stitch: dryStitch,
   },
 };
 

@@ -10,7 +10,8 @@ Owner: Agent 2 (Studio). `runEraJob(job)` runs one generation job and writes eac
     video tier, once scene + headshot + narration exist:
       guide_frame -+- walk_on
                    +- talk
-                   +- walk_off          (stitch: not built, marked skipped)
+                   +- walk_off
+    then, optionally, stitch (one file, only if audio and length survive; blocked on our key)
 
 ## Entry points
 
@@ -25,7 +26,21 @@ Owner: Agent 2 (Studio). `runEraJob(job)` runs one generation job and writes eac
 - **Write as it lands.** Era fields are patched per stage. Only the three video segments land together.
 - **Never pay twice.** A core stage whose output is already on the Era is skipped. Every stage saves its fal request id on the job stage; a re-claimed job passes it back, and fal returns the finished result. That is also how the guide frame (no Era field) survives a restart.
 - **A failure does not stop independent stages.** Dependants are `skipped`. Core `state` is `failed` if any piece is missing; asking again repeats only what is missing.
+- **Checked pictures.** Scene, panorama and guide frame are judged by a vision critic and repeated once on a hard failure (see `stages/README.md`). The outcome is logged by `runEraJob`.
 - **Heartbeat.** The job lease (10 min) is renewed at most once a minute during fal waits.
+
+## Settings (environment)
+
+| Name | Meaning |
+|---|---|
+| `NEXT_PUBLIC_USE_MOCKS=1` | Dry run on fixtures, spends nothing |
+| `PERIOD_LOOK=monochrome` | Real-photograph look for period pictures. Default colour. A human decision |
+| `IMAGE_CHECKS=off` | No critic, no corrective retry |
+| `IMAGE_CHECK_MODEL` | The critic's model in OpenRouter naming. Default `anthropic/claude-sonnet-5` |
+
+## Scripts
+
+`scripts/pregenerate.ts` generates every seeded era that is not ready and exits (`--dry-run` prints the plan and the estimated cost, `--video`, `--only <eraId>`, `--max-usd`). `scripts/backup-media.ts` downloads every generated file (`--dry-run` lists them). `scripts/ambience.ts` makes the period music and street loops.
 
 ## Run and test
 

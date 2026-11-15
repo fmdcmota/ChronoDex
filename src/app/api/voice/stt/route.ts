@@ -5,19 +5,21 @@
  * Request: multipart with field `file`, the recording (Chrome sends WebM/Opus, iOS Safari sends MP4/AAC,
  * the client names it speech.webm, speech.mp4 or speech.ogg). Response: SttResponse `{ text }`, which is
  * an empty string when nothing intelligible was said.
- * Errors: 400 no file or an empty one, 413 over MAX_UPLOAD_BYTES, 415 not audio, 429 rate limited,
+ * Errors: 400 no file, or `empty_recording` for one under MIN_RECORDING_BYTES (1 KB, nothing is sent to fal),
+ * 413 over MAX_UPLOAD_BYTES, 415 not audio, 429 rate limited,
  * 502 the voice service failed, 503 no fal key on this server.
  * Flow: upload the recording to fal storage, then Scribe v2 (about $0.008 a minute, about 2 s for a
  * short question). The recording stays on fal's CDN for at least 7 days at a public, unguessable URL.
  * The upload is renamed to an extension fal accepts (see lib/fal/audio.ts): fal refuses .webm and .mp4.
- * VERIFIED live: MP3 under .mp3, .ogg, .m4a and .aac names. NOT YET VERIFIED: a real Chrome WebM/Opus or
- * iOS MP4/AAC recording, which needs a browser (spikes/agent-2/voice-test.mjs).
+ * VERIFIED live: MP3 under .mp3, .ogg, .m4a and .aac names, and a real browser WebM/Opus recording (a
+ * 152 KB MediaRecorder file, transcribed correctly with and without a MIME type). NOT YET VERIFIED: an iOS
+ * MP4/AAC recording (needs an iPhone over HTTPS).
  */
 import type { NextRequest } from 'next/server';
 import { MAX_UPLOAD_BYTES, type SttResponse } from '@/lib/contracts';
 import { SNIFF_BYTES, transcribe, uploadNameFor, uploadToFal } from '@/lib/fal';
 import { handle, json, jsonError } from '../../_lib/http';
-import { callerKey, isAcceptableAudioType, sttLimiter, tooManyRequests, upstreamError, voiceUnavailable } from '../_lib/voice';
+import { MIN_RECORDING_BYTES, callerKey, isAcceptableAudioType, sttLimiter, tooManyRequests, upstreamError, voiceUnavailable } from '../_lib/voice';
 
 /**
  * Transcribe one recording.
@@ -38,7 +40,10 @@ export async function POST(request: NextRequest): Promise<Response> {
     }
     const file = form.get('file');
     if (!(file instanceof Blob)) return jsonError(400, 'bad_request', 'file: a recording is required');
-    if (file.size === 0) return jsonError(400, 'bad_request', 'file: the recording is empty');
+    if (file.size < MIN_RECORDING_BYTES) {
+      // Cheaper to refuse than to pay fal to transcribe silence. The client can say "hold a little longer".
+      return jsonError(400, 'empty_recording', `file: the recording is empty or too short (${file.size} bytes, under ${MIN_RECORDING_BYTES})`);
+    }
     if (file.size > MAX_UPLOAD_BYTES) return jsonError(413, 'too_large', `file: over ${MAX_UPLOAD_BYTES} bytes`);
     if (!isAcceptableAudioType(file.type)) return jsonError(415, 'unsupported_type', `file: ${file.type} is not audio`);
 

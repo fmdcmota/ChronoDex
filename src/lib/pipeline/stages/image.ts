@@ -24,6 +24,11 @@ export const SCENE_WIDTH_FRACTION = 1 / 3;
  * lined up with the canvas's middle row, because the panorama's horizon must be the middle row.
  */
 export const DEFAULT_HORIZON_FRACTION = 0.55;
+/**
+ * How wide the soft edge around the pasted scene is, in canvas pixels (the scene is about 683 px wide).
+ * Without it the finished panorama showed the scene as a hard-edged rectangle (realism bake-off).
+ */
+export const PANORAMA_FEATHER_PX = 90;
 /** Final panorama width. Exactly twice the height, which the viewer needs for vFovDeg 180. */
 export const PANORAMA_WIDTH_PX = 2880;
 /** Final panorama height. */
@@ -41,6 +46,12 @@ const PANORAMA_JPEG_QUALITY = 90;
 export interface CanvasOptions {
   /** Where the horizon sits in the scene, from the top. Default DEFAULT_HORIZON_FRACTION. */
   horizonFraction?: number;
+  /**
+   * Width in pixels of a soft edge that fades the pasted scene into the grey canvas. 0 (the default) keeps a
+   * hard edge. A hard edge left a visible vertical line in the finished panorama where the scene meets the
+   * model's painting (phone test round 1 realism bake-off); a fade gives the model nothing to line up with.
+   */
+  featherPx?: number;
 }
 
 /**
@@ -68,10 +79,39 @@ export async function buildPanoramaCanvas(scene: Buffer, options: CanvasOptions 
   // Put the scene's horizon on the canvas's middle row, but never let the scene fall off the canvas.
   const wantedTop = Math.round(CANVAS_HEIGHT_PX / 2 - horizonFraction * sceneHeight);
   const top = Math.min(Math.max(wantedTop, 0), Math.max(CANVAS_HEIGHT_PX - sceneHeight, 0));
+  const pasted = options.featherPx ? await featherEdges(resized, sceneWidth, sceneHeight, options.featherPx) : resized;
   return sharp({
     create: { width: CANVAS_WIDTH_PX, height: CANVAS_HEIGHT_PX, channels: 3, background: { r: CANVAS_GREY, g: CANVAS_GREY, b: CANVAS_GREY } },
   })
-    .composite([{ input: resized, left, top }])
+    .composite([{ input: pasted, left, top }])
+    .png()
+    .toBuffer();
+}
+
+/**
+ * Fade the outer `featherPx` pixels of an image to transparent, so it blends into whatever is behind it.
+ *
+ * @param image - The image (any format sharp reads).
+ * @param width - Its width in pixels.
+ * @param height - Its height in pixels.
+ * @param featherPx - Fade distance from each edge, in pixels. Capped at a third of the smaller side.
+ * @returns A PNG with an alpha channel: 1 in the middle, 0 at the very edge.
+ */
+export async function featherEdges(image: Buffer, width: number, height: number, featherPx: number): Promise<Buffer> {
+  const feather = Math.max(1, Math.min(featherPx, Math.floor(Math.min(width, height) / 3)));
+  const alpha = Buffer.alloc(width * height);
+  for (let y = 0; y < height; y++) {
+    const fromTopBottom = Math.min(y, height - 1 - y) / feather;
+    for (let x = 0; x < width; x++) {
+      const fromSides = Math.min(x, width - 1 - x) / feather;
+      alpha[y * width + x] = Math.round(Math.min(fromSides, fromTopBottom, 1) * 255);
+    }
+  }
+  // Flatten to plain RGB bytes first. sharp applies removeAlpha late in its pipeline, so calling it on the same
+  // chain as joinChannel would strip the fade it has just added.
+  const rgb = await sharp(image).removeAlpha().raw().toBuffer();
+  return sharp(rgb, { raw: { width, height, channels: 3 } })
+    .joinChannel(alpha, { raw: { width, height, channels: 1 } })
     .png()
     .toBuffer();
 }

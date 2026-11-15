@@ -8,7 +8,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MODELS } from './models';
 import { runFal, FalStageError, type FalQueueLike } from './run';
-import { synthesizeSpeech, transcribe, uploadToFal, MAX_TTS_CHARACTERS } from './index';
+import { synthesizeSpeech, transcribe, uploadToFal, MAX_TTS_CHARACTERS, MOCK_TRANSCRIPT_TEXT, resetMockWarning, warnIfMocksShadowKey } from './index';
 import { VOICE_CATALOG, getVoice } from './voices';
 
 /** Build a fake queue that reports the given statuses in order, then returns `data`. */
@@ -181,5 +181,41 @@ describe('public functions', () => {
     vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '');
     vi.stubEnv('FAL_KEY', '');
     await expect(uploadToFal(new Blob(['x']))).rejects.toThrow(/FAL_KEY is not set/);
+  });
+});
+
+describe('mock mode is impossible to mistake', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+    resetMockWarning();
+  });
+
+  it('the mock transcript says it is a mock', async () => {
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
+    expect(await transcribe('https://example.com/a.mp3')).toBe(MOCK_TRANSCRIPT_TEXT);
+    expect(MOCK_TRANSCRIPT_TEXT).toMatch(/^\[mock transcript\]/);
+  });
+
+  it('warns once when mocks are on and a real key is set, and only then', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
+    vi.stubEnv('FAL_KEY', 'some-real-looking-key');
+    expect(warnIfMocksShadowKey()).toBe(true);
+    expect(warnIfMocksShadowKey()).toBe(false);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(String(warn.mock.calls[0][0])).toContain('FIXTURES');
+    expect(String(warn.mock.calls[0][0])).not.toContain('some-real-looking-key');
+  });
+
+  it('stays quiet when mocks are off, or when there is no key', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '');
+    vi.stubEnv('FAL_KEY', 'some-real-looking-key');
+    expect(warnIfMocksShadowKey()).toBe(false);
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
+    vi.stubEnv('FAL_KEY', '');
+    expect(warnIfMocksShadowKey()).toBe(false);
+    expect(warn).not.toHaveBeenCalled();
   });
 });

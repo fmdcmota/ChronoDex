@@ -32,6 +32,6 @@ With `NEXT_PUBLIC_USE_MOCKS=1` both routes return fixtures and call nothing.
 
 ## Traps
 
-- fal's speech to text rejects `.webm` and `.mp4` file names (supported: mp3 wav m4a ogg flac aac). The route renames the upload from the file's real bytes (`src/lib/fal/audio.ts`). Proven with MP3; a real Chrome WebM or iOS MP4 recording is not yet proven.
+- fal's speech to text rejects `.webm` and `.mp4` file names (supported: mp3 wav m4a ogg flac aac). The route renames the upload from the file's real bytes (`src/lib/fal/audio.ts`). Proven with MP3 and with a real browser WebM/Opus recording; an iOS MP4/AAC recording is not yet proven.
 - Rate limits and the cache are per server process, so on Vercel the real ceiling is a multiple of the limit.
 - Recordings are uploaded to fal's public CDN and kept at least 7 days.

@@ -12,4 +12,6 @@ export { runNarration } from './narration';
 export { runGuideFrame } from './guideFrame';
 export { runWalkOn, runWalkOff, type WalkInput } from './walk';
 export { runTalk } from './talk';
+export { runStitch, type StitchOutcome } from './stitch';
+export { inspectMp4, verifyStitch, type Mp4Info } from './video';
 export type { StageContext, StageOutput, PanoramaOutput } from './types';

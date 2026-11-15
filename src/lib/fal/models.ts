@@ -12,7 +12,7 @@
 import type { StageKey } from '@/lib/contracts';
 
 /** Stages that call fal. `brief` is Claude (the Historian) and `stitch` is chosen in A2-14. */
-export type FalStageKey = Exclude<StageKey, 'brief'> | 'chat_speech' | 'speech_to_text';
+export type FalStageKey = Exclude<StageKey, 'brief'> | 'chat_speech' | 'speech_to_text' | 'panorama_upscale' | 'image_check' | 'ambience_music' | 'ambience_street';
 
 /** One stage's model choice. */
 export interface ModelChoice {
@@ -38,6 +38,21 @@ export const PANORAMA_RESOLUTION = '2K';
 export const WALK_RESOLUTION = '720p';
 /** Whole seconds, 3 to 30 per the schema. 5 s crosses the pavement without dawdling (A2-06). */
 export const WALK_DURATION_S = 5;
+/**
+ * How much the finished panorama is enlarged. 1.4 turns 2880x1440 into 4032x2016, which stays under the
+ * 4096 px texture limit of older phones; 2 (5760 wide) is sharper but risks that limit (realism bake-off).
+ */
+export const PANORAMA_UPSCALE_FACTOR = 1.4;
+/**
+ * The vision model that judges generated pictures, in OpenRouter's naming. Override with IMAGE_CHECK_MODEL.
+ * MASTER.md section 7 names Claude Haiku for image checks, but on a labelled set of eight panoramas Haiku agreed
+ * with a human on 4 and Sonnet on 6 (at about $0.0125 against $0.0006 a picture), so Sonnet is the default.
+ */
+export const CRITIC_MODEL_ID = 'anthropic/claude-sonnet-5';
+/** Most generations per checked picture: the first plus one corrective retry (MASTER.md 5.3 rule 5). */
+export const MAX_CHECK_ATTEMPTS = 2;
+/** Most real period photographs given to the scene and panorama stages. More dilutes the prompt. */
+export const MAX_REFERENCE_PHOTOS = 3;
 
 /** Endpoint per stage. Keys are the pipeline's stage keys plus the two voice routes. */
 export const MODELS: Record<FalStageKey, ModelChoice> = {
@@ -54,6 +69,34 @@ export const MODELS: Record<FalStageKey, ModelChoice> = {
     typicalCostUsd: 0.15,
     typicalSeconds: 27,
     note: 'A2-03 route b2: outpaint the scene pasted in a grey 2:1 canvas. fal-ai/hunyuan_world is listed but not served.',
+  },
+  ambience_music: {
+    endpoint: 'sonilo/v1.1/text-to-music',
+    fallback: 'elevenlabs/music/v2.5',
+    typicalCostUsd: 0.11,
+    typicalSeconds: 30,
+    note: 'Period music loops. Licensed as commercial-use-safe. $0.0025 per output second (each sample bills at least 10 s). Returns .m4a. The fallback is $0.6 per minute and has force_instrumental.',
+  },
+  ambience_street: {
+    endpoint: 'elevenlabs/sound-effects/v3',
+    fallback: 'mirelo-ai/sfx2.0/text-to-audio',
+    typicalCostUsd: 0.06,
+    typicalSeconds: 10,
+    note: 'Street-sound loops under the music. $0.002 per second, 0.5 to 30 s, with a smooth `loop` option. Field names: text, duration_seconds, loop.',
+  },
+  image_check: {
+    endpoint: 'openrouter/router/vision',
+    fallback: null,
+    typicalCostUsd: 0.01,
+    typicalSeconds: 8,
+    note: 'A2-12: a vision model through fal judges each generated picture (the model id is CRITIC_MODEL_ID). Token priced. Lets Claude be the critic with the fal key alone, no Anthropic key.',
+  },
+  panorama_upscale: {
+    endpoint: 'fal-ai/seedvr/upscale/image',
+    fallback: 'topaz/upscale/image/precision',
+    typicalCostUsd: 0.02,
+    typicalSeconds: 35,
+    note: 'Realism bake-off: SeedVR2 at 2x made faces, lamps and brickwork clearly sharper. $0.001 per output megapixel. Topaz is $0.08 per 24 MP (untested).',
   },
   headshot: {
     endpoint: 'google/nano-banana-2.1',
@@ -116,6 +159,6 @@ export const MODELS: Record<FalStageKey, ModelChoice> = {
     fallback: null,
     typicalCostUsd: 0,
     typicalSeconds: null,
-    note: 'Not tried yet (A2-14). It uses the smallest input size, and whether it keeps audio is unknown.',
+    note: 'A2-14: BLOCKED ON OUR KEY. Every fal-ai/ffmpeg-api endpoint (merge-videos, extract-frame, compose, merge-audio-video) is accepted into the queue and then fails with 403 when it runs. runStitch checks the result for audio and length before trusting it, so it works unchanged once access is enabled. It shrinks to the smallest input size unless a resolution is given (1280x720 is).',
   },
 };

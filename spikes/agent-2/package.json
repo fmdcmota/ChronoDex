@@ -12,7 +12,9 @@
     "talk": "tsx talk-spike.ts",
     "frames": "tsx frames.ts",
     "walk": "tsx walk-spike.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "realism": "tsx realism-spike.ts",
+    "critic": "tsx critic-spike.ts"
   },
   "dependencies": {
     "@fal-ai/client": "^1.0.0",
