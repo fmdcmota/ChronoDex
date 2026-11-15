@@ -21,7 +21,7 @@ import { ART_LANDMARKS } from '../src/lib/landmarks';
 import { PALETTE } from '../src/lib/palette';
 import { hex, PixelCanvas } from './pixel/canvas';
 import { BADGE_PX, makeBadge } from './pixel/badges';
-import { SPRITE_PX, SPRITES } from './pixel/sprites';
+import { DUCK_FRAME_PX, duckWalkFrame, SPRITE_PX, SPRITES } from './pixel/sprites';
 
 /** Export scale. 4 keeps pixels square and crisp up to 2x CSS size on 2x screens. */
 const SCALE = 4;
@@ -63,6 +63,12 @@ ART_LANDMARKS.forEach((landmark, i) => {
 });
 
 save('preview/contact-sheet.png', sheet.scaled(SCALE));
+
+// The walking duck's two frames side by side (src/components/explore/DuckWalker.tsx).
+const duckSheet = new PixelCanvas(DUCK_FRAME_PX * 2, DUCK_FRAME_PX);
+duckSheet.stamp(duckWalkFrame(0), 0, 0);
+duckSheet.stamp(duckWalkFrame(1), DUCK_FRAME_PX, 0);
+save('sprites/duck/walk.png', duckSheet.scaled(SCALE));
 
 if (process.argv.includes('--publish')) {
   cpSync(join(ART_DIR, 'sprites'), APP_SPRITES_DIR, { recursive: true });
