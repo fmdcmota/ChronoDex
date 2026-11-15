@@ -7,11 +7,17 @@
  * updates the stage. That keeps every stage testable with a fake queue.
  */
 import type { FalRunContext } from '@/lib/fal';
+import type { CheckReport } from './checked';
 
 /** Options every stage accepts. Extends the runFal context with a way to pick the fallback model. */
 export interface StageContext extends FalRunContext {
   /** Endpoint to use instead of the registry's primary, for example MODELS.scene.fallback. */
   endpoint?: string;
+  /**
+   * Whether the critic judges the picture and a failed one is retried once. Default: on, unless the environment
+   * variable IMAGE_CHECKS is `off`. Tests and dry runs switch it off.
+   */
+  checks?: 'on' | 'off';
 }
 
 /** What every stage returns. */
@@ -26,6 +32,8 @@ export interface StageOutput {
   elapsedMs: number;
   /** Length of a video stage's clip in seconds, when the model reports it. */
   durationS?: number | null;
+  /** What the critic made of the kept picture, for stages that are checked. Absent for the rest. */
+  check?: CheckReport;
 }
 
 /** The panorama stage also reports the picture size, which the Era's Panorama needs. */

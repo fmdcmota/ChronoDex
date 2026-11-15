@@ -11,7 +11,8 @@
  *   video tier, once scene + headshot + narration exist:
  *     guide_frame ─┬─ walk_on
  *                  ├─ talk
- *                  └─ walk_off          (stitch is not built yet, A2-14: marked skipped)
+ *                  └─ walk_off
+ *   then, optionally, stitch: one file instead of three, used only if its audio and length survive
  *
  * Rules it keeps:
  * - Write as it lands: every result goes to the Era with patchEra at once, so the player sees the 360°
@@ -37,6 +38,17 @@ import type { StageContext, StageOutput } from './stages';
 export const HEARTBEAT_INTERVAL_MS = 60_000;
 /** Spoken words per second, measured on 16 voice clips in A2-04. Used only to guess a clip length fal does not report. */
 export const SPEECH_WORDS_PER_S = 2.9;
+
+/**
+ * The look of period pictures, from the PERIOD_LOOK setting: `monochrome` for real black-and-white style
+ * photographs, anything else (or nothing) for the default restrained colour. A human decision (asked on the
+ * board); a setting, not a constant, so it can change without a code change.
+ *
+ * @returns `monochrome` or `colour`.
+ */
+export function periodLook(): 'colour' | 'monochrome' {
+  return process.env.PERIOD_LOOK === 'monochrome' ? 'monochrome' : 'colour';
+}
 
 /** The text half of an era is present when the Historian has already written it. */
 function hasBrief(era: Era): boolean {
@@ -113,6 +125,12 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
         },
       });
       await patchStage(job.id, key, { state: 'done', model: out.model, finishedAt: new Date().toISOString() });
+      if (out.check) {
+        // The worker log is where a human sees whether the critic had to step in, and what it still disliked.
+        const c = out.check;
+        const verdict = c.checked ? (c.passed ? 'passed the check' : `kept with problems: ${c.problems.join('; ')}`) : 'not checked';
+        console.log(`runEraJob: ${key} for ${job.eraId}: ${c.attempts} attempt(s), ${verdict}, check cost ${c.checkCostUsd.toFixed(4)} USD`);
+      }
       return out;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -170,7 +188,7 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
         if (sceneUrl) await skip('scene', null);
         else {
           const out = await step('scene', MODELS.scene.endpoint, (ctx) =>
-            deps.stages.scene({ referencePhotoUrl: landmark.referencePhotoUrl, brief: brief.sceneBrief, year }, ctx),
+            deps.stages.scene({ referencePhotoUrl: landmark.referencePhotoUrl, brief: brief.sceneBrief, year, look: periodLook() }, ctx),
           );
           if (out) {
             sceneUrl = out.url;
@@ -181,7 +199,7 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
         else if (!sceneUrl) await skip('panorama', 'Skipped: the scene failed');
         else {
           const out = await step('panorama', MODELS.panorama.endpoint, async (ctx) => {
-            const made = await deps.stages.panorama({ sceneUrl: sceneUrl as string, brief: brief.sceneBrief, year }, ctx);
+            const made = await deps.stages.panorama({ sceneUrl: sceneUrl as string, brief: brief.sceneBrief, year, look: periodLook() }, ctx);
             await patchEra(job.eraId, {
               panorama: {
                 url: made.url,
@@ -248,25 +266,32 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
       step('walk_off', MODELS.walk_off.endpoint, (ctx) => deps.stages.walkOff(walkInput, ctx)),
     ]);
   }
-  // Joining the clips into one file is A2-14. The player plays the three segments in order meanwhile.
-  await skip('stitch', 'Not built yet: the player plays the three clips in order');
-
   const [walkOn, talk, walkOff] = clips;
   if (walkOn && talk && walkOff) {
     const talkDurationS = talk.durationS ?? Math.round(wordCount(guide.script) / SPEECH_WORDS_PER_S);
-    await patchEra(job.eraId, {
-      guideVideo: {
-        segments: [
-          { kind: 'walk_on', url: walkOn.url, durationS: walkOn.durationS ?? WALK_DURATION_S },
-          { kind: 'talk', url: talk.url, durationS: talkDurationS },
-          { kind: 'walk_off', url: walkOff.url, durationS: walkOff.durationS ?? WALK_DURATION_S },
-        ],
-        stitchedUrl: null,
-      },
-      videoState: 'ready',
-    });
+    const segments = [
+      { kind: 'walk_on' as const, url: walkOn.url, durationS: walkOn.durationS ?? WALK_DURATION_S },
+      { kind: 'talk' as const, url: talk.url, durationS: talkDurationS },
+      { kind: 'walk_off' as const, url: walkOff.url, durationS: walkOff.durationS ?? WALK_DURATION_S },
+    ];
+    // The three clips are already a complete guide video, so mark it ready now. Stitching is a bonus after that.
+    await patchEra(job.eraId, { guideVideo: { segments, stitchedUrl: null }, videoState: 'ready' });
+
+    // Optional: one file instead of three. It is only used if the audio and the length survive (stages/stitch.ts);
+    // otherwise, and whenever fal refuses (it does on our key today), the player plays the three clips in order.
+    // A failed stitch is recorded as skipped, never failed, so it cannot fail the job or the era.
+    await patchStage(job.id, 'stitch', { state: 'running', model: MODELS.stitch.endpoint, startedAt: new Date().toISOString(), finishedAt: null, error: null });
+    const outcome = await deps.stages.stitch({ clipUrls: segments.map((s) => s.url), expectedDurationS: segments.reduce((sum, s) => sum + s.durationS, 0) });
+    if (outcome.output) {
+      await patchEra(job.eraId, { guideVideo: { segments, stitchedUrl: outcome.output.url } });
+      await patchStage(job.id, 'stitch', { state: 'done', model: outcome.output.model, finishedAt: new Date().toISOString() });
+    } else {
+      console.log(`runEraJob: stitch for ${job.eraId} skipped: ${outcome.reason}`);
+      await patchStage(job.id, 'stitch', { state: 'skipped', error: outcome.reason, finishedAt: new Date().toISOString() });
+    }
     return coreComplete;
   }
+  await skip('stitch', 'Skipped: a clip is missing');
   await patchEra(job.eraId, { videoState: 'failed' });
   return false;
 }

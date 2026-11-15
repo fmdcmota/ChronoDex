@@ -1,0 +1,94 @@
+{
+  "generatedAt": "2026-11-15T00:34:23.808Z",
+  "estimatedCostUsd": 0.69,
+  "files": [
+    {
+      "bucket": "1850-1899",
+      "layer": "music",
+      "file": "1850-1899.m4a",
+      "endpoint": "sonilo/v1.1/text-to-music",
+      "requestId": "01a1dc9f-d39d-7cd1-bbf9-fff46199cebf",
+      "seconds": 45,
+      "estimatedCostUsd": 0.1125,
+      "generationSeconds": 25,
+      "prompt": "A Victorian street scene in the 1890s: a solo upright music-hall piano playing a gentle, cheerful waltz, with a faint brass band marching far away. Instrumental only, no vocals and no lyrics. An original composition, not based on any existing song, tune or artist. Quiet, soft and distant, like background music heard from down the street. Steady and easy to loop, with no big ending."
+    },
+    {
+      "bucket": "1850-1899",
+      "layer": "street",
+      "file": "1850-1899-street.mp3",
+      "endpoint": "elevenlabs/sound-effects/v3",
+      "requestId": "01a1dc9f-d453-7c42-854f-c9f94338d863",
+      "seconds": 30,
+      "estimatedCostUsd": 0.06,
+      "generationSeconds": 8,
+      "prompt": "Victorian London street ambience: horse hooves and iron-rimmed carriage wheels on granite setts, a distant murmur of a crowd, an occasional cab driver calling out, a few sparrows. No music. No clear speech. Quiet and even, with nothing sudden, so it loops without a bump."
+    },
+    {
+      "bucket": "1900-1945",
+      "layer": "music",
+      "file": "1900-1945.m4a",
+      "endpoint": "sonilo/v1.1/text-to-music",
+      "requestId": "01a1dc9f-d453-7153-83e0-c39417e8335a",
+      "seconds": 45,
+      "estimatedCostUsd": 0.1125,
+      "generationSeconds": 23,
+      "prompt": "A 1940s dance band heard through an old wireless radio in a nearby window: warm, slightly muffled swing with clarinet, muted brass and brushed drums. Instrumental only, no vocals and no lyrics. An original composition, not based on any existing song, tune or artist. Quiet, soft and distant, like background music heard from down the street. Steady and easy to loop, with no big ending."
+    },
+    {
+      "bucket": "1900-1945",
+      "layer": "street",
+      "file": "1900-1945-street.mp3",
+      "endpoint": "elevenlabs/sound-effects/v3",
+      "requestId": "01a1dc9f-d453-7823-a3a4-2e024b5b65ea",
+      "seconds": 30,
+      "estimatedCostUsd": 0.06,
+      "generationSeconds": 5,
+      "prompt": "London street ambience of the 1930s and 1940s: a few early motor cars and the odd horse cart, bicycle bells, footsteps on paving, a distant crowd murmur, pigeons. No music. No clear speech. Quiet and even, with nothing sudden, so it loops without a bump."
+    },
+    {
+      "bucket": "1946-1979",
+      "layer": "music",
+      "file": "1946-1979.m4a",
+      "endpoint": "sonilo/v1.1/text-to-music",
+      "requestId": "01a1dc9f-d453-7ba3-91f6-ee1d92e493e9",
+      "seconds": 45,
+      "estimatedCostUsd": 0.1125,
+      "generationSeconds": 38,
+      "prompt": "A 1960s street: a light instrumental pop-beat with jangly electric guitar, bass and soft drums, as if from a transistor radio down the road. Instrumental only, no vocals and no lyrics. An original composition, not based on any existing song, tune or artist. Quiet, soft and distant, like background music heard from down the street. Steady and easy to loop, with no big ending."
+    },
+    {
+      "bucket": "1946-1979",
+      "layer": "street",
+      "file": "1946-1979-street.mp3",
+      "endpoint": "elevenlabs/sound-effects/v3",
+      "requestId": "01a1dc9f-d453-7a91-8b36-9de2c4000f4a",
+      "seconds": 30,
+      "estimatedCostUsd": 0.06,
+      "generationSeconds": 8,
+      "prompt": "London street ambience of the 1950s to 1970s: passing post-war cars and buses, footsteps on pavement, a distant crowd murmur, a bicycle bell, pigeons. No music. No clear speech. Quiet and even, with nothing sudden, so it loops without a bump."
+    },
+    {
+      "bucket": "1980-now",
+      "layer": "music",
+      "file": "1980-now.m4a",
+      "endpoint": "sonilo/v1.1/text-to-music",
+      "requestId": "01a1dc9f-d453-7b31-912a-bd805692eb71",
+      "seconds": 45,
+      "estimatedCostUsd": 0.1125,
+      "generationSeconds": 12,
+      "prompt": "A present-day city street outside a cafe: a gentle instrumental with a soft synthesiser pad, a light electronic beat and a little warm piano. Instrumental only, no vocals and no lyrics. An original composition, not based on any existing song, tune or artist. Quiet, soft and distant, like background music heard from down the street. Steady and easy to loop, with no big ending."
+    },
+    {
+      "bucket": "1980-now",
+      "layer": "street",
+      "file": "1980-now-street.mp3",
+      "endpoint": "elevenlabs/sound-effects/v3",
+      "requestId": "01a1dc9f-d453-72a3-a441-b68da0f78c6c",
+      "seconds": 30,
+      "estimatedCostUsd": 0.06,
+      "generationSeconds": 8,
+      "prompt": "Present-day London street ambience: steady traffic and a bus pulling away, footsteps, a distant crowd murmur and chatter, a bird or two. No music. No clear speech. Quiet and even, with nothing sudden, so it loops without a bump."
+    }
+  ]
+}

@@ -8,5 +8,6 @@
  * With NEXT_PUBLIC_USE_MOCKS=1 the job runs against fixtures and spends nothing (dry run). Otherwise it
  * calls the Historian and fal and costs real money.
  */
-export { runEraJob, HEARTBEAT_INTERVAL_MS, SPEECH_WORDS_PER_S } from './run';
+export { runEraJob, periodLook, HEARTBEAT_INTERVAL_MS, SPEECH_WORDS_PER_S } from './run';
+export { eraAssets, landmarkAssets, estimateEraCostUsd, type EraAsset, type EraCostEstimate } from './assets';
 export { defaultDeps, dryRunDeps, realDeps, type PipelineDeps } from './deps';

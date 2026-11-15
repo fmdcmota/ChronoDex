@@ -11,6 +11,7 @@ import { placeholderBrief } from '@fixtures/index';
 import { dryRunDeps, type PipelineDeps } from './deps';
 import { runEraJob } from './index';
 import type { StageContext } from './stages';
+import type { StitchOutcome } from './stages/stitch';
 
 const ERA_ID = eraIdOf('natural-history-museum', 1862);
 
@@ -18,9 +19,10 @@ const ERA_ID = eraIdOf('natural-history-museum', 1862);
 type Failures = Partial<Record<StageKey, string>>;
 
 /** A recorder of calls, and the fake dependencies built on it. */
-function makeDeps(failures: Failures = {}, durationOfTalkS: number | null = 44.2) {
+function makeDeps(failures: Failures = {}, durationOfTalkS: number | null = 44.2, stitch: StitchOutcome = { output: null, reason: 'test: not stitched' }) {
   const calls: { key: string; ctx: StageContext }[] = [];
   const briefCalls: number[] = [];
+  const stitchCalls: { clipUrls: string[]; expectedDurationS: number }[] = [];
   /** Run one fake stage: record it, save a request id like a real stage would, fail if told to. */
   async function stage<T>(key: StageKey, ctx: StageContext, make: () => T): Promise<T> {
     calls.push({ key, ctx });
@@ -45,9 +47,13 @@ function makeDeps(failures: Failures = {}, durationOfTalkS: number | null = 44.2
       walkOn: (_i, ctx = {}) => stage('walk_on', ctx, () => out('on.mp4', 5)),
       walkOff: (_i, ctx = {}) => stage('walk_off', ctx, () => out('off.mp4', 5)),
       talk: (_i, ctx = {}) => stage('talk', ctx, () => out('talk.mp4', durationOfTalkS)),
+      stitch: async (input) => {
+        stitchCalls.push(input);
+        return stitch;
+      },
     },
   };
-  return { deps, calls, briefCalls, ran: () => calls.map((c) => c.key) };
+  return { deps, calls, briefCalls, stitchCalls, ran: () => calls.map((c) => c.key) };
 }
 
 /** Queue and claim a job for the test era. */
@@ -170,6 +176,26 @@ describe('runEraJob, video tier', () => {
     expect(await getEra(ERA_ID)).toMatchObject({ state: 'ready', videoState: 'failed', guideVideo: null });
     expect(await stageOf(job, 'talk')).toMatchObject({ state: 'failed', error: 'avatar refused the audio' });
     expect((await getJob(job.id))?.state).toBe('failed');
+  });
+
+  it('stores the stitched file next to the three clips when the stitch passes, and tries it only after the video is ready', async () => {
+    const job = await claim(true);
+    const { deps, stitchCalls } = makeDeps({}, 44.2, { output: { url: 'https://cdn/all.mp4', model: 'm-stitch', requestId: 'r', elapsedMs: 1 }, reason: null });
+    await runEraJob(job, deps);
+    const era = await getEra(ERA_ID);
+    expect(era?.guideVideo?.stitchedUrl).toBe('https://cdn/all.mp4');
+    expect(era?.guideVideo?.segments).toHaveLength(3);
+    expect(stitchCalls[0]).toEqual({ clipUrls: ['on.mp4', 'talk.mp4', 'off.mp4'], expectedDurationS: 54.2 });
+    expect(await stageOf(job, 'stitch')).toMatchObject({ state: 'done', model: 'm-stitch' });
+  });
+
+  it('a refused or unverified stitch is skipped with the reason, never failed, and the video stays ready', async () => {
+    const job = await claim(true);
+    const { deps } = makeDeps({}, 44.2, { output: null, reason: 'fal refused the merge (403)' });
+    await runEraJob(job, deps);
+    expect(await getEra(ERA_ID)).toMatchObject({ videoState: 'ready', guideVideo: { stitchedUrl: null } });
+    expect(await stageOf(job, 'stitch')).toMatchObject({ state: 'skipped', error: 'fal refused the merge (403)' });
+    expect((await getJob(job.id))?.state).toBe('succeeded');
   });
 
   it('skips all video stages when the guide frame fails', async () => {

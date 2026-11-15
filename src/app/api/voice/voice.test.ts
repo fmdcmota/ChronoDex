@@ -6,11 +6,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
 import { eraIdOf } from '@/lib/contracts';
 import { resetMemoryDb } from '@/lib/db';
-import { createRateLimiter, createSpeechCache } from '@/lib/fal';
+import { MOCK_TRANSCRIPT_TEXT, createRateLimiter, createSpeechCache } from '@/lib/fal';
 import { MOCK_AUDIO_URL } from '@fixtures/index';
 import { POST as stt } from './stt/route';
 import { POST as tts } from './tts/route';
-import { isAcceptableAudioType, TTS_PER_MINUTE } from './_lib/voice';
+import { MIN_RECORDING_BYTES, isAcceptableAudioType, TTS_PER_MINUTE } from './_lib/voice';
 
 const HERO_ERA = eraIdOf('queens-tower', 1893);
 const EMPTY_ERA = eraIdOf('natural-history-museum', 1862);
@@ -77,18 +77,39 @@ describe('POST /api/voice/tts', () => {
   });
 });
 
+/** A recording of the given size, comfortably over the 1 KB minimum by default. */
+function recording(bytes = 2048, type = 'audio/webm;codecs=opus'): Blob {
+  return new Blob([new Uint8Array(bytes)], { type });
+}
+
 describe('POST /api/voice/stt', () => {
-  it('answers { text } for a recording', async () => {
-    const res = await stt(postFile(new Blob(['fake audio'], { type: 'audio/webm;codecs=opus' })));
+  it('answers a clearly tagged mock transcript in mock mode', async () => {
+    const res = await stt(postFile(recording()));
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ text: 'What was daily life like here?' });
+    const { text } = await res.json();
+    expect(text).toBe(MOCK_TRANSCRIPT_TEXT);
+    expect(text.startsWith('[mock transcript]')).toBe(true);
   });
 
-  it('400s a missing or empty file, 413s a big one, 415s a non-audio one', async () => {
+  it('refuses a recording under 1 KB with empty_recording before anything is sent to fal', async () => {
+    for (const bytes of [0, 5, MIN_RECORDING_BYTES - 1]) {
+      const res = await stt(postFile(recording(bytes)));
+      expect(res.status, `${bytes} bytes`).toBe(400);
+      expect((await res.json()).error.code).toBe('empty_recording');
+    }
+    expect((await stt(postFile(recording(MIN_RECORDING_BYTES)))).status).toBe(200);
+  });
+
+  it('refuses a tiny recording even when fal is not configured, because it checks size first', async () => {
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '');
+    vi.stubEnv('FAL_KEY', '');
+    expect((await (await stt(postFile(recording(5)))).json()).error.code).toBe('empty_recording');
+  });
+
+  it('400s a missing file, 413s a big one, 415s a non-audio one', async () => {
     expect((await stt(postFile(null))).status).toBe(400);
-    expect((await stt(postFile(new Blob([], { type: 'audio/webm' })))).status).toBe(400);
-    expect((await stt(postFile(new Blob([new Uint8Array(4 * 1024 * 1024 + 1)], { type: 'audio/webm' })))).status).toBe(413);
-    const wrong = await stt(postFile(new Blob(['x'], { type: 'image/jpeg' })));
+    expect((await stt(postFile(recording(4 * 1024 * 1024 + 1)))).status).toBe(413);
+    const wrong = await stt(postFile(recording(2048, 'image/jpeg')));
     expect(wrong.status).toBe(415);
     expect((await wrong.json()).error.code).toBe('unsupported_type');
     const notForm = new Request('http://test.local/api/voice/stt', { method: 'POST', body: 'plain', headers: { 'Content-Type': 'text/plain' } });
@@ -98,7 +119,7 @@ describe('POST /api/voice/stt', () => {
   it('503s when there is no fal key and mocks are off', async () => {
     vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '');
     vi.stubEnv('FAL_KEY', '');
-    expect((await stt(postFile(new Blob(['x'], { type: 'audio/mp4' })))).status).toBe(503);
+    expect((await stt(postFile(recording(2048, 'audio/mp4')))).status).toBe(503);
   });
 
   it('accepts what phones send: WebM, MP4 (even labelled video), OGG, and no type at all', () => {

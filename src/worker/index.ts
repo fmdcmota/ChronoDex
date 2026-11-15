@@ -23,6 +23,7 @@
  */
 import os from 'node:os';
 import { mongoConfigured, closeMongo } from '@/lib/db';
+import { warnIfMocksShadowKey } from '@/lib/fal';
 import { claimNextJob } from '@/lib/jobs';
 import { runEraJob } from '@/lib/pipeline';
 import { runWorker } from './loop';
@@ -66,6 +67,8 @@ async function main(): Promise<void> {
     `${workerId} starting. Mode: ${dryRun ? 'DRY RUN on fixtures (spends nothing)' : 'REAL (spends fal and Historian credits)'}. ` +
       `Database: ${mongoConfigured() ? 'MongoDB' : 'in-memory (private to this process)'}. Concurrency: ${concurrency}.`,
   );
+
+  warnIfMocksShadowKey();
 
   const controller = new AbortController();
   let stopRequests = 0;

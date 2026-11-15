@@ -47,8 +47,8 @@ export function sniffAudio(bytes: Uint8Array): AudioKind {
 /**
  * Pick the file name to upload a recording under, so fal accepts it.
  *
- * WebM is uploaded as .ogg: both usually carry Opus and the decoder reads the content, but a real
- * Chrome WebM recording has NOT yet been verified through this path (see the route's header).
+ * WebM is uploaded as .ogg: both usually carry Opus and the decoder reads the content. Verified with a real
+ * browser WebM/Opus recording (A2-11). An iOS MP4/AAC recording has NOT yet been verified; it is sent as .m4a.
  *
  * @param bytes - The recording's leading bytes.
  * @param mimeType - The browser's claimed type, used only when the bytes are not recognised.
