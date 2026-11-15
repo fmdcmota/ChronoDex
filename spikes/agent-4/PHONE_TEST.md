@@ -110,9 +110,9 @@ are in the real app, mock data is fine for them. Row 5.10 needs mocks off and th
 ## Test 6: the real 360° view and Time Machine (A4-15, A4-16; M1 and M2 gates)
 
 Real data, mocks off, served from Agent 4's computer through a Cloudflare tunnel:
-**https://members-polo-subsequently-glass.trycloudflare.com** (changes if the tunnel restarts; the board has the
-latest). The database is `chronodex_dev_agent2`, the only one with a generated era (Queen's Tower 1893, guide
-Albert Neale). Video generation is off, so nothing here spends fal credits. Do it on an iPhone and an Android phone.
+**https://url-poems-screens-poll.trycloudflare.com** (changes if the tunnel restarts; the board has the
+latest). The database is now `chronodex` (since 04:10) with Agent 6's 8 demo eras; Queen's Tower 1893's guide is now
+Thomas Meecham, not Albert. Video generation is off, so nothing here spends fal credits. Do it on an iPhone and an Android phone.
 **Do not tap 1962**: it is not generated, and tapping it queues a paid job that the next worker run would make.
 
 | # | Do | Pass when |

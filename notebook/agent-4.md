@@ -111,7 +111,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-16 Time Machine on a real era
 - [x] A4-b Picture credits in the Sources drawer and Then/Now (GET /api/media/credits/[eraId])
 - [x] A4-r2-1 Ambience: real two-layer loops, quieter in chat, silent while recording and while a reply speaks
-- [ ] A4-r2-2 Switch the phone server to chronodex now (Agent 6's 8 demo eras), reference photo in public/reference
+- [x] A4-r2-2 Switch the phone server to chronodex now (Agent 6's 8 demo eras), reference photo in public/reference
 - [ ] A4-r2-8 Cache /demo/ files in the browser
 - [ ] A4-r2-9 WAV narration and replies on iOS (Gemini voices)
 - [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
@@ -278,3 +278,8 @@ Newest at the bottom. One entry per task or per session, in this shape:
 ### 2026-11-15 04:05, plan update and delegation
 - Did: at the human's request pulled main (Agent 6's 8-era demo set in chronodex, A2-h done, Queen's Tower 1893 regenerated, real capture and greyed-out landmarks, final voices, $14.97 credit, guide video on hold) and updated `REMAINING_WORK_2.md`: statuses, new tasks for Agents 1 to 6 and the humans, a Gantt from 04:00. Added a "round 2 tasks" pointer section to the top of notebooks 1, 2, 3, 5 and 6, as the human did before.
 - Next: A4-r2-2, switch the phone server to chronodex.
+
+### 2026-11-15 04:12, A4-r2-2: phone server on chronodex, new tunnel
+- Did: copied data/reference/*.jpg to public/reference (git-ignored), rebuilt with MONGODB_DB=chronodex, restarted next start on 3110. The old quick tunnel had been dropped by Cloudflare ("Tunnel not found"), so started a new one: https://url-poems-screens-poll.trycloudflare.com.
+- Verified through the tunnel: home 200; queens-tower_1893, royal-albert-hall_1871, zocalo-cathedral_1519, dom-luis-bridge_1886 ready with their guides; /demo panorama and narration, /reference photo and the /api/media panorama all 200 with the right types.
+- Next: A4-r2-3 Then/Now, A4-r2-8, A4-r2-9.
