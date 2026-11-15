@@ -234,3 +234,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: none.
 - Next: A4-15 and A4-16 need a human with a phone and a server on a database with real media.
+
+### 2026-11-15 02:45, A4-03: damped motion in the 360° view
+- Did: the human found the view jittery on the phone. `gyroDamping.ts`: per-angle dead zone (0.25°, roll 0.8°) then exponential smoothing (0.25 a frame), camera speed 5 (roll 8), between PSV's 'smooth' 3 and 'fast' 10. `attachGyroDamping` wraps the plugin instance's `__onBeforeRender` and swaps `dynamics.position.goto` and `roll.goto` for filtered ones during that call only; the filter resets when motion is switched on. 8 tests.
+- Decided, and why: wrap rather than fork the plugin, so a PSV upgrade that renames the handler just falls back to undamped motion. Not mirrored into the spike: the human now tests the real app.
+- Measured or verified: unit tests only. Tremor needs a real phone (PHONE_TEST.md 6.3).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: found while answering the human: no guide video exists for any era. The video tier is off and Agent 2's talk-model and voice picks (their H-A) are still open. Also Agent 2's ambience files are `<bucket>.m4a` plus `<bucket>-street.mp3`, while my player asks for `<bucket>.mp3`, so the placeholder noise still plays. Next for me.
+- Next: fix the ambience file names (two layers); phone results for Test 6.

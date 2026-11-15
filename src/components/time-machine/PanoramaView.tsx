@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Viewer } from '@photo-sphere-viewer/core';
 import type { GyroscopePlugin } from '@photo-sphere-viewer/gyroscope-plugin';
 import type { Panorama } from '@/lib/contracts';
+import { attachGyroDamping, createGyroFilter } from './gyroDamping';
 import { hFovDegOf, maxOffsetRad, panoDataFor } from './panoData';
 import { BTN_SECONDARY, TAG_DARK } from './pixel';
 
@@ -26,8 +27,9 @@ import { BTN_SECONDARY, TAG_DARK } from './pixel';
  */
 const DEFAULT_ZOOM_LVL = 45;
 /**
- * Gyroscope smoothing. PSV 5.15 offers only 'smooth' (eases at speed 3) and 'fast' (speed 10).
- * Phone test round 1 found 'smooth' laggy, so the view follows the phone more tightly.
+ * Gyroscope mode. PSV 5.15 offers only 'smooth' (speed 3, laggy in phone round 1) and 'fast' (speed 10, jittery on
+ * 15 Nov). 'fast' is kept as the base and ./gyroDamping.ts filters every target (dead zone plus easing) and sets
+ * its own speed in between.
  */
 const GYRO_MOVE_MODE = 'fast';
 /** Degrees in a full turn. */
@@ -113,7 +115,13 @@ export function PanoramaView({ panorama, className = 'relative h-64' }: Panorama
 
       const gyro = viewer.getPlugin<GyroscopePlugin>(GyroscopePlugin);
       gyroRef.current = gyro;
-      gyro.addEventListener('gyroscope-updated', (e) => setGyroOn(e.gyroscopeEnabled));
+      // Damp hand tremor between the sensor and the camera; start fresh each time motion is switched on.
+      const filter = createGyroFilter();
+      attachGyroDamping(gyro as unknown as Parameters<typeof attachGyroDamping>[0], filter);
+      gyro.addEventListener('gyroscope-updated', (e) => {
+        if (e.gyroscopeEnabled) filter.reset();
+        setGyroOn(e.gyroscopeEnabled);
+      });
       const supported = await gyro.isSupported();
       if (!cancelled) setGyroSupported(supported);
     })().catch(() => {
