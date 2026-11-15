@@ -21,11 +21,10 @@ import luis1886 from '../../../data/demo/eras/dom-luis-bridge_1886.json';
 import raffles1819 from '../../../data/demo/eras/raffles-landing-site_1819.json';
 import berlin1987 from '../../../data/demo/eras/brandenburg-gate-east_1987.json';
 import lisbon1775 from '../../../data/demo/eras/praca-do-comercio_1775.json';
-import rio1931 from '../../../data/demo/eras/christ-the-redeemer_1931.json';
 import rome120 from '../../../data/demo/eras/roman-forum_120.json';
 
 /** The kept demo eras, all core-tier ready. */
-export const DEMO_ERAS: Era[] = [qt1893, qt1962, rah1871, nhm1862, nhm1881, zocalo1519, luis1886, raffles1819, berlin1987, lisbon1775, rio1931, rome120].map(
+export const DEMO_ERAS: Era[] = [qt1893, qt1962, rah1871, nhm1862, nhm1881, zocalo1519, luis1886, raffles1819, berlin1987, lisbon1775, rome120].map(
   (file) => file.era as Era,
 );
 

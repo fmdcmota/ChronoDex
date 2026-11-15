@@ -508,27 +508,6 @@ export function memoryBoxSprite(): PixelCanvas {
   return finish(c, 14);
 }
 
-/** Christ the Redeemer (Rio de Janeiro): the pale statue with outstretched arms on the green Corcovado peak. Agent 6. */
-function christTheRedeemer(): PixelCanvas {
-  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
-  // The mountain peak.
-  c.ellipse(15.5, 31, 13, 9, P.wood, (_x, y) => y <= 28);
-  c.ellipse(15.5, 31, 13, 9, P.park, (x, y) => y <= 28 && x < 13);
-  // Pedestal.
-  c.rect(13, 19, 18, 23, P.stoneDark);
-  c.rect(14, 18, 17, 18, P.stone);
-  // Robe and body.
-  c.rect(14, 8, 17, 17, P.stone);
-  c.rect(16, 8, 17, 17, P.stoneDark);
-  // Outstretched arms.
-  c.rect(4, 8, 27, 9, P.stone);
-  c.hline(16, 27, 9, P.stoneDark);
-  // Head.
-  c.rect(15, 5, 16, 7, P.stone);
-  c.set(16, 6, P.stoneDark);
-  return finish(c, 13);
-}
-
 /** Roman Forum: a temple front of tall columns under a pediment, with a triumphal arch beside it. Agent 6. */
 function romanForum(): PixelCanvas {
   const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
@@ -845,6 +824,5 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'dom-luis-bridge': domLuisBridge,
   'praca-do-comercio': pracaDoComercio,
   'brandenburg-gate-east': brandenburgGateEast,
-  'christ-the-redeemer': christTheRedeemer,
   'roman-forum': romanForum,
 };

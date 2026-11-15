@@ -225,16 +225,6 @@ export const landmarks: Landmark[] = [
     ...sharedFields('brandenburg-gate-east'),
   },
   {
-    id: 'christ-the-redeemer',
-    name: 'Christ the Redeemer, Corcovado',
-    blurb: 'The view from the statue’s feet, 700 m above Rio de Janeiro, where the Art Deco Christ was unveiled in 1931.',
-    photoSpot: { lat: -22.9519, lng: -43.2105 },
-    subject: { lat: -22.9518, lng: -43.2095 },
-    rarity: 'legendary',
-    eraYears: [1931],
-    ...sharedFields('christ-the-redeemer'),
-  },
-  {
     id: 'roman-forum',
     name: 'Roman Forum',
     blurb: 'The heart of ancient Rome: temples, basilicas and the Sacred Way, seen as they stood under Emperor Hadrian.',
