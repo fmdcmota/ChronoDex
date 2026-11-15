@@ -13,7 +13,7 @@ const plainHttp = process.env.HTTP === '1';
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), ...(plainHttp ? [] : [basicSsl()])],
-  server: { host: true, port: 5173 },
+  server: { host: true, port: 5173, allowedHosts: ['.trycloudflare.com'] },
   // Three pages: the 360 viewer, the media spike and the chat spike.
   build: { rolldownOptions: { input: { main: 'index.html', media: 'media.html', chat: 'chat.html' } } },
 });

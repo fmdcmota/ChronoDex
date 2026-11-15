@@ -110,7 +110,13 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-15 First real panorama on two phones
 - [ ] A4-16 Time Machine on a real era
 - [x] A4-b Picture credits in the Sources drawer and Then/Now (GET /api/media/credits/[eraId])
-- [ ] A4-10 Phone pass and polish
+- [ ] A4-r2-1 Ambience: real two-layer loops, quieter in chat, silent while recording and while a reply speaks
+- [ ] A4-r2-2 Keep the phone server and tunnel up; switch to chronodex when told
+- [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
+- [ ] A4-r2-4 Map zoom-fade polish (Agent 3's handoff)
+- [ ] A4-r2-5 Real guide video on a phone
+- [ ] A4-r2-6 Voice input on the real chat, second phone
+- [ ] A4-10 Phone pass and polish (A4-r2-7 Android)
 - [ ] A4-S1 Stretch: overlay on the live camera (after M4 only)
 - [ ] A4-S2 Stretch: compass-aligned panorama (after M4 only)
 
@@ -250,3 +256,8 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: none.
 - Next: ambience file names; phone results.
+
+### 2026-11-15 03:10, phone tests 1 to 6 results, REMAINING_WORK_2.md
+- Did: the human sent the iPhone results; recorded in `REMAINING_WORK_2.md` section 2. Wrote that file at the human's request: tasks for Agents 1 to 4 and the humans, plus a new Gantt from 03:00. My tasks are A4-r2-1 to A4-r2-7 above.
+- Results: 6.1 to 6.3, 6.6 to 6.9 pass; 6.4 works but the ambience is too loud in the chat; 6.5 fails (Then/Now pictures are different viewpoints: the scene predates the reference photo); 5.1 fixed by the damping; 5.4 ambience too loud, it gets into the recording; test 2 and test 3 pass (voice input failed once, probably the phone); test 1 pass.
+- Next: A4-r2-1.

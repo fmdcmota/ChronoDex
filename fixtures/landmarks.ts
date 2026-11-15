@@ -167,4 +167,14 @@ export const landmarks: Landmark[] = [
     eraYears: [1584, 1677],
     ...sharedFields('emmanuel-college'),
   },
+  {
+    id: 'great-wall-badaling',
+    name: 'Great Wall at Badaling',
+    blurb: 'The best-known stretch of the Ming Great Wall, guarding the mountain pass north of Beijing.',
+    photoSpot: { lat: 40.350866, lng: 116.004287 },
+    subject: { lat: 40.3509393, lng: 116.0040454 },
+    rarity: 'legendary',
+    eraYears: [1505],
+    ...sharedFields('great-wall-badaling'),
+  },
 ];
