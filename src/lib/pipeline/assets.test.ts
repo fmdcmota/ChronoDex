@@ -81,3 +81,10 @@ describe('estimateEraCostUsd', () => {
     expect(estimateEraCostUsd(false, { retryAllowance: 1 }).coreUsd).toBeGreaterThan(estimateEraCostUsd(false, { retryAllowance: 0 }).coreUsd);
   });
 });
+
+describe('eraAssets with our own stored files (A2-h)', () => {
+  it('lists /api/media URLs, which is what the Era holds after the pipeline keeps its outputs', () => {
+    const era: Era = { ...fullEra(), sceneImageUrl: '/api/media/abc123', guideVideo: null };
+    expect(eraAssets(era)[0]).toEqual({ name: 'scene', url: '/api/media/abc123' });
+  });
+});

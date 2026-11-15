@@ -11,7 +11,7 @@ import { MODELS, PANORAMA_UPSCALE_FACTOR } from '@/lib/fal';
 export interface EraAsset {
   /** A short, filesystem-safe name that says what it is, for example "panorama" or "walk_on". */
   name: string;
-  /** The URL. Only http(s) URLs are returned; fixtures' relative paths are skipped. */
+  /** The URL: http(s), or our own `/api/media/<id>`. Fixtures' other relative paths are skipped. */
   url: string;
 }
 
@@ -22,12 +22,13 @@ export interface EraAsset {
  * URL must be downloaded. This is the list.
  *
  * @param era - The era as stored.
- * @returns The scene, panorama, narration, headshot and any video clips, those that exist and are http(s).
+ * @returns The scene, panorama, narration, headshot and any video clips that exist, as http(s) URLs or our own
+ *   `/api/media/<id>` URLs (fixtures' other relative paths are skipped).
  */
 export function eraAssets(era: Era): EraAsset[] {
   const found: EraAsset[] = [];
   const add = (name: string, url: string | null | undefined): void => {
-    if (url && /^https?:\/\//i.test(url)) found.push({ name, url });
+    if (url && (/^https?:\/\//i.test(url) || url.startsWith('/api/media/'))) found.push({ name, url });
   };
   add('scene', era.sceneImageUrl);
   add('panorama', era.panorama?.url);

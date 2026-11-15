@@ -8,6 +8,7 @@ import type { SceneBrief } from '@/lib/contracts';
 import { MAX_REFERENCE_PHOTOS } from '@/lib/fal';
 import { checkScene } from './critic';
 import { criticContext, generateChecked } from './checked';
+import { WIDESCREEN_RATIO, localVerdict, pictureProblems } from './localChecks';
 import { buildImageEditInput, runImageModel } from './inputs';
 import { buildSceneCheckPrompt, buildScenePrompt, withCorrection, type PromptStyle } from './prompts';
 import type { StageContext, StageOutput } from './types';
@@ -73,7 +74,12 @@ export async function runScene(
   const { output, report } = await generateChecked({
     ctx,
     generate: (fix, runCtx) => runImageModel('scene', buildImageEditInput(withCorrection(prompt, fix), [input.referencePhotoUrl, ...references]), runCtx),
-    judge: async (picture) => ({ verdict: await checkScene(picture.url, checkPrompt, criticContext(ctx)) }),
+    judge: async (picture) => {
+      // Free first (A2-i): a picture of the wrong shape never reaches the paid critic.
+      const free = pictureProblems(picture, WIDESCREEN_RATIO);
+      if (free.length) return { verdict: localVerdict(free, 'The picture must be exactly 16:9 landscape, the same framing as image 1.') };
+      return ({ verdict: await checkScene(picture.url, checkPrompt, criticContext(ctx)) });
+    },
   });
   return { ...output, check: report };
 }

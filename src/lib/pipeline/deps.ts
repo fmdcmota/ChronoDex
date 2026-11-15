@@ -31,6 +31,7 @@ import {
 } from './stages';
 import type { PanoramaOutput, StageOutput } from './stages';
 import type { StitchOutcome } from './stages/stitch';
+import { passThroughMedia, storeMedia, type PipelineMedia } from './media';
 
 /** The Historian and every stage function. Each is replaceable in tests. */
 export interface PipelineDeps {
@@ -48,6 +49,11 @@ export interface PipelineDeps {
     talk: typeof runTalk;
     stitch: typeof runStitch;
   };
+  /**
+   * Where inputs come from and outputs go (A2-h). Optional: when absent, URLs pass straight through, which is what
+   * tests and the dry run want.
+   */
+  media?: PipelineMedia;
 }
 
 /**
@@ -75,6 +81,7 @@ export const realDeps: PipelineDeps = {
     talk: runTalk,
     stitch: runStitch,
   },
+  media: storeMedia,
 };
 
 /** Build a fake stage output: a fixture URL, model "dry-run" and no request id. */
@@ -147,6 +154,7 @@ export const dryRunDeps: PipelineDeps = {
     talk: dryStage(MOCK_VIDEO_URL, MOCK_VIDEO_DURATION_S),
     stitch: dryStitch,
   },
+  media: passThroughMedia,
 };
 
 /**

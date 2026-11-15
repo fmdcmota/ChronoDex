@@ -85,12 +85,19 @@ function realismBlock(year: number, look: 'colour' | 'monochrome'): string {
  *
  * @param firstIndex - The 1-based position of the first reference in the image list ("image 2").
  * @param count - How many references there are.
+ * @param look - The output's look: in colour, the references' tones are not copied.
  * @returns The instruction, or an empty string when there are none.
  */
-function referenceBlock(firstIndex: number, count: number): string {
+function referenceBlock(firstIndex: number, count: number, look: 'colour' | 'monochrome' = 'colour'): string {
   if (count <= 0) return '';
   const range = count === 1 ? `image ${firstIndex}` : `images ${firstIndex} to ${firstIndex + count - 1}`;
-  return `${range} ${count === 1 ? 'is a real photograph' : 'are real photographs'} of this place from the period. Copy their architecture, stone and brick colours, window and roof shapes, ironwork, lamp design, street surface and clothing exactly. Do not copy their composition or the people in them.`;
+  // Live run, Queen's Tower 1893: with sepia archive photos as references the "colour" scene came out almost
+  // monochrome and did not match the colour panorama. In the colour look the references give shapes, not tones.
+  const tones =
+    look === 'colour'
+      ? ' They are old black-and-white or sepia prints: take only shapes and materials from them. The result stays in full natural colour, never black and white or sepia.'
+      : '';
+  return `${range} ${count === 1 ? 'is a real photograph' : 'are real photographs'} of this place from the period. Copy their architecture, window and roof shapes, ironwork, lamp design, street surface and clothing exactly. Do not copy their composition or the people in them.${tones}`;
 }
 
 /**
@@ -117,7 +124,8 @@ export function buildScenePrompt(brief: SceneChanges, year: number, style: Promp
   return [
     `Edit this photograph so it shows the same place in the year ${year}, as a real photograph taken from exactly the same spot.`,
     'Keep the camera position, height, lens, perspective and horizon identical. Buildings that remain must stay in exactly the same place and size in the frame.',
-    referenceBlock(2, style.referenceCount ?? 0),
+    'If the left and right edges of the photograph are blurred or smeared padding, replace them with a sharp, natural continuation of the scene.',
+    referenceBlock(2, style.referenceCount ?? 0, look),
     `What the camera sees in ${year}: ${brief.description}`,
     `KEEP UNCHANGED:\n${bullets(brief.changes.persists, 'the layout of the street')}`,
     `REMOVE, because they did not exist yet:\n${bullets(brief.changes.notYetBuilt, 'anything modern')}`,
@@ -155,7 +163,7 @@ export function buildPanoramaPrompt(surroundings: string, notYetBuilt: string[],
     'The photograph in the middle of this image is the forward view of a full 360 by 180 degree equirectangular panorama.',
     `Replace all of the flat grey with the rest of the panorama, so the whole image is one continuous photograph of the same place in the year ${year}, seen from the same standing point.`,
     'Keep the photograph in the middle exactly as it is. Continue its buildings, street, pavement and sky outward with matching perspective, light and colour, and no visible borders.',
-    referenceBlock(2, style.referenceCount ?? 0),
+    referenceBlock(2, style.referenceCount ?? 0, look),
     `What surrounds the viewer: ${surroundings}`,
     `Period detail to include, at a natural density: ${periodCues(year)}.`,
     `Not yet built in ${year}, so none of this appears anywhere in the panorama:\n${bullets(notYetBuilt, 'anything modern')}`,

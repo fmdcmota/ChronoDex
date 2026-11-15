@@ -61,12 +61,12 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 01:15
-- Working on: the human's whole post-phone-test queue is built and uncommitted on `agent-2` (realism rework, mock-mode and STT guards, the image critic, ambience loops, `pregenerate` and `backup-media` scripts, the stitch stage). A2-01 to A2-14 are all done except where noted: A2-04 to A2-06 still wait on the human's voice and talk-model picks, and no 45 s talk clip has been made.
-- Next: (1) wait for the human's decisions in "Wanted from the human" (colour or monochrome, voice and talk-model picks, fal ffmpeg access, ambience listening). (2) Make the 45 s talk clip once the model is picked (A2-05). (3) Run `scripts/pregenerate.ts` for the demo eras when Agent 1 has seeded `chronodex` with real reference photos and Agent 5's period references. (4) Rename the two `placeholder-*` voice keys once Agent 1 does. (5) Stretch A2-S1 only after M4.
+- Last updated: 2026-11-15 02:30
+- Working on: the Sunday list. Done: A2-a, A2-h, A2-i, A2-b (real core tier for queens-tower_1893 in `chronodex`), A2-j (E1 run, not adopted, needs the human's look), A2-c (placeholder keys gone), A2-e server side (STT, chat, TTS all real), A2-g (committed and pushed).
+- Next: blocked on the human. A2-d (45 s talk clip) and the final VOICE_CATALOG need HUMAN_TASKS 2.2; A2-f (pregenerate) needs reference photos for the other landmarks (Agent 5) and the briefs read (H7); 2.3 colour or monochrome; 2.8 look at E1. Then run `scripts/pregenerate.ts` per the credit count (2.1).
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
-- Board read up to: 2026-11-14 19:55 (@team review)
-- Waiting for commit approval: everything since A2-10 (committed as 9ad0ae3): realism rework, mock-mode and STT guards, image critic, ambience loops and audio, pregenerate and backup scripts, stitch stage, this page, a board post. The human asked for one commit at the end
+- Board read up to: 2026-11-15 06:40 (@agent-1 A1-f, A1-c)
+- Waiting for commit approval: nothing; the Sunday work is committed and pushed (A2-g, the human asked for it)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
 ## Wanted from the human (compile into one list when asked)
@@ -122,6 +122,16 @@ Fill in as each bake-off finishes. `src/lib/fal/models.ts` must match this table
 - [x] A2-12 Image checks with one corrective retry (Sonnet critic through fal; hard failures only)
 - [x] A2-13 Pregenerate and backup-media scripts
 - [x] A2-14 Stitch stage (built and tested; fal ffmpeg API returns 403 on our key, so it cannot stitch yet)
+- [x] A2-a Relative referencePhotoUrl (through Agent 4's toFalUrl), .svg refused clearly
+- [x] A2-h Every output kept in the media store; the Era holds /api/media/<id>; inputs through toFalUrl
+- [x] A2-i Free shape and size checks before the paid critic; period references shrunk to 1024 px; never 4K
+- [x] A2-b Real core tier for queens-tower_1893 in `chronodex` (forward-view trial = its scene stage, with Agent 5's two same_view images)
+- [x] A2-j Experiment E1 run once; not adopted (needs the human's look, HUMAN_TASKS 2.8)
+- [x] A2-c Placeholder voice keys removed (catalogue final after 2.2)
+- [ ] A2-d 45 s talk clip (blocked on 2.2)
+- [x] A2-e Real STT, chat and TTS end to end, server side (the on-phone run is the human's T8)
+- [ ] A2-f Pregenerate the demo eras (blocked: reference photos for other landmarks, H7)
+- [x] A2-g Nothing left uncommitted
 - [ ] A2-S1 Stretch: walkable world (after M4 only)
 
 ## Log
@@ -324,3 +334,17 @@ Delegated to Haiku: nothing. Problems: two shell commands were blocked by the pe
 **Open for the human (added to the table above):** colour or monochrome for pre-1900 eras (`PERIOD_LOOK`); listen to the ambience; ask fal for ffmpeg API access; keep or fail a panorama that is still flat after the retry; look at the live era in the app.
 
 Spend this session by my estimate: about $4.3 (bake-off $1.5, three-run panorama checks about $1.6, critic calibration about $0.35, live era about $0.85, ambience $0.69). Project total about $9.
+
+### 2026-11-15 02:30, Sunday list: A2-a, A2-h, A2-i, A2-b, A2-j, A2-c, A2-e, A2-g
+
+Pulled and fast-forwarded `main` and `agent-2` to `origin/main` (a24ca2b) first.
+
+- **A2-a and A2-h (done).** `src/lib/pipeline/media.ts` wraps Agent 4's media store as three injectable hooks on `PipelineDeps.media`: `toFalUrl` (every model input; uploads `/reference/<id>.jpg` once and refuses an `.svg` with a clear error), `persist` (every output is kept and the Era gets `/api/media/<id>`), `prepareReference`. In `runEraJob`, scene, panorama, headshot, narration, guide frame, the three clips and the stitched file are all kept; video stages get fal URLs for stored inputs once. If storing fails the fal URL is kept and logged, so a paid result is never thrown away. Tests: Era holds the kept URLs, inputs go through toFalUrl, an SVG fails the scene with the message, a store failure keeps the fal URL.
+- **A2-i (done).** `stages/localChecks.ts`: shape (5 % tolerance on 16:9 or 2:1) and size (under 30 KB) checks run before the $0.0125 critic; a failure goes straight to the retry with a shape fix. Scene and guide frame use the size fal reports; the panorama reads its bytes. Period references are shrunk to 1024 px on the long side (`shrinkReference`) and stored once, deduplicated. A test checks no request asks for 4K. The scene prompt now handles Agent 5's padded reference ("replace blurred side bands with a natural continuation").
+- **A2-b (done, real, shared database).** Re-ran `npm run seed` on `chronodex` (safe: landmarks from the repo, eras untouched) because Queen's Tower still pointed at the mock SVG; it now has `/reference/queens-tower.jpg` and the file is in `public/reference/` here. Then the real worker loop ran the core tier for `queens-tower_1893` with the real brief (Thomas Meecham, mason): **173 s, era ready**, scene 62 s and panorama 110 s (each needed its corrective retry, then passed), headshot 20 s, narration 16 s. All four are in GridFS with fal copies recorded. Estimated spend about $0.65. **Problem found:** with Agent 5's sepia references, the "colour" scene came out almost black and white while the panorama is in colour, so the then/now view will not match. Fixed in the prompt (in the colour look, references give shapes, not tones), not regenerated. The panorama is a true sphere with the Institute and tower centred.
+- **Problem found: processes do not exit.** Agent 4's GridFS backend opens its own MongoClient with no close, so after a job the worker, `pregenerate` and `backup-media` hung. My scripts and the worker now exit explicitly; asked Agent 4 for a `closeMedia()`.
+- **backup-media and eraAssets** now understand `/api/media/<id>` (they only knew fal URLs and would have backed up nothing). Live: the four queens-tower_1893 files saved from GridFS.
+- **A2-j, E1 (run once, not adopted).** One request ($0.15 plus $0.0125, 28 s) with the present-day photo in the canvas: it passed the critic as a 360 view, but it invented a symmetric striped palace and kept the present-day plain tower without the Institute's domed lantern, and the cut-out scene is a cramped close-up of the tower base (the padded reference). Two-step cost this run about $0.36 with retries. I did not pass the period references to E1, which partly explains the drift. Comparison: `spikes/agent-2/out/e1-compare.jpg` (two-step scene, E1 scene, two-step panorama, E1 panorama). Needs the human's look (HUMAN_TASKS 2.8).
+- **A2-c (done).** The two `placeholder-*` keys are gone; nothing referenced them.
+- **A2-e (server side done).** With mocks off on `chronodex`: STT of the human's WebM 200 in 4.5 s with the right words; chat streamed a reply in character from the real brief, first bytes 2.8 s; TTS of that reply in the guide's voice 200 in 4.7 s, playable MP3. The phone run (hold to talk in the app) needs an app served with mocks off.
+- Tests: 491 pass. Spend this session about $1.0. Project total about $10.

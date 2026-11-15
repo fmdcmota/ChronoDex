@@ -249,3 +249,105 @@ describe('dry run', () => {
     expect(await stageOf(job, 'scene')).toMatchObject({ state: 'done', model: 'dry-run' });
   });
 });
+
+describe('keeping every file (A2-a, A2-h, A2-i)', () => {
+  /** Fake media hooks that tag URLs, so the test can see which ones went where. */
+  function fakeMedia(options: { failPersist?: boolean; refuse?: RegExp } = {}) {
+    const log = { toFal: [] as string[], persisted: [] as string[], references: [] as string[] };
+    const media = {
+      async toFalUrl(url: string) {
+        log.toFal.push(url);
+        if (options.refuse?.test(url)) throw new Error(`refusing ${url}: an SVG cannot be sent to fal`);
+        return `fal:${url}`;
+      },
+      async persist(url: string, eraId: string, name: string) {
+        log.persisted.push(`${eraId}/${name}`);
+        if (options.failPersist) throw new Error('store is down');
+        return `/api/media/${name}`;
+      },
+      async prepareReference(url: string) {
+        log.references.push(url);
+        return `small:${url}`;
+      },
+    };
+    return { media, log };
+  }
+
+  /** The fake deps, with every stage's input recorded. */
+  function recordingDeps(media: PipelineDeps['media']) {
+    const base = makeDeps();
+    const inputs: Record<string, unknown> = {};
+    const wrap = <K extends keyof PipelineDeps['stages']>(key: K) =>
+      (async (input: unknown, ctx?: StageContext) => {
+        inputs[key] = input;
+        return (base.deps.stages[key] as (i: unknown, c?: StageContext) => Promise<unknown>)(input, ctx);
+      }) as PipelineDeps['stages'][K];
+    const deps: PipelineDeps = {
+      ...base.deps,
+      media,
+      stages: {
+        scene: wrap('scene'),
+        panorama: wrap('panorama'),
+        headshot: wrap('headshot'),
+        narration: wrap('narration'),
+        guideFrame: wrap('guideFrame'),
+        walkOn: wrap('walkOn'),
+        walkOff: wrap('walkOff'),
+        talk: wrap('talk'),
+        stitch: wrap('stitch'),
+      },
+    };
+    return { deps, inputs };
+  }
+
+  it('writes our stored URLs on the Era, never the fal ones, for every core and video output', async () => {
+    const job = await claim(true);
+    const { media, log } = fakeMedia();
+    await runEraJob(job, recordingDeps(media).deps);
+    const era = await getEra(ERA_ID);
+    expect(era).toMatchObject({
+      state: 'ready',
+      videoState: 'ready',
+      sceneImageUrl: '/api/media/scene',
+      narrationAudioUrl: '/api/media/narration',
+      guide: { headshotUrl: '/api/media/headshot' },
+      panorama: { url: '/api/media/panorama' },
+    });
+    expect(era?.guideVideo?.segments.map((s) => s.url)).toEqual(['/api/media/walk_on', '/api/media/talk', '/api/media/walk_off']);
+    expect(log.persisted).toEqual(expect.arrayContaining([`${ERA_ID}/scene`, `${ERA_ID}/panorama`, `${ERA_ID}/headshot`, `${ERA_ID}/narration`, `${ERA_ID}/guide_frame`]));
+  });
+
+  it('sends fal the reference photo, the scene, the headshot and the narration through toFalUrl, and shrunk period photos', async () => {
+    const job = await claim(true);
+    const { media, log } = fakeMedia();
+    const { deps, inputs } = recordingDeps(media);
+    await runEraJob(job, deps);
+    const scene = inputs.scene as { referencePhotoUrl: string; brief: { referenceImageUrls: string[] } };
+    expect(scene.referencePhotoUrl.startsWith('fal:')).toBe(true);
+    for (const url of scene.brief.referenceImageUrls) expect(url.startsWith('small:')).toBe(true);
+    expect((inputs.panorama as { sceneUrl: string }).sceneUrl).toBe('fal:/api/media/scene');
+    expect(inputs.guideFrame).toMatchObject({ sceneUrl: 'fal:/api/media/scene', headshotUrl: 'fal:/api/media/headshot' });
+    expect(inputs.talk).toMatchObject({ narrationUrl: 'fal:/api/media/narration' });
+    expect(log.toFal).toEqual(expect.arrayContaining(['/api/media/scene', '/api/media/headshot', '/api/media/narration']));
+  });
+
+  it('fails the scene with a clear message when the reference photo is an SVG, and makes no picture', async () => {
+    const job = await claim(false);
+    const { media } = fakeMedia({ refuse: /\.svg$/ });
+    const { deps, inputs } = recordingDeps(media);
+    await runEraJob(job, deps);
+    expect(inputs.scene).toBeUndefined();
+    const scene = (await getJob(job.id))?.stages.find((s) => s.key === 'scene');
+    expect(scene).toMatchObject({ state: 'failed' });
+    expect(scene?.error).toMatch(/SVG cannot be sent to fal/);
+  });
+
+  it('keeps the fal URL when storing fails, so a paid result is never thrown away', async () => {
+    const job = await claim(false);
+    const warn = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const { media } = fakeMedia({ failPersist: true });
+    await runEraJob(job, recordingDeps(media).deps);
+    expect(await getEra(ERA_ID)).toMatchObject({ state: 'ready', sceneImageUrl: 'scene.jpg', narrationAudioUrl: 'voice.mp3' });
+    warn.mockRestore();
+  });
+});
