@@ -53,6 +53,11 @@ const MIN_ZOOM = 1;
 const FOUND_ZOOM = 17;
 /** True when the location-spoof panel may be shown (MASTER.md section 8.2). */
 const DEV_TOOLS = process.env.NEXT_PUBLIC_DEV_TOOLS === '1';
+/**
+ * With the dev spoof panel under the CHRONODEX chip, the location banner moves below its closed summary. Inline, not
+ * a class: the project's CSS pipeline dropped a new `.banner-below-dev` rule from globals.css (15 Nov).
+ */
+const BANNER_BELOW_DEV_STYLE = { top: 'calc(var(--safe-top) + 100px)' } as const;
 /** Default spoof accuracy, metres. */
 const DEFAULT_SPOOF_ACCURACY_M = 10;
 
@@ -454,7 +459,7 @@ export default function MapScreen() {
       </div>
 
       {(error || bannerMessage) && (
-        <div className="banner">
+        <div className="banner" style={DEV_TOOLS ? BANNER_BELOW_DEV_STYLE : undefined}>
           <span>{error ?? bannerMessage}</span>
           {!error && showBannerButton && (
             <button type="button" className="btn btn-small" onClick={() => trackerRef.current?.start()}>

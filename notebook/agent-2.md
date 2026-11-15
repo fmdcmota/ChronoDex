@@ -417,3 +417,9 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 - Trap found: `next.config.ts` maps every `*.css` through Tailwind `as: "*.css"`, so a `.module.css` loses its class map (every className empty). Hence the CSS string with `ci-` prefixes.
 - Checked in headless Chrome over CDP at 390x844 against the running dev server (mock data): title, cloud cover, landing on Queen's Tower with a granted fake GPS; and the refused path landing on the South Kensington landmarks. Not yet seen on a real phone.
 - Tests: 556 pass.
+
+### 2026-11-15 05:54, spoof panel and intro text (the human's request)
+
+- The spoof panel was still in the code but hidden: `NEXT_PUBLIC_DEV_TOOLS` was empty in the root `.env.local`. Set it to 1, and `ALLOW_SPOOFED_LOCATION=1` so the server accepts spoofed captures with mocks off (local file only, git-ignored).
+- Moved the panel to the top left under the CHRONODEX chip (globals.css `.dev-panel`); the location banner moves to 100 px while dev tools are on. A new `.banner-below-dev` rule never reached the browser (absent from the served CSS even after a rebuild), so it is an inline style in MapScreen.
+- Removed "Chronodex uses your location ..." under the intro button. Checked in headless Chrome: panel, banner, spoof to Queen's Tower enables its capture.

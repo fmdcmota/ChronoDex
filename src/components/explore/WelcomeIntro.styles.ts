@@ -169,13 +169,6 @@ export const INTRO_CSS = `
   50% { opacity: 0; }
 }
 
-.ci-fine {
-  margin: 10px 0 0;
-  max-width: 34ch;
-  font-family: var(--font-body);
-  font-size: 12px;
-  color: #f6efd9b3;
-}
 
 /* Shown under the clouds during the dive when there is no location to land on. */
 .ci-note {

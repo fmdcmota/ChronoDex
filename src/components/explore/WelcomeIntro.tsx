@@ -237,7 +237,6 @@ export default function WelcomeIntro({ mapRef, trackerRef, fallbackBounds, landi
             </>
           )}
         </button>
-        <p className="ci-fine">Chronodex uses your location to find where you land. Your browser will ask first.</p>
       </div>
 
       {note && <div className="ci-note">{note}</div>}
