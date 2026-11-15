@@ -9,8 +9,10 @@
  * (section 4.3). Generation, which costs money in real mode:
  * - A missing or failed era asks for the core tier once when first selected (spec step 6:
  *   "loaded if they already exist, otherwise generated").
- * - When the core tier is ready and the video is missing, it asks once for the video tier.
- *   The server refuses that when VIDEO_GENERATION is off; the narration then stands in.
+ * - It never asks for the video tier (round 3, V3 in REMAINING_WORK_2.md): with VIDEO_GENERATION=on that would
+ *   spend about $4.25 on every ready era a player happens to open. Guide videos are made on purpose, one era at a
+ *   time, by the runbook (scripts/pregenerate.ts --video). While such a job runs this screen polls it like any
+ *   other, and the clips replace the preview as soon as `guideVideo` lands.
  * Both calls are safe to repeat (the endpoint returns the active job), but each runs at most once per
  * era per visit, so a failing era is not retried in a loop. "Try again" retries by hand.
  * Period ambience (./useAmbience.ts) plays for the selected year and drops while the guide speaks.
@@ -149,7 +151,6 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   useEffect(() => {
     if (!liveEra || job) return;
     if (liveEra.state === 'missing') requestTier(liveEra.id, false);
-    else if (liveEra.state === 'ready' && liveEra.videoState === 'missing') requestTier(liveEra.id, true);
   }, [liveEra, job, requestTier]);
 
   // A4-14: fetch the other ready years' pictures in the background, once the list is known.

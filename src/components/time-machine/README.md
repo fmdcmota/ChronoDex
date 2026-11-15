@@ -5,7 +5,7 @@ Owner: Agent 4. The `/time/[landmarkId]` screen (MASTER.md section 1.2 part 2, t
 ## Entry points
 
 - `TimeMachineScreen.tsx`: the whole screen. Loads the landmark and its eras through `@/lib/client`,
-  generates a missing era (core tier, then video tier, each at most once per visit), polls while a job runs.
+  generates a missing era (core tier only, once per visit; never the video tier, which the runbook makes on purpose), polls while a job runs.
 - `PanoramaView.tsx`: Photo Sphere Viewer + gyroscope. Full 2:1 or a cropped band via `panoData.ts`.
 - `GuidePlayer.tsx`: walk_on, talk, walk_off back to back (`segmentPlayer.ts`), or the narration
   until a video exists, with captions from `captions.ts`.
