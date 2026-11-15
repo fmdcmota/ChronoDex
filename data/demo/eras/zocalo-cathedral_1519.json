@@ -4,7 +4,7 @@
     "landmarkId": "zocalo-cathedral",
     "year": 1519,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "Standing at the Edge of the Sacred Precinct",
     "summary": "In 1519 this spot was not a plaza and no cathedral stood here; northward lay the walled sacred precinct of Mexico-Tenochtitlan, with the twin pyramid of the Templo Mayor rising inside it. The precinct's size is reconstructed differently by different scholars, so whether this point fell just inside or just outside its southern boundary depends on which measurement you use. The cathedral that now closes this view was begun in the mid-16th century and completed in 1813, and the Zócalo developed after the conquest southwest of the Templo Mayor. No eyewitness image of this exact view survives, and the sources leave the precinct wall's precise appearance and height unresolved.",
     "funFacts": [
@@ -97,8 +97,27 @@
       "centreBearingDeg": 356.6269506344589
     },
     "narrationAudioUrl": "/demo/zocalo-cathedral_1519/narration.mp3",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T04:26:11.840Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/zocalo-cathedral_1519/walk_on.mp4",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/zocalo-cathedral_1519/talk.mp4",
+          "durationS": 38.133
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/zocalo-cathedral_1519/walk_off.mp4",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T06:47:20.022Z"
   },
   "provenance": {
     "narration": {
@@ -150,6 +169,33 @@
         ],
         "checkCostUsd": 0.026398
       }
+    },
+    "guide_frame": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28835/9gJwA1ioNsE9bfZKhj1CK_bYQLnryT.jpg",
+      "seconds": 22,
+      "check": {
+        "passed": true,
+        "checked": true,
+        "attempts": 1,
+        "problems": [],
+        "checkCostUsd": 0.006884
+      }
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28846/FlqUSgLmgaPVhRhbo3Md4_output.mp4",
+      "seconds": 148
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28848/KZRZqN79cXJs42spIKagd_output.mp4",
+      "seconds": 161
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab2888a/JZozIB1EOwTfyV7NVUTRq_output.mp4",
+      "seconds": 827
     }
   }
 }

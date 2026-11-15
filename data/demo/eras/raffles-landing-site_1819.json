@@ -102,7 +102,7 @@
     },
     "narrationAudioUrl": "/demo/raffles-landing-site_1819/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T04:26:10.538Z"
+    "updatedAt": "2026-11-15T06:35:10.282Z"
   },
   "provenance": {
     "narration": {
@@ -135,25 +135,23 @@
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab2853c/CbTMsIEIBFrPhA9Vvy_oD_1794716767304.jpeg",
-      "seconds": 96,
+      "falUrl": "https://v3b.fal.media/files/b/0ab28842/giZkfeOho1XP48qpvYj6O_1794724507011.jpeg",
+      "seconds": 129,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
         "passed": false,
         "checked": true,
-        "attempts": 2,
+        "attempts": 3,
         "problems": [
-          "not a 360 panorama (the critic saw: tiled)",
-          "visible seam or repeated panel",
-          "Image is composed of multiple stacked panel-like scenes rather than a single spherical panorama",
-          "Not a London street scene, shows a tropical river village instead",
-          "No sky/ground wraparound consistent with equirectangular projection",
-          "Horizon line not level or centered, multiple horizons present",
-          "Left and right edges do not align into a continuous scene",
-          "Looks like a composited painting/render, not a photograph"
+          "not a 360 panorama (the critic saw: flat_photo)",
+          "This is a single wide-angle river/coastal scene, not a London street",
+          "No 360 degree wraparound, single vanishing point along the river",
+          "Horizon is high in the frame, not centered",
+          "Content does not match the requested London 1819 street scene",
+          "Looks like a CGI/rendered image rather than a real photo"
         ],
-        "checkCostUsd": 0.025938000000000003
+        "checkCostUsd": 0.039502
       }
     }
   }
