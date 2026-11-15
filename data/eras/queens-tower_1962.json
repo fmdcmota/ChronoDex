@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "eraId": "queens-tower_1962",
+  "landmarkId": "queens-tower",
+  "year": 1962,
+  "status": "thin_record",
+  "facts": [
+    {
+      "claim": "Demolition of the rear galleries began in 1957.",
+      "sources": [
+        {
+          "title": "Survey of London, volume 38: Imperial Institute (1975)",
+          "url": "https://www.british-history.ac.uk/survey-london/vol38/pp220-227"
+        }
+      ],
+      "confidence": "high",
+      "visible": true,
+      "funFact": false
+    },
+    {
+      "claim": "By 1962 the east wing of the main range had been replaced by a college building.",
+      "sources": [
+        {
+          "title": "Survey of London, volume 38: Imperial Institute (1975)",
+          "url": "https://www.british-history.ac.uk/survey-london/vol38/pp220-227"
+        }
+      ],
+      "confidence": "high",
+      "visible": true,
+      "funFact": false
+    },
+    {
+      "claim": "The west wing had been demolished by 1965; this statement alone does not establish precisely how much survived on a particular date in 1962.",
+      "sources": [
+        {
+          "title": "Survey of London, volume 38: Imperial Institute (1975)",
+          "url": "https://www.british-history.ac.uk/survey-london/vol38/pp220-227"
+        }
+      ],
+      "confidence": "high",
+      "visible": true,
+      "funFact": false
+    },
+    {
+      "claim": "The Institute was renamed the Commonwealth Institute in 1958 and moved to Holland Park in 1962.",
+      "sources": [
+        {
+          "title": "Survey of London, volume 38: Imperial Institute (1975)",
+          "url": "https://www.british-history.ac.uk/survey-london/vol38/pp220-227"
+        }
+      ],
+      "confidence": "high",
+      "visible": false,
+      "funFact": false
+    },
+    {
+      "claim": "Work enabling the central tower to stand independently took place in 1966–68, including new foundations and substantial rebuilding of the lower portion.",
+      "sources": [
+        {
+          "title": "Imperial College London: The Queen’s Tower",
+          "url": "https://www.imperial.ac.uk/about/history/queens-tower/"
+        }
+      ],
+      "confidence": "high",
+      "visible": true,
+      "funFact": false
+    }
+  ],
+  "dailyLife": [],
+  "scene": {
+    "description": "The central tower survives while its surrounding Institute complex is being replaced by Imperial College buildings. The old east wing is no longer intact by 1962. Do not render the complete 1893 frontage or the finished isolated tower and landscaped lawn of later decades. The exact west-wing condition, temporary hoarding, machinery, scaffolding and street furniture on a chosen day in 1962 are not established; do not invent them as facts.",
+    "persists": [
+      "The central tower’s upper structure"
+    ],
+    "altered": [
+      "The surrounding Institute complex is undergoing demolition and replacement; the east wing has already been replaced"
+    ],
+    "notYetBuilt": [
+      "The tower’s 1966–68 freestanding foundation and lower-structure reconstruction"
+    ],
+    "gone": [
+      "The pre-demolition east wing of the Institute frontage"
+    ],
+    "surroundings": "North: tower amid campus redevelopment, with the rear galleries affected by demolition begun in 1957. East: replacement college building occupies the former east-wing site by 1962. West: the source only establishes demolition by 1965, not the precise 1962 configuration. South: an exact 1962 view and demolition chronology for the opposite frontage have not been verified. This dossier cannot yet support a detailed full-circle reconstruction."
+  },
+  "referenceImages": [],
+  "guideGrounding": {
+    "roles": [],
+    "dress": "",
+    "speech": "",
+    "prices": "",
+    "transport": ""
+  },
+  "sources": [
+    {
+      "title": "Survey of London, volume 38: Imperial Institute (1975)",
+      "url": "https://www.british-history.ac.uk/survey-london/vol38/pp220-227"
+    },
+    {
+      "title": "Imperial College London: The Queen’s Tower",
+      "url": "https://www.imperial.ac.uk/about/history/queens-tower/"
+    }
+  ],
+  "gaps": [
+    "No usable dated reference images retained. Category leads inherited from the handover, exact-year search, demolition/name-variant search and candidate metadata inspection did not yield two qualified images. The c.1960 David Wright photograph is only 427×640; the undated Kensington snapshot has no reliable depicted date; the Arras Queen’s Tower file is 1913, not demolition-era. Further archive research remains open.",
+    "Exact west-wing condition in 1962 is unresolved. Do not translate “demolished by 1965” into a specific earlier demolition date.",
+    "The underlying text chronology is supported, but daily life, three guide roles, colours and a complete 360-degree scene are not researched sufficiently. This is a thin-record interim dossier, not generation-ready content.",
+    "Survey and Imperial summaries give differing levels of precision for the 1960s works; the phase-specific chronology is retained rather than claiming the whole building vanished in a single year.",
+    "No year change is proposed. Keep 1962 pending better dated imagery and scene evidence."
+  ],
+  "checkedAt": "2026-11-15T00:48:27.149Z"
+}

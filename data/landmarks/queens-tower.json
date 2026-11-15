@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "queens-tower",
+  "name": "Queen's Tower",
+  "status": "partial",
+  "subject": {
+    "lat": 51.498351,
+    "lng": -0.17689
+  },
+  "photoSpot": {
+    "lat": 51.49793,
+    "lng": -0.17689
+  },
+  "facingDeg": 0,
+  "distanceM": 46.813128778638855,
+  "captureRadiusM": 50,
+  "geometryEvidence": [
+    {
+      "kind": "osm",
+      "ref": "way/788526940",
+      "url": "https://www.openstreetmap.org/way/788526940",
+      "note": "Subject footprint in inherited OSM geometry; sight line intersects only this tower."
+    },
+    {
+      "kind": "osm",
+      "ref": "way/1213090896",
+      "url": "https://www.openstreetmap.org/way/1213090896",
+      "note": "Photo spot is 4.4 m from the mapped Imperial College Road pedestrian way in cached geometry; not inside a building. A map proximity check does not establish current access."
+    }
+  ],
+  "photoSpotReason": "South of the tower, facing north from the Imperial College Road pedestrian area; rechecked against inherited OSM geometry. On-site access and reference-photo framing still require confirmation.",
+  "referencePhoto": {
+    "status": "missing",
+    "file": null,
+    "originalUrl": null,
+    "pageUrl": null,
+    "licence": null,
+    "author": null,
+    "takenAt": null,
+    "takenFrom": null,
+    "facingDeg": null,
+    "crop": null,
+    "notes": "Team H1 photo not supplied in this session; no Commons present-day stand-in selected yet."
+  },
+  "eraYears": [
+    1893,
+    1962
+  ],
+  "eraYearsReason": {
+    "1893": "Formal opening on 10 May 1893; period images document the connected frontage.",
+    "1962": "Commonwealth Institute moves to Holland Park during demolition and campus replacement; retain existing candidate, with a thin-record dossier."
+  },
+  "rejectedYears": {},
+  "openQuestions": [
+    "Obtain and validate the team H1 photo or a licensed 1600×900 stand-in.",
+    "Confirm current public access and framing at the proposed photo spot.",
+    "Complete 1962 imagery and guide research; resolve the 1893 southern panorama before a fully evidenced 360-degree scene."
+  ]
+}
