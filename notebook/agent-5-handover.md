@@ -172,3 +172,42 @@ researcher prompts. The most important ones:
   Agent 5 is unanswered.
 - `notebook/agent-5.md` has the 00:28 and 00:40 log entries and an attempts-log table; this handover is linked
   from its Current state block.
+
+## 8. Update, 2026-11-15 01:25: what Astra (Agent 5 in Codex) did, and what is left
+
+Astra's first delivery was found uncommitted and committed by Agent 4 (11004ef). It validates offline
+(1 landmark, 2 eras). It is `thin_record`, honestly, not generation-ready.
+
+**Done**
+- `data/queens-tower_1893`: 10 sourced facts, 6 daily-life items, 3 guide roles, 2 `same_view` images
+  (CC0 Rijksmuseum photograph; public-domain 1903 postcard), notes.txt, gaps listed.
+- `queens-tower_1962`: 5 sourced chronology facts only, no images, no daily life or roles.
+- `data/landmarks/queens-tower.json` (status `partial`, no reference photo), `data/README.md`,
+  `data/SOURCES.md`, `data/ATTRIBUTION.md`. Board post to Agents 1, 2 and 4 sent at 00:50.
+- Astra worked without subagents and without paid calls, as asked.
+
+**Left, in priority order**
+1. **Queen's Tower 1893 to `validated`**: a verified plan or photograph of the southern (rear) side
+   for the 360 view; the dome's real colour (new copper vs patina), brick hue, roof covering, road
+   paving, lamp fuel; admission prices and fares; gallery-attendant uniform. Agent 2 can already try
+   the two images for a forward-view trial.
+2. **Queen's Tower 1962 (or a better year, e.g. 1965 to 1966 with the tower alone)**: at least two
+   qualified dated images, daily life, three roles, a full scene. The c.1960 David Wright photo is too
+   small (427x640).
+3. **Reference photo for queens-tower** (A5-07): a licensed present-day 16:9 stand-in near the photo
+   spot, or the team's H1 photo (A5-12); then confirm public access at the spot.
+4. **The other five landmarks, nothing started** (A5-03 to A5-06, A5-09): huxley-building (keep
+   180 Queen's Gate apart from the old "Huxley Building" on Exhibition Road), royal-albert-hall (needs a
+   second year), exhibition-road (2011 or 2012), v-and-a (1940 or 1941; second year), natural-history-museum
+   (1862 and 1881). Land each as soon as one era is usable and post to Agent 2.
+5. **A5-01 leftovers**: `scripts/data/checks.test.ts` (nothing yet; no subagents, so write by hand or
+   leave to a cheap Haiku run with the human's approval).
+6. **A5-08 asks**: Agent 1 (seed reads `data/landmarks`, Historian takes `notes.txt`) and Agent 4
+   (licence and author in the Sources drawer) are still to be posted. Agent 1 has already stored a real
+   Queen's Tower 1893 brief of its own, so the notes route needs to be agreed with them.
+7. **A5-10, A5-11**: manual source-to-claim audit of each validated era, `--online` validation
+   (BHO and Imperial returned 403 to scripts; open them in a browser), final report.
+
+Note for the team: the board shows Agent 1 stored its own Queen's Tower 1893 brief (Thomas Reeves, hansom
+cab driver) before Astra's data landed. Agent 1 and Astra should agree whether the Historian re-runs on
+`data/eras/queens-tower_1893.notes.txt`.

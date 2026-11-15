@@ -88,16 +88,16 @@ use the data (Agent 2 for images, Agent 1 for the notes, Agent 4 for the Sources
   the scene, images with licences, gaps.
 - Open any image `url` in `data/eras/*.json` in a browser: it is a direct picture you can look at.
 
-## 7. Progress (at handover to Astra, 15 Nov 00:40)
+## 7. Progress (updated 15 Nov 01:25, after Astra's first delivery)
 
-The researcher subagents were stopped at your request (cost); work continued by hand, then was handed
-to Astra as the new Agent 5. Full detail: `notebook/agent-5-handover.md`.
+Astra took over as Agent 5 (working in Codex, no subagents). Detail and the full to-do list:
+`notebook/agent-5-handover.md` section 8.
 
 | Item | State |
 |---|---|
-| Validator and build scripts (A5-01) | Written and pushed; unit tests and `data/README.md` still to do |
-| Photo spots (A5-03) | All six checked on the map; files not yet written |
-| Queen's Tower 1893 (top priority) | 4 period images found and looked at (2 good enough for the model), 12 facts located in sources; daily life, guide roles and scene still to write |
-| Other five landmarks | Not started; sources already downloaded on Agent 4's machine |
-| Present-day stand-in photos (A5-07) | Not started |
-| Asks to Agents 1, 2, 4 (A5-08) | After the first validated era |
+| Validator and build scripts (A5-01) | Done and pushed; unit tests still to do |
+| Queen's Tower 1893 | Delivered as `thin_record`: 10 facts, 6 daily-life items, 3 roles, 2 usable images. Needs the southern view and colour evidence to reach `validated` |
+| Queen's Tower 1962 | 5 facts only, no images |
+| Queen's Tower photo spot and landmark file | Written, `partial`; no reference photo |
+| Other five landmarks | Not started |
+| Asks to Agents 1, 2, 4 (A5-08) | First delivery announced to all; the specific asks are still to post |
