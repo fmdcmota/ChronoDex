@@ -1,0 +1,77 @@
+{
+  "title": "The gate behind the wire, 1987",
+  "summary": "In 1987 the Brandenburg Gate stood inside the closed border strip, its Pariser Platz an empty, floodlit security zone, and the exact spot of this stop was not a normal public viewpoint. A reinforced anti-tank wall three metres thick ran directly in front of the gate, and a wing of the building housed an information centre that GDR citizens were not allowed to visit. That June, West Berlin's \"Concert for Berlin\" drew ever larger crowds on the East side towards the gate, and clashes with police along Unter den Linden were described as the most serious outbreak of public discontent in East Berlin in nearly ten years. Ronald Reagan spoke at the gate on 12 June 1987; details of surfaces, lighting and individual prices in 1987 are thin in the sources consulted.",
+  "funFacts": [
+    "A wing of the gate housed an information centre for visiting delegations, mostly foreign; most East Germans did not know it existed.",
+    "The Wall directly in front of the gate was reinforced into an anti-tank barrier three metres thick.",
+    "On 12 June 1987 Ronald Reagan said at the gate: \"Mr. Gorbachev, open this gate! Mr. Gorbachev, tear down this wall!\"",
+    "From the building of the Wall onward nothing was done to maintain the Quadriga; restorers later found extensive rust in its internal steelwork.",
+    "A single inner-city fare on East Berlin public transport was 20 pfennig, and a journey within East Berlin cost 30 pfennig."
+  ],
+  "sources": [
+    {
+      "title": "Berlin.de — Pariser Platz and Brandenburg Gate",
+      "url": "https://www.berlin.de/mauer/en/sites/other-key-sites/pariser-platz-and-brandenburg-gate/#1"
+    },
+    {
+      "title": "Wikipedia — Brandenburger Tor",
+      "url": "https://de.wikipedia.org/wiki/Brandenburger_Tor?utm_campaign=brandenburger_tor#4"
+    },
+    {
+      "title": "Bundesarchiv — Die 750-Jahr-Feier in Ost-Berlin 1987",
+      "url": "https://www.bundesarchiv.de/themen-entdecken/online-entdecken/themenbeitraege/die-750-jahr-feier-in-ost-berlin-1987/"
+    },
+    {
+      "title": "German History Documents — A rock 'n' roll riot at the Wall turns political, June 10 1987",
+      "url": "https://germanhistorydocs.org/en/two-germanies-1961-1989/an-east-german-rock-n-roll-riot-at-the-wall-turns-political-june-10-1987"
+    },
+    {
+      "title": "Stiftung Berliner Mauer — collection photograph",
+      "url": "https://sammlung.stiftung-berliner-mauer.de/Details/Index/1499301"
+    },
+    {
+      "title": "Wikipedia — Reichsbahnerstreik (fares)",
+      "url": "https://de.m.wikipedia.org/wiki/Reichsbahnerstreik#7"
+    }
+  ],
+  "sceneBrief": {
+    "description": "Facing west from the eastern mouth of Unter den Linden: a raised checkpoint barrier and fences across the road, parked cars behind the viewer, then the wide empty guarded expanse of Pariser Platz under strong floodlights, and at its far side the Brandenburg Gate. Flowerpot barriers stand between the gate's columns and a massive pale anti-tank wall closes the roadway beneath the Quadriga. Watchtowers and a double line of wall run beyond the gate, with West Berlin lights in the distance. The air is hazy, the light flat and grey, the stone of the gate grimy and unmaintained.",
+    "changes": {
+      "persists": [
+        "The Brandenburg Gate building itself and the Quadriga on top",
+        "The broad line of Unter den Linden running east from the gate",
+        "Berlin Cathedral and the Fernsehturm visible down Unter den Linden"
+      ],
+      "altered": [
+        "The gate itself, now open and restored after years of neglect",
+        "Pariser Platz, an empty guarded wasteland then and a pedestrianised rebuilt square now",
+        "The gate's stonework and Quadriga, unmaintained in 1987 and restored since"
+      ],
+      "notYetBuilt": [
+        "The rebuilt buildings and public space framing today's Pariser Platz",
+        "The post-reunification ensemble around the square",
+        "The exhibition in the U-Bahn station below the gate"
+      ],
+      "gone": [
+        "The anti-tank wall and the Wall directly in front of the gate",
+        "The fences, checkpoint barrier, floodlights and watchtowers of the border strip",
+        "The ruins of the old Hotel Adlon and the Academy of Arts on the south side",
+        "The information centre in a wing of the gate"
+      ]
+    },
+    "surroundings": "West: the gate, the anti-tank wall and the death strip, with West Berlin beyond. East, behind the visitor: Unter den Linden, some sixty metres wide, with Berlin Cathedral and the Fernsehturm down the street. South: the ruined or cleared sites of the old Hotel Adlon and the Academy of Arts. North: more cleared border zone and empty urban land. Close by: fences, a border post, floodlights, checkpoint barriers and parked cars — in all directions a guarded void rather than a city square.",
+    "referenceImageUrls": [
+      "https://commons.wikimedia.org/wiki/File:Mauerbrandenburgertor87.jpg",
+      "https://commons.wikimedia.org/wiki/File:Photograph_of_President_Reagan_giving_a_speech_at_the_Berlin_Wall,_Brandenburg_Gate,_Federal_Republic_of_Germany_-_NARA_-_198585.jpg"
+    ]
+  },
+  "guide": {
+    "name": "Karin Vogt",
+    "role": "Tram conductor on the lines running to the eastern end of Unter den Linden",
+    "bio": "I have worked the trams out of Mitte for eleven years, punching tickets and calling the stops, and I know this end of Unter den Linden better than my own street. These days the cars stop well short of the gate, and my passengers lean over to look at the lights and the fences before we turn back.",
+    "appearance": "Woman of about forty, sturdy and practical, short permed brown hair, wearing a dark blue GDR transport uniform jacket with a small badge, a grey skirt, thick tights and sensible flat shoes, a ticket punch hanging on a strap.",
+    "voiceKey": "eleven-de-woman",
+    "script": "I'm Karin Vogt, and I run the tickets on the tram down Unter den Linden. Put in your twenty pfennig, thirty if you stay inside the city, but mind the machines — the coins and the tickets don't always agree. We stop short of the gate now; the last stretch is closed, fences and a barrier across the road. You can stand and look west: the floodlights, the empty square, the old gate behind the flowerpots and that thick wall. People lean out to see it. The trams are dirty and crowded and they sulk at the first snow, but they get us there. Mind yourself at the crossing. Goodbye!",
+    "greeting": "You look lost at the barrier — everyone does here. I'm Karin, I run the tickets on the tram; come and stand where the trams turn back and I'll tell you what you're looking at."
+  }
+}

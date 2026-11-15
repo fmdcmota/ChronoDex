@@ -46,7 +46,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "Exactly the framing of the photograph: a raised view across the great square, looking north to where the cathedral stands today, the same horizon and the same mountains in the haze. In 1519 this is Tenochtitlan: across a wide plaza paved with smooth white stucco rises the wall of the sacred precinct, decorated with carved serpent heads, and behind it, filling the place of the cathedral, the twin-shrine pyramid of the Templo Mayor with its two temples on top, plus smaller temple platforms. White plastered flat-roofed palaces to the left and right. People in white cotton cloaks and loincloths cross the plaza, porters carry loads with tumplines, a few warriors with feathered shields.",
+      "description": "Exactly the framing of the photograph: standing at ground level in the middle of the great square among a crowd, eye height, looking north to where the cathedral stands today, the same horizon line. In 1519 this is the heart of Tenochtitlan: the wide plaza is paved with smooth white stucco and busy with people; across it rises the wall of the sacred precinct, carved with serpent heads, and behind it, filling the place of the cathedral’s two towers, the great twin-shrine pyramid of the Templo Mayor with its two temples on top, its steep staircase facing the viewer, plus smaller temple platforms. People in white cotton cloaks fill the foreground as the crowd does in the photograph, porters carry loads with tumplines, a few warriors with feathered shields.",
       "changes": {
         "persists": [
           "The northward line of sight toward the ceremonial centre's area",
@@ -65,7 +65,8 @@
           "the cathedral or any church",
           "horses, wheels or carts",
           "trees in planters or a flagpole",
-          "Spanish soldiers"
+          "Spanish soldiers",
+          "a view from above, rooftops seen from above or an aerial view"
         ],
         "gone": [
           "The Templo Mayor's seventh-phase twin pyramid, visible above the precinct",
@@ -75,7 +76,7 @@
           "The canals, wooden bridges and canoe traffic of the southern approach"
         ]
       },
-      "surroundings": "North: the interior of the sacred precinct, with the Templo Mayor, its associated temples, altars, calmécac and ballcourt, and beyond it the causeway to Tepeyac and lagoon-edge settlements. Northeast and east: the Templo Mayor and the eastern side of the precinct, then canals and the lagoon, and further north the separate city of Tlatelolco with its great market. South: outside the precinct, the causeway to Iztapalapa and the southern residential wards and chinampa edges. West: the precinct wall and platform, the ballcourt and the Tozpalatl sacred spring area, and beyond it the causeway to Tlacopan. In every direction a low-rise adobe city intersected by canals and wooden bridges, plastered temple towers rising above flat roofs, canoes bringing provisions and merchandise.",
+      "surroundings": "Seen from eye height, standing on the paving in the middle of the busy plaza: the camera is at the height of a person, so the horizon runs through the heads of the crowd and buildings are seen from below, never from above. Ahead, the precinct wall and the Templo Mayor. To the right (east), the long white front of the palace of Moctezuma with its colonnade. To the left (west), more white palaces and temple platforms. Behind the viewer, the plaza continues south towards the causeway, crowded with people, porters and market mats. Clear high-altitude blue sky with a few clouds, the volcanoes faint on the horizon.",
       "referenceImageUrls": []
     },
     "guide": {
@@ -88,9 +89,9 @@
       "greeting": "You look like you have been staring at that wall a long while. I am Citlali, a porter, and I can tell you what we are looking at.",
       "headshotUrl": "/demo/zocalo-cathedral_1519/headshot.jpg?v=8f4b01fa53"
     },
-    "sceneImageUrl": "/demo/zocalo-cathedral_1519/scene.jpg?v=fc27933780",
+    "sceneImageUrl": "/demo/zocalo-cathedral_1519/scene.jpg?v=efaed0c119",
     "panorama": {
-      "url": "/demo/zocalo-cathedral_1519/panorama.jpg?v=ecf1a3503d",
+      "url": "/demo/zocalo-cathedral_1519/panorama.jpg?v=aa6e6fef88",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
@@ -117,7 +118,7 @@
       ],
       "stitchedUrl": null
     },
-    "updatedAt": "2026-11-15T06:47:20.022Z"
+    "updatedAt": "2026-11-15T07:08:52.341Z"
   },
   "provenance": {
     "narration": {
@@ -132,7 +133,7 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab284c7/8jfoBlW11Ylklfz9U_5bp_0joEktjK.jpg",
+      "falUrl": "https://v3b.fal.media/files/b/0ab288e7/onPQb4RpKt0xweyRzZhX__o8N3fy9z.jpg",
       "seconds": 20,
       "check": {
         "passed": false,
@@ -140,34 +141,34 @@
         "attempts": 2,
         "problems": [
           "looks computer generated, not like a real photograph",
-          "anachronism: This depicts an Aztec/Mesoamerican ceremonial complex (Tenochtitlan-style temple plaza), not a street in London",
-          "anachronism: No London architecture, no English buildings, no European street scene present at all",
-          "Image shows a completely wrong location and culture (Mesoamerican temple complex instead of London street)",
-          "No London elements present whatsoever",
-          "Image has a glossy, staged, CGI/film-set appearance rather than a genuine photograph"
+          "not the same viewpoint as the reference photo, so Then/Now would not line up",
+          "Image 1 depicts the Aztec Templo Mayor complex rather than a street in London",
+          "Scene shows a completely different location, architecture, and people than the 1519 London prompt requires",
+          "Viewpoint and subject do not correspond to the present-day London photograph in Image 2",
+          "Image has a glossy, staged, film-set quality rather than a genuine period photograph"
         ],
-        "checkCostUsd": 0.011448
+        "checkCostUsd": 0.021462000000000002
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab2853c/50lqHeClz6nDiUiTpLFfc_1794716768882.jpeg",
-      "seconds": 98,
+      "falUrl": "https://v3b.fal.media/files/b/0ab2890c/i_Lst_N8EBRM760WbLFi6_1794726529429.jpeg",
+      "seconds": 131,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
         "passed": false,
         "checked": true,
-        "attempts": 2,
+        "attempts": 3,
         "problems": [
-          "anachronism: Aztec/Mesoamerican Templo Mayor style city instead of London",
-          "anachronism: people in Aztec/Mesoamerican clothing rather than 16th century English attire",
-          "anachronism: canals and chinampas layout resembling Tenochtitlan, not London streets",
-          "Image depicts Tenochtitlan-style Mesoamerican city instead of a London street",
-          "People and architecture are not consistent with London in 1519",
-          "Overly glossy CGI rendering rather than photographic realism"
+          "anachronism: This depicts Tenochtitlan (Aztec/Mesoamerican architecture, pyramids, canal) rather than London",
+          "anachronism: Two figures in black European-style clerical robes out of place in Aztec setting",
+          "Scene shows a Mesoamerican temple plaza, not a London street in 1519",
+          "No English/European architecture or street present",
+          "Image looks like a CGI render rather than a photograph",
+          "Two figures in black European clerical clothing are inconsistent with the rest of the scene"
         ],
-        "checkCostUsd": 0.026398
+        "checkCostUsd": 0.040722
       }
     },
     "guide_frame": {

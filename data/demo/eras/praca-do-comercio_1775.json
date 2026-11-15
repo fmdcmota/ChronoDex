@@ -1,0 +1,139 @@
+{
+  "era": {
+    "id": "praca-do-comercio_1775",
+    "landmarkId": "praca-do-comercio",
+    "year": 1775,
+    "state": "ready",
+    "videoState": "missing",
+    "title": "Lisbon's New Square, Statue Just Unveiled",
+    "summary": "In 1775 the Praça do Comércio, rebuilt on the site of the Ribeira Palace destroyed in the 1755 earthquake, was a large U-shaped square open to the Tagus, still commonly called the Terreiro do Paço. Its centrepiece, Joaquim Machado de Castro's equestrian statue of King José I, was inaugurated on 6 June 1775, the king's birthday, in a ceremony also treated as a celebration of the Marquis of Pombal's reforms. The square was not finished: painted panels masked what was still lacking, the western tower stood only as wooden hoardings, and the triumphal arch took its present form about a century later. Everyday commercial and bureaucratic life there in 1775 is less well documented than the inauguration, and dated 1775 prices could not be confirmed from the sources read.",
+    "funFacts": [
+      "The square was laid out about 175 by 175 metres, and its two end towers were intended to recall the tower of the lost royal palace.",
+      "A panegyric of the day claimed more than 150,000 people crowded into the square for the statue's inauguration and behaved with unusual quiet and order.",
+      "An English print inscribed 1775 shows the eastern Alfândega tower already standing, while the western tower was still only wooden hoardings.",
+      "Lisboners kept using the old name Terreiro do Paço even after the new official name was imposed.",
+      "The statue is described as the first monumental statue dedicated to a king in Lisbon, and the king faces the river."
+    ],
+    "sources": [
+      {
+        "title": "Praça do Comércio — Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Pra%C3%A7a_do_Com%C3%A9rcio"
+      },
+      {
+        "title": "The inauguration of the equestrian statue of King José I, 1775 (SciELO)",
+        "url": "https://qa1.scielo.br/j/topoi/a/y7sVFr9rcgZdPqgr8zyHr6H/?format=pdf&lang=pt"
+      },
+      {
+        "title": "A Ribeira de Lisboa — historical description of the Tagus waterfront",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/A_ribeira_de_Lisboa_-_descrip%C3%A7%C3%A3o_hist%C3%B3rica_da_margem_do_Tejo_desde_a_Madre-de-Deus_at%C3%A9_Santos-o-Velho_%28IA_ribeiradelisboad00cast%29.pdf"
+      },
+      {
+        "title": "Lisbon places — Terreiro do Paço (eve.fcsh.unl.pt)",
+        "url": "https://eve.fcsh.unl.pt/index.php/en/places/lisbon"
+      }
+    ],
+    "sceneBrief": {
+      "description": "Exactly the framing of the photograph: standing at street level in the south-west corner of the riverside square, looking north-east across it, the same horizon and perspective. In 1775, twenty years after the earthquake, the new Praça do Comércio is rising: the long arcaded government buildings on the left and ahead stand in fresh pale stone and ochre render, some bays still in scaffolding; the great bronze equestrian statue of King José I has just been unveiled on its tall plinth in the middle of the square, with crowds around it. There is no triumphal arch yet: the north side opens straight into the new street, the Rua Augusta, with only plain building fronts either side.",
+      "changes": {
+        "persists": [
+          "The equestrian statue of King José I at the centre of the square, facing the river",
+          "The flat, open square floor between the river edge and the north range",
+          "The arcaded ground floors of the north range and the opening of the Rua Augusta",
+          "The Tagus beyond the Cais das Colunas behind the viewer"
+        ],
+        "altered": [
+          "The square's surface, unpaved here rather than a finished modern plaza",
+          "The north range, partly masked by painted panels and scaffolding",
+          "The customs buildings on the east side, already built but in an earlier form"
+        ],
+        "notYetBuilt": [
+          "The present triumphal arch at the mouth of the Rua Augusta",
+          "The western tower, here only wooden hoardings",
+          "Paved, largely pedestrian square with cafés and hotels",
+          "The Museum of Lisbon in the west tower and the Terreiro do Paço metro station",
+          "the triumphal arch (Arco da Rua Augusta), built a century later",
+          "street signs, lamp posts, trams or cars",
+          "patterned calçada paving",
+          "the old Ribeira Palace"
+        ],
+        "gone": [
+          "The Ribeira Palace, destroyed in 1755 and replaced by this square",
+          "Wooden hoardings and painted illusion panels on unfinished fronts"
+        ]
+      },
+      "surroundings": "Seen from eye height in the new Praça do Comércio in 1775. To the left (west) and ahead (north), the long new arcaded buildings, partly in scaffolding, and the opening of the Rua Augusta. To the right (east), more new arcades. Behind the viewer (south), the open waterfront of the river Tagus with quays, small boats and tall sailing ships at anchor. Clear sky with a few clouds.",
+      "referenceImageUrls": []
+    },
+    "guide": {
+      "name": "Inês Carvalhal",
+      "role": "porter carrying goods between the quays and the arcades",
+      "bio": "I carry crates and baskets from the boats at the Cais das Colunas up to the arcades, where the clerks and merchants want them. I have watched this square rise from ruins and rubble, and I know every corner where the work is still going on.",
+      "appearance": "A woman in her early thirties, sturdy and sun-weathered, wearing a dark wool skirt, a laced bodice, a linen shift with rolled sleeves, a headscarf tied over her hair, and a coarse apron; worn leather shoes and a wicker basket under one arm.",
+      "voiceKey": "eleven-pt-woman",
+      "script": "Bom dia, I am Inês Carvalhal, a porter here. I haul crates from the boats up to these arcades for the clerks and merchants. Since the earthquake took the old palace, this whole square has been rising, and people still call it the Terreiro do Paço out of habit. Look at the king on his horse, unveiled this June on his birthday, the first such statue raised to a king in Lisbon, and he faces the river as if watching the ships. Some fronts here are only painted cloth over the work still going on, and the far tower is just hoardings. Mind your footing, the ground is rough. Go well, friend.",
+      "greeting": "Bom dia! I am Inês, a porter here on the square — mind where you step, the ground is still rough from all the building.",
+      "headshotUrl": "/demo/praca-do-comercio_1775/headshot.jpg?v=fa09972b60"
+    },
+    "sceneImageUrl": "/demo/praca-do-comercio_1775/scene.jpg?v=0b8dd41116",
+    "panorama": {
+      "url": "/demo/praca-do-comercio_1775/panorama.jpg?v=0fe13ee0fe",
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "vFovDeg": 180,
+      "centreBearingDeg": 41.72720849784025
+    },
+    "narrationAudioUrl": "/demo/praca-do-comercio_1775/narration.mp3?v=5a87772709",
+    "guideVideo": null,
+    "updatedAt": "2026-11-15T08:05:33.722Z"
+  },
+  "provenance": {
+    "narration": {
+      "model": "elevenlabs/tts/eleven-v4",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a4e/d-HrgED5_vwXUkOOAkKci_output.mp3",
+      "seconds": 9
+    },
+    "headshot": {
+      "model": "google/nano-banana-2.1",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a4e/ieyeWVen6XbW3NyhHjHp2_5grKiAXE.jpg",
+      "seconds": 16
+    },
+    "scene": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a51/n15hY82c_DsfWfszhpdNj_Rj9UliOz.jpg",
+      "seconds": 20,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "looks computer generated, not like a real photograph",
+          "Image has a glossy, film-set/CGI look rather than an authentic period photograph texture",
+          "No arch is visible, but the scene reads as a constructed movie set rather than a real 18th century street"
+        ],
+        "checkCostUsd": 0.020634
+      }
+    },
+    "panorama": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a60/WWW9odN5gZaa_j3anxezk_1794729930266.jpeg",
+      "seconds": 135,
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 3,
+        "problems": [
+          "not a 360 panorama (the critic saw: flat_photo)",
+          "anachronism: depicts a Lisbon-style plaza with ships and waterfront, not a London street scene",
+          "Single vanishing point perspective typical of a standard wide-angle photo, not a 360 panorama",
+          "Ground does not wrap around viewer, no rear view included",
+          "Scene depicts a Portuguese-style square (resembles Lisbon's Praça do Comércio) rather than a London street",
+          "Left and right edges do not form a continuous loop",
+          "Looks like a CGI/film-still render rather than a photographic equirectangular capture"
+        ],
+        "checkCostUsd": 0.040152
+      }
+    }
+  }
+}

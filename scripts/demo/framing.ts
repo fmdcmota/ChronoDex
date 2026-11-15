@@ -24,6 +24,8 @@ export interface DemoFraming {
   mustNotAppear?: string[];
   /** Replaces the London period cues (PromptStyle.periodCues) for places outside Britain. */
   periodCues?: string;
+  /** Replaces SceneBrief.surroundings (what the panorama paints around the scene), for example to keep it at eye level. */
+  surroundings?: string;
 }
 
 /** The framing notes, one per demo era. */
@@ -55,8 +57,10 @@ export const DEMO_FRAMING: Record<EraId, DemoFraming> = {
   },
   'zocalo-cathedral_1519': {
     description:
-      'Exactly the framing of the photograph: a raised view across the great square, looking north to where the cathedral stands today, the same horizon and the same mountains in the haze. In 1519 this is Tenochtitlan: across a wide plaza paved with smooth white stucco rises the wall of the sacred precinct, decorated with carved serpent heads, and behind it, filling the place of the cathedral, the twin-shrine pyramid of the Templo Mayor with its two temples on top, plus smaller temple platforms. White plastered flat-roofed palaces to the left and right. People in white cotton cloaks and loincloths cross the plaza, porters carry loads with tumplines, a few warriors with feathered shields.',
-    mustNotAppear: ['the cathedral or any church', 'horses, wheels or carts', 'trees in planters or a flagpole', 'Spanish soldiers'],
+      'Exactly the framing of the photograph: standing at ground level in the middle of the great square among a crowd, eye height, looking north to where the cathedral stands today, the same horizon line. In 1519 this is the heart of Tenochtitlan: the wide plaza is paved with smooth white stucco and busy with people; across it rises the wall of the sacred precinct, carved with serpent heads, and behind it, filling the place of the cathedral’s two towers, the great twin-shrine pyramid of the Templo Mayor with its two temples on top, its steep staircase facing the viewer, plus smaller temple platforms. People in white cotton cloaks fill the foreground as the crowd does in the photograph, porters carry loads with tumplines, a few warriors with feathered shields.',
+    mustNotAppear: ['the cathedral or any church', 'horses, wheels or carts', 'trees in planters or a flagpole', 'Spanish soldiers', 'a view from above, rooftops seen from above or an aerial view'],
+    surroundings:
+      'Seen from eye height, standing on the paving in the middle of the busy plaza: the camera is at the height of a person, so the horizon runs through the heads of the crowd and buildings are seen from below, never from above. Ahead, the precinct wall and the Templo Mayor. To the right (east), the long white front of the palace of Moctezuma with its colonnade. To the left (west), more white palaces and temple platforms. Behind the viewer, the plaza continues south towards the causeway, crowded with people, porters and market mats. Clear high-altitude blue sky with a few clouds, the volcanoes faint on the horizon.',
     periodCues:
       'Mexica people of Tenochtitlan: men in white cotton tilmatli cloaks knotted at the shoulder and loincloths, women in huipil blouses and wrap skirts, porters bent under loads carried with a tumpline across the forehead, priests in black robes, eagle and jaguar warriors with feathered shields, canoes on the canals, flower and maize sellers, white stucco walls, clear high-altitude light',
   },
@@ -73,6 +77,33 @@ export const DEMO_FRAMING: Record<EraId, DemoFraming> = {
     mustNotAppear: ['horses, carts or carriages', 'skyscrapers or shophouses', 'men in top hats', 'paved roads', 'brick buildings or a European street'],
     periodCues:
       'Singapore River in 1819: Malay and Orang Laut villagers in sarongs and headcloths, fishermen poling sampans and paddling dugouts, fish traps of bamboo stakes in the water, attap-roofed timber houses on stilts over the mud, mangroves and nipah palms, coconut palms, a humid hazy tropical sky',
+  },
+  'brandenburg-gate-east_1987': {
+    description:
+      'Exactly the framing of the photograph: standing on Pariser Platz on the East Berlin side at eye level, looking west straight at the Brandenburg Gate, the quadriga on top facing the viewer, the same size and position in the frame. In 1987 this is the GDR border zone: the gate is soot-grey and weathered, the square in front of it is closed to the public and almost empty, with a low white-and-red barrier fence across it and a sign forbidding entry. Through the columns the grey concrete Berlin Wall with its rounded top runs across behind the gate, and beyond it a watchtower. Two East German border guards in grey-green uniforms and peaked caps stand by the barrier. A GDR flag on a pole beside the gate. Overcast sky.',
+    mustNotAppear: ['the Fernsehturm TV tower or the Berlin Cathedral dome seen through the gate (they stand behind the viewer, to the east; through the gate are the Wall, the death strip and the trees of the Tiergarten in West Berlin)', 'any readable text, signs or lettering', 'tourists or crowds at the gate', 'modern buildings, embassies or the Hotel Adlon around the square', 'modern cars, vans or bicycles', 'Western advertising', 'the gate lit in colours'],
+    periodCues:
+      'East Berlin in 1987: Trabant and Wartburg cars at a distance, East German border guards (Grenztruppen) in grey-green uniforms, plain concrete lamp posts, worn cobbles and cracked asphalt, the GDR flag (black, red and gold with the hammer and compass emblem), people in 1980s East German anoraks and jeans kept well back, the muted colours and fine grain of ORWO colour film, a grey overcast sky',
+    surroundings:
+      'Seen from eye height on Pariser Platz in the East Berlin border zone in 1987. Ahead (west), the Brandenburg Gate with the Berlin Wall curving behind it and a concrete watchtower. To the left and right, the square is mostly empty ground where the bombed buildings were cleared, with a few bare plane trees, lamp posts and the plain side walls of East German buildings. Behind the viewer (east), the start of Unter den Linden with its lime trees and grey East German facades, a few Trabants parked, people walking at a distance. Overcast sky.',
+  },
+  'praca-do-comercio_1754': {
+    description:
+      'Exactly the framing of the photograph: standing at street level in the south-west corner of the riverside square, looking north-east across it, the same horizon and perspective. In 1754, a year before the great earthquake, this is the Terreiro do Paço: there is no triumphal arch, no yellow arcades and no equestrian statue. Along the left (west) side stands the long royal Ribeira Palace, a stately Baroque front of pale stone with rows of tall windows and a square corner tower with a pointed roof. Ahead across the square, a jumble of older multi-storey merchant houses with red tiled roofs and narrow streets leading into the old city, and the castle hill rising behind. The square is unpaved packed earth and cobbles, busy with people.',
+    mustNotAppear: ['the triumphal arch (Arco da Rua Augusta)', 'yellow arcaded buildings', 'the equestrian statue', 'street signs, lamp posts, trams or cars', 'patterned calçada paving'],
+    periodCues:
+      'Lisbon in 1754: men in tricorn hats, long coats and breeches, wigs, women in long full skirts and shawls, black-clad clergy, fishwives (varinas) carrying baskets on their heads, water carriers with barrels, sedan chairs and a gilded carriage, mules with packs, ships’ masts on the Tagus, golden late-afternoon Atlantic light, the soft look of an 18th-century scene rendered as a real photograph',
+    surroundings:
+      'Seen from eye height in the Terreiro do Paço in 1754. To the left (west), the long Baroque front of the royal Ribeira Palace with its corner tower. Ahead (north and east), old merchant houses with red roofs, church towers and the castle hill. Behind the viewer (south), the open waterfront of the river Tagus with quays, small boats and the masts of tall sailing ships at anchor. Clear sky with a few clouds.',
+  },
+  'praca-do-comercio_1775': {
+    description:
+      'Exactly the framing of the photograph: standing at street level in the south-west corner of the riverside square, looking north-east across it, the same horizon and perspective. In 1775, twenty years after the earthquake, the new Praça do Comércio is rising: the long arcaded government buildings on the left and ahead stand in fresh pale stone and ochre render, some bays still in scaffolding; the great bronze equestrian statue of King José I has just been unveiled on its tall plinth in the middle of the square, with crowds around it. There is no triumphal arch yet: the north side opens straight into the new street, the Rua Augusta, with only plain building fronts either side.',
+    mustNotAppear: ['the triumphal arch (Arco da Rua Augusta), built a century later', 'street signs, lamp posts, trams or cars', 'patterned calçada paving', 'the old Ribeira Palace'],
+    periodCues:
+      'Lisbon in 1775: men in tricorn hats, long coats and breeches, powdered wigs, women in wide skirts and shawls, soldiers in blue coats lining the square for the statue unveiling, black-clad clergy, a gilded royal coach, varinas with baskets on their heads, builders with ladders and stone blocks, ships\u2019 masts on the Tagus, bright Atlantic light, rendered as a real photograph',
+    surroundings:
+      'Seen from eye height in the new Praça do Comércio in 1775. To the left (west) and ahead (north), the long new arcaded buildings, partly in scaffolding, and the opening of the Rua Augusta. To the right (east), more new arcades. Behind the viewer (south), the open waterfront of the river Tagus with quays, small boats and tall sailing ships at anchor. Clear sky with a few clouds.',
   },
 };
 
@@ -101,6 +132,7 @@ export function demoSceneBrief(eraId: EraId, brief: SceneBrief): SceneBrief {
   return {
     ...brief,
     description: framing.description,
+    surroundings: framing.surroundings ?? brief.surroundings,
     changes: { ...brief.changes, notYetBuilt: [...brief.changes.notYetBuilt, ...(framing.mustNotAppear ?? [])] },
     referenceImageUrls: [],
   };

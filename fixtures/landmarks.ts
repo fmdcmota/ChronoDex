@@ -214,4 +214,14 @@ export const landmarks: Landmark[] = [
     eraYears: [1754, 1775],
     ...sharedFields('praca-do-comercio'),
   },
+  {
+    id: 'brandenburg-gate-east',
+    name: 'Brandenburg Gate, East Berlin side',
+    blurb: 'Seen from Unter den Linden, the gate stood in the death strip behind the Berlin Wall from 1961 to 1989.',
+    photoSpot: { lat: 52.51625, lng: 13.3788 },
+    subject: { lat: 52.51627, lng: 13.3777 },
+    rarity: 'legendary',
+    eraYears: [1987],
+    ...sharedFields('brandenburg-gate-east'),
+  },
 ];

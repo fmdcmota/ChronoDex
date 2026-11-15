@@ -159,7 +159,8 @@ async function main(): Promise<void> {
       <stop offset="${1 - feather / band}" stop-color="#fff"/><stop offset="1" stop-color="#000"/>
     </linearGradient></defs>
     <rect width="100%" height="100%" fill="#000"/><rect x="${x0}" width="${band}" height="100%" fill="url(#g)"/></svg>`;
-  const mask = await sharp(Buffer.from(svg)).greyscale().raw().toBuffer();
+  // Flatten and keep one channel: an SVG renders with alpha, and a 2-channel buffer here scrambled the mask (Zócalo, first run).
+  const mask = await sharp(Buffer.from(svg)).flatten({ background: '#000' }).extractChannel(0).raw().toBuffer();
   const bandPixels = await sharp(edited).removeAlpha().joinChannel(mask, { raw: { width: shifted.width, height: shifted.height, channels: 1 } }).png().toBuffer();
   const blended = await sharp(shifted.data).composite([{ input: bandPixels }]).png().toBuffer();
 

@@ -140,6 +140,20 @@ export const VOICE_CATALOG: Record<string, VoiceEntry> = {
     stability: DEFAULT_STABILITY,
     accentTag: 'Malay accent',
   },
+  'eleven-de-man': {
+    description: 'Man in his forties, German accent, dry and matter-of-fact (for Berlin guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Roger',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'German accent',
+  },
+  'eleven-de-woman': {
+    description: 'Woman in her thirties, German accent, warm (for Berlin guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Matilda',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'German accent',
+  },
   'eleven-sg-woman': {
     description: 'Younger woman, Malay accent, bright (for Singapore guides; unconfirmed by ear)',
     provider: 'elevenlabs',

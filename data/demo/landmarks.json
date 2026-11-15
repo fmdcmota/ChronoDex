@@ -126,5 +126,48 @@
     "badgeUrl": "/sprites/badges/raffles-landing-site.png",
     "referencePhotoUrl": "/demo/reference/raffles-landing-site.jpg",
     "captureRadiusM": 50
+  },
+  {
+    "id": "brandenburg-gate-east",
+    "name": "Brandenburg Gate, East Berlin side",
+    "blurb": "Seen from Unter den Linden, the gate stood in the death strip behind the Berlin Wall from 1961 to 1989.",
+    "photoSpot": {
+      "lat": 52.51625,
+      "lng": 13.3788
+    },
+    "subject": {
+      "lat": 52.51627,
+      "lng": 13.3777
+    },
+    "rarity": "legendary",
+    "eraYears": [
+      1987
+    ],
+    "spriteUrl": "/sprites/brandenburg-gate-east.png",
+    "badgeUrl": "/sprites/badges/brandenburg-gate-east.png",
+    "referencePhotoUrl": "/demo/reference/brandenburg-gate-east.jpg",
+    "captureRadiusM": 50
+  },
+  {
+    "id": "praca-do-comercio",
+    "name": "Praça do Comércio",
+    "blurb": "Lisbon’s riverside square, where a royal palace stood until the great earthquake of 1755.",
+    "photoSpot": {
+      "lat": 38.7071,
+      "lng": -9.1375
+    },
+    "subject": {
+      "lat": 38.7078,
+      "lng": -9.1367
+    },
+    "rarity": "legendary",
+    "eraYears": [
+      1754,
+      1775
+    ],
+    "spriteUrl": "/sprites/praca-do-comercio.png",
+    "badgeUrl": "/sprites/badges/praca-do-comercio.png",
+    "referencePhotoUrl": "/demo/reference/praca-do-comercio.jpg",
+    "captureRadiusM": 50
   }
 ]

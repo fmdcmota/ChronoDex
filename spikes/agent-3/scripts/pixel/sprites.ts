@@ -508,6 +508,40 @@ export function memoryBoxSprite(): PixelCanvas {
   return finish(c, 14);
 }
 
+/** Brandenburg Gate, East Berlin side (1987): six Doric columns under an attic with the quadriga, the grey Wall behind. Agent 6. */
+function brandenburgGateEast(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // The Wall behind the gate: a grey band with a rounded top, across the whole width.
+  c.rect(1, 20, 30, 27, P.stoneDark);
+  c.hline(1, 30, 20, P.stone);
+  // Entablature and attic.
+  c.rect(4, 11, 27, 13, P.stone);
+  c.rect(26, 11, 27, 13, P.stoneDark);
+  c.hline(4, 27, 13, P.stoneDark);
+  c.rect(11, 8, 20, 10, P.stone);
+  c.rect(19, 8, 20, 10, P.stoneDark);
+  // Six columns with dark gaps between them.
+  for (const x of [5, 9, 13, 18, 22, 26]) {
+    c.rect(x, 14, x + 1, 27, P.stone);
+    c.set(x + 1, 14, P.stoneDark);
+    c.vline(x + 1, 15, 27, P.stoneDark);
+  }
+  // Base step.
+  c.rect(3, 28, 28, 28, P.stoneDark);
+  // Quadriga: horses and chariot in green copper, the goddess with her staff.
+  c.rect(12, 5, 19, 7, P.verdigris);
+  c.rect(17, 5, 19, 7, P.verdigrisDark);
+  c.rect(15, 2, 16, 4, P.verdigris);
+  c.vline(17, 1, 4, P.verdigrisDark);
+  c.set(13, 4, P.verdigris);
+  c.set(18, 4, P.verdigrisDark);
+  // A red-and-gold flag on the left, for the GDR years.
+  c.vline(3, 3, 10, P.inkSoft);
+  c.rect(4, 3, 7, 5, P.brick);
+  c.set(5, 4, P.gold);
+  return finish(c, 14);
+}
+
 /** Width of one frame of a voyage duck, in art pixels. */
 export const VOYAGE_FRAME_W = 40;
 /** Height of one frame of a voyage duck, in art pixels. */
@@ -765,4 +799,5 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'zocalo-cathedral': zocaloCathedral,
   'dom-luis-bridge': domLuisBridge,
   'praca-do-comercio': pracaDoComercio,
+  'brandenburg-gate-east': brandenburgGateEast,
 };

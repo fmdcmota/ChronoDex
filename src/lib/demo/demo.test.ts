@@ -16,8 +16,8 @@ function demoUrls(era: (typeof DEMO_ERAS)[number]): string[] {
 }
 
 describe('demo set', () => {
-  it('has 8 valid ready eras whose files are all in public/', () => {
-    expect(DEMO_ERAS).toHaveLength(8);
+  it('has 11 valid ready eras whose files are all in public/', () => {
+    expect(DEMO_ERAS).toHaveLength(11);
     for (const era of DEMO_ERAS) {
       expect(EraSchema.parse(era)).toEqual(era);
       expect(era.state).toBe('ready');

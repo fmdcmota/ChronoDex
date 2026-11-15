@@ -1,0 +1,142 @@
+{
+  "era": {
+    "id": "praca-do-comercio_1754",
+    "landmarkId": "praca-do-comercio",
+    "year": 1754,
+    "state": "ready",
+    "videoState": "missing",
+    "title": "Terreiro do Paço, Before the Rebuilding",
+    "summary": "The 1754 record for this spot is thin, and most detailed descriptions date from just before or just after the 1755 earthquake. In 1754 the square was called the Terreiro do Paço; the name Praça do Comércio belongs to the Pombaline rebuilding after 1755. The western side was occupied by the Paço Real, or Ribeira Palace, and an anonymous manuscript description of the palace written that year records its courtyards, clock tower and river-side aviary. An English visitor, George Whitefield, left an account of Lenten processions and drought in Lisbon in March 1754.",
+    "funFacts": [
+      "The square was still the Terreiro do Paço in 1754; the name Praça do Comércio comes from the Pombaline rebuilding after 1755.",
+      "The Paço Real, or Ribeira Palace, stood on the western side of the square from the early sixteenth century.",
+      "An anonymous 1754 manuscript describes a river-side palace garden with a large aviary of rare birds.",
+      "In 1754 the dowager Queen Maria Ana was living in the palace.",
+      "A new royal opera house beside the palace was still being finished in 1754 and opened on 31 March 1755.",
+      "In March 1754 Lisbon was observing Lent in an excessive drought, and daily processions went from one convent or another praying for rain."
+    ],
+    "sources": [
+      {
+        "title": "Visit Portugal — Praça do Comércio",
+        "url": "https://www.visitportugal.com/pt-pt/NR/exeres/64BE2716-BB28-4041-8E05-594DF1BAAE95"
+      },
+      {
+        "title": "Anonymous 1754 description of the Ribeira Palace (transcribed by Camilo Castelo Branco), NOVA repository",
+        "url": "https://run.unl.pt/bitstreams/295df08c-44a6-475d-b10c-ce96511fca57/download#6#58#6"
+      },
+      {
+        "title": "George Whitefield, A Brief Account of Some Lent Processions at Lisbon (1755)",
+        "url": "http://archive.org/download/bim_eighteenth-century_a-brief-account-of-some-_whitefield-george_1755_0/bim_eighteenth-century_a-brief-account-of-some-_whitefield-george_1755_0.pdf#1#2#1"
+      },
+      {
+        "title": "Lisbon in the eighteenth century, University of Lisbon repository",
+        "url": "https://repositorio.ulisboa.pt/bitstream/10451/24514/1/ulfl201307_tm.pdf#5#23#5"
+      },
+      {
+        "title": "Ópera do Tejo",
+        "url": "https://browse.library.kiwix.org/content/wikipedia_it_all_maxi/Palazzo_della_Ribeira#1"
+      }
+    ],
+    "sceneBrief": {
+      "description": "Exactly the framing of the photograph: standing at street level in the south-west corner of the riverside square, looking north-east across it, the same horizon and perspective. In 1754, a year before the great earthquake, this is the Terreiro do Paço: there is no triumphal arch, no yellow arcades and no equestrian statue. Along the left (west) side stands the long royal Ribeira Palace, a stately Baroque front of pale stone with rows of tall windows and a square corner tower with a pointed roof. Ahead across the square, a jumble of older multi-storey merchant houses with red tiled roofs and narrow streets leading into the old city, and the castle hill rising behind. The square is unpaved packed earth and cobbles, busy with people.",
+      "changes": {
+        "persists": [
+          "The open position of the square beside the Tagus",
+          "The river itself, opening the southern front"
+        ],
+        "altered": [
+          "The ground surface, which is uneven and roughly paved at the edges rather than the later ornamental pavement",
+          "The square's shape, which is ill-defined rather than the later enclosed U-shaped plaza"
+        ],
+        "notYetBuilt": [
+          "The equestrian statue of José I",
+          "The Rua Augusta triumphal arch",
+          "The uniform Pombaline arcaded facades",
+          "The two square towers that recall the old palace tower",
+          "the triumphal arch (Arco da Rua Augusta)",
+          "yellow arcaded buildings",
+          "the equestrian statue",
+          "street signs, lamp posts, trams or cars",
+          "patterned calçada paving"
+        ],
+        "gone": [
+          "The Paço Real, or Ribeira Palace, with its courtyards, clock tower and garden",
+          "The palace's river-side aviary of rare birds",
+          "The Forte tower and the king's residence within it"
+        ]
+      },
+      "surroundings": "Seen from eye height in the Terreiro do Paço in 1754. To the left (west), the long Baroque front of the royal Ribeira Palace with its corner tower. Ahead (north and east), old merchant houses with red roofs, church towers and the castle hill. Behind the viewer (south), the open waterfront of the river Tagus with quays, small boats and the masts of tall sailing ships at anchor. Clear sky with a few clouds.",
+      "referenceImageUrls": []
+    },
+    "guide": {
+      "name": "Tomás Ferreira",
+      "role": "Porter at the riverfront of the Terreiro do Paço",
+      "bio": "I carry goods and messages between the boats and the houses of the square, so I know every coach driver and every doorman by name. I have worked this waterfront since I was a boy, and I know which complaints and which errands travel the fastest.",
+      "appearance": "A man of about thirty, lean and weathered from outdoor work, with short dark hair and stubble. He wears a worn brown cloth coat over a linen shirt, loose dark breeches, thick woollen stockings and scuffed leather shoes, with a rope belt and a flat cap.",
+      "voiceKey": "eleven-pt-man",
+      "script": "They call me Tomás, and I work these stones by the water, carrying goods between the boats and the houses. You will see the palace there on the west, and it is a great rambling thing, not one neat building. You should see the garden on the river side, with that aviary of rare birds inside it; the palace folk are proud of that. The old Queen Maria Ana sits in her rooms here. And do not expect the opera house to be ready next to us; they are still building it, and the masons are always underfoot. It is Lent and dry, so we have processions nearly every day, asking for rain. Good luck to you.",
+      "greeting": "You have come to the Terreiro do Paço, friend. Mind the cobbles and stay clear of the coaches, and I will tell you what goes on here.",
+      "headshotUrl": "/demo/praca-do-comercio_1754/headshot.jpg?v=714b889c48"
+    },
+    "sceneImageUrl": "/demo/praca-do-comercio_1754/scene.jpg?v=fe258440de",
+    "panorama": {
+      "url": "/demo/praca-do-comercio_1754/panorama.jpg?v=e1aec2073e",
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "vFovDeg": 180,
+      "centreBearingDeg": 41.72720849784025
+    },
+    "narrationAudioUrl": "/demo/praca-do-comercio_1754/narration.mp3?v=1554c936c7",
+    "guideVideo": null,
+    "updatedAt": "2026-11-15T08:05:34.914Z"
+  },
+  "provenance": {
+    "narration": {
+      "model": "elevenlabs/tts/eleven-v4",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a4e/kuF6o3jIDKiie7FrPNLsb_output.mp3",
+      "seconds": 9
+    },
+    "headshot": {
+      "model": "google/nano-banana-2.1",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a4e/ebzHCX8FRQhTuqCKEU6KC_vy8dWKqJ.jpg",
+      "seconds": 18
+    },
+    "scene": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a50/Zt9hVLszOi3pi3dynuCfr_Ro62HSyw.jpg",
+      "seconds": 20,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "not the same viewpoint as the reference photo, so Then/Now would not line up",
+          "Viewpoint differs significantly from image 2: different angle, buildings arranged differently, castle hill in different position, no sign of the square's actual layout matching",
+          "The scene depicts a different, older palace square (pre-earthquake Ribeira Palace) rather than the same camera position as the present-day square"
+        ],
+        "checkCostUsd": 0.020218
+      }
+    },
+    "panorama": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a60/P9MdjD-caGcjNMAsxKG8-_1794729931948.jpeg",
+      "seconds": 138,
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 3,
+        "problems": [
+          "not a 360 panorama (the critic saw: flat_photo)",
+          "single vanishing point wide-angle photo, not a 360 panorama",
+          "no wraparound of ground or sky",
+          "left and right edges do not connect",
+          "scene resembles a Lisbon waterfront square, not a London street",
+          "horizon is in the upper third, not centered"
+        ],
+        "checkCostUsd": 0.038652
+      }
+    }
+  }
+}

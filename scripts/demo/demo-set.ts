@@ -22,6 +22,11 @@ export const DEMO_ERA_IDS: readonly EraId[] = [
   'dom-luis-bridge_1886',
   // Singapore
   'raffles-landing-site_1819',
+  // East Berlin
+  'brandenburg-gate-east_1987',
+  // Lisbon
+  'praca-do-comercio_1754',
+  'praca-do-comercio_1775',
 ];
 
 /** The core-tier files kept for each era. */

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "praca-do-comercio",
+  "name": "Praça do Comércio",
+  "status": "partial",
+  "subject": {
+    "lat": 38.7078,
+    "lng": -9.1367
+  },
+  "photoSpot": {
+    "lat": 38.7071,
+    "lng": -9.1375
+  },
+  "facingDeg": 40,
+  "distanceM": 104.3,
+  "captureRadiusM": 50,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:Lisbon,_Portugal_April_2010_(5127624396).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lisbon,_Portugal_April_2010_(5127624396).jpg",
+      "note": "The reference photo; the photo spot is estimated from its viewpoint. Not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): the south-west corner of the square, looking north-east to the arch and the equestrian statue.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/praca-do-comercio.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Lisbon,_Portugal_April_2010_(5127624396).jpg",
+    "licence": "CC BY-SA 2.0",
+    "author": "Lee Cannon",
+    "takenAt": "2010-04",
+    "takenFrom": null,
+    "facingDeg": 40,
+    "crop": "Commons 2272x1581 original, 150 px trimmed from the top and 153 px from the bottom, scaled to 1600x900.",
+    "notes": "Street level at the south-west corner of the square: the yellow arcades, the Arco da Rua Augusta and the statue of King José I."
+  },
+  "eraYears": [
+    1754,
+    1775
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6."
+  ]
+}

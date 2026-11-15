@@ -17,9 +17,9 @@ import { VOICE_CATALOG } from '@/lib/fal/voices';
 import { HERO_ERA_ID, eras, heroBrief, landmarks, placeholderBrief, sampleJobs } from './index';
 
 describe('fixtures', () => {
-  it('has sixteen landmarks (six in London, then Singapore, Oslo, Cambridge, Beijing, Mexico City, Porto and Lisbon), each valid, with unique ids and ascending years', () => {
-    expect(landmarks).toHaveLength(16);
-    expect(new Set(landmarks.map((l) => l.id)).size).toBe(16);
+  it('has seventeen landmarks (six in London, then Singapore, Oslo, Cambridge, Beijing, Mexico City, Porto and Lisbon), each valid, with unique ids and ascending years', () => {
+    expect(landmarks).toHaveLength(17);
+    expect(new Set(landmarks.map((l) => l.id)).size).toBe(17);
     for (const landmark of landmarks) {
       expect(LandmarkSchema.parse(landmark)).toEqual(landmark);
       expect([...landmark.eraYears].sort((a, b) => a - b)).toEqual(landmark.eraYears);

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "brandenburg-gate-east",
+  "name": "Brandenburg Gate, East Berlin side",
+  "status": "partial",
+  "subject": {
+    "lat": 52.51627,
+    "lng": 13.3777
+  },
+  "photoSpot": {
+    "lat": 52.51625,
+    "lng": 13.3788
+  },
+  "facingDeg": 270,
+  "distanceM": 74.5,
+  "captureRadiusM": 50,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:Berlin,_Brandenburger_Tor_--_2008_--_0153.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Berlin,_Brandenburger_Tor_--_2008_--_0153.jpg",
+      "note": "The reference photo; the photo spot is estimated from its viewpoint on Pariser Platz. Not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): Pariser Platz, the East Berlin side, facing west at the gate.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/brandenburg-gate-east.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Berlin,_Brandenburger_Tor_--_2008_--_0153.jpg",
+    "licence": "CC BY-SA 4.0",
+    "author": "Dietmar Rabich",
+    "takenAt": "2008",
+    "takenFrom": null,
+    "facingDeg": 270,
+    "crop": "Commons 2957x2262 original, 180 px trimmed from the top and 419 px from the bottom, scaled to 1600x900.",
+    "notes": "Pariser Platz on the east side, facing west through the gate, the quadriga facing the camera, visitors in front."
+  },
+  "eraYears": [
+    1987
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6: the Archivist (Agent 5) should check geometry and year."
+  ]
+}

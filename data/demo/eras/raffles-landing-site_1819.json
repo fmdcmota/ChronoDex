@@ -4,7 +4,7 @@
     "landmarkId": "raffles-landing-site",
     "year": 1819,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "Raffles Lands at the Singapore River, 1819",
     "summary": "On 28 January 1819 Stamford Raffles anchored at St John's Island and that evening went ashore with William Farquhar to meet Temenggong Abdul Rahman, whose village stood on the north bank at the river mouth. A draft agreement followed on 30 January and the Singapore Treaty was signed on 6 February, giving the East India Company a trading post for annual payments of 5,000 Spanish dollars to the Sultan and 3,000 to the Temenggong. The island then held roughly 1,000 people, mostly Orang Laut, and the south bank was mangrove swamp. The exact landing point and date are disputed, and no eyewitness drawing of the Temenggong's palace survives in the sources consulted.",
     "funFacts": [
@@ -101,8 +101,27 @@
       "centreBearingDeg": 120.8510085019305
     },
     "narrationAudioUrl": "/demo/raffles-landing-site_1819/narration.mp3?v=9dec335ab9",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T06:35:10.282Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/raffles-landing-site_1819/walk_on.mp4?v=52a7429e37",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/raffles-landing-site_1819/talk.mp4?v=e9726a20f5",
+          "durationS": 45
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/raffles-landing-site_1819/walk_off.mp4?v=06e12ef0b6",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T07:36:41.238Z"
   },
   "provenance": {
     "narration": {
@@ -153,6 +172,36 @@
         ],
         "checkCostUsd": 0.039502
       }
+    },
+    "guide_frame": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab288ff/JuezcJcSNtdKkr02kOgSU_2sEQvIMJ.jpg",
+      "seconds": 20,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "the street behind is distorted",
+          "Scene is a river village with boats and stilt houses, not a street as specified"
+        ],
+        "checkCostUsd": 0.015368
+      }
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28918/O-ryaVKEZoTeY2ybkZPF4_output.mp4",
+      "seconds": 527
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab2894c/eNv76C9KiAj8sNfxk4VsK_output.mp4",
+      "seconds": 730
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab289b3/DwyfmrANOBo1REESKaSus_output.mp4",
+      "seconds": 170
     }
   }
 }
