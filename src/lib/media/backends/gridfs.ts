@@ -29,6 +29,7 @@ const DUPLICATE_KEY_ERROR = 11000;
 type AssetDoc = MediaAsset & { _id: string };
 
 interface MediaMongo {
+  client: MongoClient;
   db: Db;
   assets: Collection<AssetDoc>;
   bucket: GridFSBucket;
@@ -50,13 +51,29 @@ function connect(uri: string): Promise<MediaMongo> {
     const db = client.db(process.env.MONGODB_DB || DEFAULT_DB_NAME);
     const assets = db.collection<AssetDoc>(MEDIA_ASSETS_COLLECTION);
     await assets.createIndex({ sourceUrl: 1 });
-    return { db, assets, bucket: new GridFSBucket(db, { bucketName: MEDIA_BUCKET }) };
+    return { client, db, assets, bucket: new GridFSBucket(db, { bucketName: MEDIA_BUCKET }) };
   })().catch((error) => {
     // Let the next call try again instead of caching the failure for the life of the process.
     delete g[GLOBAL_KEY];
     throw error;
   });
   return g[GLOBAL_KEY];
+}
+
+/**
+ * Close the media store's MongoDB pool, if one was opened, so a script or the worker can exit (Agent 2's 02:30 ask).
+ *
+ * Side effects: the next media call opens a fresh pool. Safe to call when nothing was opened.
+ *
+ * @returns Resolves once the pool is closed.
+ */
+export async function closeGridFs(): Promise<void> {
+  const g = globalThis as typeof globalThis & { [GLOBAL_KEY]?: Promise<MediaMongo> };
+  const pending = g[GLOBAL_KEY];
+  delete g[GLOBAL_KEY];
+  if (!pending) return;
+  const mongo = await pending.catch(() => null);
+  await mongo?.client.close();
 }
 
 /** Strip `_id` from a stored record. */

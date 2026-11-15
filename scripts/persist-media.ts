@@ -17,7 +17,7 @@
  * so a worker finishing a stage meanwhile is not overwritten. A failed download is reported and the rest go on.
  */
 import { closeMongo, getEra, listEras, listLandmarks, patchEra } from '@/lib/db';
-import { mediaBackendKind, persistFromUrl } from '@/lib/media';
+import { closeMedia, mediaBackendKind, persistFromUrl } from '@/lib/media';
 import { eraMediaPatch, unpersistedMedia } from '@/lib/media/eraMedia';
 
 /** Values of a repeatable flag. */
@@ -83,7 +83,4 @@ main()
     process.exitCode = 1;
   })
   .finally(() => closeMongo().catch(() => undefined))
-  .finally(() => {
-    // The media store keeps its own MongoDB pool open; end the process once the work is done.
-    setTimeout(() => process.exit(), 100).unref();
-  });
+  .finally(() => closeMedia().catch(() => undefined));

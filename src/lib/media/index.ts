@@ -17,7 +17,7 @@
 import path from 'node:path';
 import { uploadToFal } from '@/lib/fal';
 import { createFolderBackend } from './backends/folder';
-import { createGridFsBackend } from './backends/gridfs';
+import { closeGridFs, createGridFsBackend } from './backends/gridfs';
 import { createMediaStore, type MediaStore, type PersistedMedia, type PersistOptions } from './store';
 import type { ByteRange, MediaAsset, MediaBackend } from './types';
 
@@ -142,4 +142,17 @@ export function getMediaAsset(id: string): Promise<MediaAsset | null> {
  */
 export function openMedia(id: string, range?: ByteRange): Promise<ReadableStream<Uint8Array>> {
   return wired().backend.read(id, range);
+}
+
+/**
+ * Close the media store's database connection so a script or the worker exits instead of hanging.
+ *
+ * Side effects: drops the cached store; the next media call builds it again. A no-op on the folder backend.
+ *
+ * @returns Resolves once the connection is closed.
+ */
+export async function closeMedia(): Promise<void> {
+  const g = globalThis as typeof globalThis & { [GLOBAL_KEY]?: unknown };
+  delete g[GLOBAL_KEY];
+  await closeGridFs();
 }
