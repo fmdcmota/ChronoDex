@@ -22,6 +22,7 @@ import {
   toLandmarkDoc,
 } from './mongo';
 
+import { withDemoEras, withDemoLandmarks } from '@/lib/demo';
 export { closeMongo, mongoConfigured } from './mongo';
 
 // ---------------------------------------------------------------------------
@@ -49,12 +50,13 @@ interface MemoryDb {
 
 const GLOBAL_KEY = '__chronodexMemoryDb';
 
-/** The in-memory store, created from fixtures on first use. */
+/** The in-memory store, created from fixtures and the demo set on first use. */
 function memory(): MemoryDb {
   const g = globalThis as typeof globalThis & { [GLOBAL_KEY]?: MemoryDb };
   g[GLOBAL_KEY] ??= {
-    landmarks: structuredClone(fixtureLandmarks),
-    eras: new Map(structuredClone(fixtureEras).map((era) => [era.id, era])),
+    // The kept demo set (src/lib/demo) over the fixtures, so a run with no database shows real eras.
+    landmarks: withDemoLandmarks(fixtureLandmarks),
+    eras: new Map(withDemoEras(fixtureEras).map((era) => [era.id, era])),
     captures: [],
   };
   return g[GLOBAL_KEY];

@@ -48,6 +48,7 @@ import {
   landmarks as fixtureLandmarks,
   placeholderBrief,
 } from '@fixtures/index';
+import { withDemoEras, withDemoLandmarks } from '@/lib/demo';
 import { ApiError } from './errors';
 import { randomUuid } from './player';
 import type { ChatOptions, ChronodexApi } from './types';
@@ -154,8 +155,9 @@ export function createMockApi(options: MockApiOptions = {}): ChronodexApi {
         ? safeLocalStorage()
         : null;
 
-  const landmarks: Landmark[] = structuredClone(fixtureLandmarks);
-  const eras = new Map<EraId, Era>(structuredClone(fixtureEras).map((era) => [era.id, era]));
+  // The kept demo set (src/lib/demo) over the fixtures, so mock mode shows the real demo eras.
+  const landmarks: Landmark[] = withDemoLandmarks(fixtureLandmarks);
+  const eras = new Map<EraId, Era>(withDemoEras(fixtureEras).map((era) => [era.id, era]));
   const jobs = new Map<EraId, ActiveJob>();
   let memoryCaptures: Capture[] = [];
 

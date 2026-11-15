@@ -1,0 +1,130 @@
+[
+  {
+    "id": "queens-tower",
+    "name": "Queen’s Tower",
+    "blurb": "The last piece of the Imperial Institute, still standing over Queen’s Lawn.",
+    "photoSpot": {
+      "lat": 51.49835,
+      "lng": -0.17545
+    },
+    "subject": {
+      "lat": 51.498351,
+      "lng": -0.17689
+    },
+    "rarity": "legendary",
+    "eraYears": [
+      1893,
+      1962
+    ],
+    "spriteUrl": "/sprites/queens-tower.png",
+    "badgeUrl": "/sprites/badges/queens-tower.png",
+    "referencePhotoUrl": "/demo/reference/queens-tower.jpg",
+    "captureRadiusM": 50
+  },
+  {
+    "id": "royal-albert-hall",
+    "name": "Royal Albert Hall",
+    "blurb": "Opened in 1871 on land bought with the Great Exhibition’s profits.",
+    "photoSpot": {
+      "lat": 51.50003,
+      "lng": -0.17742
+    },
+    "subject": {
+      "lat": 51.501007,
+      "lng": -0.1774058
+    },
+    "rarity": "common",
+    "eraYears": [
+      1871
+    ],
+    "spriteUrl": "/sprites/royal-albert-hall.png",
+    "badgeUrl": "/sprites/badges/royal-albert-hall.png",
+    "referencePhotoUrl": "/demo/reference/royal-albert-hall.jpg",
+    "captureRadiusM": 50
+  },
+  {
+    "id": "natural-history-museum",
+    "name": "Natural History Museum",
+    "blurb": "A cathedral to nature, built where the 1862 International Exhibition once stood.",
+    "photoSpot": {
+      "lat": 51.49595,
+      "lng": -0.1742
+    },
+    "subject": {
+      "lat": 51.49585,
+      "lng": -0.1756
+    },
+    "rarity": "rare",
+    "eraYears": [
+      1862,
+      1881
+    ],
+    "spriteUrl": "/sprites/natural-history-museum.png",
+    "badgeUrl": "/sprites/badges/natural-history-museum.png",
+    "referencePhotoUrl": "/demo/reference/natural-history-museum.jpg",
+    "captureRadiusM": 50
+  },
+  {
+    "id": "zocalo-cathedral",
+    "name": "Zócalo and Metropolitan Cathedral",
+    "blurb": "Mexico City’s great square, built over the sacred precinct of Tenochtitlan, the Aztec capital.",
+    "photoSpot": {
+      "lat": 19.43365,
+      "lng": -99.1332
+    },
+    "subject": {
+      "lat": 19.43445,
+      "lng": -99.13325
+    },
+    "rarity": "legendary",
+    "eraYears": [
+      1519
+    ],
+    "spriteUrl": "/sprites/zocalo-cathedral.png",
+    "badgeUrl": "/sprites/badges/zocalo-cathedral.png",
+    "referencePhotoUrl": "/demo/reference/zocalo-cathedral.jpg",
+    "captureRadiusM": 50
+  },
+  {
+    "id": "dom-luis-bridge",
+    "name": "Dom Luís I Bridge",
+    "blurb": "Porto’s two-deck iron arch over the Douro, opened in 1886 by a pupil of Gustave Eiffel.",
+    "photoSpot": {
+      "lat": 41.13815,
+      "lng": -8.60895
+    },
+    "subject": {
+      "lat": 41.13895,
+      "lng": -8.60925
+    },
+    "rarity": "epic",
+    "eraYears": [
+      1886
+    ],
+    "spriteUrl": "/sprites/dom-luis-bridge.png",
+    "badgeUrl": "/sprites/badges/dom-luis-bridge.png",
+    "referencePhotoUrl": "/demo/reference/dom-luis-bridge.jpg",
+    "captureRadiusM": 50
+  },
+  {
+    "id": "raffles-landing-site",
+    "name": "Raffles’ Landing Site",
+    "blurb": "Where Stamford Raffles stepped ashore in 1819 and a trading post became Singapore.",
+    "photoSpot": {
+      "lat": 1.2877911,
+      "lng": 103.8506662
+    },
+    "subject": {
+      "lat": 1.2877192,
+      "lng": 103.8507866
+    },
+    "rarity": "rare",
+    "eraYears": [
+      1819
+    ],
+    "spriteUrl": "/sprites/raffles-landing-site.png",
+    "badgeUrl": "/sprites/badges/raffles-landing-site.png",
+    "referencePhotoUrl": "/demo/reference/raffles-landing-site.jpg",
+    "captureRadiusM": 50
+  }
+]
