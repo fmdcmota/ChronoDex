@@ -6,7 +6,8 @@
  * Two modes, picked from the Era:
  * - Video: `guideVideo.stitchedUrl` when present, otherwise `segments` in order through
  *   SegmentPlayer (two stacked videos, so no black flash between clips).
- * - Narration: `narrationAudioUrl` over the 360° view, which stays interactive underneath.
+ * - Narration: until the video exists, GuideStandIn plays a free preview of it: the guide's portrait walks on over
+ *   the era's scene, the real `narrationAudioUrl` plays with captions, then the guide walks off.
  * Captions come from `guide.script`, timed in proportion to length (no word timestamps yet). In video
  * mode they show only during the `talk` clip, since walk_on and walk_off are silent.
  * Playback starts from a tap ("Meet the guide"): browsers, iOS above all, refuse sound otherwise.
@@ -19,10 +20,11 @@ import { buildCaptions, captionAt, type Caption } from './captions';
 import { SegmentPlayer, type PlayableSegment } from './segmentPlayer';
 import { BTN_PRIMARY, BTN_SECONDARY } from './pixel';
 import { useCachedMediaUrl } from './mediaCache';
+import { GuideStandIn, type StandInStage } from './GuideStandIn';
 
 /** Props for GuidePlayer. */
 export interface GuidePlayerProps {
-  era: Pick<Era, 'guideVideo' | 'narrationAudioUrl'> & { guide: Guide };
+  era: Pick<Era, 'guideVideo' | 'narrationAudioUrl' | 'sceneImageUrl' | 'year'> & { guide: Guide };
   /** Called when the guide has finished or the player skips. The screen then offers the chat. */
   onFinished: () => void;
   /** Called with true when the guide starts and false when they stop, so the screen can lower the ambience. */
@@ -31,6 +33,9 @@ export interface GuidePlayerProps {
 
 /** What the player is doing. */
 type Phase = 'ready' | 'playing' | 'done';
+
+/** Narration mode's preview: which part of the stand-in shows while playing, or null. */
+type StandIn = StandInStage | null;
 
 /**
  * Start button, then the guide video or narration with captions and a Skip button.
@@ -50,6 +55,7 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
   const [phase, setPhase] = useState<Phase>('ready');
   const [caption, setCaption] = useState<Caption | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
+  const [standIn, setStandIn] = useState<StandIn>(null);
   const stage = useRef<HTMLDivElement | null>(null);
   const player = useRef<SegmentPlayer | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
@@ -97,7 +103,11 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
       captions = Number.isFinite(el.duration) ? buildCaptions(guide.script, el.duration) : [];
     });
     el.addEventListener('timeupdate', () => setCaption(captionAt(captions, el.currentTime)));
-    el.addEventListener('ended', () => finish());
+    // The guide walks off after speaking; finish() runs when they have left.
+    el.addEventListener('ended', () => {
+      setCaption(null);
+      setStandIn('walk_off');
+    });
     el.addEventListener('error', () => setProblem('The narration could not be played.'));
     audio.current = el;
     return () => {
@@ -105,11 +115,11 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
       el.removeAttribute('src');
       audio.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasVideo, narrationAudioUrl, guide.script]);
 
   function finish() {
     setPhase('done');
+    setStandIn(null);
     setCaption(null);
     onPlayingChange?.(false);
     onFinished();
@@ -122,12 +132,29 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
     onPlayingChange?.(true);
     const p = player.current;
     const a = audio.current;
-    const started = p ? p.play() : a ? a.play() : Promise.reject(new Error('nothing to play'));
+    let started: Promise<void>;
+    if (p) started = p.play();
+    else if (a) {
+      // Narration: play inside the tap to unlock the element for iOS, then hold it until the guide has walked on.
+      setStandIn('walk_on');
+      started = a.play().then(() => {
+        a.pause();
+        a.currentTime = 0;
+      });
+    } else started = Promise.reject(new Error('nothing to play'));
     started.catch(() => {
+      setStandIn(null);
       setPhase('ready');
       onPlayingChange?.(false);
       setProblem('Tap again to hear the guide. Your browser blocked the sound.');
     });
+  };
+
+  /** The guide has walked on: start speaking. The element was unlocked by the tap. */
+  const arrived = () => {
+    const a = audio.current;
+    setStandIn('talk');
+    a?.play().catch(() => setProblem('The narration could not be played.'));
   };
 
   const skip = () => {
@@ -143,6 +170,20 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
       {/* Video layer: covers the 360° view while the clips play. */}
       {hasVideo && (
         <div ref={stage} className={`absolute inset-0 z-20 bg-(--ink) ${phase === 'playing' ? '' : 'hidden'}`} />
+      )}
+
+      {/* Narration mode: the free preview of the guide video. */}
+      {!hasVideo && phase === 'playing' && standIn && (
+        <GuideStandIn
+          stage={standIn}
+          name={guide.name}
+          role={guide.role}
+          headshotUrl={guide.headshotUrl}
+          sceneUrl={era.sceneImageUrl}
+          year={era.year}
+          onArrived={arrived}
+          onLeft={finish}
+        />
       )}
 
       {phase === 'ready' && (
