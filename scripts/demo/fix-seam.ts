@@ -11,6 +11,7 @@
  *
  * Usage (FAL_KEY in .env.local): npx tsx --env-file=.env.local scripts/demo/fix-seam.ts raffles-landing-site_1819 [place words]
  *   add --smooth-only to skip the model and only remove the colour step at the join (free)
+ *   add --at 0.3333 to repair a join inside the panorama at that share of the width instead of the one behind the viewer
  * Cost and time: one Nano Banana Pro edit, about $0.15 and 30 s. Overwrites public/demo/<eraId>/panorama.jpg; the
  * previous file is kept beside it as panorama.before-seam.jpg; delete it once the result is approved.
  */
@@ -45,24 +46,38 @@ export function buildSeamPrompt(place: string): string {
 }
 
 /**
- * Shift an image horizontally by half its width, wrapping around.
+ * Shift an image horizontally, wrapping around.
+ *
+ * @param input - Image bytes.
+ * @param shiftPx - Pixels to move the picture to the right (any integer; it wraps).
+ * @returns The shifted image as PNG bytes, and its size.
+ */
+async function roll(input: Buffer, shiftPx: number): Promise<{ data: Buffer; width: number; height: number }> {
+  const { width = 0, height = 0 } = await sharp(input).metadata();
+  const shift = ((Math.round(shiftPx) % width) + width) % width;
+  if (shift === 0) return { data: await sharp(input).png().toBuffer(), width, height };
+  const cut = width - shift;
+  const left = await sharp(input).extract({ left: 0, top: 0, width: cut, height }).toBuffer();
+  const right = await sharp(input).extract({ left: cut, top: 0, width: shift, height }).toBuffer();
+  const data = await sharp({ create: { width, height, channels: 3, background: '#000' } })
+    .composite([
+      { input: right, left: 0, top: 0 },
+      { input: left, left: shift, top: 0 },
+    ])
+    .png()
+    .toBuffer();
+  return { data, width, height };
+}
+
+/**
+ * Shift an image by half its width, so the join where its edges meet sits in the middle.
  *
  * @param input - Image bytes.
  * @returns The shifted image as PNG bytes, and its size.
  */
 async function halfTurn(input: Buffer): Promise<{ data: Buffer; width: number; height: number }> {
-  const { width = 0, height = 0 } = await sharp(input).metadata();
-  const half = Math.floor(width / 2);
-  const left = await sharp(input).extract({ left: 0, top: 0, width: half, height }).toBuffer();
-  const right = await sharp(input).extract({ left: half, top: 0, width: width - half, height }).toBuffer();
-  const data = await sharp({ create: { width, height, channels: 3, background: '#000' } })
-    .composite([
-      { input: right, left: 0, top: 0 },
-      { input: left, left: width - half, top: 0 },
-    ])
-    .png()
-    .toBuffer();
-  return { data, width, height };
+  const { width = 0 } = await sharp(input).metadata();
+  return roll(input, Math.floor(width / 2));
 }
 
 /** Half-width, in pixels, of the area over which smoothSeam spreads the colour correction. */
@@ -117,7 +132,11 @@ export async function smoothSeam(png: Buffer): Promise<Buffer> {
 /** Run the script. */
 async function main(): Promise<void> {
   const smoothOnly = process.argv.includes('--smooth-only');
-  const args = process.argv.slice(2).filter((a) => a !== '--smooth-only');
+  // --at <fraction>: repair a join inside the panorama instead of the one behind the viewer, for example 0.3333 and
+  // 0.6667 where the pasted scene meets the painted surroundings (Rio 1931 from the railing, 15 Nov 2026).
+  const atIndex = process.argv.indexOf('--at');
+  const atFraction = atIndex >= 0 ? Number(process.argv[atIndex + 1]) : 0;
+  const args = process.argv.slice(2).filter((a, i, all) => a !== '--smooth-only' && a !== '--at' && all[i - 1] !== '--at');
   const eraId = args[0];
   const place = args.slice(1).join(' ') || eraId?.replace(/_/, ' in ').replace(/-/g, ' ');
   if (!eraId) throw new Error('Name an era, for example raffles-landing-site_1819');
@@ -130,7 +149,10 @@ async function main(): Promise<void> {
     return void console.log(`${eraId}: colour step at the join smoothed (no model call).`);
   }
 
-  const shifted = await halfTurn(readFileSync(file));
+  const { width: fullWidth = 0 } = await sharp(readFileSync(file)).metadata();
+  // Move the join to repair into the middle: the far edge (0) by half a turn, a join at x = at * width by the rest.
+  const shiftPx = Math.round((0.5 - atFraction) * fullWidth);
+  const shifted = await roll(readFileSync(file), shiftPx);
   // Grey out the join itself: left as it was, the model copied the hard line through (Singapore 1819, first try).
   const greyW = Math.round(shifted.width * GREY_FRACTION);
   const withGrey = await sharp(shifted.data)
@@ -164,7 +186,7 @@ async function main(): Promise<void> {
   const bandPixels = await sharp(edited).removeAlpha().joinChannel(mask, { raw: { width: shifted.width, height: shifted.height, channels: 1 } }).png().toBuffer();
   const blended = await sharp(shifted.data).composite([{ input: bandPixels }]).png().toBuffer();
 
-  const restored = await halfTurn(blended);
+  const restored = await roll(blended, -shiftPx);
   writeFileSync(file, await sharp(restored.data).jpeg({ quality: 90, mozjpeg: true }).toBuffer());
   console.log(`${eraId}: seam repaired (${band} px band, ${feather} px feather). Previous file kept as panorama.before-seam.jpg`);
 }

@@ -11,30 +11,30 @@
     "lat": -22.9519,
     "lng": -43.2105
   },
-  "facingDeg": 0,
+  "facingDeg": 120,
   "distanceM": 102.3,
   "captureRadiusM": 50,
   "geometryEvidence": [
     {
       "kind": "commons",
-      "ref": "File:Christ_the_Redeemer_-_From_Above.jpg",
-      "url": "https://commons.wikimedia.org/wiki/File:Christ_the_Redeemer_-_From_Above.jpg",
-      "note": "The reference photo, taken from above the statue. Not checked on site."
+      "ref": "File:Tourists_overlooking_Sugarloaf_Mountain_from_Corcovado_-_Rio_de_Janeiro.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Tourists_overlooking_Sugarloaf_Mountain_from_Corcovado_-_Rio_de_Janeiro.jpg",
+      "note": "The reference photo, taken at the platform railing. Not checked on site."
     }
   ],
-  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): directly above the statue, looking down over its head and arms (the human asked for the view of someone standing on top of Christ the Redeemer).",
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): at the railing of the summit platform at the foot of the statue, looking south-east over Botafogo to Sugarloaf (the human asked for the view from the railing).",
   "referencePhoto": {
     "status": "commons_stand_in",
     "file": "data/reference/christ-the-redeemer.jpg",
     "originalUrl": null,
-    "pageUrl": "https://commons.wikimedia.org/wiki/File:Christ_the_Redeemer_-_From_Above.jpg",
-    "licence": "CC BY-SA 3.0",
-    "author": "Alexandre Cesar Salem e Silva",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Tourists_overlooking_Sugarloaf_Mountain_from_Corcovado_-_Rio_de_Janeiro.jpg",
+    "licence": "CC0",
+    "author": "Jazzmaster1997",
     "takenAt": null,
     "takenFrom": null,
-    "facingDeg": 0,
-    "crop": "Commons 3659x1672 original, centre 2972 px wide cut to 16:9, scaled to 1600x900.",
-    "notes": "Straight down from just above the statue: its head and outstretched arms in the middle, the summit platform and stairs with crowds, the forest of the mountain, and the city at the right edge."
+    "facingDeg": 120,
+    "crop": "Commons 4:3 photo (via a 2560 px copy), 150 px trimmed from the top and the rest from the bottom to 16:9, scaled to 1600x900.",
+    "notes": "At the railing of the Corcovado summit platform: a crowd of visitors at the parapet in the foreground, Botafogo bay, Urca and Sugarloaf beyond, the Atlantic and the Niteroi hills on the horizon."
   },
   "eraYears": [
     1931

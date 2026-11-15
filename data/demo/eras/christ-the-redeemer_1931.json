@@ -86,7 +86,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "Exactly the framing of the photograph: the camera is on top of the statue of Christ the Redeemer, directly above its head, looking straight down, so the statue’s head and its outstretched arms fill the middle of the frame in the same place and size, with the summit platform below and the forested mountain falling away all round. In October 1931, the day the statue is unveiled, the pale soapstone of the statue is brand new and clean; the summit platform is a smaller plain concrete terrace with the new railway station below, crowded with people in 1930s hats, suits and dresses for the inauguration, priests in white vestments and a few flags; there are no modern escalators, lifts, glass shelters or kiosks. The forest is dense. At the edge of the frame the city far below is a low town of red tiled roofs, with no high-rise towers.",
+      "description": "Exactly the framing of the photograph: standing at the railing of the summit platform at the foot of the statue, eye level, looking south-east over Botafogo bay to Sugarloaf Mountain, the same horizon, the same mountains, islands and bay shapes. In October 1931, the week the statue is unveiled, the platform is a new plain concrete terrace with a low stone parapet, and the crowd in the foreground at the parapet are visitors of 1931: men in suits, straw boaters and fedoras, women in light dresses and cloche hats, a priest in a cassock, a boy in shorts, some pointing at the view; nobody holds a phone or a camera held up high. Far below, the city of 1931 is a low town of two- and three-storey houses with red tiled roofs among gardens and trees, with no high-rise towers or apartment blocks at all, and much more forest on the slopes. Steamships and sailing boats in the bay.",
       "changes": {
         "persists": [
           "The Christ the Redeemer statue itself",
@@ -108,9 +108,11 @@
           "The Rio–Niterói Bridge (1974)",
           "The modern Copacabana high-rise wall",
           "The Christ statue's elevators and escalators (2005)",
-          "escalators, lifts, glass shelters or modern kiosks",
-          "modern high-rise towers",
-          "tourists in modern clothes, phones or selfie sticks",
+          "phones, selfie sticks or modern cameras",
+          "modern clothes, caps, sunglasses or backpacks",
+          "high-rise towers or modern apartment blocks",
+          "modern cars, motorways or tunnels",
+          "modern yachts or a marina",
           "any text or signs"
         ],
         "gone": [
@@ -119,7 +121,7 @@
           "The 222-step climb from the rail terminus"
         ]
       },
-      "surroundings": "Seen from the very top of the statue of Christ the Redeemer in 1931, about 40 m above the summit and 740 m above Rio. Straight down, the statue’s head and outstretched arms and the crowded summit platform. All around at the horizon: to the east, Botafogo bay and Sugarloaf Mountain; to the north, Guanabara Bay with the low old city and the port; to the south, the Lagoa lagoon, Copacabana and Ipanema with only a few low buildings along the beaches; to the west, the forested peaks of the Tijuca range. The city lies far below the horizon, low and red-roofed, with no high-rise towers. Hazy sky.",
+      "surroundings": "Seen from eye height at the railing of the Corcovado summit platform in 1931, 700 m above Rio. Ahead (south-east), Botafogo bay, Urca and Sugarloaf, the Atlantic beyond. To the left (north-east), Guanabara Bay with the low old city centre, the port and the Niteroi hills. To the right (south), the Lagoa lagoon and the beaches of Copacabana and Ipanema with only a few low buildings. Behind the viewer, the platform with more 1931 visitors and, towering over them, the new statue of Christ the Redeemer with outstretched arms, and the forested Tijuca peaks. The city lies far below the horizon, low and red-roofed, with no high-rise towers. Hazy sky.",
       "referenceImageUrls": []
     },
     "guide": {
@@ -132,9 +134,9 @@
       "greeting": "Olá! I'm Ana. Are you going up to see the statue? I can tell you all about it.",
       "headshotUrl": "/demo/christ-the-redeemer_1931/headshot.jpg?v=862ba17200"
     },
-    "sceneImageUrl": "/demo/christ-the-redeemer_1931/scene.jpg?v=cc22d1d08f",
+    "sceneImageUrl": "/demo/christ-the-redeemer_1931/scene.jpg?v=87d34522a8",
     "panorama": {
-      "url": "/demo/christ-the-redeemer_1931/panorama.jpg?v=03d79dd3f8",
+      "url": "/demo/christ-the-redeemer_1931/panorama.jpg?v=cb9fba3cf8",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
@@ -145,23 +147,23 @@
       "segments": [
         {
           "kind": "walk_on",
-          "url": "/demo/christ-the-redeemer_1931/walk_on.mp4?v=3e6fe1294d",
+          "url": "/demo/christ-the-redeemer_1931/walk_on.mp4?v=521a158735",
           "durationS": 5
         },
         {
           "kind": "talk",
-          "url": "/demo/christ-the-redeemer_1931/talk.mp4?v=82bb81b65f",
+          "url": "/demo/christ-the-redeemer_1931/talk.mp4?v=6c1626045a",
           "durationS": 34.933
         },
         {
           "kind": "walk_off",
-          "url": "/demo/christ-the-redeemer_1931/walk_off.mp4?v=40153242cf",
+          "url": "/demo/christ-the-redeemer_1931/walk_off.mp4?v=78ca19dd8b",
           "durationS": 5
         }
       ],
       "stitchedUrl": null
     },
-    "updatedAt": "2026-11-15T08:52:22.989Z"
+    "updatedAt": "2026-11-15T09:33:19.781Z"
   },
   "provenance": {
     "narration": {
@@ -176,32 +178,28 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28aee/yLDoVNnCRt2Ji9Oqh0ULb_BcpuEL5g.jpg",
-      "seconds": 22,
+      "falUrl": "https://v3b.fal.media/files/b/0ab28c14/GAn_tLLf6y-a16gHOUuvD_7xFyHOP9.jpg",
+      "seconds": 20,
       "check": {
         "passed": false,
         "checked": true,
         "attempts": 2,
         "problems": [
           "looks computer generated, not like a real photograph",
-          "not the same viewpoint as the reference photo, so Then/Now would not line up",
-          "anachronism: Escalator visible at bottom left of image",
-          "anachronism: Modern dense high-rise apartment buildings in background cityscape",
-          "anachronism: Modern paved staircases and railings consistent with later renovations",
-          "anachronism: Image is actually a Rio de Janeiro scene, not London street as required",
-          "Scene depicts Christ the Redeemer statue in Rio, not a London street",
-          "Escalator visible, a 2005-era addition",
-          "Modern high-rise buildings in background",
-          "Viewpoint angle differs significantly from reference (steeper top-down vs angled aerial)",
-          "Image has a staged, composited look rather than authentic 1931 photographic quality"
+          "anachronism: Dense modern high-rise skyline in background city",
+          "anachronism: Modern buildings along the shoreline that did not exist in 1931",
+          "This is a view of Rio de Janeiro from Corcovado, not a street in London",
+          "Background city shows dense modern high-rise buildings inconsistent with 1931",
+          "Image has an overly glossy, digitally rendered appearance",
+          "Clothing and staging look slightly stylized/CGI rather than a genuine period photograph"
         ],
-        "checkCostUsd": 0.022104
+        "checkCostUsd": 0.022028
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28b01/f4ii2uL8ri4OXt1OlzuGi_1794731536445.jpeg",
-      "seconds": 134,
+      "falUrl": "https://v3b.fal.media/files/b/0ab28c24/IxFxgqN9fkhEWu2nkfrS-_1794734448305.jpeg",
+      "seconds": 135,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
@@ -209,19 +207,20 @@
         "checked": true,
         "attempts": 3,
         "problems": [
-          "not a 360 panorama (the critic saw: flat_photo)",
-          "anachronism: This is Christ the Redeemer statue in Rio de Janeiro, Brazil, not a London street scene",
-          "Image depicts Rio de Janeiro, not a London street",
-          "Single wide-angle aerial photo, not a 360 equirectangular panorama",
-          "No street-level scene present",
-          "Edges do not wrap into a continuous scene"
+          "not a 360 panorama (the critic saw: tiled)",
+          "visible seam or repeated panel",
+          "Image is composed of three distinct panel sections with visible vertical seams",
+          "Content is Rio de Janeiro (Christ the Redeemer, Sugarloaf Mountain) instead of a London street",
+          "Not a continuous 360 equirectangular projection, appears as separate photographs stitched together",
+          "Left and right edges do not align to form a continuous scene",
+          "Looks like a composited/rendered image rather than a single seamless panorama"
         ],
-        "checkCostUsd": 0.039852
+        "checkCostUsd": 0.040022
       }
     },
     "guide_frame": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28b28/YPY0g_L9sy57Mjckc91Na_ETjkVk9O.jpg",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28c2c/qw9v6QCMIADMceKqe7Krk_bAew4K43.jpg",
       "seconds": 22,
       "check": {
         "passed": false,
@@ -229,26 +228,26 @@
         "attempts": 2,
         "problems": [
           "the street behind is distorted",
-          "Background is not a normal street scene; it shows an aerial view of Christ the Redeemer statue with a crowd, not matching the described street setting",
-          "Scale and perspective of background is inconsistent with a person standing close to camera"
+          "background is a scenic overlook with crowd of bystanders rather than a street",
+          "scene does not resemble a normal street photo, appears composited/distorted with odd vintage figures"
         ],
-        "checkCostUsd": 0.015878
+        "checkCostUsd": 0.015328000000000001
       }
     },
     "walk_off": {
       "model": "kling/v4/image-to-video",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28b3d/HSZukyJQzTRRaiHfTrxva_output.mp4",
-      "seconds": 165
+      "falUrl": "https://v3b.fal.media/files/b/0ab28c42/HqqfvNXzGERuxRu-Fgyxb_output.mp4",
+      "seconds": 178
     },
     "walk_on": {
       "model": "kling/v4/image-to-video",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28b41/ycike23v1aX4BZ_aAamvJ_output.mp4",
-      "seconds": 203
+      "falUrl": "https://v3b.fal.media/files/b/0ab28c42/dOxdr4BhJxbv9Le7God_h_output.mp4",
+      "seconds": 178
     },
     "talk": {
       "model": "fal-ai/kling-video/ai-avatar/v2/standard",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28b76/PS3kTfNIIVtgykCWNbE6F_output.mp4",
-      "seconds": 734
+      "falUrl": "https://v3b.fal.media/files/b/0ab28c6d/mvYg_-wqf9YZwOQf2SIkh_output.mp4",
+      "seconds": 606
     }
   }
 }
