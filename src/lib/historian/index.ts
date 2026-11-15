@@ -13,12 +13,17 @@
  *    found (a model writing from memory can invent a plausible URL), and checked against the
  *    script rules in ./validate.ts. One corrective retry if a check fails.
  *
+ * Archivist data (`data/`, see src/lib/archive): when `data/eras/<eraId>.notes.txt` exists, phase 1 is skipped and
+ * phase 2 writes from those notes, with the URLs they cite as the allowed sources. Afterwards the era
+ * dossier's sources are appended and its licensed period images replace the model's image picks.
+ *
  * Cost and time: measured figures are in notebook/agent-1.md. Web tool prices are on DeepSeek's
  * pricing page, not on the API reference. Without DEEPSEEK_API_KEY it throws; there is no
  * placeholder fallback, so placeholder text can never be stored as a real era.
  * Side effects: DeepSeek requests only. Writes nothing; the pipeline stores the result.
  */
-import { EraBriefSchema, type EraBrief, type Landmark } from '@/lib/contracts';
+import { EraBriefSchema, eraIdOf, type EraBrief, type Landmark } from '@/lib/contracts';
+import { archiveDir, readEraDossier, readEraNotes, urlsInNotes, type EraDossier } from '@/lib/archive';
 import { VOICE_CATALOG } from '@/lib/fal/voices';
 import {
   DeepSeekError,
@@ -28,7 +33,7 @@ import {
   type DeepSeekRequest,
 } from '@/lib/chat/deepseek';
 import { buildCorrectionPrompt, buildResearchPrompt, buildWritingPrompt } from './prompt';
-import { keepFoundUrls, stripDisallowedImages, validateBrief } from './validate';
+import { keepFoundUrls, normalizeUrl, stripDisallowedImages, validateBrief } from './validate';
 
 export { countWords, isGoogleUrl, keepFoundUrls, normalizeUrl, stripDisallowedImages, validateBrief } from './validate';
 export { briefJsonExample, buildCorrectionPrompt, buildResearchPrompt, buildWritingPrompt, viewingDirection } from './prompt';
@@ -71,6 +76,14 @@ export interface WriteEraBriefOptions {
   retryDelayMs?: number;
   /** Abort to stop early, for example on worker shutdown. */
   signal?: AbortSignal;
+  /**
+   * Research notes to write from, in the format of the research phase. When given, the web search is
+   * skipped. Left out, the notes in `data/eras/<eraId>.notes.txt` are used if that file exists.
+   * `null` forces the live web search even when such a file exists.
+   */
+  researchNotes?: string | null;
+  /** Data directory to read notes and the era dossier from. Defaults to `data/` (or ARCHIVE_DIR). Tests point it at a temporary folder. */
+  archiveDir?: string;
 }
 
 /**
@@ -106,8 +119,18 @@ export async function writeEraBrief(landmark: Landmark, year: number, options: W
   const retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
   const model = historianModel();
 
+  const dir = options.archiveDir ?? archiveDir();
+  const eraId = eraIdOf(landmark.id, year);
+  const dossier = readEraDossier(eraId, dir);
+  const suppliedNotes = options.researchNotes === undefined ? readEraNotes(eraId, dir) : options.researchNotes;
+  const suppliedUrls = suppliedNotes ? urlsInNotes(suppliedNotes) : [];
+  if (suppliedNotes && suppliedUrls.length === 0) {
+    console.warn(`Historian: the supplied notes for ${eraId} cite no URLs, so they cannot back a source: researching on the web instead`);
+  }
+
   const researchCtx = { landmark, year, model, base, retryDelayMs, signal: options.signal };
-  let research: Awaited<ReturnType<typeof runResearch>> | undefined;
+  let research: Awaited<ReturnType<typeof runResearch>> | undefined =
+    suppliedNotes && suppliedUrls.length > 0 ? { notes: suppliedNotes, foundUrls: suppliedUrls } : undefined;
   for (let attempt = 1; !research; attempt++) {
     try {
       research = await runResearch(researchCtx);
@@ -118,7 +141,39 @@ export async function writeEraBrief(landmark: Landmark, year: number, options: W
       console.warn(`Historian: research for ${landmark.id} ${year} used no web tools (attempt ${attempt}), trying again`);
     }
   }
-  return runWriting({ landmark, year, model, base, retryDelayMs, signal: options.signal, ...research });
+  const brief = await runWriting({ landmark, year, model, base, retryDelayMs, signal: options.signal, ...research });
+  return dossier ? mergeDossier(brief, dossier) : brief;
+}
+
+/**
+ * Add what the Archivist verified to a finished brief: its sources, and its period images in place of
+ * the model's pick.
+ *
+ * Sources: the brief's own come first, then any dossier source not already listed (compared with
+ * normalizeUrl). The Sources drawer therefore shows everything a human checked. Images: when the dossier
+ * has usable ones, they replace the model's list, because they carry licence receipts and are
+ * checked direct image URLs.
+ *
+ * @param brief - A brief that already passed every check.
+ * @param dossier - From readEraDossier.
+ * @returns A new brief. The input is not modified.
+ */
+export function mergeDossier(brief: EraBrief, dossier: EraDossier): EraBrief {
+  const seen = new Set(brief.sources.map((s) => normalizeUrl(s.url)));
+  const extra = dossier.sources.filter((s) => {
+    const key = normalizeUrl(s.url);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return {
+    ...brief,
+    sources: [...brief.sources, ...extra],
+    sceneBrief: {
+      ...brief.sceneBrief,
+      referenceImageUrls: dossier.referenceImageUrls.length > 0 ? dossier.referenceImageUrls : brief.sceneBrief.referenceImageUrls,
+    },
+  };
 }
 
 /** The parts of a request every Historian call shares. */

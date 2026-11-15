@@ -2,6 +2,9 @@
  * Unit tests for the Historian: prompts, checks, the research request, the source check, the
  * corrective retry, and DeepSeek failures. Owner: Agent 1. Uses a fake fetch: no network calls.
  */
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { EraBrief } from '@/lib/contracts';
 import { VOICE_CATALOG } from '@/lib/fal/voices';
@@ -15,6 +18,7 @@ import {
   historianModel,
   isGoogleUrl,
   keepFoundUrls,
+  mergeDossier,
   normalizeUrl,
   parseBrief,
   stripDisallowedImages,
@@ -139,7 +143,10 @@ describe('historianModel', () => {
 });
 
 describe('writeEraBrief', () => {
-  const run = (fetch: ReturnType<typeof fakeFetch>) => writeEraBrief(queensTower, 1893, { fetchImpl: fetch.impl, retryDelayMs: 0 });
+  // An empty archive folder, so a real data/ directory never changes what these tests see.
+  const emptyArchive = path.join(os.tmpdir(), 'chronodex-no-archive');
+  const run = (fetch: ReturnType<typeof fakeFetch>) =>
+    writeEraBrief(queensTower, 1893, { fetchImpl: fetch.impl, retryDelayMs: 0, archiveDir: emptyArchive });
 
   it('researches with web tools, then writes in JSON mode with no tools, and returns the brief', async () => {
     const fetch = fakeFetch(researchAnswer('NOTES-ABOUT-1893'), writingAnswer(heroBrief));
@@ -219,5 +226,55 @@ describe('writeEraBrief', () => {
     await expect(run(fakeFetch(sse(['n'], 'length')))).rejects.toThrow(/tokens/);
     await expect(run(fakeFetch(sse(['n'], 'content_filter')))).rejects.toThrow(/declined/);
     await expect(run(fakeFetch(researchAnswer(), sse(['{}'], 'length')))).rejects.toThrow(/tokens/);
+  });
+});
+
+describe('Archivist data in the Historian', () => {
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(path.join(os.tmpdir(), 'chronodex-archive-'));
+    mkdirSync(path.join(dir, 'eras'));
+  });
+  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+  const notes = `FACTS:
+- Opened in 1893. [${FOUND[0]}]
+IMAGES:
+- https://upload.wikimedia.org/a.jpg (page: https://commons.wikimedia.org/wiki/File:a.jpg)`;
+
+  it('writes from supplied notes with no web search, and only the cited URLs count as found', async () => {
+    const fetch = fakeFetch(writingAnswer(heroBrief));
+    const brief = await writeEraBrief(queensTower, 1893, { fetchImpl: fetch.impl, retryDelayMs: 0, archiveDir: dir, researchNotes: notes });
+    expect(fetch.calls).toHaveLength(1);
+    expect(fetch.calls[0].body.response_format).toEqual({ type: 'json_object' });
+    expect(brief.sources.map((s) => s.url)).toEqual([FOUND[0]]);
+  });
+
+  it('picks up data/eras/<eraId>.notes.txt by itself, and null forces the web search', async () => {
+    writeFileSync(path.join(dir, 'eras', 'queens-tower_1893.notes.txt'), notes);
+    const fromFile = fakeFetch(writingAnswer(heroBrief));
+    await writeEraBrief(queensTower, 1893, { fetchImpl: fromFile.impl, retryDelayMs: 0, archiveDir: dir });
+    expect(fromFile.calls).toHaveLength(1);
+
+    const forced = fakeFetch(researchAnswer(), writingAnswer(heroBrief));
+    await writeEraBrief(queensTower, 1893, { fetchImpl: forced.impl, retryDelayMs: 0, archiveDir: dir, researchNotes: null });
+    expect(forced.calls).toHaveLength(2);
+  });
+
+  it('researches on the web when the supplied notes cite no URL', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const fetch = fakeFetch(researchAnswer(), writingAnswer(heroBrief));
+    await writeEraBrief(queensTower, 1893, { fetchImpl: fetch.impl, retryDelayMs: 0, archiveDir: dir, researchNotes: 'FACTS: no links here' });
+    expect(fetch.calls).toHaveLength(2);
+  });
+
+  it('mergeDossier appends unseen dossier sources and swaps in the dossier images', () => {
+    const merged = mergeDossier(heroBrief, {
+      sources: [{ title: 'dup', url: heroBrief.sources[0].url.replace('https://', 'https://www.') }, { title: 'new', url: 'https://example.org/new' }],
+      referenceImageUrls: ['https://upload.wikimedia.org/x.jpg'],
+    });
+    expect(merged.sources).toHaveLength(heroBrief.sources.length + 1);
+    expect(merged.sources.at(-1)?.url).toBe('https://example.org/new');
+    expect(merged.sceneBrief.referenceImageUrls).toEqual(['https://upload.wikimedia.org/x.jpg']);
+    expect(mergeDossier(heroBrief, { sources: [], referenceImageUrls: [] }).sceneBrief.referenceImageUrls).toEqual(heroBrief.sceneBrief.referenceImageUrls);
   });
 });

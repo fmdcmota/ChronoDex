@@ -9,6 +9,8 @@ The Historian: DeepSeek researches a landmark in one year and writes the era's t
 2. Writing: JSON mode (`response_format: json_object`), thinking off, no tools. JSON mode cannot be combined with the web tools, hence two calls. The reply is checked against `EraBriefSchema`, then reduced to sources and images the research really found (`keepFoundUrls`), then the script rules in `validate.ts` (105 to 120 words, opens with the guide's name, voice key in the catalogue, at least 3 facts). One corrective retry.
 Transient failures (429, 5xx, a mid-stream "please retry", a dropped connection) are retried twice.
 
+**Archivist data.** If `data/eras/<eraId>.notes.txt` exists (written by the Archivist from verified sources, see `src/lib/archive`), phase 1 is skipped: the notes are the research, and the URLs they cite are the only sources the brief may use. After writing, the era dossier's `sources` are appended and its licensed period images become `referenceImageUrls`. `researchNotes: null` forces the web search. The research phase is attempted up to 3 times because the model sometimes answers without using its tools (F-035).
+
 **Measured** (14 Nov 2026, `deepseek-flash`, Queen's Tower 1893): 174 s end to end, 108-word script, 4 real sources. The research read about 850k tokens, nearly all cache hits, which is about $0.04 of tokens at list prices. The web tools are billed separately on DeepSeek's pricing page, and that figure is not known yet.
 
 **Test:** `npm run test` (`historian.test.ts`, with a fake fetch; no network).

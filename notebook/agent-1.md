@@ -31,13 +31,13 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 01:05
-- Working on: nothing. A1-16 is pushed to main (a9c287d). Uncommitted: per-caller rate limits on chat, generate and captures (src/app/api/_lib/limits.ts and its test, three route edits). `npm run check` passes, 360 tests. Waiting for a commit yes.
+- Last updated: 2026-11-15 02:00
+- Working on: nothing. Pushed to main: A1-16 briefs (a9c287d) and rate limits (ffd6d13). Uncommitted: the three Archivist asks (src/lib/archive, Historian notes and dossier, seed reads data/landmarks) plus .env.example, .gitignore, READMEs. `npm run check` passes, 373 tests. Waiting for a commit yes.
 - Done this session: seeded the demo database `chronodex`; `npm run brief` (A1-16) and a draft brief for all 10 eras in `briefs/` (md to read, json to load); Queen's Tower 1893 saved with its guide to both `chronodex` and `chronodex_dev_alex`; real chat checked with mocks off against it (streamed, in character, short; failures only end in an error event); Historian researches up to 3 times because DeepSeek often skips its web tools (F-035) and the research prompt now forces a search first; README deploy section; `maxDuration = 60` on the chat route; milestone board and F-026 repair on the front page.
-- Next: (1) a human deploys to Vercel (needs their login; steps are in README "Deploying to Vercel") and posts the URL, then I do A1-12's phone check and A1-15 gates on the deployed site. (2) A human reads `briefs/*.md` (H7) before any pre-generation. (3) A1-08 part 2 (photo GPS and 16:9) when the H1 photos arrive. (4) Agent 5's data: seed reads `data/landmarks/*.json`, Historian takes supplied notes, when asked. Notes for the human readers: queens-tower_1962 has a summary sentence that contradicts itself about the east wing; huxley-building_1961 and _1885 are about the Queen's Gate site, not the building (it was built in the 1970s).
+- Next: (1) the team's Cloudflare tunnel (Agent 4 is doing it) replaces Vercel: when its URL is posted, run the gates on it (A1-15). (2) A human reads `briefs/*.md` (H7). (3) When Agent 5's `data/` appears: run `npm run seed` (it will use data/landmarks) and check `npm run brief` uses the notes. (4) Agent 2 must make the pipeline accept a relative referencePhotoUrl (asked on the board). Notes for the human readers: queens-tower_1962 has a summary sentence that contradicts itself about the east wing; huxley-building_1961 and _1885 are about the Queen's Gate site, not the building (built in the 1970s).
 - Blocked on: a human for the Vercel deploy, the H1 photos, and a read of the briefs. Nothing for code.
 - Board read up to: 2026-11-14 23:45 (the team's phone test round 1 posts). Nothing is addressed to me beyond the notebook's round 1 section, which this commit answers.
-- Waiting for commit approval: yes, the rate-limit change plus one board post (not yet written).
+- Waiting for commit approval: yes, the Archivist-data change plus one board post.
 - Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
 - Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.
 
@@ -149,3 +149,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Measured or verified: `npm run check` passes, 360 tests (2 new).
 - Delegated to Haiku, and whether it was kept: nothing.
 - Next: commit on a yes, then wait for the Vercel URL.
+
+### 2026-11-15 02:00, Archivist data (AGENT5.md section 10 asks to Agent 1)
+- Did: worker dry run on real Atlas in a throwaway database (queue, claim, run, era ready: works, database dropped). Then built the three asks: `src/lib/archive` (lenient readers for `data/landmarks/*.json`, `data/eras/<id>.json` and `.notes.txt`); `writeEraBrief` takes `researchNotes` (or reads the notes file itself) and skips the web search, with the URLs the notes cite as the only allowed sources; after writing, dossier sources are appended and its licensed images replace the model's `referenceImageUrls`; `npm run seed` applies `data/landmarks` (geometry, radius, years, reference JPEG copied to `public/reference/<id>.jpg`, stored as `/reference/<id>.jpg`). `ARCHIVE_DIR` added to `.env.example`, `/public/reference/` git-ignored.
+- Decided, and why: lenient readers that skip a bad file with a warning, because strict validation is Agent 5's script and a data typo must not stop the seed or a brief. Reference photos are served by the app, not uploaded to fal at seed time, because the browser needs a durable address and fal URLs expire; the cost is that the pipeline must upload the file itself. Dossier images replace the model's picks because they carry licence receipts. A `blocked` landmark file and a `rejected` era are ignored. Nothing is ever deleted: a dropped year keeps its era.
+- Measured or verified: 373 tests (13 new: reader, override, notes path, merge). Seed dry run with a synthetic archive gave 11 eras (one extra year) and 10 without data. The fixtures' `referencePhotoUrl` is a mock SVG that the scene stage would send to fal as is: noted for the team.
+- Not verified: against Agent 5's real files (none exist yet). Whether the pipeline can use a relative reference URL: it cannot today.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Next: commit on a yes.
