@@ -487,6 +487,72 @@ const UNION_BLUE = hex('#2f56a8');
 /** Tuareg indigo, for the Saharan duck's robe. */
 const INDIGO = hex('#34428f');
 
+/** Zócalo and Metropolitan Cathedral (Mexico City): two bell towers with bell-shaped caps, a dome and a carved front. Agent 6. */
+function zocaloCathedral(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Dome behind the front, with a gold lantern.
+  c.ellipse(15.5, 12, 3.6, 3.2, P.stoneDark, (_x, y) => y <= 12);
+  c.rect(15, 7, 16, 8, P.gold);
+  // Central front, a gable on top.
+  c.rect(11, 13, 20, 27, P.stone);
+  c.rect(19, 13, 20, 27, P.stoneDark);
+  c.roof(15, 16, 11, 13, P.stone);
+  c.hline(11, 20, 18, P.stoneDark);
+  // Towers: plain lower stage, open belfry, bell-shaped cap and a gold cross.
+  for (const x0 of [4, 21]) {
+    c.rect(x0, 9, x0 + 6, 27, P.stone);
+    c.rect(x0 + 5, 9, x0 + 6, 27, P.stoneDark);
+    c.hline(x0, x0 + 6, 15, P.stoneDark);
+    c.rect(x0 + 2, 11, x0 + 3, 13, P.slate);
+    c.rect(x0 + 2, 18, x0 + 3, 20, P.slate);
+    c.ellipse(x0 + 3, 8.5, 3.2, 3.2, P.stoneDark, (_x, y) => y <= 8);
+    c.rect(x0 + 3, 3, x0 + 3, 4, P.gold);
+    c.set(x0 + 3, 2, P.goldDark);
+  }
+  // Arched doors.
+  c.rect(14, 23, 17, 27, P.slate);
+  c.hline(15, 16, 22, P.slate);
+  c.rect(6, 24, 7, 27, P.slate);
+  c.rect(23, 24, 24, 27, P.slate);
+  // Carved panel above the main door.
+  c.rect(14, 19, 17, 20, P.terracotta);
+  return finish(c, 14);
+}
+
+/** Dom Luís I Bridge (Porto): an iron arch over the Douro with the upper deck on top and the lower deck at its feet. Agent 6. */
+function domLuisBridge(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // River.
+  c.rect(2, 26, 29, 28, P.water);
+  c.hline(4, 11, 27, P.waterDeep);
+  c.hline(18, 26, 28, P.waterDeep);
+  // Granite abutments on both banks.
+  c.rect(0, 9, 3, 28, P.stone);
+  c.rect(2, 9, 3, 28, P.stoneDark);
+  c.rect(28, 9, 31, 28, P.stone);
+  c.rect(30, 9, 31, 28, P.stoneDark);
+  // The arch: a parabola two pixels deep, from the river banks up to the upper deck.
+  for (let x = 4; x <= 27; x++) {
+    const t = (x - 15.5) / 11.5;
+    const y = Math.round(25 - 14 * (1 - t * t));
+    c.rect(x, y, x, y + 1, P.slate);
+  }
+  // Uprights from the arch to the upper deck, near the banks.
+  for (const x of [5, 7, 24, 26]) {
+    const t = (x - 15.5) / 11.5;
+    c.vline(x, 11, Math.round(25 - 14 * (1 - t * t)), P.inkSoft);
+  }
+  // Upper deck across the top, iron with a rail.
+  c.rect(0, 9, 31, 10, P.slate);
+  c.hline(0, 31, 8, P.inkSoft);
+  // Lower deck through the arch's feet.
+  c.rect(4, 22, 27, 22, P.slate);
+  return finish(c, 15);
+}
+
+/** Width and height of one frame of the walking duck, in art pixels. */
+export const DUCK_FRAME_PX = 24;
+
 /**
  * One frame of a costumed voyage duck, facing right (the game mirrors it for the other direction):
  * - `british`: a top hat and a red, white and blue scarf, sitting in a little sailing boat.
@@ -610,4 +676,6 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'akershus-fortress': akershusFortress,
   'emmanuel-college': emmanuelCollege,
   'great-wall-badaling': greatWallBadaling,
+  'zocalo-cathedral': zocaloCathedral,
+  'dom-luis-bridge': domLuisBridge,
 };

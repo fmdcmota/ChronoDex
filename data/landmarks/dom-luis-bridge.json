@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "dom-luis-bridge",
+  "name": "Dom Luís I Bridge",
+  "status": "partial",
+  "subject": {
+    "lat": 41.13895,
+    "lng": -8.60925
+  },
+  "photoSpot": {
+    "lat": 41.13815,
+    "lng": -8.60895
+  },
+  "facingDeg": 350,
+  "captureRadiusM": 50,
+  "distanceM": 92.4,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:Ponte_de_Dom_Lu%C3%ADs_I_and_Ribeira,_Porto_(54795128175).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Ponte_de_Dom_Lu%C3%ADs_I_and_Ribeira,_Porto_(54795128175).jpg",
+      "note": "The reference photo; the photo spot is estimated from its viewpoint. Coordinates read from OpenStreetMap, not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): estimated from OpenStreetMap and from where the Commons reference photo appears to be taken. Not checked on site.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/dom-luis-bridge.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Ponte_de_Dom_Lu%C3%ADs_I_and_Ribeira,_Porto_(54795128175).jpg",
+    "licence": "CC BY 4.0",
+    "author": "Dale Cruse",
+    "takenAt": null,
+    "takenFrom": null,
+    "facingDeg": 350,
+    "crop": "Commons 2560x1440 thumbnail (already 16:9) scaled to 1600x900.",
+    "notes": "From the Vila Nova de Gaia end of the upper deck, facing roughly north across the Douro to Porto: the arch, the Ribeira quays and the Sé hill on the left."
+  },
+  "eraYears": [
+    1886
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6: the Archivist (Agent 5) should check geometry, photo spot and years."
+  ]
+}

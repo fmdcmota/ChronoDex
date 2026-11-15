@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "natural-history-museum",
+  "name": "Natural History Museum",
+  "status": "partial",
+  "subject": {
+    "lat": 51.49585,
+    "lng": -0.1756
+  },
+  "photoSpot": {
+    "lat": 51.49595,
+    "lng": -0.1742
+  },
+  "facingDeg": 270,
+  "captureRadiusM": 50,
+  "distanceM": 97.6,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:London_-_Natural_History_Museum.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:London_-_Natural_History_Museum.jpg",
+      "note": "The reference photo; the photo spot is estimated from its viewpoint. Coordinates read from OpenStreetMap, not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): estimated from OpenStreetMap and from where the Commons reference photo appears to be taken. Not checked on site.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/natural-history-museum.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:London_-_Natural_History_Museum.jpg",
+    "licence": "CC BY-SA 3.0",
+    "author": "Vinceesq",
+    "takenAt": null,
+    "takenFrom": null,
+    "facingDeg": 270,
+    "crop": "Commons 2560x1702 thumbnail, 60 px trimmed from the top and 120 px from the bottom, scaled to 1600x900. (A padded front view was tried first: the scene model kept the blurred side bands.)",
+    "notes": "From the east lawn by Exhibition Road, facing west along the Cromwell Road front: the east tower and the long terracotta facade, trees on the left."
+  },
+  "eraYears": [
+    1862,
+    1881
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6: the Archivist (Agent 5) should check geometry, photo spot and years."
+  ]
+}

@@ -215,6 +215,32 @@ export const CITY_LANDMARKS: readonly Landmark[] = [
     referencePhotoUrl: '',
     eraYears: [1505],
   },
+  {
+    id: 'zocalo-cathedral',
+    name: 'Zócalo and Metropolitan Cathedral',
+    blurb: 'Mexico City’s great square, built over the sacred precinct of Tenochtitlan, the Aztec capital.',
+    photoSpot: { lat: 19.43365, lng: -99.13320 },
+    subject: { lat: 19.43445, lng: -99.13325 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'legendary',
+    spriteUrl: '/sprites/zocalo-cathedral.png',
+    badgeUrl: '/sprites/badges/zocalo-cathedral.png',
+    referencePhotoUrl: '',
+    eraYears: [1519],
+  },
+  {
+    id: 'dom-luis-bridge',
+    name: 'Dom Luís I Bridge',
+    blurb: 'Porto’s two-deck iron arch over the Douro, opened in 1886 by a pupil of Gustave Eiffel.',
+    photoSpot: { lat: 41.13815, lng: -8.60895 },
+    subject: { lat: 41.13895, lng: -8.60925 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'epic',
+    spriteUrl: '/sprites/dom-luis-bridge.png',
+    badgeUrl: '/sprites/badges/dom-luis-bridge.png',
+    referencePhotoUrl: '',
+    eraYears: [1886],
+  },
 ];
 
 /** Every landmark the art script draws: London first, then the other cities. */

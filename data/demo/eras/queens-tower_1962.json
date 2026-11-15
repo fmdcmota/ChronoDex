@@ -1,0 +1,115 @@
+{
+  "era": {
+    "id": "queens-tower_1962",
+    "landmarkId": "queens-tower",
+    "year": 1962,
+    "state": "ready",
+    "videoState": "missing",
+    "title": "Queen’s Tower amid the rebuild, 1962",
+    "summary": "By 1962 the old Institute complex around Queen’s Tower was being taken apart piece by piece: demolition of the rear galleries had begun in 1957, and the east wing of the main range had already been replaced by a college building. The Institute itself had been renamed the Commonwealth Institute in 1958 and moved to Holland Park in 1962. The record is thin for this year — no usable dated reference images survive, and the exact condition of the west wing in 1962 is unresolved, so read this as an interim sketch rather than a finished picture.",
+    "funFacts": [
+      "Demolition of the rear galleries began in 1957.",
+      "By 1962 the east wing of the main range had been replaced by a college building.",
+      "The Institute was renamed the Commonwealth Institute in 1958 and moved to Holland Park in 1962.",
+      "Making the central tower stand independently, with new foundations and substantial rebuilding of the lower portion, came in 1966–68.",
+      "The west wing was demolished by 1965, but the sources do not pin down its condition on any given day in 1962."
+    ],
+    "sources": [
+      {
+        "title": "Survey of London, Vol. 38: Queen’s Tower and the Imperial Institute",
+        "url": "https://www.british-history.ac.uk/survey-london/vol38/pp220-227"
+      },
+      {
+        "title": "Imperial College: History of Queen’s Tower",
+        "url": "https://www.imperial.ac.uk/about/history/queens-tower/"
+      }
+    ],
+    "sceneBrief": {
+      "description": "A tall Victorian campanile of pale stone rises from the middle of a partly dismantled Institute complex. The east side of the main frontage is a newer college building, not the original wing; there are no finished lawns or landscaped setting around the tower’s foot. Do not show the complete 1893 frontage, and do not show the isolated tower on its later foundations.",
+      "changes": {
+        "persists": [
+          "The central tower’s upper structure, still unchanged."
+        ],
+        "altered": [
+          "The surrounding Institute complex, being replaced by Imperial College buildings; the east wing has already gone."
+        ],
+        "notYetBuilt": [
+          "The 1966–68 freestanding foundation and rebuilt lower structure of the tower."
+        ],
+        "gone": [
+          "The pre-demolition east wing of the Institute frontage."
+        ]
+      },
+      "surroundings": "North: the tower standing amid campus redevelopment, with the rear galleries affected by demolition begun in 1957. East: a replacement college building on the former east-wing site. West: not established for 1962 — the sources only record demolition by 1965. South: the opposite frontage and its chronology are unverified. A full 360-degree reconstruction is not yet supported by this research.",
+      "referenceImageUrls": []
+    },
+    "guide": {
+      "name": "Alfred Nunn",
+      "role": "college porter",
+      "bio": "I’ve been a porter at the college for going on twenty years, and I know every stair and doorway round here. These days I spend half my time pointing visitors away from the works and the other half telling them where the tower is.",
+      "appearance": "A man in his early sixties, stout and short, with a clean-shaven weathered face and grey hair under a peaked cap; he wears a dark heavy porter’s coat with brass buttons over a collar and tie, and sturdy worn boots.",
+      "voiceKey": "eleven-george",
+      "script": "Alfred Nunn, college porter, at your service. Mind the mud as we go — there’s a fair bit of shifting about here lately. The galleries at the back have been coming down since 1957, and the east wing’s gone already, replaced with a college building. The Institute folk packed up their things and went off to Holland Park this year; they’d been the Commonwealth Institute since 1958. The tower stays put, mind. We’ve no proper images of the place from this year, so I can only tell you what I see with my own eyes. Now then, I must get back to the gate. Good day to you.",
+      "greeting": "Hallo there — Alfred Nunn, porter. You’ll want to mind your step round here, it’s all change about the old Institute.",
+      "headshotUrl": "/demo/queens-tower_1962/headshot.jpg"
+    },
+    "sceneImageUrl": "/demo/queens-tower_1962/scene.jpg",
+    "panorama": {
+      "url": "/demo/queens-tower_1962/panorama.jpg",
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "vFovDeg": 180,
+      "centreBearingDeg": 0
+    },
+    "narrationAudioUrl": "/demo/queens-tower_1962/narration.mp3",
+    "guideVideo": null,
+    "updatedAt": "2026-11-15T03:25:40.423Z"
+  },
+  "provenance": {
+    "narration": {
+      "model": "elevenlabs/tts/eleven-v4",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28383/aM-4Jrrjh2JYioun4XQRc_output.mp3",
+      "seconds": 11
+    },
+    "headshot": {
+      "model": "google/nano-banana-2.1",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28382/r3WgoNaF1EF0_OumaRod6_7Cl1Cs9Q.jpg",
+      "seconds": 16
+    },
+    "scene": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28383/AnGpJEz-IVPbnwc-lOWhW_HZiL0GBV.jpg",
+      "seconds": 24,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "anachronism: Freestanding rebuilt tower structure shown mid-demolition/reconstruction that dates from the 1966–68 works, not 1962",
+          "The tower depicted with its freestanding foundation and rebuilt lower structure did not exist in 1962, as this construction phase occurred 1966–68"
+        ],
+        "checkCostUsd": 0.010686000000000001
+      }
+    },
+    "panorama": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28391/s1OoDp6kE-K3hjdw2Ariy_1794712497492.jpeg",
+      "seconds": 94,
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "not a 360 panorama (the critic saw: flat_photo)",
+          "Single vanishing point perspective typical of an ordinary photograph, not a 360 panorama",
+          "No wraparound of street or buildings to left/right or behind camera",
+          "Straight converging kerbs with no spherical distortion",
+          "Left and right edges do not depict a continuous connected scene"
+        ],
+        "checkCostUsd": 0.025078000000000003
+      }
+    }
+  }
+}

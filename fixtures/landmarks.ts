@@ -177,4 +177,26 @@ export const landmarks: Landmark[] = [
     eraYears: [1505],
     ...sharedFields('great-wall-badaling'),
   },
+  // Demo cities added by Agent 6 (demo assets, 15 Nov 2026). Coordinates from OpenStreetMap; the photo
+  // spot is where the Commons reference photo in data/reference/<id>.jpg was taken from (data/landmarks/<id>.json).
+  {
+    id: 'zocalo-cathedral',
+    name: 'Zócalo and Metropolitan Cathedral',
+    blurb: 'Mexico City’s great square, built over the sacred precinct of Tenochtitlan, the Aztec capital.',
+    photoSpot: { lat: 19.43365, lng: -99.13320 },
+    subject: { lat: 19.43445, lng: -99.13325 },
+    rarity: 'legendary',
+    eraYears: [1519],
+    ...sharedFields('zocalo-cathedral'),
+  },
+  {
+    id: 'dom-luis-bridge',
+    name: 'Dom Luís I Bridge',
+    blurb: 'Porto’s two-deck iron arch over the Douro, opened in 1886 by a pupil of Gustave Eiffel.',
+    photoSpot: { lat: 41.13815, lng: -8.60895 },
+    subject: { lat: 41.13895, lng: -8.60925 },
+    rarity: 'epic',
+    eraYears: [1886],
+    ...sharedFields('dom-luis-bridge'),
+  },
 ];

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "zocalo-cathedral",
+  "name": "Zócalo and Metropolitan Cathedral",
+  "status": "partial",
+  "subject": {
+    "lat": 19.43445,
+    "lng": -99.13325
+  },
+  "photoSpot": {
+    "lat": 19.43365,
+    "lng": -99.1332
+  },
+  "facingDeg": 0,
+  "captureRadiusM": 50,
+  "distanceM": 89.1,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:Catedral_Metropolitana_de_la_Ciudad_de_M%C3%A9xico_1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Catedral_Metropolitana_de_la_Ciudad_de_M%C3%A9xico_1.jpg",
+      "note": "The reference photo; the photo spot is estimated from its viewpoint. Coordinates read from OpenStreetMap, not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): estimated from OpenStreetMap and from where the Commons reference photo appears to be taken. Not checked on site.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/zocalo-cathedral.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Catedral_Metropolitana_de_la_Ciudad_de_M%C3%A9xico_1.jpg",
+    "licence": "CC BY-SA 4.0",
+    "author": "ProtoplasmaKid",
+    "takenAt": null,
+    "takenFrom": null,
+    "facingDeg": 0,
+    "crop": "Commons 2560x1440 thumbnail (already 16:9) scaled to 1600x900.",
+    "notes": "Raised view across the Zócalo, facing north: the cathedral front with both bell towers and the Sagrario to the right. The cathedral stands on the site of the Aztec sacred precinct; the Templo Mayor ruins are just north-east, out of frame."
+  },
+  "eraYears": [
+    1519
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6: the Archivist (Agent 5) should check geometry, photo spot and years."
+  ]
+}
