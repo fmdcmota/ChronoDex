@@ -326,3 +326,4 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - V6 mid-preview: mocks, Queen's Tower 1962, video requested, Meet tapped at 20 s; sampled every 0.7 s: Skip and the stand-in at 21.0 s, clips landed, at 21.7 s the button was Meet Edith again with the two video elements built. No reload. V6 is fully seen with mocks; captions on a real talk clip remain for the canary.
 - Checks: tsc, eslint, vitest on time-machine (72) and media (24).
 - 06:14 R3-4e: phone server had stopped answering (tunnel 502). Restarted next start on the latest main (17a524c, chronodex, video off) and a new quick tunnel: https://held-realistic-associates-inclusive.trycloudflare.com. PHONE_TEST.md updated.
+- 06:26 R3-4e: phone server rebuilt with NEXT_PUBLIC_DEV_TOOLS=1 and ALLOW_SPOOFED_LOCATION=1 (human asked for the spoof button back). Keep both on for every phone build. Started detached (nohup) because background tasks of the session were exiting. Same tunnel URL.
