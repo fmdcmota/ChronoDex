@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "raffles-landing-site",
+  "name": "Raffles’ Landing Site",
+  "status": "partial",
+  "subject": {
+    "lat": 1.2877192,
+    "lng": 103.8507866
+  },
+  "photoSpot": {
+    "lat": 1.2877911,
+    "lng": 103.8506662
+  },
+  "facingDeg": 200,
+  "captureRadiusM": 50,
+  "distanceM": 15.6,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:View_of_Boat_Quay,_Singapore_(2023)-L1003669.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:View_of_Boat_Quay,_Singapore_(2023)-L1003669.jpg",
+      "note": "The reference photo; the photo spot is estimated from its viewpoint. Coordinates read from OpenStreetMap, not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): estimated from OpenStreetMap and from where the Commons reference photo appears to be taken. Not checked on site.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/raffles-landing-site.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:View_of_Boat_Quay,_Singapore_(2023)-L1003669.jpg",
+    "licence": "CC BY-SA 4.0",
+    "author": "Frank Schulenburg",
+    "takenAt": "2023",
+    "takenFrom": null,
+    "facingDeg": 200,
+    "crop": "Commons 2560x1700 thumbnail, 60 px trimmed from the top and 200 px of water from the bottom, scaled to 1600x900.",
+    "notes": "From the north bank of the Singapore River at the landing site, facing south across the water to the Boat Quay shophouses and the Raffles Place towers."
+  },
+  "eraYears": [
+    1819
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6: the Archivist (Agent 5) should check geometry, photo spot and years."
+  ]
+}

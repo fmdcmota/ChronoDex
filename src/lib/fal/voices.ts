@@ -19,6 +19,13 @@ export interface VoiceEntry {
   voiceName: string;
   /** ElevenLabs stability, 0 to 1. Lower is more expressive. 0.4 was used for every A2-04 clip. */
   stability: number;
+  /**
+   * ElevenLabs audio tag that sets the accent, for guides outside Britain, for example "Mexican Spanish accent".
+   * synthesizeSpeech puts it in square brackets before the text. Checked 15 Nov 2026 (Agent 6,
+   * spikes/agent-6/accent-test.mts): Eleven v4 honours the tag and does not read it aloud (a Scribe
+   * transcript of the clip has no tag words). Absent for the British voices.
+   */
+  accentTag?: string;
 }
 
 /** ElevenLabs stability used for all guide voices until a human says otherwise (A2-04). */
@@ -49,6 +56,50 @@ export const VOICE_CATALOG: Record<string, VoiceEntry> = {
     provider: 'elevenlabs',
     voiceName: 'Daniel',
     stability: DEFAULT_STABILITY,
+  },
+  // Guides for the demo cities outside Britain (Agent 6, 15 Nov 2026). Same premade ElevenLabs voices, with an
+  // accent tag. The accent's quality is unconfirmed by ear.
+  'eleven-mx-woman': {
+    description: 'Younger woman, Mexican Spanish accent, lively (for Mexico City guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Jessica',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'Mexican Spanish accent',
+  },
+  'eleven-mx-man': {
+    description: 'Man in his thirties or forties, Mexican Spanish accent, warm (for Mexico City guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Chris',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'Mexican Spanish accent',
+  },
+  'eleven-pt-man': {
+    description: 'Man in his forties, Portuguese accent, friendly (for Porto guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Brian',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'Portuguese accent',
+  },
+  'eleven-pt-woman': {
+    description: 'Woman in her thirties, Portuguese accent, warm (for Porto guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Sarah',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'Portuguese accent',
+  },
+  'eleven-sg-man': {
+    description: 'Man in his thirties or forties, Malay accent, easy-going (for Singapore guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Eric',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'Malay accent',
+  },
+  'eleven-sg-woman': {
+    description: 'Younger woman, Malay accent, bright (for Singapore guides; unconfirmed by ear)',
+    provider: 'elevenlabs',
+    voiceName: 'Laura',
+    stability: DEFAULT_STABILITY,
+    accentTag: 'Malay accent',
   },
 };
 

@@ -15,7 +15,8 @@
  * Every tap that may lead to sound plays a cue on that element (./audio.ts): a soft rising or
  * falling earcon for the mic and the voice switch, silence for Send. Reset (↺) clears the thread,
  * shows the typing dots for GREETING_DELAY_MS, then the greeting arrives again.
- * Period ambience plays underneath (../time-machine/useAmbience.ts) and drops while the guide speaks.
+ * Period ambience plays underneath (../time-machine/useAmbience.ts), much lower than in the Time Machine, and is
+ * silent while a reply is spoken or the mic records.
  * While the era's job runs, the screen polls it, so the guide and headshot appear without a reload.
  */
 'use client';
@@ -36,6 +37,7 @@ import { playCue, playUrl } from './audio';
 import type { EarconKind } from './tone';
 import { BTN_PRIMARY } from '@/components/time-machine/pixel';
 import { useAmbience } from '@/components/time-machine/useAmbience';
+import { ambienceMode } from '@/components/time-machine/ambience';
 
 /** Props for ChatScreen. */
 export interface ChatScreenProps {
@@ -134,7 +136,9 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [readAloud, setReadAloud] = useState(() => safeGet(READ_ALOUD_KEY) === '1');
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
-  const ambience = useAmbience(year, speakingIndex !== null);
+  /** The hold-to-talk mic is open: the ambience goes silent so it is not recorded (phone test 5.4). */
+  const [micOpen, setMicOpen] = useState(false);
+  const ambience = useAmbience(year, ambienceMode(speakingIndex !== null, micOpen), 'chat');
 
   const audio = useRef<HTMLAudioElement | null>(null);
   const abort = useRef<AbortController | null>(null);
@@ -334,6 +338,7 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
         onRecording={(r) => void sendRecording(r)}
         onCue={cue}
         onMicError={setNotice}
+        onMicOpenChange={setMicOpen}
       />
     </div>
   );

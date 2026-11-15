@@ -1,0 +1,45 @@
+# Raffles Lands at the Singapore River, 1819 (raffles-landing-site_1819)
+
+**Status: DRAFT. A human must check every claim against its source before generation spends credits (H7).**
+
+## Summary
+On 28 January 1819 Stamford Raffles anchored at St John's Island and that evening went ashore with William Farquhar to meet Temenggong Abdul Rahman, whose village stood on the north bank at the river mouth. A draft agreement followed on 30 January and the Singapore Treaty was signed on 6 February, giving the East India Company a trading post for annual payments of 5,000 Spanish dollars to the Sultan and 3,000 to the Temenggong. The island then held roughly 1,000 people, mostly Orang Laut, and the south bank was mangrove swamp. The exact landing point and date are disputed, and no eyewitness drawing of the Temenggong's palace survives in the sources consulted.
+
+## Fun facts
+- A 15-year-old eyewitness, Wa Hakim, recalled Raffles arriving with the helmeted Farquhar and a sepoy with a musket, and being served rambutans at the Temenggong's house.
+- In 1819 the island had roughly 1,000 inhabitants, including about 500 Orang Kallang and 200 Orang Seletar, with only 20 to 30 Malays in the Temenggong's entourage.
+- With no bridge over the river, a sampan crossing cost a duit, a quarter-cent.
+- The first oil lamps burning coconut oil were lit on 1 April 1824, five years after the trading post was founded.
+- A 3 m by 3 m sandstone boulder with about fifty lines of undeciphered writing was found at Rocky Point in June 1819 and blown up in 1843.
+
+## Sources
+- [NLB: Stamford Raffles' landing in Singapore](https://www.nlb.gov.sg/main/article-detail?cmsuuid=8b54be13-5b70-44d0-abf6-f9781247686f)
+- [NLB: Singapore Treaty of 1819 and the early settlement](https://www.nlb.gov.sg/main/article-detail?cmsuuid=92bb56f0-e821-40d1-bd8c-cf8fa7e7f172)
+- [NLB: Temenggong Abdul Rahman](https://www.nlb.gov.sg/main/article-detail?cmsuuid=011fc400-0632-453b-8520-12ada317e263&utm_source=chatgpt.com)
+- [Roots: Singapore River walk booklet](https://www.roots.gov.sg/~/media/Roots/Files/singapore-river-walk/singapore-river-walk-booklet.pdf#2#10#2)
+- [Roots: The first Resident, William Farquhar](https://www.roots.gov.sg/stories-landing/stories/the-first-resident/the-first-resident#1)
+- [Roots: Founding of modern Singapore](https://www.roots.gov.sg/stories-landing/stories/founding-of-modern-singapore/story#1)
+- [Roots: Raffles statue collection listing](https://www.roots.gov.sg/collection-landing/listing/1183379)
+- [Roots: Houghton's 1819 view of Singapore](https://www.roots.gov.sg/collection-landing/listing/1254655)
+
+## What the camera sees
+A view south-east across the mouth of a small river on a humid tropical morning. The near bank is solid ground crowded with kampong houses of timber and attap thatch, some raised on posts, with nipah fencing and fruit trees; a large atap-roofed timber hall sits among them. The river is busy with small sampans and dugout boats ferrying people and goods, with houseboats moored upstream. Across the water the far bank is unbroken mangrove and api-api swamp and grey mud flats, with no buildings at all. Downstream to the left, jungle runs to a rocky point at the river mouth; beyond it, open sea with ships at anchor. Behind, a forested hill rises.
+
+Persists: The Singapore River and its mouth; The broad shape of the shoreline and the hill behind (Fort Canning)
+Altered: The river itself, once the settlement's highway of sampans, is now crossed by bridges and used by tourist boats
+Not yet built: Empress Place building and the Asian Civilisations Museum; Old Parliament House; Fullerton Hotel; Cavenagh Bridge; Boat Quay shophouses and godowns; The Merlion and the CBD skyline; Riverside promenade, roads and street lighting
+Gone: The Temenggong's palace and the huts of his followers; The mangrove and api-api swamp on the south bank; Orang Laut houseboats moored upstream; The inscribed sandstone boulder at Rocky Point
+
+Surroundings: North and behind: the Temenggong's compound, his palace, his people's huts, fruit trees and nipah fences, and the start of a footpath along the shore towards Kampong Glam. North-east: shoreline curving towards Sandy Point and the beach by the later Padang, where the British land stores and put up makeshift attap huts. East and south-east: the river mouth, Rocky Point with its inscribed boulder, a small earthwork, open sea and the anchored squadron. South: the river and the uninhabited mangrove swamp beyond it. South-west and west: the river upstream, crowded with Orang Laut houseboats and sampans, jungle close to the water. North-west: the jungle-covered slope of Bukit Larangan, the Forbidden Hill, with its ruins and the Pancur Larangan spring.
+
+## Guide: Siti Aminah, Sampan ferrywoman on the Singapore River
+I was born on the water and I will likely die on it; my boat carries people, fish and the occasional basket of rambutans from one bank to the other. If you want to cross the river, you come to me, because there is no bridge and there will not be one soon.
+
+Appearance: Woman in her late twenties, slight and weathered, with sun-darkened skin and bare feet; she wears a loose knee-length baju kurung in faded indigo with a patterned sarong, her hair tied back in a bun, and a wide-brimmed woven hat against the sun.
+Voice: eleven-sg-woman
+
+### Script
+I am Siti Aminah, and this little boat is how you get across. A crossing costs one duit, a quarter of a cent, and I will not cheat you. Look around: most people here live on the water, not on land. My neighbours fish, sell food to the ships' crews and ferry folk like you. Across the river there is only mangrove and mud, so everyone lives on this side, near the Temenggong's house. If you visit a house, chew a little betel with your host; it is what we do, Malay, Indian and Peranakan alike. Mind your footing, the path is only earth and sand. Go carefully, and keep to the beach if you walk north.
+
+### Greeting
+Welcome, welcome. You look like you need to cross the river; sit down and mind the side, the water is calm enough.

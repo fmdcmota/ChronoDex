@@ -110,10 +110,10 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-15 First real panorama on two phones
 - [ ] A4-16 Time Machine on a real era
 - [x] A4-b Picture credits in the Sources drawer and Then/Now (GET /api/media/credits/[eraId])
-- [ ] A4-r2-1 Ambience: real two-layer loops, quieter in chat, silent while recording and while a reply speaks
+- [x] A4-r2-1 Ambience: real two-layer loops, quieter in chat, silent while recording and while a reply speaks
 - [ ] A4-r2-2 Keep the phone server and tunnel up; switch to chronodex when told
 - [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
-- [ ] A4-r2-4 Map zoom-fade polish (Agent 3's handoff)
+- [x] A4-r2-4 Map zoom-fade polish (Agent 3's handoff): tiles kept loading while zooming, bigger cache
 - [ ] A4-r2-5 Real guide video on a phone
 - [ ] A4-r2-6 Voice input on the real chat, second phone
 - [ ] A4-10 Phone pass and polish (A4-r2-7 Android)
@@ -261,3 +261,14 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Did: the human sent the iPhone results; recorded in `REMAINING_WORK_2.md` section 2. Wrote that file at the human's request: tasks for Agents 1 to 4 and the humans, plus a new Gantt from 03:00. My tasks are A4-r2-1 to A4-r2-7 above.
 - Results: 6.1 to 6.3, 6.6 to 6.9 pass; 6.4 works but the ambience is too loud in the chat; 6.5 fails (Then/Now pictures are different viewpoints: the scene predates the reference photo); 5.1 fixed by the damping; 5.4 ambience too loud, it gets into the recording; test 2 and test 3 pass (voice input failed once, probably the phone); test 1 pass.
 - Next: A4-r2-1.
+
+### 2026-11-15 03:35, A4-r2-1: ambience fixed (phone tests 5.4 and 6.4)
+- Did: the player asked for `<bucket>.mp3`, which does not exist, so every phone heard the brown-noise placeholder at near full scale. It now plays Agent 2's two layers, `<bucket>.m4a` music and `<bucket>-street.mp3` street, each through its own gain under one master, each crossfaded end into start (`crossfadeLoop`, 1.5 s) so the music has no join. Levels by scene and mode (`AMBIENCE_LEVELS`): Time Machine 0.12 normal, 0.03 while the guide speaks; chat 0.05 normal, 0 while a reply is spoken; 0 everywhere while the mic records (fade time constant 30 ms). Composer reports `onMicOpenChange` at press, before the mic opens. A missing street file falls back to the placeholder, a missing music file stays silent.
+- Measured: decoded in Chrome, 1850-1899 music 45 s stereo RMS 0.127, street 30 s stereo RMS 0.011, so `LAYER_MIX` lifts the street (music 0.6, street 2.5). Both files load 200 on the dev server. 521 tests pass with `--pool=vmThreads`; typecheck and lint pass. Not heard on a phone yet: PHONE_TEST 6.10 to 6.13.
+- Next: phone retest; then A4-r2-4 map fade polish while Agent 2 regenerates the scene (A4-r2-3).
+
+### 2026-11-15 03:50, A4-r2-4: map zoom polish (Agent 3's handoff)
+- Did: in MapScreen.tsx (Agent 3's file, edit granted in their 05:30-stamped HANDOFF post), `cancelPendingTileRequestsWhileZooming: false` and `maxTileCacheSize: 400`, so the destination zoom's tiles keep loading during a pinch and zooming back reuses cached tiles instead of loading and popping again.
+- Decided, and why: MapLibre has no fade for vector tiles (`fadeDuration` is for labels only), and the water and park outlines swapping at whole zoom levels is the tiles' own generalisation; a real cross-fade would need two copies of the source at offset zooms, which is too risky for the time left. Left as is; the human called the rest "otherwise perfect".
+- Measured or verified: typecheck and lint pass; the map renders in the dev preview with all markers. Smoothness needs a phone.
+- Next: A4-r2-3 when Agent 2 regenerates the scene; A4-r2-2 when Agent 1 says chronodex is ready.

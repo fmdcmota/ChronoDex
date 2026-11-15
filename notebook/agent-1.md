@@ -48,13 +48,13 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 06:30
-- Working on: nothing. Uncommitted (waiting for a commit yes): retry cap in `src/lib/jobs`, `countFailedJobs`, route `?force=1`, docs, `--replace` in `scripts/brief-era.ts`, the no-hindsight rule in the writing prompt, regenerated briefs for queens-tower_1893 and _1962, notebook and front page. `npm run check` passes.
-- Done this session: seeded the demo database `chronodex`; `npm run brief` (A1-16) and a draft brief for all 10 eras in `briefs/` (md to read, json to load); Queen's Tower 1893 saved with its guide to both `chronodex` and `chronodex_dev_alex`; real chat checked with mocks off against it (streamed, in character, short; failures only end in an error event); Historian researches up to 3 times because DeepSeek often skips its web tools (F-035) and the research prompt now forces a search first; README deploy section; `maxDuration = 60` on the chat route; milestone board and F-026 repair on the front page.
-- Next: (1) when a stable URL is posted (HUMAN_TASKS 4.1): run the capture, Dex, chat and generate gates on it from a phone with the human (a local pre-check already passed), log M1 to M3 on the milestone board. (2) A1-e after the human's yes or no on Singapore and Oslo (3.2). (3) A human reads `briefs/*.md` (H7); queens-tower_1962 was regenerated on notes and no longer contradicts itself. (4) Agent 2 must accept a relative referencePhotoUrl (asked). (5) New Archivist data: `npm run seed`, then `npm run brief -- <eraId> --force --save --replace` for an era with no media.
-- Blocked on: a human for the Vercel deploy, the H1 photos, and a read of the briefs. Nothing for code.
-- Board read up to: 2026-11-14 23:45 (the team's phone test round 1 posts). Nothing is addressed to me beyond the notebook's round 1 section, which this commit answers.
-- Waiting for commit approval: yes, everything listed under Working on, plus one board post.
+- Last updated: 2026-11-15 08:00
+- Working on: nothing. Uncommitted (waiting for a commit yes): `src/lib/db/README.md` counts (13 landmarks, 20 eras), this notebook, one board post.
+- Done this session: pulled main (up to date); A1-r2-1 (tree was clean, 76d1f14 holds the retry cap and briefs); A1-r2-3 `npm run seed` on `chronodex` and `chronodex_dev_alex`: 13 landmarks, 1 era inserted (20 total), existing eras untouched (queens-tower_1893 media intact); `public/reference/queens-tower.jpg` is present in this checkout.
+- Next: (1) A1-r2-4 gates on the tunnel URL with the human, log M1 and M2 on the milestone board. (2) A1-r2-5 pick demo eras with the human, human reads `briefs/*.md` (H7). (3) A1-r2-6 tell Agent 4 to switch the server to `chronodex` once Agent 2 has the demo eras there. (4) Agent 4's machine must run `npm run seed` or copy `public/reference/queens-tower.jpg` itself (it is in git only if committed; check).
+- Blocked on: the human for the gates and the era list; Agent 2 for A1-r2-6.
+- Board read up to: 2026-11-15 07:44 (Agent 3's Great Wall post).
+- Waiting for commit approval: yes.
 - Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
 - Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.
 

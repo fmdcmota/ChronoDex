@@ -78,6 +78,18 @@ export async function uploadToFal(file: Blob): Promise<string> {
 }
 
 /**
+ * Put a voice's accent tag in front of the text, as an ElevenLabs audio tag ("[Portuguese accent] Hello").
+ * The tag is not spoken: it only steers the delivery (checked with a Scribe transcript, Agent 6, 15 Nov 2026).
+ *
+ * @param text - Text to speak, already trimmed.
+ * @param accentTag - VoiceEntry.accentTag, or undefined for voices with no tag.
+ * @returns The text, tagged when the voice has an accent tag.
+ */
+export function withAccentTag(text: string, accentTag: string | undefined): string {
+  return accentTag ? `[${accentTag}] ${text}` : text;
+}
+
+/**
  * Speak text in one of the catalogue's voices.
  *
  * Endpoint: MODELS.narration (about $0.08 per 1,000 characters, about 12 s for a 600-character
@@ -108,7 +120,7 @@ export async function synthesizeSpeech(
   const endpoint = opts?.fast ? MODELS.chat_speech.endpoint : MODELS.narration.endpoint;
   const { data } = await runFal<{ audio?: { url?: string } }>(
     endpoint,
-    { text: trimmed, voice: voice.voiceName, stability: voice.stability, language_code: 'en' },
+    { text: withAccentTag(trimmed, voice.accentTag), voice: voice.voiceName, stability: voice.stability, language_code: 'en' },
     ctx,
   );
   const url = data.audio?.url;

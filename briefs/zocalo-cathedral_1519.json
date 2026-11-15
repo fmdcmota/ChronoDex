@@ -1,0 +1,80 @@
+{
+  "title": "Standing at the Edge of the Sacred Precinct",
+  "summary": "In 1519 this spot was not a plaza and no cathedral stood here; northward lay the walled sacred precinct of Mexico-Tenochtitlan, with the twin pyramid of the Templo Mayor rising inside it. The precinct's size is reconstructed differently by different scholars, so whether this point fell just inside or just outside its southern boundary depends on which measurement you use. The cathedral that now closes this view was begun in the mid-16th century and completed in 1813, and the Zócalo developed after the conquest southwest of the Templo Mayor. No eyewitness image of this exact view survives, and the sources leave the precinct wall's precise appearance and height unresolved.",
+  "funFacts": [
+    "The sacred precinct was a roughly square walled enclosure; INAH gives about 350 by 350 metres with a floor of stone slabs, while a recent reconstruction uses about 450 metres per side and earlier work about 500.",
+    "By Sahagún's account the precinct held 78 religious buildings and places, of which about 36 have been archaeologically detected.",
+    "The Templo Mayor was the twin pyramid of Huitzilopochtli and Tlaloc, about 100 by 80 metres at its base, and the seventh building phase was the one the Spaniards first saw in 1519.",
+    "Access to the precinct was normally limited to priests, warriors, rulers and Calmécac students; common people entered mainly during civic-religious festivals.",
+    "The three great causeways from the precinct ran south to Iztapalapa, west to Tlacopan and north to Tepeyac, and the city they crossed was mostly low adobe houses of no more than two storeys.",
+    "Cacao beans served as small currency: about eight might buy a rabbit and about a hundred a good turkey hen, while larger payments used standardized cotton capes called quachtli."
+  ],
+  "sources": [
+    {
+      "title": "INAH — Zona Arqueológica del Templo Mayor",
+      "url": "https://templomayor.inah.gob.mx/index.php/historia/zona-arqueologica-del-templo-mayor"
+    },
+    {
+      "title": "México City — Templo Mayor",
+      "url": "https://mexicocity.cdmx.gob.mx/venues/templo-mayor/?lang=en"
+    },
+    {
+      "title": "Mexico City — Metropolitan Cathedral",
+      "url": "https://mexicocity.cdmx.gob.mx/venues/metropolitan-cathedral/?lang=en"
+    },
+    {
+      "title": "Crónica — INAH works on an exact plan of the Templo Mayor zone",
+      "url": "https://www.cronica.com.mx/cultura/2026/07/25/el-inah-trabaja-en-la-creacion-de-plano-exacto-de-la-zona-donde-esta-el-templo-maypr/"
+    },
+    {
+      "title": "Noticonquista — Tenochtitlan",
+      "url": "https://www.noticonquista.unam.mx/amoxtli/2076/2073"
+    },
+    {
+      "title": "Cortés — Second Letter to Charles V",
+      "url": "https://eada.lib.umd.edu/text-entries/second-letter-of-hernando-cortes-to-charles-v/"
+    },
+    {
+      "title": "Mexicolore — Aztec money",
+      "url": "https://mexicolore.co.uk/aztecs/kids/aztec-money"
+    }
+  ],
+  "sceneBrief": {
+    "description": "A sunlit view looking north across packed-earth and stone-paved streets toward a long walled enclosure. At the wall, low platforms and stairways lead up onto the precinct, whose interior floor is laid with smooth stone slabs; the courtyards are paved with large white flagstones, brown plaster filling the gaps, and swept spotless. Inside, painted and plastered temple platforms cluster together, and slightly to the right of centre a great twin pyramid rises above everything, two steep staircases climbing one face to two shrines at the top. Figures in cotton mantles and sandals move along the approach; porters carry loads on tumplines. Behind and around, flat-roofed adobe houses of one or two storeys, canals of grey-green water crossed by wooden beam bridges, and canoes. Bright, hazy highland daylight.",
+    "changes": {
+      "persists": [
+        "The northward line of sight toward the ceremonial centre's area",
+        "The flat highland basin and its ring of mountains on the horizon",
+        "The roughly square footprint of the wider sacred precinct, partly under later buildings"
+      ],
+      "altered": [
+        "The ground underfoot: packed earth and stone paving replaced by the open paved plaza surface",
+        "The city skyline: low adobe houses replaced by taller buildings"
+      ],
+      "notYetBuilt": [
+        "The Metropolitan Cathedral, whose south façade now closes the view",
+        "The Sagrario Metropolitano",
+        "The Palacio Nacional",
+        "The Zócalo as an open paved plaza"
+      ],
+      "gone": [
+        "The Templo Mayor's seventh-phase twin pyramid, visible above the precinct",
+        "The precinct wall, platforms and stairways",
+        "The small temple probably dedicated to Xitle or Quetzalcoatl in the area of the later cathedral",
+        "The Templo del Sol near the Sagrario area",
+        "The canals, wooden bridges and canoe traffic of the southern approach"
+      ]
+    },
+    "surroundings": "North: the interior of the sacred precinct, with the Templo Mayor, its associated temples, altars, calmécac and ballcourt, and beyond it the causeway to Tepeyac and lagoon-edge settlements. Northeast and east: the Templo Mayor and the eastern side of the precinct, then canals and the lagoon, and further north the separate city of Tlatelolco with its great market. South: outside the precinct, the causeway to Iztapalapa and the southern residential wards and chinampa edges. West: the precinct wall and platform, the ballcourt and the Tozpalatl sacred spring area, and beyond it the causeway to Tlacopan. In every direction a low-rise adobe city intersected by canals and wooden bridges, plastered temple towers rising above flat roofs, canoes bringing provisions and merchandise.",
+    "referenceImageUrls": []
+  },
+  "guide": {
+    "name": "Citlali Tepetzin",
+    "role": "Porter carrying goods between the causeways and the precinct",
+    "bio": "I carry loads on my back along these streets and causeways, hauling maize, cloth and pottery to the edge of the sacred precinct and to the canoes on the canals. My work keeps me at the boundary of that walled place, close enough to see the crowds pass in for the festivals but rarely to go in myself.",
+    "appearance": "A woman of about thirty-two, short and strong-shouldered from years of carrying loads, with dark hair bound back and sun-darkened skin. She wears a plain undyed cotton skirt and a decorated sleeveless blouse, a woven cotton mantle knotted at the shoulder, and leather sandals; a woven tumpline strap rests across her forehead and chest.",
+    "voiceKey": "eleven-mx-woman",
+    "script": "I am Citlali, and I work as a porter, carrying loads on my back. I tie the strap here across my forehead, and I haul maize, cloth and pottery down these streets to the canoes waiting on the canals. Ahead of us is the walled precinct. On ordinary days only priests, warriors, rulers and the calmécac students go inside; the rest of us wait for the festivals, when the gates open and the crowds pour through. The great twin pyramid stands within, and near the wall there, a smaller temple. We pay in cacao beans, so many for a rabbit, many more for a turkey hen. May your load stay light, friend. Farewell.",
+    "greeting": "You look like you have been staring at that wall a long while. I am Citlali, a porter, and I can tell you what we are looking at."
+  }
+}

@@ -32,6 +32,8 @@ import { PALETTE } from './lib/palette';
  * Screen pixels kept clear around the landmarks when the map first frames them. Markers stand
  * 64 px tall above their point, and the top banner and bottom HUD each take about 130 px.
  */
+/** Tiles kept in memory per source. MapLibre sizes its cache from the viewport; 400 vector tiles is a few MB. */
+const MAX_TILE_CACHE_TILES = 400;
 const FIT_PADDING_PX = { top: 200, bottom: 160, left: 40, right: 40 };
 /** Zoom of the "whole globe" view. MapLibre 512 px tiles: about 1.6 shows the planet as a ball on a phone. */
 const WORLD_ZOOM = 1.6;
@@ -242,6 +244,12 @@ export default function MapScreen() {
       pitchWithRotate: false,
       touchPitch: false,
       attributionControl: { compact: true },
+      // Zoom polish (handed to Agent 4 by Agent 3, 15 Nov): MapLibre cannot fade vector tiles in, so the next
+      // best thing is to have them ready sooner. Keep loading the destination zoom's tiles during a pinch instead
+      // of cancelling them (fewer tiles arriving late and popping in), and keep more tiles in memory so zooming
+      // back out and in again reuses them instead of loading and popping again.
+      cancelPendingTileRequestsWhileZooming: false,
+      maxTileCacheSize: MAX_TILE_CACHE_TILES,
     });
     // Zoomed far out the world is a globe; it flattens to the usual game map as you zoom in.
     map.on('style.load', () => map.setProjection({ type: 'globe' }));

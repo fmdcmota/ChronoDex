@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "royal-albert-hall",
+  "name": "Royal Albert Hall",
+  "status": "partial",
+  "subject": {
+    "lat": 51.501007,
+    "lng": -0.1774058
+  },
+  "photoSpot": {
+    "lat": 51.50003,
+    "lng": -0.17742
+  },
+  "facingDeg": 0,
+  "captureRadiusM": 50,
+  "distanceM": 108.6,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:Royal_Albert_Hall,_Londres,_Inglaterra,_2022-11-25,_DD_02.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Royal_Albert_Hall,_Londres,_Inglaterra,_2022-11-25,_DD_02.jpg",
+      "note": "The reference photo; the photo spot is estimated from its viewpoint. Coordinates read from OpenStreetMap, not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): estimated from OpenStreetMap and from where the Commons reference photo appears to be taken. Not checked on site.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/royal-albert-hall.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Royal_Albert_Hall,_Londres,_Inglaterra,_2022-11-25,_DD_02.jpg",
+    "licence": "CC BY-SA 4.0",
+    "author": "Diego Delso",
+    "takenAt": "2022-11-25",
+    "takenFrom": null,
+    "facingDeg": 0,
+    "crop": "Commons 2560x1707 thumbnail, 110 px trimmed from the top and 157 px from the bottom, scaled to 1600x900.",
+    "notes": "South face seen from Kensington Gore or Prince Consort Road side, facing north; the whole drum, the south porch and the Albert Memorial reflected in the glass."
+  },
+  "eraYears": [
+    1871
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6: the Archivist (Agent 5) should check geometry, photo spot and years."
+  ]
+}
