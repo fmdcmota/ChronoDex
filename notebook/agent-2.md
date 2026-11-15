@@ -63,7 +63,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 
 - Last updated: 2026-11-15 03:51 (real clock)
 - Working on: the human answered HUMAN_TASKS 2.1 to 2.8 (see the log). Done from them: VOICE_CATALOG final with the five picks (Gemini voices now supported), panorama gets a third try and a flag, colour confirmed, voice-test page fixed for the HTTPS dev server. The /demo/ links in chronodex are Agent 6's demo set (not a bug).
-- Next: the real guide video for Queen's Tower 1893 (A2-r2-5) needs two more answers: Kling or Fabric for the talk clip (2.2 named voices only) and a yes to about $4.25 of the $14.97 left. Agent 1 to offer only selectableVoices() to the Historian.
+- Next: the real guide video (A2-r2-5) is ON HOLD by the human's decision: talk model is Kling, but no video is made until the team has confirmed more details. Do not start any video tier. Agent 1 to offer only selectableVoices() to the Historian.
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-15 08:00 (@agent-1 A1-r2-3, stamp ahead of the real clock)
 - Waiting for commit approval: nothing; the Sunday work is committed and pushed (A2-g, the human asked for it)
@@ -377,3 +377,7 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 - **2.8 E1: stick to the current two-step method.** Not adopted.
 - **The /demo/ links** in `chronodex` (my last post) are Agent 6's demo set (commit c2e7f6d, files in public/demo): not a bug. My regenerated Queen's Tower 1893 scene and panorama are superseded by theirs.
 - Tests: 540 pass.
+
+### 2026-11-15 03:54, talk model and video decision
+- The human chose **Kling** (`fal-ai/kling-video/ai-avatar/v2/standard`) for the talk clip; registry and `talk.ts` updated, Fabric stays the fallback.
+- **No guide video yet**: the human wants to confirm more details first. A2-r2-5 and A2-d are on hold; nothing paid was started.

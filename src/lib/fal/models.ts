@@ -145,7 +145,7 @@ export const MODELS: Record<FalStageKey, ModelChoice> = {
     fallback: 'veed/fabric-1.0',
     typicalCostUsd: null,
     typicalSeconds: 226,
-    note: 'A2-05: provisional until a human has watched. Kling: 226 s and $0.0562/s per 10 s clip. Fabric 480p: 53 s, $0.08/s.',
+    note: 'A2-05: Kling chosen by the human (HUMAN_TASKS 2.2, 15 Nov); Fabric stays the fallback. Kling: 226 s and $0.0562/s per 10 s clip. Fabric 480p: 53 s, $0.08/s.',
   },
   walk_on: {
     endpoint: 'kling/v4/image-to-video',

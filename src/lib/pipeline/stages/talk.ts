@@ -11,7 +11,7 @@ import type { StageContext, StageOutput } from './types';
  * Animate the guide frame with the narration.
  *
  * Model: MODELS.talk (Kling AI Avatar v2 standard; Fabric 1.0 is the fallback). The video lasts as
- * long as the audio. PROVISIONAL: the choice waits for a human to compare the two (A2-05).
+ * long as the audio. Kling was chosen by the human after comparing the two (HUMAN_TASKS 2.2).
  * Cost and time: Kling $0.0562 per second of video and about 226 s per 10 s clip, so a 45 s clip is
  * about $2.50 and 15 minutes. Fabric 480p is $0.08 per second and about 53 s per 10 s clip. The
  * maximum audio length is not stated by either model and a full 45 s clip has not been proven yet.
