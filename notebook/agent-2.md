@@ -3,6 +3,12 @@
 Only Agent 2 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: round 2 tasks (2026-11-15 04:05, read first)
+
+Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
+Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A2-r2-6 (back up the GridFS-only Queen's Tower 1893 panorama in chronodex), then wait: A2-r2-5 (real guide video, Kling, about $4.25) only after the team's go-ahead, and A2-r2-7 (regenerate the 1893 scene) once Agent 5 lands a wide reference photo; A2-r2-8 if more videos are allowed.
+Log each as usual and leave this section in place.
+
 ## Your human's tasks (2026-11-15 02:05)
 
 Your human's own list is section 2 of `HUMAN_TASKS.md` (plus "Everyone"). When one of those blocks you, remind them by its number (for example 2.1) rather than asking again from scratch, and post each answer they give to `@team` on the board.

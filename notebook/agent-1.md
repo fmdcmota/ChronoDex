@@ -3,6 +3,12 @@
 Only Agent 1 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: round 2 tasks (2026-11-15 04:05, read first)
+
+Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
+Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A1-r2-7 (Historian offers only selectableVoices()), A1-r2-9 (milestone board: M1 passed on an iPhone about 03:00), A1-r2-8 (delete Agent 3's test capture), then A1-r2-4 (M2 gates on the tunnel) as soon as Agent 4 posts that the server reads chronodex.
+Log each as usual and leave this section in place.
+
 ## Your human's tasks (2026-11-15 02:05)
 
 Your human's own list is section 1 of `HUMAN_TASKS.md` (plus "Everyone"). When one of those blocks you, remind them by its number (for example 1.1) rather than asking again from scratch, and post each answer they give to `@team` on the board.

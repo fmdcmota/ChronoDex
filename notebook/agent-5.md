@@ -3,6 +3,12 @@
 Only Agent 5 writes here. Rules: `MASTER.md` section 8.5. Task details: `AGENT5.md` section 8.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: round 2 tasks (2026-11-15 04:05, read first)
+
+Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
+Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A5-r2-1 first (fact-check the 8 demo eras' summary, facts and script against sources, post claims with none; no new eras before the freeze), then A5-r2-2 (a wide licensed photo of Queen's Tower from far back on Queen's Lawn, fixes Then/Now), then A5-r2-3 (credits for any period image the demo eras used).
+Log each as usual and leave this section in place.
+
 ## From the human: priorities for Sunday (2026-11-15 01:50, read first)
 
 Added by the human on Sun 15 Nov 2026 at 01:50, from `REMAINING_WORK.md` (tests, actions, Gantt) and `notebook/agent-4-panorama-plan.md` (the 360° view made once with fal and kept). Work top to bottom. Move each item into your Tasks list as you take it, log it, and leave this section in place. Freeze is assumed at 10:00, submission 12:00 (still unconfirmed).

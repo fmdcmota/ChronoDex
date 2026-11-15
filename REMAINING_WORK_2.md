@@ -1,6 +1,7 @@
 # Chronodex: what is left, round 2 (tasks per agent, Gantt)
 
-Written Sun 15 Nov 2026 at 03:10 by Agent 4 at the human's request, after phone tests 1 to 6. This replaces the
+Written Sun 15 Nov 2026 at 03:10 by Agent 4 at the human's request, after phone tests 1 to 6. **Updated at 04:05**
+after pulling main: statuses, new tasks for Agents 1 to 6, and a new Gantt from 04:00. This replaces the
 action list and Gantt in `REMAINING_WORK.md`, which stays as the record of round 1. Freeze is still assumed at
 10:00 and submission at 12:00 (unconfirmed). Clock note: some board posts are stamped hours ahead of the real
 time; times here are the real clock.
@@ -9,20 +10,26 @@ time; times here are the real clock.
 usual. Ask on the board when a task waits on someone else. Do not edit other agents' sections: post corrections to
 `@team` instead.
 
-## 1. Where we are
+## 1. Where we are (04:05)
 
-- **Everything runs on Agent 4's computer** (the human's decision): a production build with mocks off on port 3110,
-  shown to phones through a Cloudflare quick tunnel (URL on the board, it changes when the tunnel restarts). It
-  reads `chronodex_dev_agent2`, the only database with a generated era (Queen's Tower 1893). No worker runs.
-  `VIDEO_GENERATION=off`.
-- **What passed on a real iPhone:** the real 360° view of 1893 (horizon, seam, centring, motion, after the damping
-  fix), narration with captions, the guide-video preview, Sources with picture credits, the cache on reopening,
-  narration served from our own store, the real chat with streamed replies, voice replies, the round 1 fixes, and
-  the clips-and-microphone page.
-- **What failed or needs work** (section 2): ambience too loud in the chat and during recording; the Then/Now
-  slider compares two pictures taken from different viewpoints.
-- **Not done anywhere yet:** a real guide video (video tier never run), any era other than Queen's Tower 1893,
-  the demo database `chronodex` holding generated media, Android, a real capture with mocks off.
+- **The demo set exists.** Agent 6 generated 8 eras (core tier, no guide video) and loaded them into `chronodex`:
+  Queen's Tower 1893 and 1962, Royal Albert Hall 1871, Natural History Museum 1862 and 1881, Raffles' Landing
+  1819, Zócalo and Metropolitan Cathedral 1519, Dom Luís I Bridge 1886. Their files are in the repo under
+  `public/demo/<eraId>/` (27 MB). The other 14 eras are `missing`, and the Map greys their landmarks out
+  (Agent 3), so judges never open an empty Time Machine. **This is the demo list** unless the team says otherwise.
+- **Everything runs on Agent 4's computer**: production build, port 3110, Cloudflare quick tunnel (URL on the
+  board). At 04:05 it still reads `chronodex_dev_agent2`; Agent 4 switches it to `chronodex` first (A4-r2-2).
+- **Credits:** $14.97 of fal credit left (Agent 2's human). One guide video is about $4.25, so at most three.
+  **The guide video is on hold** until the team confirms details; the preview (portrait walks on, real narration,
+  captions) stands in. Talk model chosen: Kling. Voices final: Charlotte, Daniel, Gemini Kore, Aoede, Iapetus,
+  plus Agent 6's accent voices for Mexico City, Porto and Singapore.
+- **Done since 03:10:** chronodex seeded (Agent 1); the pipeline saves every output to our store and uploads
+  inputs through `toFalUrl` (Agent 2, A2-h); Queen's Tower 1893 regenerated in colour (Agent 2); real capture
+  through the tunnel, Dex, greyed-out landmarks (Agent 3); real ambience layers and levels, map zoom polish
+  (Agent 4); the demo set (Agent 6).
+- **Still open:** Then/Now for Queen's Tower 1893 (the stand-in reference photo is too close for the model to keep
+  its framing; a wide photo from far back on Queen's Lawn is the real fix); Android; the human reading the
+  8 demo briefs; listening to the accents; the M2 and M3 gates on a phone.
 
 ## 2. Phone test results (iPhone, Safari, 15 Nov about 03:00)
 
@@ -39,102 +46,130 @@ usual. Ask on the board when a task waits on someone else. Do not edit other age
 | Test 3 chat | Pass: good replies, voice replies work. Voice input failed once on the human's phone, probably the phone | Agent 4 retests on the real chat (A4-r2-6) |
 | Test 1 motion | Pass, given a good panorama | |
 
-## 3. Tasks per agent
+## 3. Tasks per agent (status at 04:05)
+
+✓ done, ▶ do now, ⏸ waiting (on what), ✗ dropped. Take ▶ tasks top to bottom. Older ✓ rows are kept so the
+history reads in one place.
 
 ### 3.1 Agent 1 (Core)
 
-| # | Task | Waits on | Done when |
-|---|---|---|---|
-| A1-r2-1 | Commit and push what is waiting (retry cap and briefs are on main as 76d1f14; check nothing else is left uncommitted) | nothing | `git status` clean on your branch |
-| A1-r2-2 | Read the board from 02:05 to now and answer the open asks: Agent 4's tunnel post (02:30), Agent 5's reference photo (02:10), Agent 3's Emmanuel College (seed) | nothing | REPLY posts |
-| A1-r2-3 | `npm run seed` into **`chronodex`** so it has all 12 landmarks and `referencePhotoUrl` `/reference/queens-tower.jpg`; confirm the copied JPEG is in `public/reference/` on Agent 4's machine (the server's checkout) | nothing | `GET /api/landmarks` on `chronodex` shows the JPEG path |
-| A1-r2-4 | Run the M2 gate checks (capture, Dex, chat, generate) against the tunnel URL with the human, log M1 and M2 on the milestone board in `DEV_NOTEBOOK.md` | the tunnel URL on the board | milestone board updated |
-| A1-r2-5 | Pick the demo eras with the human (Queen's Tower 1893 plus at most three more that Agent 5 has data for), write or refresh their briefs on the Archivist notes, and get a human to read them (H7) before Agent 2 spends | Agent 5 data, a human | a list on the board, briefs read |
-| A1-r2-6 | Switch-over day plan: when `chronodex` has the demo eras, tell Agent 4 to point the server at it | A2-r2-3 | board post |
+| # | Task | Status |
+|---|---|---|
+| A1-r2-1 | Push pending work | ✓ |
+| A1-r2-3 | Seed `chronodex` (all landmarks, reference photo path) | ✓ 13+ landmarks, 20+ eras |
+| A1-r2-5 | Demo era list | ✓ Agent 6's 8 eras, unless the team objects on the board |
+| A1-r2-6 | Tell Agent 4 to switch the server | ✗ not needed, Agent 4 switches now |
+| A1-r2-7 | **New.** Historian offers only `selectableVoices()` from `@/lib/fal` (Agent 2's 03:51 ask), so no retired voice is picked again | ▶ |
+| A1-r2-4 | M2 gate checks (capture, Dex, chat, generate) on the tunnel once it serves `chronodex`; log M1 and M2 on the milestone board | ⏸ A4-r2-2, then ▶ |
+| A1-r2-8 | **New.** Delete Agent 3's test capture (player `a3-test-1794712950868`) from `chronodex_dev_agent2` | ▶ low |
+| A1-r2-9 | **New.** Keep `DEV_NOTEBOOK.md`'s milestone board current: M1 passed on an iPhone at about 03:00 (real panorama), M2 waits on A1-r2-4 | ▶ |
 
 ### 3.2 Agent 2 (Studio)
 
-| # | Task | Waits on | Done when |
-|---|---|---|---|
-| A2-r2-1 | Commit and push the uncommitted queue on `agent-2` if any is left (your notebook says it was waiting for one final commit) | nothing | `main` has it |
-| A2-r2-2 | **A2-h:** in `runEraJob`, `persistFromUrl` each stage's output before `patchEra`, and pass every model input through `toFalUrl` (covers A2-a: `/reference/<id>.jpg` is uploaded once, an `.svg` is refused). API in `src/lib/media/README.md` | nothing | a test run of the core tier writes `/api/media/...` URLs |
-| A2-r2-3 | **Fix Then/Now (6.5):** generate the demo eras' core tier into `chronodex` from the real reference photo, Queen's Tower 1893 first. The scene must be an edit of `/reference/queens-tower.jpg` with the same framing. Use `scripts/pregenerate.ts`; core only, about $0.62 an era. Run the worker on Agent 4's machine (everything runs there) | A2-r2-2, A1-r2-3, A1-r2-5 for eras after the first | Then/Now lines up on a phone |
-| A2-r2-4 | Ask the human for the H-A picks (voices, talk model) with `review.html` open, then finalise `VOICE_CATALOG` and remove the `placeholder-*` keys | the human | catalogue final |
-| A2-r2-5 | **The real guide video** for Queen's Tower 1893 in `chronodex`: `VIDEO_GENERATION=on` for that job only, about $4.25 and about 15 min of Kling time. Start it early, it runs in the background. The Time Machine plays the clips as soon as `guideVideo` is set | A2-r2-3, A2-r2-4, the human's yes on credits | three clips play on a phone |
-| A2-r2-6 | `scripts/backup-media.ts` after each batch (the media store already keeps a copy; this is the second copy on disk) | A2-r2-3 | backup folder holds every era |
+| # | Task | Status |
+|---|---|---|
+| A2-r2-1 | Push the queue | ✓ PR 4 and 5 |
+| A2-r2-2 | Persist outputs, `toFalUrl` inputs (A2-h) | ✓ |
+| A2-r2-3 | Regenerate Queen's Tower 1893 from the reference photo | ✓ done, but the framing cannot match the close stand-in photo (see A5-r2-2) |
+| A2-r2-4 | Final voices | ✓ |
+| A2-r2-5 | Real guide video for Queen's Tower 1893 (Kling, about $4.25) | ⏸ the team's go-ahead; then ▶ first thing, it takes about 15 min |
+| A2-r2-6 | **Changed.** Back up what is only in GridFS: `chronodex`'s Queen's Tower 1893 panorama (`/api/media/...`). The 8 demo eras' other files are in the repo already | ▶ |
+| A2-r2-7 | **New.** When A5-r2-2 lands a wide reference photo, regenerate only the 1893 scene (about $0.17) so Then/Now lines up | ⏸ A5-r2-2 |
+| A2-r2-8 | **New.** If the go-ahead allows more than one video, Royal Albert Hall 1871 next, then one non-London era | ⏸ team |
 
 ### 3.3 Agent 3 (Explorer)
 
-| # | Task | Waits on | Done when |
-|---|---|---|---|
-| A3-r2-1 | Commit and push what is waiting (MOCK DATA tag, upload wording; leave `.gitignore` to Agent 1) | nothing | pushed |
-| A3-r2-2 | Real capture with mocks off through the tunnel: capture, badge, Time Machine; MAP-10 and MAP-11 | the tunnel URL | logged on the board |
-| A3-r2-3 | Android pass of Map, Capture and Dex (`spikes/agent-3/PHONE_TEST.md`) with a human | an Android phone | results logged |
-| A3-r2-4 | Make sure every landmark that will be in the demo has its sprite and badge; hide or grey out landmarks that will have no generated era by the demo, so judges do not tap into an empty Time Machine (agree the list with Agent 1, A1-r2-5) | A1-r2-5 | Dex matches the demo list |
-| A3-r2-5 | Polish only from here, nothing new after 10:00 | | |
+| # | Task | Status |
+|---|---|---|
+| A3-r2-1, r2-2, r2-4 | Push, real capture through the tunnel, grey out landmarks with no ready era | ✓ |
+| A3-r2-5 | **New.** Once the server reads `chronodex` (A4-r2-2), check that exactly the 8 demo landmarks light up and the rest are grey, on the tunnel | ⏸ A4-r2-2, then ▶ |
+| A3-r2-3 | Android pass of Map, Capture, Dex | ⏸ a human with an Android phone |
+| A3-r2-6 | **New.** MAP-11 Add to Home Screen on a real iPhone | ⏸ a human |
+| A3-r2-7 | Polish only. Nothing new after 10:00 | |
 
 ### 3.4 Agent 4 (Time Machine)
 
-| # | Task | Waits on | Done when |
-|---|---|---|---|
-| A4-r2-1 | **Ambience (6.4, 5.4):** play Agent 2's real loops (`<bucket>.m4a` music plus `<bucket>-street.mp3`, two layers with a short crossfade; today the player asks for `<bucket>.mp3` and falls back to noise). Lower the chat level well below the Time Machine's, and silence it completely while the mic records and while a reply is spoken | nothing | retest 5.4 and 6.4 pass |
-| A4-r2-2 | Keep the phone server and tunnel running; post the new URL whenever the tunnel restarts; switch the server to `chronodex` when A1-r2-6 says so; then run `scripts/persist-media.ts` there without `--copy-only` if any fal URLs remain | A1-r2-6 | demo served from `chronodex` |
-| A4-r2-3 | **Then/Now check (6.5):** once A2-r2-3 has made the new scene, check the overlay on a phone; if the framing drifts a little, add a per-era offset or crop, and hide the Then/Now button for an era whose scene is not an edit of the current reference photo | A2-r2-3 | 6.5 passes |
-| A4-r2-4 | Map zoom-fade polish handed over by Agent 3 (05:30 post): water and park shapes swapping detail at zoom changes, late tiles appearing at once | nothing | smooth on a phone |
-| A4-r2-5 | Real guide video on a phone when A2-r2-5 lands: clips in order, captions on the talk clip, no gap | A2-r2-5 | 6.4 with the real video |
-| A4-r2-6 | Voice input on the real chat on a second phone (the human's failed once, probably the phone) | a phone | passes on two phones |
-| A4-r2-7 | Android pass of the Time Machine and chat (A4-10) | an Android phone | logged |
+| # | Task | Status |
+|---|---|---|
+| A4-r2-1 | Ambience: real layers, quieter chat, silent while recording | ✓ phone retest PHONE_TEST 6.10 to 6.13 |
+| A4-r2-4 | Map zoom polish | ✓ |
+| A4-r2-2 | **Switch the phone server to `chronodex`**, with `public/reference/queens-tower.jpg` in the server's checkout; post on the board | ▶ first |
+| A4-r2-3 | Then/Now for Queen's Tower 1893: check Agent 6's scene against the reference photo; apply Agent 2's crop or hide the button for eras whose scene does not line up | ▶ |
+| A4-r2-8 | **New.** Keep `/demo/...` files in the browser cache too (they never change), so the 8 demo eras open instantly on a second visit | ▶ |
+| A4-r2-9 | **New.** Gemini voices return WAV: check narration and chat replies play on iOS from WAV | ▶ |
+| A4-r2-5 | Real guide video on a phone | ⏸ A2-r2-5 |
+| A4-r2-6, r2-7 | Voice input on a second phone; Android pass | ⏸ a human with the phones |
 
-### 3.5 The humans (short, everything above waits on these)
+### 3.5 Agent 5 (Archivist)
+
+| # | Task | Status |
+|---|---|---|
+| A5-r2-1 | **New.** Fact-check the 8 demo eras' text (summary, fun facts, script) against sources; post any claim that has none. This replaces new research: no new eras before the freeze | ▶ first |
+| A5-r2-2 | **New.** A wide, licensed present-day photo of Queen's Tower from far back on Queen's Lawn, so the 1893 scene can keep its framing with the Institute's wings added (fixes Then/Now) | ▶ |
+| A5-r2-3 | Picture credits (`licence`, `author`, `pageUrl`) for any period image the 8 demo eras used, so the Sources drawer credits them | ▶ |
+
+### 3.6 Agent 6 (demo set)
+
+| # | Task | Status |
+|---|---|---|
+| A6-r2-1 | **New.** Once the server reads `chronodex`, open all 8 eras through the tunnel (headless is fine): 360 view, Meet guide, Sources, chat reply; post anything broken to its owner | ⏸ A4-r2-2, then ▶ |
+| A6-r2-2 | **New.** Write the demo route (which landmarks, in which order, what to say) for the rehearsal, in `scripts/demo/README.md` or a new `DEMO.md` | ▶ |
+
+### 3.7 The humans
 
 | # | Task | Unblocks |
 |---|---|---|
-| HU-1 | Agent 2's human: pick voices and the talk model in `spikes/agent-2/out/review.html` (H-A) | A2-r2-4, A2-r2-5 |
-| HU-2 | Say how many fal credits are left, and yes or no to about $4.25 for one real guide video | A2-r2-5 |
-| HU-3 | Read the demo eras' briefs (H7) | A2-r2-3 beyond the first era |
+| HU-1 | Voices and talk model | ✓ |
+| HU-2 | Go or no-go on the guide video: $14.97 left, about $4.25 each | A2-r2-5, A4-r2-5 |
+| HU-3 | Read the 8 demo eras' briefs (H7), helped by A5-r2-1 | the demo's accuracy |
 | HU-4 | An Android phone for A3-r2-3 and A4-r2-7 | Android |
-| HU-5 | Confirm the deadline and judging criteria | the whole schedule |
+| HU-5 | Confirm the deadline and judging criteria | the schedule |
+| HU-6 | **New.** Listen to the accented voices (Mexico City, Porto, Singapore) and say if any sound wrong | Agent 6 |
+| HU-7 | **New.** Phone retest 6.10 to 6.13 (ambience) and 6.5 after A4-r2-3 | A4 |
+| HU-8 | **New.** Keep Agent 4's computer awake and plugged in: it is the whole demo | everything |
 
-## 4. Gantt (real clock, Sunday 15 Nov)
+## 4. Gantt (real clock, from 04:00, Sunday 15 Nov)
 
-Each column is one hour from the time shown. `█` work, `▒` waiting or checking on a phone, `◆` milestone.
+Each column is one hour from the time shown. `█` work, `▒` waiting or checking on a phone, `◆` milestone,
+`?` only if the team says yes.
 
 ```
-                                            03 04 05 06 07 08 09 10 11 12
- CRITICAL PATH: one real demo era with everything
-  A2-r2-1 / A1-r2-1 / A3-r2-1 commit queues  █
-  A2-r2-2 persist + toFalUrl in pipeline     █  █
-  A1-r2-3 seed chronodex (12 landmarks)      █
-  A2-r2-3 Queen's Tower 1893 core in chronodex  █  █
-  A4-r2-3 Then/Now check on a phone              ▒  █
-  A4-r2-2 server switched to chronodex              █
-  M1/M2 gates on the tunnel (A1-r2-4)               ▒  ◆
-  HU-1/HU-2 voices, talk model, credits      ▒  ▒
-  A2-r2-5 real guide video (background)            █  █  █
-  A4-r2-5 guide video on a phone                            ▒  ◆ M3
+                                            04 05 06 07 08 09 10 11 12
+ CRITICAL PATH: the demo served from chronodex, checked on phones
+  A4-r2-2 server on chronodex                █
+  A3-r2-5 / A6-r2-1 check the 8 eras         █  █
+  A1-r2-4 M2 gates on the tunnel                ▒  ◆ M2
+  A4-r2-3 Then/Now fix or hide               █  █
+  HU-7 phone retest (ambience, Then/Now)        ▒  ▒
+  HU-2 guide video go or no-go               ▒  ▒
+  A2-r2-5 real guide video (Kling, bg)          ?  ?  ?
+  A4-r2-5 guide video on a phone                      ?  ◆ M3 (preview stands in if no)
 
  PARALLEL
-  A4-r2-1 ambience layers and levels         █  █
-  A4-r2-4 map fade polish                          █  █
-  A1-r2-5 demo era list + briefs + read         █  █  ▒
-  A2-r2-3 more demo eras, one an hour                █  █  █  █
-  A3-r2-2 real capture, A3-r2-3 Android            ▒  ▒  ▒
-  A3-r2-4 demo list on map and Dex                       █
-  A4-r2-6/7 voice on 2nd phone, Android               ▒  ▒  ▒
-  A2-r2-6 backup-media after each batch                  █     █  ◆
+  A5-r2-1 fact-check 8 demo eras             █  █  █
+  HU-3 read the 8 briefs                        ▒  ▒  ▒
+  A1-r2-7 Historian voice list               █
+  A2-r2-6 back up GridFS-only files          █
+  A4-r2-8/9 demo files cached, WAV on iOS    █  █
+  A5-r2-2 wide Queen's Tower photo           █  █  █
+  A2-r2-7 regenerate 1893 scene                       █
+  A6-r2-2 demo route written                    █  █
+  HU-6 listen to accents                     ▒  ▒
+  A3/A4 Android (HU-4)                             ▒  ▒
 
  FINISH
-  FEATURE FREEZE                                                  ◆
-  backup video, three run-throughs, fixes only                      █  █
-  SUBMISSION                                                           ◆
+  M4 content complete, backed up                          ◆
+  FEATURE FREEZE                                             ◆
+  backup video, three run-throughs, fixes only                  █  █
+  SUBMISSION                                                       ◆
 ```
 
-**Order of completion:** (1) by 04:00 every pending commit is pushed and `chronodex` is seeded; (2) by 05:00
-the pipeline persists its outputs and Queen's Tower 1893 is regenerated in `chronodex` from the real reference
-photo, so Then/Now lines up; (3) by 06:00 the server serves `chronodex` and the M2 gate passes on a phone;
-(4) by 08:00 the real guide video plays (M3), if the credits allow it; (5) until 10:00 one more demo era an hour,
-backed up as they land; (6) 10:00 freeze, then rehearse and submit.
+**Order of completion:** (1) 04:00 to 05:00 the server reads `chronodex` and the 8 demo eras are checked on the
+tunnel; (2) by 06:00 the M2 gate passes on a phone and Then/Now is fixed or hidden; (3) 05:00 to 08:00 the
+fact-check and the human's brief reading run in parallel; the guide video runs only if the team says yes;
+(4) 09:00 content complete and backed up (M4); (5) 10:00 freeze; rehearse with Agent 6's demo route; submit.
 
-**Risks.** Credits and the voice and talk-model picks (HU-1, HU-2) decide whether a real guide video exists at
-all; the preview stands in if not. One machine runs everything: if it sleeps, the demo is down, so keep it awake
-and plugged in. The quick tunnel URL changes on every restart: always post the new one.
+**Risks.** One computer runs everything: if it sleeps or the tunnel restarts, the URL changes and the demo is
+down, so keep it awake (HU-8) and post every new URL. Guide video credits: three at most. The stand-in reference
+photo keeps Then/Now approximate for Queen's Tower until a wide photo exists; hiding the button is the fallback.
+

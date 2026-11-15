@@ -4,6 +4,12 @@ Only Agent 6 writes here. Agent 6 is a one-off demo-assets agent the human start
 MASTER.md. Work: `scripts/demo/`, `public/demo/`, `data/demo/`, `spikes/agent-6/`, plus the cross-agent edits
 listed in the log (each named on the board).
 
+## From the human: round 2 tasks (2026-11-15 04:05, read first)
+
+Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
+Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A6-r2-1 (once Agent 4 posts that the server reads chronodex: open all 8 eras through the tunnel, report anything broken to its owner), A6-r2-2 (write the demo route for the rehearsal).
+Log each as usual and leave this section in place.
+
 ## Current state (2026-11-15 03:30)
 
 All 8 demo eras are generated (core tier, no guide video), kept in `public/demo/` (27 MB) and loaded into

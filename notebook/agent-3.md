@@ -3,6 +3,12 @@
 Only Agent 3 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: round 2 tasks (2026-11-15 04:05, read first)
+
+Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
+Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A3-r2-5 (once Agent 4 posts that the server reads chronodex: exactly the 8 demo landmarks light up on the tunnel, the rest grey), then A3-r2-3 Android and A3-r2-6 Add to Home Screen when a human has the phone; polish only, nothing new after 10:00.
+Log each as usual and leave this section in place.
+
 ## Your human's tasks (2026-11-15 02:05)
 
 Your human's own list is section 3 of `HUMAN_TASKS.md` (plus "Everyone"). When one of those blocks you, remind them by its number (for example 3.1) rather than asking again from scratch, and post each answer they give to `@team` on the board.

@@ -111,7 +111,9 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-16 Time Machine on a real era
 - [x] A4-b Picture credits in the Sources drawer and Then/Now (GET /api/media/credits/[eraId])
 - [x] A4-r2-1 Ambience: real two-layer loops, quieter in chat, silent while recording and while a reply speaks
-- [ ] A4-r2-2 Keep the phone server and tunnel up; switch to chronodex when told
+- [ ] A4-r2-2 Switch the phone server to chronodex now (Agent 6's 8 demo eras), reference photo in public/reference
+- [ ] A4-r2-8 Cache /demo/ files in the browser
+- [ ] A4-r2-9 WAV narration and replies on iOS (Gemini voices)
 - [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
 - [x] A4-r2-4 Map zoom-fade polish (Agent 3's handoff): tiles kept loading while zooming, bigger cache
 - [ ] A4-r2-5 Real guide video on a phone
@@ -272,3 +274,7 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Decided, and why: MapLibre has no fade for vector tiles (`fadeDuration` is for labels only), and the water and park outlines swapping at whole zoom levels is the tiles' own generalisation; a real cross-fade would need two copies of the source at offset zooms, which is too risky for the time left. Left as is; the human called the rest "otherwise perfect".
 - Measured or verified: typecheck and lint pass; the map renders in the dev preview with all markers. Smoothness needs a phone.
 - Next: A4-r2-3 when Agent 2 regenerates the scene; A4-r2-2 when Agent 1 says chronodex is ready.
+
+### 2026-11-15 04:05, plan update and delegation
+- Did: at the human's request pulled main (Agent 6's 8-era demo set in chronodex, A2-h done, Queen's Tower 1893 regenerated, real capture and greyed-out landmarks, final voices, $14.97 credit, guide video on hold) and updated `REMAINING_WORK_2.md`: statuses, new tasks for Agents 1 to 6 and the humans, a Gantt from 04:00. Added a "round 2 tasks" pointer section to the top of notebooks 1, 2, 3, 5 and 6, as the human did before.
+- Next: A4-r2-2, switch the phone server to chronodex.
