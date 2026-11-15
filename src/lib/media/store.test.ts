@@ -163,6 +163,18 @@ describe('toFalUrl', () => {
     await rm(pub, { recursive: true, force: true });
   });
 
+  it('never records a non-http fal URL (a mock uploadToFal), and ignores one already recorded', async () => {
+    const pub = await mkdtemp(path.join(tmpdir(), 'pub-'));
+    await writeFile(path.join(pub, 'ref.jpg'), 'JPEG');
+    const { store, upload } = setup(createMemoryBackend(), pub);
+    upload.mockResolvedValueOnce('/mock/reference.svg');
+    expect(await store.toFalUrl('/ref.jpg')).toBe('/mock/reference.svg');
+    // Not remembered: the next call uploads for real.
+    expect(await store.toFalUrl('/ref.jpg')).toMatch(/^https:\/\/v3\.fal\.media\//);
+    expect(upload).toHaveBeenCalledTimes(2);
+    await rm(pub, { recursive: true, force: true });
+  });
+
   it('passes other http URLs through unchanged', async () => {
     const { store } = setup(createMemoryBackend());
     expect(await store.toFalUrl('https://upload.wikimedia.org/a.jpg')).toBe('https://upload.wikimedia.org/a.jpg');

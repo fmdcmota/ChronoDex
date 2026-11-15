@@ -312,12 +312,14 @@ export function createMediaStore(deps: MediaStoreDeps): MediaStore {
     if (asset.contentType === 'image/svg+xml') throw new Error(`Media ${id} is an SVG, which fal models cannot read`);
     const now = deps.now().getTime();
     const expires = asset.falUrlExpiresAt ? Date.parse(asset.falUrlExpiresAt) : 0;
-    if (asset.falUrl && expires - now > FAL_URL_MIN_REMAINING_MS) return asset.falUrl;
+    // A recorded URL counts only if fal could fetch it: an old mock run once stored "/mock/reference.svg" here.
+    if (asset.falUrl && isHttpUrl(asset.falUrl) && expires - now > FAL_URL_MIN_REMAINING_MS) return asset.falUrl;
 
     const stream = await backend.read(id);
     const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
     const falUrl = await deps.uploadToFal(new Blob([bytes], { type: asset.contentType }));
-    await backend.setFalUrl(id, falUrl, iso(now + FAL_URL_ASSUMED_LIFETIME_MS));
+    // Agent 2's ask (04:27): never cache what a mock uploadToFal returns. It is passed back, not remembered.
+    if (isHttpUrl(falUrl)) await backend.setFalUrl(id, falUrl, iso(now + FAL_URL_ASSUMED_LIFETIME_MS));
     return falUrl;
   }
 
@@ -333,4 +335,14 @@ export function createMediaStore(deps: MediaStoreDeps): MediaStore {
   };
 
   return { persistBytes, persistFromUrl, toFalUrl, getAsset: (id) => backend.get(id) };
+}
+
+/**
+ * Whether a URL is one fal's servers could fetch: absolute http or https.
+ *
+ * @param url - A URL returned by uploadToFal or recorded in the ledger.
+ * @returns True for `http://` and `https://` URLs only.
+ */
+export function isHttpUrl(url: string): boolean {
+  return /^https?:\/\//i.test(url);
 }
