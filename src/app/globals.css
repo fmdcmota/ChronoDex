@@ -65,6 +65,39 @@ body {
   position: fixed;
   inset: 0;
   overflow: hidden;
+  /* Space, shown only around the globe when zoomed far out (the flat map covers it). Top layer
+     first: the sun in the upper right, then two tiles of square 8-bit stars (different sizes so
+     the pattern never visibly repeats), then a near-black blue sky. The galaxy is the ::before. */
+  background:
+    radial-gradient(circle at 86% 11%, #fff6c8 0 16px, #f2b43c 17px 30px, rgb(242 180 60 / 0.3) 31px 62px, rgb(242 180 60 / 0.1) 63px 110px, transparent 111px),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27256%27%20height%3D%27256%27%20shape-rendering%3D%27crispEdges%27%3E%3Crect%20x%3D%2784%27%20y%3D%27244%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27168%27%20y%3D%2714%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2795%27%20y%3D%27151%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2711%27%20y%3D%2724%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%2719%27%20y%3D%2763%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2717%27%20y%3D%27213%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27163%27%20y%3D%27162%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2714%27%20y%3D%27251%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27144%27%20y%3D%27221%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27109%27%20y%3D%2738%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27145%27%20y%3D%27210%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27150%27%20y%3D%27148%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2726%27%20y%3D%27142%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27160%27%20y%3D%2754%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%27200%27%20y%3D%2782%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%2794%27%20y%3D%2778%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27180%27%20y%3D%27201%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27149%27%20y%3D%2778%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%27188%27%20y%3D%27116%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23dfe8ff%27%2F%3E%3Crect%20x%3D%2732%27%20y%3D%27133%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%27195%27%20y%3D%2789%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27109%27%20y%3D%2712%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2789%27%20y%3D%27179%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23dfe8ff%27%2F%3E%3Crect%20x%3D%27150%27%20y%3D%27206%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%27217%27%20y%3D%2725%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23dfe8ff%27%2F%3E%3Crect%20x%3D%27180%27%20y%3D%27172%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27193%27%20y%3D%27183%27%20width%3D%272%27%20height%3D%276%27%20fill%3D%27%23fff%27%2F%3E%3Crect%20x%3D%27191%27%20y%3D%27185%27%20width%3D%276%27%20height%3D%272%27%20fill%3D%27%23fff%27%2F%3E%3Crect%20x%3D%2785%27%20y%3D%27169%27%20width%3D%272%27%20height%3D%276%27%20fill%3D%27%23fff%27%2F%3E%3Crect%20x%3D%2783%27%20y%3D%27171%27%20width%3D%276%27%20height%3D%272%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") 0 0 / 256px 256px,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27173%27%20height%3D%27173%27%20shape-rendering%3D%27crispEdges%27%3E%3Crect%20x%3D%27117%27%20y%3D%27145%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%27132%27%20y%3D%27152%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27133%27%20y%3D%27123%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27116%27%20y%3D%2779%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27139%27%20y%3D%27164%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27117%27%20y%3D%27159%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27137%27%20y%3D%2718%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2750%27%20y%3D%2763%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2785%27%20y%3D%27114%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%27165%27%20y%3D%2777%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23fff3b8%27%2F%3E%3Crect%20x%3D%2723%27%20y%3D%27119%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23dfe8ff%27%2F%3E%3Crect%20x%3D%27143%27%20y%3D%2723%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23dfe8ff%27%2F%3E%3Crect%20x%3D%2760%27%20y%3D%27133%27%20width%3D%272%27%20height%3D%272%27%20fill%3D%27%23dfe8ff%27%2F%3E%3Crect%20x%3D%2719%27%20y%3D%27146%27%20width%3D%273%27%20height%3D%273%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2733%27%20y%3D%2778%27%20width%3D%272%27%20height%3D%276%27%20fill%3D%27%23fff%27%2F%3E%3Crect%20x%3D%2731%27%20y%3D%2780%27%20width%3D%276%27%20height%3D%272%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") 40px 70px / 173px 173px,
+    linear-gradient(180deg, #03040b 0%, #070a18 60%, #0a0f24 100%);
+  image-rendering: pixelated;
+}
+
+/* A faint galaxy band with a bright core. z-index -1 puts it behind everything in the map, so it
+   can never tint the globe (it is inside .map-root's own stacking context). */
+.map-root::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: 4%;
+  width: 100%;
+  height: 17%;
+  z-index: -1;
+  pointer-events: none;
+  transform: rotate(22deg);
+  background:
+    radial-gradient(ellipse 9% 40% at 50% 50%, rgb(225 235 255 / 0.5), transparent),
+    radial-gradient(ellipse 50% 45% at 50% 50%, rgb(90 110 190 / 0.35), transparent),
+    radial-gradient(ellipse 70% 70% at 50% 50%, rgb(40 80 150 / 0.2), transparent);
+  animation: galaxy-drift 40s ease-in-out infinite alternate;
+}
+
+@keyframes galaxy-drift {
+  from { transform: rotate(22deg) translateX(-2%); }
+  to { transform: rotate(22deg) translateX(2%); }
 }
 
 h2 {
@@ -169,6 +202,12 @@ p {
   display: block;
   width: 64px;
   height: 64px;
+}
+
+.zoomed-out .marker-body {
+  /* Far out, markers shrink to half size (a whole-number art scale: 32 px art at 32 CSS px). */
+  transform: scale(0.5);
+  transform-origin: bottom center;
 }
 
 .marker img {
@@ -368,6 +407,9 @@ p {
   padding: 0.5rem;
   box-shadow: var(--pixel-frame);
   font-size: 0.8rem;
+  /* Eleven landmark buttons: scroll inside the panel instead of covering the map. */
+  max-height: 45vh;
+  overflow-y: auto;
 }
 
 .dev-jumps {
@@ -822,6 +864,7 @@ a.btn {
   .ui-progress-running .ui-progress-mark,
   .dex-skeleton,
   .award-badge,
+  .map-root::before,
   .player-dot {
     animation: none;
   }

@@ -17,7 +17,7 @@
 import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SPIKE_LANDMARKS } from '../src/lib/landmarks';
+import { ART_LANDMARKS } from '../src/lib/landmarks';
 import { PALETTE } from '../src/lib/palette';
 import { hex, PixelCanvas } from './pixel/canvas';
 import { BADGE_PX, makeBadge } from './pixel/badges';
@@ -42,10 +42,10 @@ function save(relPath: string, canvas: PixelCanvas): void {
 }
 
 const cell = BADGE_PX + GAP_PX;
-const sheet = new PixelCanvas(GAP_PX + SPIKE_LANDMARKS.length * cell, GAP_PX + 3 * cell);
+const sheet = new PixelCanvas(GAP_PX + ART_LANDMARKS.length * cell, GAP_PX + 3 * cell);
 sheet.rect(0, 0, sheet.width - 1, sheet.height - 1, hex(PALETTE.ground));
 
-SPIKE_LANDMARKS.forEach((landmark, i) => {
+ART_LANDMARKS.forEach((landmark, i) => {
   const draw = SPRITES[landmark.id];
   if (!draw) throw new Error(`No sprite drawn for landmark "${landmark.id}"`);
   const sprite = draw();

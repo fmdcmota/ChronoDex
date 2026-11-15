@@ -82,9 +82,9 @@ describe('nearestLandmark', () => {
 });
 
 describe('fixture landmarks', () => {
-  it('has six landmarks with unique kebab-case ids and ascending years', () => {
-    expect(landmarks).toHaveLength(6);
-    expect(new Set(landmarks.map((l) => l.id)).size).toBe(6);
+  it('has eleven landmarks (six in London, five in Singapore and Oslo) with unique kebab-case ids and ascending years', () => {
+    expect(landmarks).toHaveLength(11);
+    expect(new Set(landmarks.map((l) => l.id)).size).toBe(11);
     for (const l of landmarks) {
       expect(l.id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
       expect([...l.eraYears].sort((a, b) => a - b)).toEqual(l.eraYears);

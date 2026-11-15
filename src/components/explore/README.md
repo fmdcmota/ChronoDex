@@ -14,7 +14,8 @@ Agent 3 (Explorer): the Map, Capture and Dex screens. Shared pixel UI kit is in 
 
 `palette`, `game-map-style`, `map-geometry`, `geo-format` (distance, compass, hint), `location`
 (GPS state machine plus dev spoof), `fix-store` (Map to Capture hand-off), `image-resize` (1600 px
-JPEG), `capture-messages` (refusal and API-failure wording), `dex-cache` (localStorage), `dex-view`.
+JPEG), `capture-messages` (refusal and API-failure wording), `dex-cache` (localStorage), `dex-view`, `map-region` (which city the map opens on, the World/City chip; new cities need no
+map work, see `spikes/agent-3/ADD_A_CITY.md`).
 
 ## Run and test
 

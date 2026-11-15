@@ -21,9 +21,10 @@ import { api, getPlayerId } from '@/lib/client';
 import { haversineM, withinCaptureRange, type Landmark, type LandmarkId } from '@/lib/contracts';
 import { buildGameMapStyle } from './lib/game-map-style';
 import { LocationTracker, locationMessage, type LocationState, type PlayerFix } from './lib/location';
-import { clearFix, saveFix } from './lib/fix-store';
+import { clearFix, loadFix, saveFix } from './lib/fix-store';
 import { directionHint, formatDistance, nearestLandmark } from './lib/geo-format';
 import { circlePolygon } from './lib/map-geometry';
+import { groupIntoRegions, pickRegion, REGION_GAP_M, shouldFly } from './lib/map-region';
 import { PALETTE } from './lib/palette';
 
 /**
@@ -31,11 +32,14 @@ import { PALETTE } from './lib/palette';
  * 64 px tall above their point, and the top banner and bottom HUD each take about 130 px.
  */
 const FIT_PADDING_PX = { top: 200, bottom: 160, left: 40, right: 40 };
-/** Keep the player inside the game world: South Kensington and a margin. [[west, south], [east, north]]. */
-const WORLD_BOUNDS: [[number, number], [number, number]] = [
-  [-0.1935, 51.4905],
-  [-0.1595, 51.5065],
-];
+/** Zoom of the "whole globe" view. MapLibre 512 px tiles: about 1.6 shows the planet as a ball on a phone. */
+const WORLD_ZOOM = 1.6;
+/** Below this zoom the button reads "City" and takes the player back; at or above it, it reads "World". */
+const WORLD_VIEW_BELOW = 10;
+/** Below this zoom landmark markers shrink so eleven of them do not pile up on a city. */
+const MARKERS_SHRINK_BELOW = 13;
+/** Lowest zoom the player can pinch out to: the whole globe. */
+const MIN_ZOOM = 1;
 /**
  * Zoom used when the map first finds the player. MapLibre uses 512 px tiles, so zoom 17 is about
  * 145 m across a phone: enough to see a whole 50 m capture ring.
@@ -47,9 +51,9 @@ const DEV_TOOLS = process.env.NEXT_PUBLIC_DEV_TOOLS === '1';
 const DEFAULT_SPOOF_ACCURACY_M = 10;
 
 /**
- * The box around every landmark's subject and photo spot, so the map opens framed on all six.
+ * The box around every given landmark's subject and photo spot, so the map opens framed on them.
  *
- * @param landmarks - The landmarks to frame.
+ * @param landmarks - The landmarks to frame (one region, see lib/map-region.ts).
  * @returns Bounds that contain every subject and photo spot.
  */
 function landmarkBounds(landmarks: readonly Landmark[]): LngLatBounds {
@@ -59,6 +63,18 @@ function landmarkBounds(landmarks: readonly Landmark[]): LngLatBounds {
     bounds.extend([landmark.photoSpot.lng, landmark.photoSpot.lat]);
   }
   return bounds;
+}
+
+/**
+ * The landmarks the map first frames: one city's worth.
+ *
+ * @param landmarks - Every landmark.
+ * @returns The members of the region nearest the player's saved fix, else the biggest region.
+ */
+function openingRegion(landmarks: readonly Landmark[]): readonly Landmark[] {
+  const regions = groupIntoRegions(landmarks, (l) => l.photoSpot, REGION_GAP_M);
+  const saved = loadFix(Date.now(), DEV_TOOLS);
+  return pickRegion(regions, (l) => l.photoSpot, saved?.position ?? null)?.items ?? landmarks;
 }
 
 /**
@@ -102,6 +118,7 @@ export default function MapScreen() {
   const [location, setLocation] = useState<LocationState>({ status: 'idle' });
   const [selected, setSelected] = useState<Landmark | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [worldView, setWorldView] = useState(false);
   const [spoofAccuracyM, setSpoofAccuracyM] = useState(DEFAULT_SPOOF_ACCURACY_M);
 
   /** The latest good fix, kept even when the tracker reports a timeout or an outage. */
@@ -134,7 +151,11 @@ export default function MapScreen() {
     map.getSource<GeoJSONSource>('accuracy')?.setData(circlePolygon(fix.position, fix.accuracyM));
     if (!hasCentredRef.current) {
       hasCentredRef.current = true;
-      map.flyTo({ center: [fix.position.lng, fix.position.lat], zoom: FOUND_ZOOM });
+      const to = { center: [fix.position.lng, fix.position.lat] as [number, number], zoom: FOUND_ZOOM };
+      const here = map.getCenter();
+      // A far-away player (another city) is jumped to: a flight would cross the globe.
+      if (shouldFly({ lat: here.lat, lng: here.lng }, fix.position)) map.flyTo(to);
+      else map.jumpTo(to);
     }
   }, []);
 
@@ -210,18 +231,25 @@ export default function MapScreen() {
     const map = new MapLibreMap({
       container: containerRef.current,
       style: buildGameMapStyle(),
-      // Open framed on all six landmarks, whatever the screen size.
-      bounds: landmarkBounds(landmarks),
+      // Open framed on one region (city): the nearest to the player's last fix, else the biggest.
+      bounds: landmarkBounds(openingRegion(landmarks)),
       fitBoundsOptions: { padding: FIT_PADDING_PX },
-      minZoom: 14,
+      minZoom: MIN_ZOOM,
       maxZoom: 19,
-      maxBounds: WORLD_BOUNDS,
       // A game map stays north-up and flat.
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
       attributionControl: { compact: true },
     });
+    // Zoomed far out the world is a globe; it flattens to the usual game map as you zoom in.
+    map.on('style.load', () => map.setProjection({ type: 'globe' }));
+    const onZoom = () => {
+      const zoom = map.getZoom();
+      map.getContainer().classList.toggle('zoomed-out', zoom < MARKERS_SHRINK_BELOW);
+      setWorldView(zoom < WORLD_VIEW_BELOW);
+    };
+    map.on('zoom', onZoom);
     map.touchZoomRotate.disableRotation();
     map.keyboard.disableRotation();
     mapRef.current = map;
@@ -337,8 +365,13 @@ export default function MapScreen() {
     if (!landmarks) return 'Loading the map…';
     if (!lastFix) return 'Share your location to start collecting.';
     if (inRange && !collected.has(inRange.id)) return `You are at ${inRange.name}. Face it and capture!`;
-    const next = nearestLandmark(lastFix.position, landmarks, collected);
-    return next ? `Next: ${directionHint(next)}` : 'All six collected. Nice work!';
+    // Point at the next landmark in the player's own city, not one on another continent.
+    const here = pickRegion(groupIntoRegions(landmarks, (l) => l.photoSpot, REGION_GAP_M), (l) => l.photoSpot, lastFix.position);
+    const next = nearestLandmark(lastFix.position, here?.items ?? landmarks, collected);
+    if (next) return `Next: ${directionHint(next)}`;
+    return landmarks.every((l) => collected.has(l.id))
+      ? 'Every landmark collected. Nice work!'
+      : 'You have them all here. Travel to another city for more!';
   }, [landmarks, lastFix, inRange, collected]);
 
   const bannerMessage = locationMessage(location);
@@ -352,9 +385,30 @@ export default function MapScreen() {
       : `Capture ${inRange.name}`
     : 'Capture';
 
+  /** The World button: out to the whole globe, or back in to the player's city. */
+  const toggleWorld = () => {
+    const map = mapRef.current;
+    if (!map || !landmarks) return;
+    if (map.getZoom() >= WORLD_VIEW_BELOW) {
+      map.flyTo({ center: map.getCenter(), zoom: WORLD_ZOOM, duration: 1800 });
+      return;
+    }
+    const regions = groupIntoRegions(landmarks, (l) => l.photoSpot, REGION_GAP_M);
+    const city = pickRegion(regions, (l) => l.photoSpot, lastFixRef.current?.position ?? null);
+    map.fitBounds(landmarkBounds(city?.items ?? landmarks), { padding: FIT_PADDING_PX, maxZoom: 17, duration: 1800 });
+  };
+
   const spoof = (position: { lat: number; lng: number }, accuracyM: number) => {
     spoofAccuracyRef.current = accuracyM;
     trackerRef.current?.spoof(position, accuracyM);
+    // Spoofing into another city moves the camera there too (the first fix only centres once).
+    const map = mapRef.current;
+    if (map) {
+      const to = { center: [position.lng, position.lat] as [number, number], zoom: FOUND_ZOOM };
+      const here = map.getCenter();
+      if (shouldFly({ lat: here.lat, lng: here.lng }, position)) map.flyTo(to);
+      else map.jumpTo(to);
+    }
   };
 
   return (
@@ -364,6 +418,9 @@ export default function MapScreen() {
       <div className="hud-top">
         <div className="title-chip">CHRONODEX</div>
         {/* The counter doubles as the way into the Dex. */}
+        <button type="button" className="chip chip-link globe-btn" onClick={toggleWorld} aria-label={worldView ? 'Back to the city' : 'Show the whole world'}>
+          {worldView ? 'City' : 'World'}
+        </button>
         <Link href="/dex" className="chip chip-link" aria-label={landmarks ? `Dex: ${collected.size} of ${landmarks.length} collected` : 'Dex'}>
           {landmarks ? `Dex ${collected.size} / ${landmarks.length}` : 'Dex'}
         </Link>
@@ -438,18 +495,22 @@ export default function MapScreen() {
       {DEV_TOOLS && (
         <details className="dev-panel">
           <summary>Spoof location</summary>
-          <div className="dev-jumps">
-            {landmarks?.map((landmark) => (
-              <button
-                key={landmark.id}
-                type="button"
-                className="btn btn-small"
-                onClick={() => spoof(landmark.photoSpot, spoofAccuracyM)}
-              >
-                {landmark.name}
-              </button>
+          {/* One row per city, so eleven buttons stay readable. */}
+          {landmarks &&
+            groupIntoRegions(landmarks, (l) => l.photoSpot, REGION_GAP_M).map((region) => (
+              <div className="dev-jumps" key={region.items[0]!.id}>
+                {region.items.map((landmark) => (
+                  <button
+                    key={landmark.id}
+                    type="button"
+                    className="btn btn-small"
+                    onClick={() => spoof(landmark.photoSpot, spoofAccuracyM)}
+                  >
+                    {landmark.name}
+                  </button>
+                ))}
+              </div>
             ))}
-          </div>
           <label>
             Accuracy: {spoofAccuracyM} m
             <input

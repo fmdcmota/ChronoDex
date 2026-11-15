@@ -89,15 +89,24 @@ function landmarkBounds(): LngLatBounds {
   return b;
 }
 
+// `?at=lat,lng[,zoom]` shows the same style anywhere on Earth (proof the style needs no per-city
+// work). It drops the London framing and world limits.
+const atParam = new URLSearchParams(location.search).get('at')?.split(',').map(Number);
+const at = atParam && atParam.length >= 2 && atParam.every(Number.isFinite) ? atParam : null;
+
 const map = new MapLibreMap({
   container: 'map',
   style: buildGameMapStyle(),
-  // Open framed on all six landmarks, whatever the screen size.
-  bounds: landmarkBounds(),
-  fitBoundsOptions: { padding: FIT_PADDING_PX },
+  ...(at
+    ? { center: [at[1]!, at[0]!] as [number, number], zoom: at[2] ?? 16 }
+    : {
+        // Open framed on all six landmarks, whatever the screen size.
+        bounds: landmarkBounds(),
+        fitBoundsOptions: { padding: FIT_PADDING_PX },
+        maxBounds: WORLD_BOUNDS,
+      }),
   minZoom: 14,
   maxZoom: 19,
-  maxBounds: WORLD_BOUNDS,
   // A game map stays north-up and flat.
   dragRotate: false,
   pitchWithRotate: false,

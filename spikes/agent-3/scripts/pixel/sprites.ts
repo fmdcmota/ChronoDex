@@ -227,7 +227,176 @@ function exhibitionRoad(): PixelCanvas {
   return finish(c, 15);
 }
 
-/** Every sprite, keyed by landmark id. Must cover the six ids in MASTER.md section 12. */
+
+/** Merlion Park: the Merlion, a lion's head on a fish's body, on a rock, spouting water. */
+function merlionPark(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Sea, drawn first so the rock stands in it.
+  c.ellipse(15.5, 27, 13.5, 3, P.water);
+  c.hline(5, 11, 27, P.waterDeep);
+  c.hline(20, 26, 28, P.waterDeep);
+  // Rock plinth.
+  c.rect(10, 23, 21, 27, P.stoneDark);
+  c.rect(12, 22, 19, 23, P.stoneDark);
+  c.rect(10, 23, 12, 27, P.stone);
+  // Fish body with a curled tail.
+  c.ellipse(15.5, 17.5, 5.5, 6, P.stone);
+  c.ellipse(15.5, 17.5, 5.5, 6, P.stoneDark, (x) => x >= 19);
+  for (const [x, y] of [[13, 16], [16, 16], [14, 19], [17, 19], [12, 21], [15, 22], [18, 22]] as const) c.set(x, y, P.stoneDark);
+  c.rect(21, 20, 23, 21, P.stone);
+  c.rect(23, 18, 25, 19, P.stone);
+  c.rect(24, 16, 26, 17, P.stoneDark);
+  // Lion head: a dark mane round a pale face.
+  c.ellipse(15.5, 9, 6.5, 5.5, P.stoneDark);
+  c.ellipse(15.5, 9.5, 4.5, 4.5, P.stone);
+  c.set(13, 8, P.slate);
+  c.set(18, 8, P.slate);
+  c.rect(15, 10, 16, 10, P.brickDark);
+  c.hline(14, 17, 12, P.slate);
+  c.set(15, 13, P.glass);
+  // Crown of the mane.
+  c.rect(14, 3, 17, 4, P.stoneDark);
+  // Water spout from the mouth.
+  for (const [x, y] of [[18, 13], [19, 14], [20, 15], [21, 17], [22, 20], [23, 23]] as const) c.set(x, y, P.glass);
+  for (const [x, y] of [[19, 13], [21, 16], [22, 19]] as const) c.set(x, y, P.water);
+  return finish(c, 14);
+}
+
+/** Raffles' Landing Site: a white statue of Stamford Raffles on a plinth by the river. */
+function rafflesLandingSite(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // River edge on the left.
+  c.rect(1, 27, 9, 28, P.water);
+  c.hline(2, 6, 28, P.waterDeep);
+  // Stepped plinth.
+  c.rect(8, 26, 23, 28, P.stoneDark);
+  c.rect(8, 26, 20, 28, P.stone);
+  c.rect(11, 19, 20, 25, P.stone);
+  c.rect(18, 19, 20, 25, P.stoneDark);
+  c.hline(10, 21, 19, P.stoneDark);
+  c.set(15, 22, P.slate);
+  c.set(16, 22, P.slate);
+  // Figure: legs, long coat, folded arms, head.
+  c.rect(13, 14, 18, 18, P.paper);
+  c.rect(17, 14, 18, 18, P.stone);
+  c.rect(12, 8, 19, 14, P.paper);
+  c.rect(17, 8, 19, 14, P.stone);
+  c.hline(13, 18, 11, P.stoneDark);
+  c.rect(14, 4, 17, 7, P.terracotta);
+  c.rect(14, 3, 17, 3, P.paper);
+  c.set(15, 5, P.ink);
+  c.set(17, 5, P.ink);
+  // Gold band on the plinth: the "landing" plaque.
+  c.rect(13, 23, 18, 24, P.gold);
+  c.hline(13, 18, 24, P.goldDark);
+  return finish(c, 13);
+}
+
+/** Raffles Hotel: a white colonial front with a red tile roof, green shutters and a palm. */
+function rafflesHotel(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Palm tree on the left.
+  c.vline(4, 9, 16, P.brickDark);
+  c.vline(5, 11, 16, P.brickDark);
+  c.hline(1, 8, 7, P.wood);
+  c.hline(2, 7, 8, P.wood);
+  for (const [x, y] of [[1, 8], [8, 8], [2, 9], [7, 9], [4, 6], [5, 6]] as const) c.set(x, y, P.park);
+  // Wings.
+  c.rect(7, 16, 29, 28, P.stone);
+  c.rect(26, 16, 29, 28, P.stoneDark);
+  c.rect(7, 13, 30, 15, P.brick);
+  c.hline(7, 30, 13, P.brickDark);
+  c.rect(27, 14, 30, 15, P.brickDark);
+  // Central block and red gable.
+  c.rect(12, 9, 23, 16, P.stone);
+  c.rect(21, 9, 23, 16, P.stoneDark);
+  c.roof(17, 18, 4, 8, P.brick);
+  c.vline(17, 1, 3, P.ink);
+  c.rect(18, 1, 20, 2, P.gold);
+  // Shutters.
+  for (const x of [14, 19]) c.rect(x, 10, x + 1, 12, P.verdigrisDark);
+  for (const x of [9, 12, 22, 25]) c.rect(x, 17, x + 1, 19, P.verdigrisDark);
+  // Ground-floor arcade and entrance.
+  for (const x of [9, 12, 21, 24]) {
+    c.rect(x, 23, x + 1, 28, P.slate);
+    c.set(x, 22, P.slate);
+  }
+  c.rect(16, 22, 19, 28, P.slate);
+  c.hline(16, 19, 21, P.verdigrisDark);
+  return finish(c, 15);
+}
+
+/** Viking Ship Museum: the Oseberg longship, a carved prow, a striped sail and a row of shields. */
+function vikingShipMuseum(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Sea.
+  c.ellipse(15.5, 27.5, 14, 2.5, P.water);
+  c.hline(4, 10, 28, P.waterDeep);
+  c.hline(22, 28, 28, P.waterDeep);
+  // Hull: a crescent, built row by row, narrowing to the keel.
+  c.hline(8, 23, 26, P.brickDark);
+  c.hline(5, 26, 25, P.brick);
+  c.hline(3, 28, 24, P.brick);
+  c.hline(2, 29, 23, P.brick);
+  c.hline(2, 29, 22, P.brick);
+  c.hline(3, 28, 21, P.brick);
+  c.hline(3, 28, 24, P.brickDark);
+  c.recolour((x, y, col) => x >= 24 && y >= 22 && col.r === P.brick.r && col.g === P.brick.g, P.brickDark);
+  // Prow and stern rise to the curl; the prow ends in a gold dragon head.
+  c.rect(3, 17, 4, 20, P.brick);
+  c.rect(2, 14, 4, 16, P.brick);
+  c.rect(1, 12, 5, 13, P.gold);
+  c.set(5, 12, P.goldDark);
+  c.set(2, 12, P.ink);
+  c.rect(27, 17, 28, 20, P.brickDark);
+  c.rect(27, 15, 29, 16, P.brickDark);
+  // Round shields along the side.
+  [P.gold, P.slate, P.brick, P.gold, P.slate, P.brick].forEach((col, i) => c.rect(6 + i * 4, 22, 7 + i * 4, 23, col));
+  // Mast and a square sail with red and cream stripes.
+  c.rect(15, 4, 16, 21, P.brickDark);
+  c.rect(8, 6, 23, 14, P.paper);
+  for (let x = 8; x <= 23; x += 4) c.rect(x, 6, x + 1, 14, P.brick);
+  c.rect(20, 6, 23, 14, P.paperShade);
+  for (let x = 8; x <= 20; x += 4) if (x >= 20) c.rect(x, 6, x + 1, 14, P.brickDark);
+  c.hline(7, 24, 5, P.brickDark);
+  c.hline(7, 24, 15, P.brickDark);
+  return finish(c, 14);
+}
+
+/** Akershus Fortress: a stone castle with a round tower, a gatehouse and a flag. */
+function akershusFortress(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Curtain wall with crenellations.
+  c.rect(2, 17, 29, 28, P.stone);
+  c.rect(26, 17, 29, 28, P.stoneDark);
+  for (let x = 2; x <= 29; x += 2) c.set(x, 16, x >= 26 ? P.stoneDark : P.stone);
+  for (const x of [5, 22, 25]) c.rect(x, 20, x, 22, P.slate);
+  // Round tower on the left with a green conical roof.
+  c.rect(3, 9, 10, 28, P.stone);
+  c.rect(9, 9, 10, 28, P.stoneDark);
+  c.roof(6, 7, 2, 8, P.verdigris, 2);
+  c.recolour((x, y, col) => x >= 7 && y <= 8 && col.r === P.verdigris.r && col.g === P.verdigris.g, P.verdigrisDark);
+  c.rect(6, 13, 7, 15, P.slate);
+  c.rect(6, 20, 7, 22, P.slate);
+  // Gatehouse with an arched gate and a flag.
+  c.rect(13, 11, 20, 28, P.stone);
+  c.rect(19, 11, 20, 28, P.stoneDark);
+  for (const x of [13, 15, 17, 19]) c.set(x, 10, P.stone);
+  c.rect(15, 22, 18, 28, P.slate);
+  c.hline(16, 17, 21, P.slate);
+  c.rect(15, 14, 17, 16, P.slate);
+  c.vline(16, 2, 9, P.ink);
+  c.rect(17, 2, 21, 5, P.brick);
+  c.rect(17, 3, 21, 3, P.paper);
+  c.vline(18, 2, 5, P.paper);
+  // Smaller tower on the right.
+  c.rect(23, 12, 28, 28, P.stone);
+  c.rect(26, 12, 28, 28, P.stoneDark);
+  for (const x of [23, 25, 27]) c.set(x, 11, x >= 26 ? P.stoneDark : P.stone);
+  return finish(c, 15);
+}
+
+/** Every sprite, keyed by landmark id: the six London ids (MASTER.md section 12) and the other cities'. */
 export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'huxley-building': huxleyBuilding,
   'queens-tower': queensTower,
@@ -235,4 +404,9 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'exhibition-road': exhibitionRoad,
   'v-and-a': vAndA,
   'natural-history-museum': naturalHistoryMuseum,
+  'raffles-landing-site': rafflesLandingSite,
+  'raffles-hotel': rafflesHotel,
+  'merlion-park': merlionPark,
+  'viking-ship-museum': vikingShipMuseum,
+  'akershus-fortress': akershusFortress,
 };

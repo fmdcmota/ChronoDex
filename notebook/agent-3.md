@@ -89,3 +89,39 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: no `FAL_KEY` on this machine, so the optional fal art was not run. Port 3000 was briefly held by a VS Code helper process, so the first screenshot run hit nothing.
 - Next: Android pass when a human has the phone.
+
+### 2026-11-15 01:05, global maps: more cities with no map generation
+- Did: `lib/map-region.ts` (group landmarks into regions within 30 km, open on the one nearest the player, jump instead of fly for far moves) with 11 tests; MapScreen now frames one region and limits panning to landmarks plus 2 km instead of a hard-coded South Kensington box; `?at=lat,lng` in the map spike; `spikes/agent-3/ADD_A_CITY.md`.
+- Decided, and why: no per-city map generation at all. The style is already a recolour of planet-wide OpenFreeMap tiles, so Singapore and Bergen render in the same look at once, streamed live, for 0 tokens. The real per-city work is landmark data, sprites (code-drawn, free) and eras.
+- Measured or verified: headless Chrome at 390x844 rendered Marina Bay and Bergen in the identical style. `npm run check` passes (381 tests). Not seen: a second city in the real app, because the fixtures only hold London.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the hint card would say "9,000 km away" with landmarks in several cities; noted in ADD_A_CITY.md, not changed (geo-format.ts is shared with Agent 4's NextStopCard).
+- Next: sprite functions for new landmarks once Agent 5/1 have the data.
+
+### 2026-11-15 01:40, global maps: Singapore and Oslo landmarks, sprites, badges
+- Did: five landmarks drawn as sprites and badges (code-drawn, free) and published to `public/sprites/`: Raffles' Landing Site, Raffles Hotel, Merlion Park (Singapore); Viking Ship Museum (Oseberg, Oslo), Akershus Fortress (Oslo). Data for all five is in `spikes/agent-3/src/lib/landmarks.ts` (`CITY_LANDMARKS`): OSM Nominatim subjects, photo spots read off the rendered game map at zoom 18, candidate years (1819; 1887; 1972; 834 and 1904; 1299 and 1624). The London map spike is unchanged. 80 spike tests pass.
+- Decided, and why: Oslo's Viking Age is the Oseberg ship (burial 834), the museum is a precise, public place. I dropped a "Medieval Park" point because I could not confirm what the building at its coordinates was. Akershus uses the gatehouse end read from the map, because Nominatim's point lies in the grounds. Photo spots are estimates, like London's.
+- Not done, and why: the five entries are NOT yet in `fixtures/landmarks.ts` (Agent 1's file): the permission guard blocked my edit, so they wait for Agent 1 or the human's go-ahead. `fixtures/fixtures.test.ts` asserts exactly six landmarks and several other tests and READMEs say "six", so Agent 1 needs to change those too. Until then the app shows London only.
+- Next: once the fixtures hold them, check the Map, Dex and hint card with 11 landmarks; limit the "Next:" hint to the player's region.
+
+### 2026-11-15 02:10, global maps: landmarks added to the app
+- Did: with the human's go-ahead added the five Singapore and Oslo landmarks to `fixtures/landmarks.ts` (Agent 1's file) and changed the four tests that asserted exactly six (`fixtures.test.ts`, `routes.test.ts`, `mock.test.ts`, `geo-format.test.ts`) to eleven; no check was weakened. Map: the spoof buttons are grouped one row per city and a spoof moves the camera into that city (jump when far, fly when near); the "Next:" hint only points at landmarks in the player's own city, with new wording when a city is finished or everything is collected; the dev panel scrolls (max 45 % of the screen). Doc lines that said "six" were updated.
+- Measured or verified: headless Chrome at 390x844 with mocks on: Dex shows 0 / 11, the panel has three city rows, spoofing to Merlion Park, Viking Ship Museum, Akershus Fortress and back to Queen's Tower each re-centres the map and shows "Capture <name>"; the Akershus sprite and ring sit on the castle. `npm run check` passes (381 tests).
+- Problems: none new. Real-API mode needs `npm run seed` to add the five landmarks and their eras to the database (Agent 1's script; I have not run it against the shared Atlas).
+- Next: ask Agent 1 to seed; era briefs for the new years (Agent 5 notes, Historian); real photo spots on site.
+
+### 2026-11-15 02:40, globe zoom
+- Did: the map now zooms out to the whole globe. MapLibre's globe projection (`setProjection({type:'globe'})` on style load) curves into the usual flat game map as you zoom in; `minZoom` went from 14 to 1 and the old pan limits (`maxBounds`) are gone. A World / City chip in the top bar flies out to zoom 1.6 or back in to the player's city (nearest region, else the biggest). Below zoom 13 landmark markers shrink to half size (`.zoomed-out`, set on the map container) so they do not pile up.
+- Decided, and why: the globe projection instead of a flat world map, because it is one call and "see the whole globe" is literal; the tiles and style are planet-wide already (ADD_A_CITY.md). Pan limits were dropped because they would stop the zoom-out; the cost is a player can pan off to empty sea.
+- Measured or verified: headless Chrome at 390x844: World then City round trip works, the chip label flips, globe screenshot shows Europe with Oslo and London pins; `npm run check` passes (381 tests). Not seen: a real phone's pinch gesture on the globe.
+- Problems: the dev server served stale CSS for a few minutes after edits (an edit forced a rebuild); a hard reload on the phone may be needed after changes.
+
+### 2026-11-15 03:05, space behind the globe
+- Did: zoomed far out, the area around the globe is now space: an indigo sky, tiled stars, a sun in the upper right and a drifting purple galaxy band, all pure CSS on `.map-root` (no images, no cost). The flat map covers it, so nothing changes when zoomed in. The galaxy is a `::before` (a `::after` is painted over the globe because it comes later than the canvas); its drift animation is switched off for reduced-motion.
+- Problems: a stray `}` from my first edit broke the stylesheet for a few minutes (Next showed a CssSyntaxError); fixed. The dev server again lagged on CSS; a touch of globals.css forced a rebuild.
+- Verified: headless Chrome screenshot at the globe view. `npm run check` passes (381 tests).
+
+### 2026-11-15 03:30, space v2: no haze, darker, 8-bit stars
+- Did: removed the purple haze over the globe (the old galaxy layer was a `::after`, which paints over the map canvas; the galaxy is now a `::before` with `z-index: -1`, behind the canvas, and cool blue instead of purple). Sky is near-black blue (#03040b to #0a0f24). Stars are now two tiles of hard-edged square pixels with a few plus-shaped sparkles, as inline SVG data URIs with `crispEdges` (no images to load). Sun kept.
+- Problems: raw double quotes in the data URIs broke the stylesheet (Next 500, "Parsing CSS source code failed") until they were percent-encoded. The dev server also serves stale CSS for a while after edits; a content edit forces a rebuild.
+- Verified: headless Chrome globe screenshot, no tint over the ocean or land; `npm run check` passes (381 tests).

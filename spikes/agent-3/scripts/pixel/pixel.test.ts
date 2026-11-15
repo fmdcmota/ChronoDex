@@ -6,7 +6,7 @@ import { PNG } from 'pngjs';
 import { CLEAR, hex, PixelCanvas } from './canvas';
 import { BADGE_PX, makeBadge } from './badges';
 import { SPRITE_PX, SPRITES } from './sprites';
-import { SPIKE_LANDMARKS } from '../../src/lib/landmarks';
+import { ART_LANDMARKS } from '../../src/lib/landmarks';
 
 describe('PixelCanvas', () => {
   it('parses hex colours and rejects bad ones', () => {
@@ -53,7 +53,7 @@ describe('PixelCanvas', () => {
 
 describe('sprites', () => {
   it('has a sprite for every landmark', () => {
-    for (const l of SPIKE_LANDMARKS) expect(SPRITES[l.id], l.id).toBeTypeOf('function');
+    for (const l of ART_LANDMARKS) expect(SPRITES[l.id], l.id).toBeTypeOf('function');
   });
 
   it.each(Object.entries(SPRITES))('%s fits inside the canvas with its outline intact', (_id, draw) => {

@@ -100,3 +100,89 @@ export const SPIKE_LANDMARKS: readonly Landmark[] = [
     eraYears: [1862, 1881],
   },
 ];
+
+/**
+ * Landmarks in other cities (Singapore and Oslo), added 15 Nov 2026 to show the map style needs no
+ * per-city work (see ../../ADD_A_CITY.md). Kept apart from SPIKE_LANDMARKS so the London map spike
+ * still opens framed on London. The art script draws sprites for both lists.
+ *
+ * Coordinates: `subject` is an OpenStreetMap Nominatim point for the place (Merlion Park, Raffles'
+ * Landing Site, Raffles Hotel, Vikingskipshuset). For Akershus Fortress it is the castle's
+ * gatehouse end, read from the rendered map, because the Nominatim point lies in the grounds.
+ * `photoSpot` points are ESTIMATES read off the rendered game map at zoom 18 (about 0.3 m per
+ * screen pixel), each on a public path or plaza 15 to 35 m from the subject. Check them on site.
+ * Era years are candidates the Historian must confirm: Raffles landed 1819; Raffles Hotel opened
+ * 1887; the Merlion statue was unveiled 1972; the Oseberg ship burial dates to 834 and the ship was
+ * dug up in 1904; Akershus was begun about 1299 and rebuilt as a Renaissance castle after the
+ * 1624 fire of Oslo.
+ */
+export const CITY_LANDMARKS: readonly Landmark[] = [
+  {
+    id: 'raffles-landing-site',
+    name: 'Raffles’ Landing Site',
+    blurb: 'Where Stamford Raffles stepped ashore in 1819 and a trading post became Singapore.',
+    photoSpot: { lat: 1.2877911, lng: 103.8506662 },
+    subject: { lat: 1.2877192, lng: 103.8507866 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'rare',
+    spriteUrl: '/sprites/raffles-landing-site.png',
+    badgeUrl: '/sprites/badges/raffles-landing-site.png',
+    referencePhotoUrl: '',
+    eraYears: [1819],
+  },
+  {
+    id: 'raffles-hotel',
+    name: 'Raffles Hotel',
+    blurb: 'The white colonial landmark that opened its doors on Beach Road in 1887.',
+    photoSpot: { lat: 1.2944185, lng: 103.8546951 },
+    subject: { lat: 1.2946815, lng: 103.8546412 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'common',
+    spriteUrl: '/sprites/raffles-hotel.png',
+    badgeUrl: '/sprites/badges/raffles-hotel.png',
+    referencePhotoUrl: '',
+    eraYears: [1887],
+  },
+  {
+    id: 'merlion-park',
+    name: 'Merlion Park',
+    blurb: 'A lion’s head on a fish’s body, Singapore’s mascot, spouting at the river mouth since 1972.',
+    photoSpot: { lat: 1.28676, lng: 103.85442 },
+    subject: { lat: 1.2869646, lng: 103.8544639 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'legendary',
+    spriteUrl: '/sprites/merlion-park.png',
+    badgeUrl: '/sprites/badges/merlion-park.png',
+    referencePhotoUrl: '',
+    eraYears: [1972],
+  },
+  {
+    id: 'viking-ship-museum',
+    name: 'Viking Ship Museum',
+    blurb: 'Home of the Oseberg ship, buried with two women in the year 834 and dug up in 1904.',
+    photoSpot: { lat: 59.904626, lng: 10.684288 },
+    subject: { lat: 59.9048334, lng: 10.684127 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'legendary',
+    spriteUrl: '/sprites/viking-ship-museum.png',
+    badgeUrl: '/sprites/badges/viking-ship-museum.png',
+    referencePhotoUrl: '',
+    eraYears: [834, 1904],
+  },
+  {
+    id: 'akershus-fortress',
+    name: 'Akershus Fortress',
+    blurb: 'A medieval castle begun around 1299 that has guarded Oslo’s harbour ever since.',
+    photoSpot: { lat: 59.90611, lng: 10.736585 },
+    subject: { lat: 59.90638, lng: 10.736316 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'rare',
+    spriteUrl: '/sprites/akershus-fortress.png',
+    badgeUrl: '/sprites/badges/akershus-fortress.png',
+    referencePhotoUrl: '',
+    eraYears: [1299, 1624],
+  },
+];
+
+/** Every landmark the art script draws: London first, then the other cities. */
+export const ART_LANDMARKS: readonly Landmark[] = [...SPIKE_LANDMARKS, ...CITY_LANDMARKS];

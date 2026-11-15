@@ -42,7 +42,7 @@ export function lockedBadgeUrl(landmark: Pick<Landmark, 'id'>): string {
   return `/sprites/badges/${landmark.id}-locked.png`;
 }
 
-/** Every landmark in the game, in route order. */
+/** Every landmark in the game: the six around the venue in route order, then other cities. */
 export const landmarks: Landmark[] = [
   {
     id: 'huxley-building',
@@ -103,5 +103,58 @@ export const landmarks: Landmark[] = [
     rarity: 'rare',
     eraYears: [1862, 1881],
     ...sharedFields('natural-history-museum'),
+  },
+  // Other cities, added by Agent 3 with the human's go-ahead (15 Nov 2026). Coordinates, sources and
+  // the facts behind each candidate year are in spikes/agent-3/src/lib/landmarks.ts (CITY_LANDMARKS).
+  // The map opens on the city nearest the player (src/components/explore/lib/map-region.ts).
+  {
+    id: 'raffles-landing-site',
+    name: 'Raffles’ Landing Site',
+    blurb: 'Where Stamford Raffles stepped ashore in 1819 and a trading post became Singapore.',
+    photoSpot: { lat: 1.2877911, lng: 103.8506662 },
+    subject: { lat: 1.2877192, lng: 103.8507866 },
+    rarity: 'rare',
+    eraYears: [1819],
+    ...sharedFields('raffles-landing-site'),
+  },
+  {
+    id: 'raffles-hotel',
+    name: 'Raffles Hotel',
+    blurb: 'The white colonial landmark that opened its doors on Beach Road in 1887.',
+    photoSpot: { lat: 1.2944185, lng: 103.8546951 },
+    subject: { lat: 1.2946815, lng: 103.8546412 },
+    rarity: 'common',
+    eraYears: [1887],
+    ...sharedFields('raffles-hotel'),
+  },
+  {
+    id: 'merlion-park',
+    name: 'Merlion Park',
+    blurb: 'A lion’s head on a fish’s body, Singapore’s mascot, spouting at the river mouth since 1972.',
+    photoSpot: { lat: 1.28676, lng: 103.85442 },
+    subject: { lat: 1.2869646, lng: 103.8544639 },
+    rarity: 'legendary',
+    eraYears: [1972],
+    ...sharedFields('merlion-park'),
+  },
+  {
+    id: 'viking-ship-museum',
+    name: 'Viking Ship Museum',
+    blurb: 'Home of the Oseberg ship, buried with two women in the year 834 and dug up in 1904.',
+    photoSpot: { lat: 59.904626, lng: 10.684288 },
+    subject: { lat: 59.9048334, lng: 10.684127 },
+    rarity: 'legendary',
+    eraYears: [834, 1904],
+    ...sharedFields('viking-ship-museum'),
+  },
+  {
+    id: 'akershus-fortress',
+    name: 'Akershus Fortress',
+    blurb: 'A medieval castle begun around 1299 that has guarded Oslo’s harbour ever since.',
+    photoSpot: { lat: 59.90611, lng: 10.736585 },
+    subject: { lat: 59.90638, lng: 10.736316 },
+    rarity: 'rare',
+    eraYears: [1299, 1624],
+    ...sharedFields('akershus-fortress'),
   },
 ];
