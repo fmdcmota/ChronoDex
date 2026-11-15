@@ -73,7 +73,12 @@ export async function uploadToFal(file: Blob): Promise<string> {
   try {
     return await fal.storage.upload(file);
   } catch (error) {
-    throw new FalStageError(`fal upload failed: ${(error as Error).message}`, { endpoint: 'storage' });
+    // fal's ApiError often has an empty message and puts the reason in its body, for example
+    // {"detail":"User is locked. Reason: Exhausted balance. ..."} (15 Nov 04:20). Keep both, so the cause is visible.
+    const { status, body } = error as { status?: number; body?: unknown };
+    const detail = (body as { detail?: unknown } | undefined)?.detail;
+    const reason = (error as Error).message || (typeof detail === 'string' ? detail : JSON.stringify(body ?? null));
+    throw new FalStageError(`fal upload failed${status ? ` (HTTP ${status})` : ''}: ${reason}`, { endpoint: 'storage', status: status ?? null, body });
   }
 }
 

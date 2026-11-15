@@ -182,6 +182,19 @@ describe('public functions', () => {
     vi.stubEnv('FAL_KEY', '');
     await expect(uploadToFal(new Blob(['x']))).rejects.toThrow(/FAL_KEY is not set/);
   });
+
+  it('names fal\'s own reason when an upload is refused with an empty message (a locked account)', async () => {
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '');
+    vi.stubEnv('FAL_KEY', 'test-key');
+    const { fal } = await import('@fal-ai/client');
+    const refused = Object.assign(new Error(''), { status: 403, body: { detail: 'User is locked. Reason: Exhausted balance.' } });
+    const spy = vi.spyOn(fal.storage, 'upload').mockRejectedValue(refused);
+    const error = await uploadToFal(new Blob(['x'])).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(FalStageError);
+    expect((error as Error).message).toBe('fal upload failed (HTTP 403): User is locked. Reason: Exhausted balance.');
+    expect((error as FalStageError).status).toBe(403);
+    spy.mockRestore();
+  });
 });
 
 describe('mock mode is impossible to mistake', () => {

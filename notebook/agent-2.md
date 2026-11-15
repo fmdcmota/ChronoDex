@@ -76,11 +76,11 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 03:51 (real clock)
-- Working on: the human answered HUMAN_TASKS 2.1 to 2.8 (see the log). Done from them: VOICE_CATALOG final with the five picks (Gemini voices now supported), panorama gets a third try and a flag, colour confirmed, voice-test page fixed for the HTTPS dev server. The /demo/ links in chronodex are Agent 6's demo set (not a bug).
-- Next: the real guide video (A2-r2-5) is ON HOLD by the human's decision: talk model is Kling, but no video is made until the team has confirmed more details. Do not start any video tier. Agent 1 to offer only selectableVoices() to the Historian.
-- Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
-- Board read up to: 2026-11-15 08:00 (@agent-1 A1-r2-3, stamp ahead of the real clock)
+- Last updated: 2026-11-15 04:27 (real clock)
+- Working on: round 3 queue (REMAINING_WORK_2.md section 0). R3-2a, R3-2b, R3-2c, R3-2d done (see the log). VIDEO_RUNBOOK.md is the one-page procedure for the videos.
+- Next: R3-2e (regenerate the Queen's Tower 1893 scene only, about $0.17) once Agent 5's R3-5b wide photo lands; then the real canary only when the human says go and fal has credit. Re-run `spikes/agent-2/video-inputs.mts` (mocks OFF) on chronodex after the top-up: 7 of 8 eras' inputs could not be uploaded because fal is locked.
+- Blocked on: **fal account locked, "Exhausted balance"** (free upload refused at 04:20): every fal call fails (uploads, voice replies, STT, video). The human must top up. Also Agent 5's R3-5b for R3-2e. FAL_KEY, DEEPSEEK_API_KEY and MONGODB_URI are in the root `.env.local` (mocks on there: put NEXT_PUBLIC_USE_MOCKS= before any real command); Node v26.13.1.
+- Board read up to: 2026-11-15 04:25 (@agent-4 R3-4b)
 - Waiting for commit approval: nothing; the Sunday work is committed and pushed (A2-g, the human asked for it)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
@@ -97,6 +97,7 @@ The human said not to chase these now: note them here and give them the full lis
 | H-E | How many fal credits do we have? | Decides one video per landmark or all 18 eras (about $77 at list) | fal dashboard |
 | H-F | Ask fal support to enable the `fal-ai/ffmpeg-api` endpoints on our key: merge-videos, extract-frame, compose (all 403 when they run) | Stitching the three guide clips into one file, a cleaner walk_off, judging video as stills | Optional. The stitch stage is built and starts working when access is enabled |
 | H-G | Reference photos must be 16:9 (H1 photos) | The edit models centre-crop anything else | Agent 1's seed normalises; check the result by eye |
+| H-N | **Top up fal** (fal.ai/dashboard/billing). At 04:20 fal answered a free upload with "User is locked. Reason: Exhausted balance", though $14.97 was reported at 03:51 | Every fal call fails: voice replies, speech to text, uploads, any generation, and the videos | Then run `spikes/agent-2/video-inputs.mts` (mocks off) to finish R3-2b |
 | H-H | Whose machine runs the worker. (The live end-to-end run is DONE in a dev database with the DeepSeek and Atlas keys now in `.env.local`; no Anthropic key is needed.) | runEraJob has never run live end to end | MASTER Q5, H2 |
 | H-I | Read the first real brief before the pipeline spends on video (H7) | Accuracy of the 45 s script | Later, at M4. The real Queen's Tower 1893 brief is in my dev database and in `spikes/agent-2/out/e2e-era.json` |
 | H-J | **Colour or monochrome for eras before about 1900?** | Every pre-1900 prompt. Monochrome looks most like a real photograph; restrained colour is safer. Default is colour; `PERIOD_LOOK=monochrome` switches it | Compare `spikes/agent-2/out/realism/pano-colour-feather.jpg` with `pano-mono-ref.jpg`, or the scenes `scene-colour.jpg` and `scene-mono.jpg` |
@@ -396,3 +397,14 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 ### 2026-11-15 03:54, talk model and video decision
 - The human chose **Kling** (`fal-ai/kling-video/ai-avatar/v2/standard`) for the talk clip; registry and `talk.ts` updated, Fabric stays the fallback.
 - **No guide video yet**: the human wants to confirm more details first. A2-r2-5 and A2-d are on hold; nothing paid was started.
+
+### 2026-11-15 04:27, round 3: R3-2a to R3-2d
+
+- **R3-2a (V10) done.** `scripts/backup-media.ts --only queens-tower_1893` on chronodex: the GridFS-only panorama `/api/media/afd1746894ca7ef24725a352b60de861` is on disk at `spikes/agent-2/out/media-backup/queens-tower_1893/panorama.jpg` (1.6 MB, already saved at 03:31). `public/demo/` is in git (Agent 6).
+- **R3-2b (V4).** All 8 demo eras have scene, headshot and narration (`/demo/...`). Narration lengths from the files (MP3 headers, no ffmpeg on this machine): 33.8 to 43.3 s (dom-luis 33.8, NHM 1862 43.3, NHM 1881 41.2, QT 1893 37.9, QT 1962 34.5, Raffles 38.3, RAH 1871 39.0, Zocalo 38.0). Kling's schema states no maximum; the 10 s test worked; none is over the 45 s the plan assumed, so **no split is built**. The canary proves the length (a refused request is not billed); the runbook says what to do if Kling refuses. Queen's Tower 1893's inputs reach fal; the other 7 could not be uploaded because **fal locked the account ("Exhausted balance")**.
+- **Incident, mine, fixed.** My first run of `video-inputs.mts` had mocks on (from `.env.local`), so `uploadToFal` returned the placeholder `/mock/reference.svg` and Agent 4's store cached it as the fal URL of 21 `/demo/` files in chronodex for 6 days. The real video run would have sent fal that path. Cleared with `spikes/agent-2/falurl-repair.mts --fix` (now 0). Guards: `runEraJob` now fails the video tier before any spend when an input comes back as a site path (tested); the spike refuses to run with mocks on. Asked Agent 4 to make the store refuse to cache a non-http fal URL.
+- **`uploadToFal`** now carries fal's reason: fal's ApiError had an empty message, so the error read "fal upload failed: " with nothing after it. Now "fal upload failed (HTTP 403): User is locked. Reason: Exhausted balance." (tested).
+- **R3-2c (V5) done on this machine.** `scripts/pregenerate.ts --rehearse` runs the whole queue through the real worker loop on dry-run stages, refused on `chronodex`. Copied chronodex's 15 landmarks and 22 eras to `chronodex_rehearse_agent2` (`spikes/agent-2/copy-db.mts`) and rehearsed all 8 demo eras with `--video --concurrency 4`: 8 jobs succeeded in 0.1 min, core stages skipped (the `/demo/` files kept), guide_frame, walk_on, talk and walk_off done, stitch skipped, `guideVideo` with three segments, `videoState` ready (`spikes/agent-2/rehearse-check.mts`). Not run on Agent 4's machine: the same code and database, so Agent 4 can repeat it with the runbook's section 1.
+- **pregenerate.ts also:** a free fal preflight (one tiny upload) before anything real is queued, so a locked account stops the run first; the estimate counts only the tiers an era still needs (the demo eras were overstated by the core tier, $0.62 each). Queen's Tower 1893 video: about $4.34.
+- **R3-2d (V7) done.** `VIDEO_RUNBOOK.md`: preconditions, the free rehearsal, the canary with `--max-usd 5 --concurrency 1`, how to watch and stop, the phone checks (Agent 4 to extend), backup, next eras, switching off, a failure table. Includes `VIDEO_ERAS` for Agent 1's R3-1a.
+- Delegated nothing. Tests: 542 pass.

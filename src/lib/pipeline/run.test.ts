@@ -344,6 +344,17 @@ describe('keeping every file (A2-a, A2-h, A2-i)', () => {
     expect(scene?.error).toMatch(/SVG cannot be sent to fal/);
   });
 
+  it('skips the video tier before any spend when the store hands back a site path instead of a fal URL', async () => {
+    const job = await claim(true);
+    const { media } = fakeMedia();
+    const poisoned = { ...media, toFalUrl: async (url: string) => (url.endsWith('narration') ? '/mock/reference.svg' : media.toFalUrl(url)) };
+    const { deps, inputs } = recordingDeps(poisoned);
+    await runEraJob(job, deps);
+    expect(inputs.guideFrame).toBeUndefined();
+    expect(await getEra(ERA_ID)).toMatchObject({ state: 'ready', videoState: 'failed' });
+    expect((await getJob(job.id))?.stages.find((s) => s.key === 'talk')?.error).toMatch(/site path: narration=\/mock\/reference\.svg/);
+  });
+
   it('keeps the fal URL when storing fails, so a paid result is never thrown away', async () => {
     const job = await claim(false);
     const warn = vi.spyOn(console, 'error').mockImplementation(() => undefined);
