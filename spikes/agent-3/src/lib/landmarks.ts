@@ -102,7 +102,7 @@ export const SPIKE_LANDMARKS: readonly Landmark[] = [
 ];
 
 /**
- * Landmarks in other cities (Singapore, Oslo and Cambridge), added 15 Nov 2026 to show the map style needs no
+ * Landmarks in other cities (Singapore, Oslo, Cambridge and Beijing), added 15 Nov 2026 to show the map style needs no
  * per-city work (see ../../ADD_A_CITY.md). Kept apart from SPIKE_LANDMARKS so the London map spike
  * still opens framed on London. The art script draws sprites for both lists.
  *
@@ -118,6 +118,10 @@ export const SPIKE_LANDMARKS: readonly Landmark[] = [
  * Wren, was completed in 1677. For Emmanuel the `subject` is the garden duck pond (read from the
  * rendered map, the OSM point lies in the Paddock) and the photoSpot a path beside it, inside the
  * college grounds, which are open to visitors in the daytime: check access before a real capture.
+ * The Great Wall at Badaling: the subject is the OpenStreetMap "steps" node on the wall itself, the
+ * photoSpot a point on the wall's walkway about 22 m along it, read off the rendered map. Badaling
+ * is a ticketed site; check access before a real capture. 1505 is the Ming-era rebuilding year
+ * usually given for this section: a candidate for the Historian to confirm.
  */
 export const CITY_LANDMARKS: readonly Landmark[] = [
   {
@@ -197,6 +201,19 @@ export const CITY_LANDMARKS: readonly Landmark[] = [
     badgeUrl: '/sprites/badges/emmanuel-college.png',
     referencePhotoUrl: '',
     eraYears: [1584, 1677],
+  },
+  {
+    id: 'great-wall-badaling',
+    name: 'Great Wall at Badaling',
+    blurb: 'The best-known stretch of the Ming Great Wall, guarding the mountain pass north of Beijing.',
+    photoSpot: { lat: 40.350866, lng: 116.004287 },
+    subject: { lat: 40.3509393, lng: 116.0040454 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'legendary',
+    spriteUrl: '/sprites/great-wall-badaling.png',
+    badgeUrl: '/sprites/badges/great-wall-badaling.png',
+    referencePhotoUrl: '',
+    eraYears: [1505],
   },
 ];
 

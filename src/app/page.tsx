@@ -19,7 +19,7 @@ const MapScreen = dynamic(() => import('@/components/explore/MapScreen'), {
 });
 
 /**
- * The map page: a full-screen game map of the landmarks (London, Singapore, Oslo, Cambridge).
+ * The map page: a full-screen game map of the landmarks (London, Singapore, Oslo, Cambridge, Beijing).
  *
  * @returns The page.
  */

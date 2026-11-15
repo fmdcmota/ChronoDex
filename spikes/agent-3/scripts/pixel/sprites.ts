@@ -440,55 +440,157 @@ function emmanuelCollege(): PixelCanvas {
   return finish(c, 14);
 }
 
-/** Width and height of one frame of the walking duck, in art pixels. */
-export const DUCK_FRAME_PX = 24;
+/** Great Wall at Badaling: a brick wall with battlements climbing a green ridge, two watchtowers. */
+function greatWallBadaling(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  /** Top of the wall at column x: it climbs from the lower left to the upper right. */
+  const top = (x: number) => 23 - Math.floor(x * 0.4);
+  const inside = (x: number, y: number) => x >= 2 && x <= 29 && y <= 28; // keeps the outline clear of the edge
+  // The ridge the wall runs along: two overlapping hills behind and under it.
+  c.ellipse(22, 31, 15, 10, P.wood, inside);
+  c.ellipse(8, 32, 11, 7, P.park, inside);
+  // Wall: grey-brown brick body five rows thick, a pale top course, merlons every other column.
+  for (let x = 1; x <= 30; x++) {
+    c.vline(x, top(x), top(x) + 4, P.stoneDark);
+    c.set(x, top(x), P.stone);
+    c.set(x, top(x) + 1, P.stone);
+    if (x % 2 === 0) c.set(x, top(x) - 1, P.stone);
+    c.set(x, top(x) + 4, P.inkSoft);
+  }
+  // Brick joints, in two staggered courses.
+  for (let x = 2; x <= 29; x += 3) c.set(x, top(x) + 3, P.inkSoft);
+  for (let x = 3; x <= 29; x += 3) c.set(x, top(x) + 2, P.stoneDark);
+  // Hillside under the wall, so it stands on the ridge and not in the air.
+  for (let x = 2; x <= 29; x++) for (let y = top(x) + 5; y <= 28; y++) if (!c.filled(x, y)) c.set(x, y, y > top(x) + 7 ? P.wood : P.park);
+  // Two watchtowers with arched windows, a little taller than the wall.
+  for (const [x0, x1] of [[8, 12], [23, 27]] as const) {
+    const base = top(Math.floor((x0 + x1) / 2)) + 4;
+    c.rect(x0, base - 8, x1, base, P.stone);
+    c.rect(x1 - 1, base - 8, x1, base, P.stoneDark);
+    for (let x = x0; x <= x1; x += 2) c.set(x, base - 9, x >= x1 - 1 ? P.stoneDark : P.stone);
+    c.rect(x0 + 1, base - 5, x0 + 2, base - 3, P.slate);
+    c.set(x0 + 1, base - 5, P.stone);
+  }
+  return finish(c, 14);
+}
+
+/** Width of one frame of a voyage duck, in art pixels. */
+export const VOYAGE_FRAME_W = 40;
+/** Height of one frame of a voyage duck, in art pixels. */
+export const VOYAGE_FRAME_H = 32;
+
+/** Which costumed duck to draw (see src/components/explore/duck-voyages.ts). */
+export type VoyageDuck = 'british' | 'saharan' | 'chinese';
+
+/** Union-flag blue, not in the map palette. */
+const UNION_BLUE = hex('#2f56a8');
+/** Tuareg indigo, for the Saharan duck's robe. */
+const INDIGO = hex('#34428f');
 
 /**
- * One frame of the walking Emma duck (the map's wandering mascot, see DuckWalker.tsx): a small
- * mallard in a mortarboard, facing right, on two orange legs. Two frames (`step` 0 and 1) swap
- * the legs and bob the body one pixel, which reads as a waddle. Not a landmark sprite, so it is
- * not in SPRITES.
+ * One frame of a costumed voyage duck, facing right (the game mirrors it for the other direction):
+ * - `british`: a top hat and a red, white and blue scarf, sitting in a little sailing boat.
+ * - `saharan`: a white ghutra head cloth with a black agal band and an indigo robe, on two legs.
+ * - `chinese`: a conical straw hat and a red jacket with gold trim, on two legs.
+ * Two frames (`step` 0 and 1) swap the legs (or rock the boat) and bob the body one pixel.
+ * The same duck as the Emmanuel College landmark art, in different clothes.
  *
- * @param step - 0 or 1, which leg is forward.
- * @returns A 24 by 24 canvas with an outline and a soft ground shadow.
+ * @param kind - Which duck.
+ * @param step - 0 or 1, which animation frame.
+ * @returns A VOYAGE_FRAME_W by VOYAGE_FRAME_H canvas with an outline and, for walkers, a shadow.
  */
-export function duckWalkFrame(step: 0 | 1): PixelCanvas {
-  const c = new PixelCanvas(DUCK_FRAME_PX, DUCK_FRAME_PX);
-  const bob = step; // the body sits one pixel higher on the second frame
-  // Legs and webbed feet first, so the body overlaps their tops.
-  const front = step === 0 ? 13 : 10;
-  const back = step === 0 ? 8 : 12;
-  for (const x of [front, back]) {
-    c.rect(x, 18, x, 20, P.goldDark);
-    c.rect(x, 21, x + 2, 21, P.gold);
+export function voyageDuckFrame(kind: VoyageDuck, step: 0 | 1): PixelCanvas {
+  const c = new PixelCanvas(VOYAGE_FRAME_W, VOYAGE_FRAME_H);
+  // Drawing is in "duck coordinates" (the 24 px duck, head near x 17, y 7); OX and OY place that
+  // inside the larger frame so hats and sails have room.
+  const OX = 8;
+  const OY = 6;
+  const R = (x0: number, y0: number, x1: number, y1: number, col: Rgba) => c.rect(x0 + OX, y0 + OY, x1 + OX, y1 + OY, col);
+  const H = (x0: number, x1: number, y: number, col: Rgba) => c.hline(x0 + OX, x1 + OX, y + OY, col);
+  const V = (x: number, y0: number, y1: number, col: Rgba) => c.vline(x + OX, y0 + OY, y1 + OY, col);
+  const S = (x: number, y: number, col: Rgba) => c.set(x + OX, y + OY, col);
+  const E = (cx: number, cy: number, rx: number, ry: number, col: Rgba, keep?: (x: number, y: number) => boolean) =>
+    c.ellipse(cx + OX, cy + OY, rx, ry, col, keep && ((x, y) => keep(x - OX, y - OY)));
+  const bob = step;
+  const hx = 17;
+  const hy = 7 - bob;
+
+  if (kind === 'british') {
+    // Sail, mast and pennant first, so the duck sits in front of them.
+    V(9, -4 - bob, 14, P.brickDark);
+    for (let y = -3; y <= 8; y++) H(9 - Math.round((y + 3) * 0.8), 8, y - bob, P.paper);
+    H(1, 8, 3 - bob, P.brick);
+    H(2, 8, 4 - bob, P.brick);
+    R(10, -4 - bob, 13, -3 - bob, P.brick);
+    R(10, -2 - bob, 13, -2 - bob, UNION_BLUE);
+    // Hull: dark planks with a gold rail, a lifted prow, and water rocking with the frame.
+    H(-3, 27, 19, P.goldDark);
+    H(-3, 27, 20, P.brickDark);
+    H(-2, 26, 21, P.brick);
+    H(-1, 25, 22, P.brickDark);
+    S(28, 18, P.goldDark);
+    S(27, 18, P.goldDark);
+    H(-4 + step * 2, 28 + step * 2 - 2, 23, P.water);
+    H(-1 - step * 2, 25 - step * 2, 24, P.waterDeep);
+  } else {
+    // Legs and webbed feet first, so the body overlaps their tops.
+    const front = step === 0 ? 13 : 10;
+    const back = step === 0 ? 8 : 12;
+    for (const x of [front, back]) {
+      R(x, 18, x, 20, P.goldDark);
+      R(x, 21, x + 2, 21, P.gold);
+    }
   }
-  // Tail, lifted at the back.
-  for (const [x, y] of [[2, 11 - bob], [3, 11 - bob], [3, 12 - bob], [2, 12 - bob]] as const) c.set(x, y, P.inkSoft);
-  // Body: cream, shaded underneath.
-  c.ellipse(10.5, 14 - bob, 7.5, 4.6, P.stone);
-  c.ellipse(10.5, 14 - bob, 7.5, 4.6, P.stoneDark, (_x, y) => y >= 17 - bob);
-  // Folded wing.
-  c.ellipse(9, 13.5 - bob, 4.2, 2.4, P.stoneDark);
-  c.hline(6, 11, 13 - bob, P.stone);
-  // Brown chest, white collar, green neck and head.
-  c.ellipse(16, 13.5 - bob, 2.4, 3.2, P.brickDark);
-  c.rect(15, 7 - bob, 17, 11 - bob, P.verdigris);
-  c.hline(14, 18, 11 - bob, P.paper);
-  c.ellipse(17, 7 - bob, 3.4, 2.9, P.verdigris);
-  // Eye and a gold bill.
-  c.set(18, 6 - bob, P.ink);
-  c.rect(20, 7 - bob, 22, 8 - bob, P.gold);
-  c.set(22, 8 - bob, P.goldDark);
-  // Mortarboard with a gold tassel.
-  c.rect(13, 2 - bob, 20, 2 - bob, P.slate);
-  c.rect(15, 3 - bob, 19, 4 - bob, P.slate);
-  c.rect(20, 3 - bob, 20, 5 - bob, P.gold);
+
+  // Tail, body, wing (the robe or jacket colour depends on the costume).
+  for (const [x, y] of [[2, 11 - bob], [3, 11 - bob], [3, 12 - bob], [2, 12 - bob]] as const) S(x, y, P.inkSoft);
+  E(10.5, 14 - bob, 7.5, 4.6, P.stone);
+  E(10.5, 14 - bob, 7.5, 4.6, P.stoneDark, (_x, y) => y >= 17 - bob);
+  const wing = kind === 'saharan' ? INDIGO : kind === 'chinese' ? P.brick : P.stoneDark;
+  E(9, 13.5 - bob, kind === 'british' ? 4.2 : 5.2, kind === 'british' ? 2.4 : 3.2, wing);
+  if (kind === 'british') H(6, 11, 13 - bob, P.stone);
+  if (kind === 'chinese') H(5, 13, 12 - bob, P.gold); // gold trim on the jacket
+  if (kind === 'saharan') H(5, 13, 12 - bob, P.paper); // a pale sash on the robe
+  // Chest, collar, neck and head.
+  E(16, 13.5 - bob, 2.4, 3.2, P.brickDark);
+  R(15, 7 - bob, 17, 11 - bob, P.verdigris);
+  H(14, 18, 11 - bob, P.paper);
+  E(hx, hy, 3.4, 2.9, P.verdigris);
+
+  // Costume on the head (and neck).
+  if (kind === 'british') {
+    R(14, 11 - bob, 17, 12 - bob, P.brick); // scarf: red, white and blue bands, with a hanging end
+    S(15, 11 - bob, P.paper);
+    S(16, 12 - bob, UNION_BLUE);
+    S(14, 13 - bob, P.brick);
+    S(14, 14 - bob, P.paper);
+    H(13, 21, 4 - bob, P.slate); // top hat: brim, crown, red band
+    R(14, -1 - bob, 20, 3 - bob, P.slate);
+    H(14, 20, 2 - bob, P.brick);
+  } else if (kind === 'saharan') {
+    E(16, 5.5 - bob, 4.3, 3.4, P.paper); // ghutra over the head
+    R(11, 6 - bob, 13, 12 - bob, P.paper); // draped behind the neck
+    R(12, 7 - bob, 13, 12 - bob, P.stone);
+    for (const [x, y] of [[13, 3 - bob], [15, 2 - bob], [17, 3 - bob], [12, 8 - bob], [12, 10 - bob]] as const) S(x, y, P.brick);
+    H(13, 19, 4 - bob, P.inkSoft); // agal, the black cord that holds it on
+  } else {
+    c.roof(17 + OX, 17 + OX, -3 - bob + OY, 4 - bob + OY, P.terracotta); // conical straw hat
+    c.recolour((x, y, col) => x >= 18 + OX && y <= 4 - bob + OY && col.r === P.terracotta.r && col.g === P.terracotta.g, P.goldDark);
+    H(14, 20, 1 - bob, P.goldDark);
+    H(15, 19, -1 - bob, P.goldDark);
+  }
+  // Eye and a gold bill, drawn last so a head cloth never hides them.
+  S(18, 6 - bob, P.ink);
+  R(20, 7 - bob, 22, 8 - bob, P.gold);
+  S(22, 8 - bob, P.goldDark);
+
   c.outline(P.ink);
-  // Ground shadow only where empty.
-  const shadow = new PixelCanvas(DUCK_FRAME_PX, DUCK_FRAME_PX);
-  shadow.ellipse(11.5, 22.5, 8, 1.4, SHADOW);
-  for (let y = 0; y < DUCK_FRAME_PX; y++) {
-    for (let x = 0; x < DUCK_FRAME_PX; x++) if (!c.filled(x, y) && shadow.filled(x, y)) c.set(x, y, SHADOW);
+  if (kind !== 'british') {
+    const shadow = new PixelCanvas(VOYAGE_FRAME_W, VOYAGE_FRAME_H);
+    shadow.ellipse(11.5 + OX, 22.5 + OY, 8, 1.4, SHADOW);
+    for (let y = 0; y < VOYAGE_FRAME_H; y++) {
+      for (let x = 0; x < VOYAGE_FRAME_W; x++) if (!c.filled(x, y) && shadow.filled(x, y)) c.set(x, y, SHADOW);
+    }
   }
   return c;
 }
@@ -507,4 +609,5 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'viking-ship-museum': vikingShipMuseum,
   'akershus-fortress': akershusFortress,
   'emmanuel-college': emmanuelCollege,
+  'great-wall-badaling': greatWallBadaling,
 };
