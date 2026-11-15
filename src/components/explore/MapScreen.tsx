@@ -27,6 +27,7 @@ import { directionHint, formatDistance, nearestLandmark } from './lib/geo-format
 import { circlePolygon } from './lib/map-geometry';
 import { groupIntoRegions, pickRegion, REGION_GAP_M, shouldFly } from './lib/map-region';
 import { PALETTE } from './lib/palette';
+import { useUnavailableTimeMachines } from './lib/use-era-ready';
 
 /**
  * Screen pixels kept clear around the landmarks when the map first frames them. Markers stand
@@ -122,6 +123,9 @@ export default function MapScreen() {
   const [selected, setSelected] = useState<Landmark | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [worldView, setWorldView] = useState(false);
+  // Landmarks whose Time Machine has no generated era yet: greyed out, no link in (task A3-r2-4).
+  const landmarkIds = useMemo(() => landmarks?.map((l) => l.id), [landmarks]);
+  const noTimeMachine = useUnavailableTimeMachines(landmarkIds);
   const [spoofAccuracyM, setSpoofAccuracyM] = useState(DEFAULT_SPOOF_ACCURACY_M);
 
   /** The latest good fix, kept even when the tracker reports a timeout or an outage. */
@@ -367,8 +371,9 @@ export default function MapScreen() {
   useEffect(() => {
     for (const [id, el] of markersRef.current) {
       el.classList.toggle('collected', collected.has(id));
+      el.classList.toggle('no-era', noTimeMachine.has(id));
     }
-  }, [collected, landmarks]);
+  }, [collected, landmarks, noTimeMachine]);
 
   const inRange = useMemo(
     () => (lastFix && landmarks ? landmarkInRange(lastFix, landmarks) : null),
@@ -482,13 +487,19 @@ export default function MapScreen() {
             </div>
           </div>
           <p>{selected.blurb}</p>
-          <p className="muted">Time Machine years: {selected.eraYears.join(', ')}</p>
+          <p className="muted">
+            {noTimeMachine.has(selected.id)
+              ? 'Time Machine: coming soon'
+              : `Time Machine years: ${selected.eraYears.join(', ')}`}
+          </p>
           <p className="muted">
             {lastFix
               ? `${formatDistance(haversineM(lastFix.position, selected.photoSpot))} from the photo spot`
               : 'Share your location to see how far it is.'}
           </p>
-          {collected.has(selected.id) ? (
+          {collected.has(selected.id) && noTimeMachine.has(selected.id) ? (
+            <p>Badge collected. Its Time Machine is coming soon.</p>
+          ) : collected.has(selected.id) ? (
             <Link href={`/time/${selected.id}`} className="btn" style={{ display: 'inline-block' }}>
               Open Time Machine
             </Link>

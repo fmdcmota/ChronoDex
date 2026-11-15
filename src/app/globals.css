@@ -220,6 +220,12 @@ p {
 }
 
 /* Uncollected: slightly faded, so collected ones stand out. */
+.marker.no-era img {
+  /* No generated Time Machine yet (A3-r2-4): greyed out, so nobody taps into an empty screen. */
+  filter: grayscale(1) brightness(0.9);
+  opacity: 0.6;
+}
+
 .marker:not(.collected) img {
   filter: saturate(0.55) brightness(0.95);
 }

@@ -28,6 +28,7 @@ import { Button, Card, ProgressList, Sheet, Spinner, type ProgressItem } from '@
 import { describeApiFailure, describeCaptureFailure } from './lib/capture-messages';
 import { clearFix, loadFix } from './lib/fix-store';
 import { directionHint, formatDistance, nearestLandmark } from './lib/geo-format';
+import { useUnavailableTimeMachines } from './lib/use-era-ready';
 import { encodeJpeg, resizeFileToJpeg } from './lib/image-resize';
 import { LocationTracker, locationMessage, type LocationState, type PlayerFix } from './lib/location';
 
@@ -99,6 +100,10 @@ export default function CaptureScreen() {
   const [phase, setPhase] = useState<Phase>('camera');
   const [photo, setPhoto] = useState<Photo | null>(null);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+  // Whether the collected landmark has a generated era to open (task A3-r2-4).
+  const collectedId = outcome?.kind === 'collected' ? outcome.landmark.id : undefined;
+  const collectedIds = useMemo(() => (collectedId ? [collectedId] : undefined), [collectedId]);
+  const noTimeMachine = useUnavailableTimeMachines(collectedIds);
   const [steps, setSteps] = useState<ProgressItem[]>([]);
   const [busy, setBusy] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -340,11 +345,17 @@ export default function CaptureScreen() {
               <Card title={outcome.landmark.name}>
                 <span className={`rarity rarity-${outcome.landmark.rarity}`}>{outcome.landmark.rarity.toUpperCase()}</span>
                 <p>{outcome.landmark.blurb}</p>
-                <p className="muted">Step back in time: {outcome.landmark.eraYears.join(', ')}</p>
+                <p className="muted">
+                  {noTimeMachine.has(outcome.landmark.id)
+                    ? 'Time Machine: coming soon'
+                    : `Step back in time: ${outcome.landmark.eraYears.join(', ')}`}
+                </p>
               </Card>
               <div className="cap-actions">
-                <Button href={`/time/${outcome.landmark.id}`}>Open Time Machine</Button>
-                <Button href="/" variant="quiet">
+                {!noTimeMachine.has(outcome.landmark.id) && (
+                  <Button href={`/time/${outcome.landmark.id}`}>Open Time Machine</Button>
+                )}
+                <Button href="/" variant={noTimeMachine.has(outcome.landmark.id) ? 'primary' : 'quiet'}>
                   Back to the map
                 </Button>
               </div>
