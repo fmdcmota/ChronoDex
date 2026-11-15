@@ -11,12 +11,53 @@
  * Open http://localhost:4000 in Chrome (localhost counts as a secure context, so the microphone works),
  * press Record, say a sentence, press Stop. Repeat in Safari on a Mac for MP4. A phone needs HTTPS, so
  * test phones through the deployed app instead.
- * Environment: APP_URL overrides http://localhost:3000, PORT overrides 4000.
+ * Environment: APP_URL picks the app (default: https://localhost:3000, then http://localhost:3000, whichever
+ * answers; `next dev --experimental-https` serves HTTPS with a self-signed certificate, which is accepted here
+ * because it only ever talks to this machine). PORT overrides 4000.
+ * For a real transcript the app must run with NEXT_PUBLIC_USE_MOCKS empty; with mocks on the answer is
+ * "[mock transcript] ...".
  */
-import { createServer } from 'node:http';
+import { createServer, request as httpRequest } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 
-const APP_URL = process.env.APP_URL ?? 'http://localhost:3000';
+const CANDIDATES = process.env.APP_URL ? [process.env.APP_URL] : ['https://localhost:3000', 'http://localhost:3000'];
 const PORT = Number(process.env.PORT ?? 4000);
+
+/**
+ * POST a body to the app and return its status and text. Accepts the local self-signed certificate.
+ *
+ * @param base - App origin, http or https.
+ * @param path - Path, for example /api/voice/stt.
+ * @param headers - Headers to send.
+ * @param body - The body.
+ * @returns Status code and response text.
+ */
+function post(base, path, headers, body) {
+  const url = new URL(path, base);
+  const send = url.protocol === 'https:' ? httpsRequest : httpRequest;
+  return new Promise((resolve, reject) => {
+    const req = send(url, { method: 'POST', headers: { ...headers, 'content-length': body.length }, rejectUnauthorized: false }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => resolve({ status: res.statusCode ?? 502, text: Buffer.concat(chunks).toString('utf8') }));
+    });
+    req.on('error', reject);
+    req.end(body);
+  });
+}
+
+/** Send to the first app origin that answers. */
+async function forward(path, headers, body) {
+  let last;
+  for (const base of CANDIDATES) {
+    try {
+      return { ...(await post(base, path, headers, body)), base };
+    } catch (error) {
+      last = error;
+    }
+  }
+  throw new Error(`no app answered at ${CANDIDATES.join(' or ')}: ${last?.code ?? last?.message ?? last}. Is npm run dev running?`);
+}
 
 const PAGE = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width">
 <title>A2-11 voice test</title>
@@ -58,13 +99,16 @@ createServer(async (req, res) => {
   if (req.method === 'POST' && req.url === '/api/voice/stt') {
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
-    const upstream = await fetch(`${APP_URL}/api/voice/stt`, {
-      method: 'POST',
-      headers: { 'content-type': req.headers['content-type'] ?? '' },
-      body: Buffer.concat(chunks),
-    });
-    res.writeHead(upstream.status, { 'Content-Type': 'application/json' }).end(await upstream.text());
+    try {
+      const upstream = await forward('/api/voice/stt', { 'content-type': req.headers['content-type'] ?? '' }, Buffer.concat(chunks));
+      console.log(`forwarded to ${upstream.base}: HTTP ${upstream.status}`);
+      res.writeHead(upstream.status, { 'Content-Type': 'application/json' }).end(upstream.text);
+    } catch (error) {
+      // Report it on the page instead of crashing the test server.
+      console.error(error.message);
+      res.writeHead(502, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: { code: 'app_unreachable', message: error.message } }));
+    }
     return;
   }
   res.writeHead(404).end('Not found');
-}).listen(PORT, () => console.log(`Voice test page: http://localhost:${PORT}  (forwarding to ${APP_URL})`));
+}).listen(PORT, () => console.log(`Voice test page: http://localhost:${PORT}  (forwarding to ${CANDIDATES.join(' or ')})`));

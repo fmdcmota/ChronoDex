@@ -219,3 +219,62 @@ describe('mock mode is impossible to mistake', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 });
+
+describe('the human\'s voice picks (HUMAN_TASKS 2.2)', () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it('offers exactly the five London picks plus the accent voices, and retires Alice, Lily and George', async () => {
+    const { selectableVoices } = await import('./voices');
+    const offered = Object.keys(selectableVoices());
+    for (const key of ['eleven-charlotte', 'eleven-daniel', 'gemini-kore', 'gemini-aoede', 'gemini-iapetus']) expect(offered).toContain(key);
+    for (const key of ['eleven-alice', 'eleven-lily', 'eleven-george']) {
+      expect(offered).not.toContain(key);
+      // Still resolvable, because stored eras use them.
+      expect(getVoice(key).retired).toBe(true);
+    }
+  });
+
+  it('speaks a Gemini voice through the Gemini model with its Cockney style, for narration and for chat alike', async () => {
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '');
+    for (const fast of [false, true]) {
+      const submitted: { endpoint: string; input: Record<string, unknown> }[] = [];
+      const queue: FalQueueLike = {
+        async submit(endpoint, options) {
+          submitted.push({ endpoint, input: options.input });
+          return { request_id: 'g1' };
+        },
+        async status() {
+          return { status: 'COMPLETED' };
+        },
+        async result() {
+          return { data: { audio: { url: 'https://cdn/kore.wav' } } };
+        },
+      };
+      expect(await synthesizeSpeech('Hello, dearie!', 'gemini-kore', { fast }, { queue, pollIntervalMs: 0 })).toBe('https://cdn/kore.wav');
+      expect(submitted[0].endpoint).toBe(MODELS.gemini_speech.endpoint);
+      expect(submitted[0].input).toMatchObject({ prompt: 'Hello, dearie!', voice: 'Kore' });
+      expect(String(submitted[0].input.style_instructions)).toMatch(/Cockney/);
+      expect(submitted[0].input).not.toHaveProperty('text');
+    }
+  });
+
+  it('still speaks an ElevenLabs pick through ElevenLabs, with the cheaper model for chat', async () => {
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '');
+    const seen: string[] = [];
+    const queue: FalQueueLike = {
+      async submit(endpoint) {
+        seen.push(endpoint);
+        return { request_id: 'e1' };
+      },
+      async status() {
+        return { status: 'COMPLETED' };
+      },
+      async result() {
+        return { data: { audio: { url: 'https://cdn/c.mp3' } } };
+      },
+    };
+    await synthesizeSpeech('Hi', 'eleven-charlotte', { fast: false }, { queue, pollIntervalMs: 0 });
+    await synthesizeSpeech('Hi', 'eleven-charlotte', { fast: true }, { queue, pollIntervalMs: 0 });
+    expect(seen).toEqual([MODELS.narration.endpoint, MODELS.chat_speech.endpoint]);
+  });
+});

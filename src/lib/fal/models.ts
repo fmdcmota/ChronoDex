@@ -12,7 +12,7 @@
 import type { StageKey } from '@/lib/contracts';
 
 /** Stages that call fal. `brief` is Claude (the Historian) and `stitch` is chosen in A2-14. */
-export type FalStageKey = Exclude<StageKey, 'brief'> | 'chat_speech' | 'speech_to_text' | 'panorama_upscale' | 'image_check' | 'ambience_music' | 'ambience_street';
+export type FalStageKey = Exclude<StageKey, 'brief'> | 'chat_speech' | 'speech_to_text' | 'panorama_upscale' | 'image_check' | 'ambience_music' | 'ambience_street' | 'gemini_speech';
 
 /** One stage's model choice. */
 export interface ModelChoice {
@@ -112,6 +112,13 @@ export const MODELS: Record<FalStageKey, ModelChoice> = {
     typicalSeconds: 12,
     note: 'A2-04: provisional until a human has listened. $0.08 per 1,000 characters.',
   },
+  gemini_speech: {
+    endpoint: 'google/gemini-3.8-flash-tts',
+    fallback: null,
+    typicalCostUsd: 0.03,
+    typicalSeconds: 12,
+    note: 'A2-04 and the human\'s picks: three of the five London voices (Kore, Aoede, Iapetus) with a Cockney style instruction. $0.045 per 1,000 characters; style instructions are not billed. Returns WAV (24 kHz mono). Used for both narration and chat replies.',
+  },
   chat_speech: {
     endpoint: 'elevenlabs/tts/eleven-v4-turbo',
     fallback: 'elevenlabs/tts/eleven-v4',
@@ -138,7 +145,7 @@ export const MODELS: Record<FalStageKey, ModelChoice> = {
     fallback: 'veed/fabric-1.0',
     typicalCostUsd: null,
     typicalSeconds: 226,
-    note: 'A2-05: provisional until a human has watched. Kling: 226 s and $0.0562/s per 10 s clip. Fabric 480p: 53 s, $0.08/s.',
+    note: 'A2-05: Kling chosen by the human (HUMAN_TASKS 2.2, 15 Nov); Fabric stays the fallback. Kling: 226 s and $0.0562/s per 10 s clip. Fabric 480p: 53 s, $0.08/s.',
   },
   walk_on: {
     endpoint: 'kling/v4/image-to-video',

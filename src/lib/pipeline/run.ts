@@ -160,6 +160,12 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
         const c = out.check;
         const verdict = c.checked ? (c.passed ? 'passed the check' : `kept with problems: ${c.problems.join('; ')}`) : 'not checked';
         console.log(`runEraJob: ${key} for ${job.eraId}: ${c.attempts} attempt(s), ${verdict}, check cost ${c.checkCostUsd.toFixed(4)} USD`);
+        if (c.checked && !c.passed) {
+          // Flag it where people look (HUMAN_TASKS 2.4): the stage stays done (the picture is usable) but carries the
+          // critic's reasons in `error`, which the job, the progress sheet and any script reading jobs can show.
+          const flag = `KEPT WITH PROBLEMS after ${c.attempts} attempts: ${c.problems.join('; ')}`;
+          await patchStage(job.id, key, { error: flag.slice(0, 500) });
+        }
       }
       return out;
     } catch (err) {
@@ -218,10 +224,10 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
         if (sceneUrl) await skip('scene', null);
         else {
           const out = await step('scene', MODELS.scene.endpoint, async (ctx) => {
-            // toFalUrl refuses an .svg and uploads /reference/<id>.jpg once (A2-a); references are shrunk (A2-i).
+            // toFalUrl refuses an .svg and uploads /reference/<id>.jpg once (A2-a).
+            // No period photographs for the scene: they changed its viewpoint (phone test 6.5). The panorama uses them.
             const referencePhotoUrl = await media.toFalUrl(landmark.referencePhotoUrl);
-            const referenceImageUrls = await preparedReferences(brief.sceneBrief.referenceImageUrls ?? []);
-            const made = await deps.stages.scene({ referencePhotoUrl, brief: { ...brief.sceneBrief, referenceImageUrls }, year, look: periodLook() }, ctx);
+            const made = await deps.stages.scene({ referencePhotoUrl, brief: brief.sceneBrief, year, look: periodLook() }, ctx);
             return { ...made, url: await keep(made.url, 'scene') };
           });
           if (out) {

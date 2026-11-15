@@ -21,6 +21,12 @@ export const PANORAMA_MAX_UNPAINTED = 0.03;
 
 /** Vertical field of view of the result. 180 means a full equirectangular sphere (contracts: Panorama.vFovDeg). */
 export const PANORAMA_VFOV_DEG = 180;
+/**
+ * Most paintings per panorama: the first, the corrective retry, and one more (HUMAN_TASKS 2.4: "try once again, and
+ * if it fails, flag it"). A panorama still failing after that is kept and flagged on the job stage. Worst case about
+ * $0.50 for the paintings and checks.
+ */
+export const PANORAMA_MAX_ATTEMPTS = 3;
 
 /** One painted attempt: the model's output plus the bytes and the cheap local measure. */
 interface Painted extends StageOutput {
@@ -79,6 +85,7 @@ export async function runPanorama(
 
   const { output: kept, report } = await generateChecked<Painted>({
     ctx,
+    maxAttempts: PANORAMA_MAX_ATTEMPTS,
     generate: async (fix, runCtx) => {
       const painted = await runImageModel('panorama', buildPanoramaInput(withCorrection(prompt, fix), canvasUrl, references), runCtx);
       const bytes = await fetchBuffer(painted.url);

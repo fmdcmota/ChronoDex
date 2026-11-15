@@ -289,3 +289,52 @@ describe('the checked stages', () => {
     expect(out.check).toMatchObject({ passed: true, attempts: 2 });
   });
 });
+
+describe('scene viewpoint check (phone test 6.5)', () => {
+  it('sends the reference photo as image 2 and fails a scene whose viewpoint changed', async () => {
+    const moved = JSON.stringify({ anachronisms: [], looks_computer_generated: false, same_viewpoint: false, verdict: 'fail', problems: [], fix: 'keep the camera where it is' });
+    const queue = fakeFal([moved]);
+    const verdict = await checkScene('https://cdn/scene.jpg', buildSceneCheckPrompt(1893, [], true), { pollIntervalMs: 0, queue }, 'https://cdn/reference.jpg');
+    expect(queue.submitted[0].input.image_urls).toEqual(['https://cdn/scene.jpg', 'https://cdn/reference.jpg']);
+    expect(verdict.passed).toBe(false);
+    expect(verdict.hard.join(' ')).toMatch(/same viewpoint/);
+  });
+
+  it('passes a scene that kept the viewpoint, and asks about the viewpoint only when a reference is sent', async () => {
+    const kept = JSON.stringify({ anachronisms: [], looks_computer_generated: false, same_viewpoint: true, verdict: 'pass', problems: [], fix: '' });
+    expect((await checkScene('s', buildSceneCheckPrompt(1893, [], true), { pollIntervalMs: 0, queue: fakeFal([kept]) }, 'r')).passed).toBe(true);
+    expect(buildSceneCheckPrompt(1893, [], true)).toContain('"same_viewpoint"');
+    expect(buildSceneCheckPrompt(1893, [])).not.toContain('same_viewpoint');
+  });
+});
+
+describe('more attempts for the panorama (HUMAN_TASKS 2.4)', () => {
+  const verdict = (passed: boolean, problems: string[] = [], fix = ''): CheckVerdict => ({ passed, checked: true, problems, hard: passed ? [] : problems, fix, raw: {}, costUsd: 0.01 });
+  const picture = (n: number): StageOutput => ({ url: `pic-${n}`, model: 'm', requestId: `r${n}`, elapsedMs: 1 });
+
+  it('tries a third time when asked and keeps a third attempt that passes', async () => {
+    let n = 0;
+    const advice: (string | null)[] = [];
+    const { output, report } = await generateChecked({
+      ctx: {},
+      maxAttempts: 3,
+      generate: async (fix) => {
+        advice.push(fix);
+        return picture(++n);
+      },
+      judge: async (p) => ({ verdict: p.url === 'pic-3' ? verdict(true) : verdict(false, ['flat'], `fix after ${p.url}`) }),
+    });
+    expect(output.url).toBe('pic-3');
+    expect(report).toMatchObject({ passed: true, attempts: 3 });
+    // Each retry gets the advice from the attempt just before it.
+    expect(advice).toEqual([null, 'fix after pic-1', 'fix after pic-2']);
+  });
+
+  it('stops at the limit and reports the failure, so the stage can be flagged', async () => {
+    let n = 0;
+    const generate = vi.fn(async () => picture(++n));
+    const { report } = await generateChecked({ ctx: {}, maxAttempts: 3, generate, judge: async () => ({ verdict: verdict(false, ['still flat']) }) });
+    expect(generate).toHaveBeenCalledTimes(3);
+    expect(report).toMatchObject({ passed: false, attempts: 3, problems: ['still flat'] });
+  });
+});

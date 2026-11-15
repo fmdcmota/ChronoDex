@@ -61,11 +61,11 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 02:30
-- Working on: the Sunday list. Done: A2-a, A2-h, A2-i, A2-b (real core tier for queens-tower_1893 in `chronodex`), A2-j (E1 run, not adopted, needs the human's look), A2-c (placeholder keys gone), A2-e server side (STT, chat, TTS all real), A2-g (committed and pushed).
-- Next: blocked on the human. A2-d (45 s talk clip) and the final VOICE_CATALOG need HUMAN_TASKS 2.2; A2-f (pregenerate) needs reference photos for the other landmarks (Agent 5) and the briefs read (H7); 2.3 colour or monochrome; 2.8 look at E1. Then run `scripts/pregenerate.ts` per the credit count (2.1).
+- Last updated: 2026-11-15 03:51 (real clock)
+- Working on: the human answered HUMAN_TASKS 2.1 to 2.8 (see the log). Done from them: VOICE_CATALOG final with the five picks (Gemini voices now supported), panorama gets a third try and a flag, colour confirmed, voice-test page fixed for the HTTPS dev server. The /demo/ links in chronodex are Agent 6's demo set (not a bug).
+- Next: the real guide video (A2-r2-5) is ON HOLD by the human's decision: talk model is Kling, but no video is made until the team has confirmed more details. Do not start any video tier. Agent 1 to offer only selectableVoices() to the Historian.
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
-- Board read up to: 2026-11-15 06:40 (@agent-1 A1-f, A1-c)
+- Board read up to: 2026-11-15 08:00 (@agent-1 A1-r2-3, stamp ahead of the real clock)
 - Waiting for commit approval: nothing; the Sunday work is committed and pushed (A2-g, the human asked for it)
 - Review facts for A2-07+: 45 s needs ~130 words (measured ~2.9 words/s), not 105–120. `fal-ai/ffmpeg-api/extract-frame` returns 403 on this key. `merge-videos` uses the smallest input size, so scale every clip to 1280×720 first. Kling avatar standard ≈ 226 s per 10 s clip (~15 min for 45 s).
 
@@ -348,3 +348,36 @@ Pulled and fast-forwarded `main` and `agent-2` to `origin/main` (a24ca2b) first.
 - **A2-c (done).** The two `placeholder-*` keys are gone; nothing referenced them.
 - **A2-e (server side done).** With mocks off on `chronodex`: STT of the human's WebM 200 in 4.5 s with the right words; chat streamed a reply in character from the real brief, first bytes 2.8 s; TTS of that reply in the guide's voice 200 in 4.7 s, playable MP3. The phone run (hold to talk in the app) needs an app served with mocks off.
 - Tests: 491 pass. Spend this session about $1.0. Project total about $10.
+
+### 2026-11-15 03:35, round 2 (REMAINING_WORK_2.md): A2-r2-1 to A2-r2-3, A2-r2-6
+
+Pulled `main` and merged it into `agent-2` (no rebase). A2-r2-1 (commit the queue) and A2-r2-2 (A2-h: persist outputs, toFalUrl inputs) were already on `main` through PR #4.
+
+**A2-r2-3, Then/Now (phone test 6.5). Partly done; needs a better reference photo.**
+- Why it failed: the scene was not an edit with the reference photo's framing. Two causes found. (1) With period photographs attached as references, the model adopts their viewpoint. (2) Even without them, Queen's Tower's reference is a close, low-angle, wide-lens shot of the lone tower (padded with blurred sides), and asked to add back the Institute's wings, the model steps back to fit them, so the tower shrinks to about a third of its height.
+- Changes: the scene stage no longer attaches period photographs by default (`usePeriodReferences`, the panorama still uses them); the scene critic now gets the reference photo as image 2 and fails a changed viewpoint (`same_viewpoint`), which triggers the corrective retry; the scene prompt says do not zoom out, things added back are cut off by the frame; in the colour look, sepia references give shapes, not tones. Tests added (522 pass).
+- Live, in `chronodex`: cleared queens-tower_1893's scene and panorama only and re-ran the core job (`spikes/agent-2/regen-scene.mts`): 124 s. New scene in natural colour (the monochrome problem is fixed), panorama passed at the first attempt. The critic flagged the scene's viewpoint on both attempts and it was kept with that problem. One more trial with the "do not zoom out" prompt (`scene-trial.mts`, not written to the database): same result, flagged twice. Spend about $0.65.
+- A free framing score from edge correlation was tried and dropped: it could not tell a kept framing from a changed one (scores overlapped), so it would have blocked good scenes.
+- Alignment (`spikes/agent-2/align.py`, Pillow and numpy, free): finds the reference's view inside the new scene at about left 0.204, top 0.141, width 0.550, height 0.554 of the scene (match score 0.62). The blend shows the tower roughly in place but the geometry differs (low-angle wide lens against a distant view), so a crop is approximate, not aligned. `spikes/agent-2/out/align-check.jpg`, `regen-compare.jpg`.
+- **The real fix is a wide reference photo** of Queen's Tower from far back on Queen's Lawn (Agent 5's A5-07 note says the same, and H1). Until then Agent 4 should hide Then/Now for this era (their A4-r2-3) or use the approximate crop.
+- **Unexplained: someone rewrote this era's links.** After my run, `chronodex` holds `sceneImageUrl`, `guide.headshotUrl` and `narrationAudioUrl` as `/demo/queens-tower_1893/*.jpg|mp3`; only the panorama is still `/api/media/afd17468...`. No code in this repo or any branch writes `/demo/` paths, so another process (likely the serving machine) did it, overwriting my new scene's link. My new scene is still stored as `/api/media/10318dcec1ee4d7c64aad64d5b0d0152`. I did not overwrite theirs; asked on the board.
+
+**A2-r2-6.** `scripts/backup-media.ts` on `chronodex` after the batch: the panorama saved; the `/demo/` files are not ours to read, so they were skipped.
+
+Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek.mts`, `align.py`.
+
+### 2026-11-15 03:51, the human's answers to HUMAN_TASKS section 2
+
+- **2.1 credits: $14.97 left.** The real guide video (about $4.25 with Kling standard) fits, but the human has not said yes to it, and 2.2 named no talk model, so it is not started.
+- **2.2 voices: Eleven v4 Charlotte and Daniel; Gemini TTS Kore and Aoede (female Cockney style) and Iapetus (male Cockney style).** `VOICE_CATALOG` is final: those five plus Agent 6's six accent voices are offered; Alice, Lily and George are marked `retired` (stored eras still use george 6 times, lily twice, alice once, so they must keep speaking). New `selectableVoices()` lists what may be offered; Agent 1's Historian still reads all of `VOICE_CATALOG`, so the retired ones say "RETIRED, do not choose" in their description until Agent 1 switches to `selectableVoices()`. `synthesizeSpeech` now speaks Gemini voices through `google/gemini-3.8-flash-tts` (`MODELS.gemini_speech`, prompt, voice, style_instructions; WAV out) for both narration and chat. Live: Kore, Iapetus and Charlotte each read a test line correctly (Scribe transcript exact); a short chat reply takes about 5 s on Gemini against 2.5 s on Eleven turbo.
+- **2.3 colour.** Already the default (`PERIOD_LOOK` unset). Nothing to change.
+- **2.4 a panorama still flat after its retry: "try once again, and if it fails, flag it".** The panorama now gets up to 3 paintings (`PANORAMA_MAX_ATTEMPTS`), each retry told what was wrong with the attempt just before it. If it still fails, the stage stays `done` (the picture is usable) and its `error` says `KEPT WITH PROBLEMS after 3 attempts: ...`, so the job, the progress sheet and scripts can show it. The same flag now applies to any checked picture kept with problems (scene, guide frame).
+- **2.6 ambience: sounds good.** Nothing to change.
+- **2.7 mic test failed with ECONNREFUSED.** The dev server now runs `next dev --experimental-https`, so nothing answers on plain http://localhost:3000, and the test page crashed on the error. `voice-test.mjs` now tries https://localhost:3000 (accepting the local self-signed certificate) then http, and shows an error on the page instead of crashing. Checked: it forwards to the HTTPS dev server and returns 200. With mocks on, the answer is the tagged `[mock transcript]`; for a real transcript the app must run with `NEXT_PUBLIC_USE_MOCKS` empty.
+- **2.8 E1: stick to the current two-step method.** Not adopted.
+- **The /demo/ links** in `chronodex` (my last post) are Agent 6's demo set (commit c2e7f6d, files in public/demo): not a bug. My regenerated Queen's Tower 1893 scene and panorama are superseded by theirs.
+- Tests: 540 pass.
+
+### 2026-11-15 03:54, talk model and video decision
+- The human chose **Kling** (`fal-ai/kling-video/ai-avatar/v2/standard`) for the talk clip; registry and `talk.ts` updated, Fabric stays the fallback.
+- **No guide video yet**: the human wants to confirm more details first. A2-r2-5 and A2-d are on hold; nothing paid was started.

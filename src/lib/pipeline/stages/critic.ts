@@ -136,14 +136,16 @@ export async function checkPanorama(imageUrl: string, prompt: string, ctx: FalRu
  * Judge a scene: right year, nothing that did not exist yet, a photograph and not a render.
  *
  * @param imageUrl - The edited scene.
- * @param prompt - From buildSceneCheckPrompt.
+ * @param prompt - From buildSceneCheckPrompt (with `withReference` when a reference is given).
  * @param ctx - Optional runFal context.
+ * @param referenceUrl - The present-day photo the scene was edited from; when given, a changed viewpoint is a hard failure.
  * @returns The verdict. Never throws.
  */
-export async function checkScene(imageUrl: string, prompt: string, ctx: FalRunContext = {}): Promise<CheckVerdict> {
-  const result = await askCritic(prompt, [imageUrl], ctx);
+export async function checkScene(imageUrl: string, prompt: string, ctx: FalRunContext = {}, referenceUrl?: string): Promise<CheckVerdict> {
+  const result = await askCritic(prompt, referenceUrl ? [imageUrl, referenceUrl] : [imageUrl], ctx);
   if (!result) return unchecked('the critic could not be reached');
   const failures = result.answer.looks_computer_generated === true ? ['looks computer generated, not like a real photograph'] : [];
+  if (referenceUrl && result.answer.same_viewpoint === false) failures.push('not the same viewpoint as the reference photo, so Then/Now would not line up');
   const verdict = toVerdict(result.answer, failures);
   verdict.costUsd = result.costUsd;
   return verdict;

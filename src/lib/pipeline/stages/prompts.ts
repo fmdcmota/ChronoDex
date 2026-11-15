@@ -124,6 +124,9 @@ export function buildScenePrompt(brief: SceneChanges, year: number, style: Promp
   return [
     `Edit this photograph so it shows the same place in the year ${year}, as a real photograph taken from exactly the same spot.`,
     'Keep the camera position, height, lens, perspective and horizon identical. Buildings that remain must stay in exactly the same place and size in the frame.',
+    // Live run, Queen's Tower 1893 (phone test 6.5): asked to add back the Institute's wings, the model stepped back to
+    // fit them in and the tower shrank to a third of its height, so Then/Now did not line up. Say so explicitly.
+    'Do not zoom out or step back to show more of the place. Every building that stays keeps exactly the same height and width in the frame as in the photograph. Anything added back around it is seen at the same close range and is simply cut off by the edges of the frame.',
     'If the left and right edges of the photograph are blurred or smeared padding, replace them with a sharp, natural continuation of the scene.',
     referenceBlock(2, style.referenceCount ?? 0, look),
     `What the camera sees in ${year}: ${brief.description}`,
@@ -329,19 +332,29 @@ export function buildPanoramaCheckPrompt(year: number): string {
  *
  * @param year - The era's year.
  * @param mustBeAbsent - SceneBrief.changes.notYetBuilt: things that must not appear.
- * @returns The prompt for a vision model that receives the edited scene as its only image.
+ * @param withReference - True when the reference photo is sent as image 2, to check the viewpoint did not change
+ *   (Then/Now overlays the two; phone test 6.5 failed on a reframed scene).
+ * @returns The prompt for a vision model that receives [scene] or [scene, reference photo].
  */
-export function buildSceneCheckPrompt(year: number, mustBeAbsent: string[]): string {
+export function buildSceneCheckPrompt(year: number, mustBeAbsent: string[], withReference = false): string {
   return [
-    `You are a strict quality checker for generated historical photographs. The image is meant to be a real photograph of a street in London in the year ${year}.`,
+    `You are a strict quality checker for generated historical photographs. Image 1 is meant to be a real photograph of a street in London in the year ${year}.`,
+    withReference
+      ? 'Image 2 is the present-day photograph that image 1 was edited from. Buildings may have been added, removed or changed, and the edges of image 2 may be blurred padding; that is expected.'
+      : '',
     `These things did not exist yet and must not appear anywhere: ${mustBeAbsent.length ? mustBeAbsent.join('; ') : 'anything modern'}.`,
     'Answer with one JSON object and nothing else (no markdown, no prose), with exactly these keys:',
-    `"anachronisms": a list of things in the picture that did not exist in ${year}. Empty if none.`,
-    '"looks_computer_generated": true if it looks like a glossy render, a painting or CGI instead of a real photograph of the time.',
-    '"verdict": "pass" or "fail". Fail if there is any anachronism or it looks computer generated.',
+    `"anachronisms": a list of things in image 1 that did not exist in ${year}. Empty if none.`,
+    '"looks_computer_generated": true if image 1 looks like a glossy render, a painting or CGI instead of a real photograph of the time.',
+    withReference
+      ? '"same_viewpoint": true if image 1 is taken from the same camera position, direction and zoom as image 2, so that any building standing in both appears at the same place and size in the frame. False if the camera has moved, turned, zoomed or the view is of a different side of the place.'
+      : '',
+    `"verdict": "pass" or "fail". Fail if there is any anachronism or it looks computer generated${withReference ? ', or the viewpoint differs' : ''}.`,
     '"problems": a list of short strings, empty if none.',
     '"fix": one sentence that could be added to the image generation prompt to fix the worst problem, or an empty string.',
-  ].join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
 /**
