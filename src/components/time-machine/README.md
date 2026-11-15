@@ -38,3 +38,8 @@ then follow `spikes/agent-4/PHONE_TEST.md` Test 4.
 - A pixel frame is a box-shadow 3 px outside the box: a parent with `overflow` clips it unless it has padding.
 - No lookbehind regexes: Safari before iOS 16.4 cannot parse them and the whole page would fail.
 - iOS ignores `audio.volume`, hence Web Audio for ambience; Web Audio is silent with the ring switch off.
+
+## Browser media cache (A4-14)
+
+`mediaCache.ts`: `/api/media` and fal files via Cache Storage (pictures, narration, chat headshot; clips stream).
+`eraSnapshot.ts`: last ready era per id in localStorage, shown until the server answers. Failures fall back to the URL.

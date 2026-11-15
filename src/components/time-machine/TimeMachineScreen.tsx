@@ -14,11 +14,14 @@
  * Both calls are safe to repeat (the endpoint returns the active job), but each runs at most once per
  * era per visit, so a failing era is not retried in a loop. "Try again" retries by hand.
  * Period ambience (./useAmbience.ts) plays for the selected year and drops while the guide speaks.
+ * A4-14: a ready era seen before is shown at once from its localStorage snapshot (./eraSnapshot.ts) while the
+ * server answers; its panorama and scene come from Cache Storage (./mediaCache.ts); the landmark's other ready
+ * years are prefetched in the background so switching year is instant.
  */
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { GAME, type Era, type EraId, type EraResponse, type Landmark, type LandmarkId } from '@/lib/contracts';
 import { api } from '@/lib/client';
 import { GuidePlayer } from './GuidePlayer';
@@ -30,12 +33,17 @@ import { hasSourceNotes } from './sources';
 import { YearBar } from './YearBar';
 import { AmbienceToggle } from './AmbienceToggle';
 import { useAmbience } from './useAmbience';
+import { loadEraSnapshot, saveEraSnapshot } from './eraSnapshot';
+import { prefetchMedia, useCachedMediaUrl } from './mediaCache';
 import { BTN_PRIMARY, BTN_SECONDARY_SMALL, PANEL_DARK, PIXEL_FONT } from './pixel';
 
 /** Props for TimeMachineScreen. */
 export interface TimeMachineScreenProps {
   landmarkId: LandmarkId;
 }
+
+/** Wait this long after the year list arrives before prefetching other years, so the chosen year loads first. */
+const PREFETCH_DELAY_MS = 1500;
 
 /** How often the elapsed seconds in the progress sheet tick. */
 const CLOCK_TICK_MS = 1000;
@@ -94,6 +102,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
 
   /** Store a fresh era response and mirror its state into the year bar. */
   const accept = useCallback((res: EraResponse) => {
+    saveEraSnapshot(res);
     setCurrent(res);
     setEras((list) => list?.map((e) => (e.id === res.era.id ? res.era : e)) ?? list);
   }, []);
@@ -125,18 +134,42 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
     };
   }, [selectedId, accept]);
 
-  const era = current?.era.id === selectedId ? current.era : null;
+  /** The era as the server last said. Generation and polling act on this only. */
+  const liveEra = current?.era.id === selectedId ? current.era : null;
+  /** A4-14: the kept copy from an earlier visit, shown until the server answers. */
+  const snapshot = useMemo(() => (selectedId ? loadEraSnapshot(selectedId) : null), [selectedId]);
+  const era = liveEra ?? snapshot;
   // From the year bar, not the loaded era, so the loop does not stop and restart while a year loads.
   const selectedYear = eras?.find((e) => e.id === selectedId)?.year ?? null;
   const ambience = useAmbience(selectedYear, guideSpeaking);
   const job = current?.era.id === selectedId ? current.job : null;
 
-  // Generate what is missing, once.
+  // Generate what is missing, once. Never from a snapshot: only the server's answer can start spending.
   useEffect(() => {
-    if (!era || job) return;
-    if (era.state === 'missing') requestTier(era.id, false);
-    else if (era.state === 'ready' && era.videoState === 'missing') requestTier(era.id, true);
-  }, [era, job, requestTier]);
+    if (!liveEra || job) return;
+    if (liveEra.state === 'missing') requestTier(liveEra.id, false);
+    else if (liveEra.state === 'ready' && liveEra.videoState === 'missing') requestTier(liveEra.id, true);
+  }, [liveEra, job, requestTier]);
+
+  // A4-14: fetch the other ready years' pictures in the background, once the list is known.
+  const prefetchKey = eras
+    ?.filter((e) => e.state === 'ready')
+    .map((e) => e.id)
+    .join(',');
+  useEffect(() => {
+    if (!eras || !prefetchKey) return;
+    const timer = setTimeout(() => {
+      const others = eras.filter((e) => e.state === 'ready' && e.id !== selectedId);
+      void prefetchMedia(others.flatMap((e) => [e.panorama?.url, e.sceneImageUrl]));
+    }, PREFETCH_DELAY_MS);
+    return () => clearTimeout(timer);
+    // Only when the set of ready years changes, not on every year tap.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefetchKey]);
+
+  // A4-14: pictures through the browser cache. Null while resolving: the placeholder below shows meanwhile.
+  const panoramaSrc = useCachedMediaUrl(era?.panorama?.url);
+  const sceneSrc = useCachedMediaUrl(era?.sceneImageUrl);
 
   // Poll while a job is running.
   const pollId = job ? era?.id : null;
@@ -210,12 +243,12 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
       </header>
 
       <main className="relative flex-1 overflow-hidden">
-        {era?.panorama ? (
-          <PanoramaView key={era.panorama.url} panorama={era.panorama} className="absolute inset-0" />
-        ) : era?.sceneImageUrl ? (
+        {era?.panorama && panoramaSrc ? (
+          <PanoramaView key={era.panorama.url} panorama={{ ...era.panorama, url: panoramaSrc }} className="absolute inset-0" />
+        ) : era?.sceneImageUrl && sceneSrc ? (
           // The scene lands before the panorama: show it so there is something to look at.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={era.sceneImageUrl} alt={`${landmark?.name ?? 'The landmark'} in ${era.year}, AI reconstruction`} className="absolute inset-0 h-full w-full object-cover" />
+          <img src={sceneSrc} alt={`${landmark?.name ?? 'The landmark'} in ${era.year}, AI reconstruction`} className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <div className={`${PIXEL_FONT} absolute inset-0 flex items-center justify-center text-8xl text-(--paper)/10`}>{era?.year ?? ''}</div>
         )}

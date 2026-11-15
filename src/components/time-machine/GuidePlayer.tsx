@@ -18,6 +18,7 @@ import type { Era, Guide } from '@/lib/contracts';
 import { buildCaptions, captionAt, type Caption } from './captions';
 import { SegmentPlayer, type PlayableSegment } from './segmentPlayer';
 import { BTN_PRIMARY, BTN_SECONDARY } from './pixel';
+import { useCachedMediaUrl } from './mediaCache';
 
 /** Props for GuidePlayer. */
 export interface GuidePlayerProps {
@@ -43,7 +44,9 @@ type Phase = 'ready' | 'playing' | 'done';
  * @returns The player overlay.
  */
 export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerProps) {
-  const { guide, guideVideo, narrationAudioUrl } = era;
+  const { guide, guideVideo } = era;
+  // A4-14: the narration (under 1 MB) is kept in Cache Storage; null while it resolves. Clips stream as before.
+  const narrationAudioUrl = useCachedMediaUrl(era.narrationAudioUrl);
   const [phase, setPhase] = useState<Phase>('ready');
   const [caption, setCaption] = useState<Caption | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
@@ -133,7 +136,7 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
     finish();
   };
 
-  if (!hasVideo && !narrationAudioUrl) return null;
+  if (!hasVideo && !era.narrationAudioUrl) return null;
 
   return (
     <>

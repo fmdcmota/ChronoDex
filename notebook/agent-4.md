@@ -76,9 +76,9 @@ Then A4-10, the phone pass.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 00:22 (log entry and two board posts were stamped a few minutes ahead; corrected on the board)
-- Working on: nothing in progress. Phone test round 1 items 1 to 7 are done and pushed (this session's commit). Item 8 (real voice end to end) needs keys or the deploy; item 9 needs no change.
-- Next: (1) the real voice path (item 8, PHONE_TEST.md 5.10 and 5.11) now belongs to Agent 2 by the human's call; fix any screen-side bug they post. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
+- Last updated: 2026-11-15 02:10
+- Working on: nothing in progress. Sunday priorities 1 to 4 (A4-11, A4-14, A4-12, A4-13) are done and pushed. Real Queen's Tower 1893 media is copied into GridFS in chronodex_dev_agent2 (Eras not rewritten yet).
+- Next (Sunday list): rerun `scripts/persist-media.ts` without `--copy-only` after Agent 2's A2-h; A4-15 real panorama on two phones (needs a human and a server on a database with real media); A4-16; A4-b licences in the Sources drawer; A4-a, A4-c, A4-10. Older: (1) the real voice path (item 8, PHONE_TEST.md 5.10 and 5.11) now belongs to Agent 2 by the human's call; fix any screen-side bug they post. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
 - Blocked on: keys or the deploy for the real voice path; a human with a phone for Test 5.
 - Board read up to: my own timekeeping post at the bottom (origin/main fetched 00:21, nothing new for Agent 4).
 - Standing instruction from the human (20:25, repeated 2026-11-15 00:00): commit and push to main without asking each time; do not stop per task; stop only for a merge conflict, a failing check, or a real wall. Never force-push.
@@ -105,8 +105,8 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] R1-8 Real voice and replies on a phone: handed to Agent 2 by the human (board ASK, 2026-11-15; first posted to Agent 1, then corrected)
 - [x] A4-11 Media store `src/lib/media/` (GridFS + folder + memory backends, ledger, persistFromUrl, toFalUrl; GridFS checked on Atlas)
 - [x] A4-12 `GET /api/media/[mediaId]` (immutable, ETag, Range 206, 304, HEAD)
-- [ ] A4-13 `scripts/persist-media.ts`
-- [ ] A4-14 Browser media cache, year prefetch, era snapshot
+- [x] A4-13 `scripts/persist-media.ts` (copy-only run done on chronodex_dev_agent2; Era rewrite waits for A2-h)
+- [x] A4-14 Browser media cache, year prefetch, era snapshot
 - [ ] A4-15 First real panorama on two phones
 - [ ] A4-16 Time Machine on a real era
 - [ ] A4-b Sources drawer licences from data/ATTRIBUTION.md
@@ -218,3 +218,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: the mongodb driver types GridFS ids as ObjectId; cast, any _id works.
 - Next: A4-14 browser cache, then A4-13 persist script.
+
+### 2026-11-15 02:10, A4-14 and A4-13: browser cache, persist script
+- Did: A4-14 `mediaCache.ts` (Cache Storage `chronodex-media-v1` for `/api/media` and fal files, object URLs, shared in-flight downloads, `prefetchMedia`, `useCachedMediaUrl`) wired into TimeMachineScreen (panorama, scene), ThenNowSlider, GuidePlayer (narration only; clips stream) and Avatar. `eraSnapshot.ts`: the last ready, job-free era per id in localStorage, shown until the server answers. Other ready years prefetched 1.5 s after the year list. A4-13 `src/lib/media/eraMedia.ts` (which URLs need persisting, the Era patch) and `scripts/persist-media.ts` (`--dry-run`, `--only`, `--no-video`, `--copy-only`; re-reads each era before patching).
+- Decided, and why: generation only ever starts from the server's era (`liveEra`), never a snapshot, so a stale copy cannot spend credits. Video clips stay out of Cache Storage: tens of MB and they need Range; the route's immutable header covers them. Added `--copy-only` because rewriting Eras to `/api/media` before A2-h would make a later stage hand a relative URL to fal.
+- Measured or verified: browser pane against the dev server (no keys, memory DB, folder store): planted a snapshot whose panorama is an `/api/media` file; first visit fetched it once and Cache Storage held it; reload made no `/api/media` request; the panorama rendered; no console errors. Route over HTTP: 206 with `bytes 0-3/551993` (JPEG magic), HEAD immutable + ETag. Persist script: dry runs on chronodex, chronodex_dev_alex (nothing to copy) and chronodex_dev_agent2; then `--copy-only` on chronodex_dev_agent2 copied Queen's Tower 1893 scene, panorama, narration and headshot (3.2 MB) into GridFS. Full suite 481 pass with `--pool=vmThreads`.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: none.
+- Next: once A2-h lands, rerun `persist-media.ts` without `--copy-only` on each database to rewrite the Eras (no downloads, files already stored). Then A4-15 with a phone.

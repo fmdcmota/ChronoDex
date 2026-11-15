@@ -13,6 +13,7 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { THEN_NOW_START_PERCENT, percentAfterKey, percentFromPointer } from './thenNow';
 import { BTN_SECONDARY, TAG_DARK } from './pixel';
+import { useCachedMediaUrl } from './mediaCache';
 
 /** Props for ThenNowSlider. */
 export interface ThenNowSliderProps {
@@ -41,7 +42,10 @@ export interface ThenNowSliderProps {
  * @param props.onClose - Closes the overlay.
  * @returns The overlay.
  */
-export function ThenNowSlider({ thenUrl, nowUrl, year, landmarkName, onClose }: ThenNowSliderProps) {
+export function ThenNowSlider({ thenUrl: thenSource, nowUrl: nowSource, year, landmarkName, onClose }: ThenNowSliderProps) {
+  // A4-14: both pictures through the browser cache. Empty src until resolved keeps the box laid out.
+  const thenUrl = useCachedMediaUrl(thenSource) ?? undefined;
+  const nowUrl = useCachedMediaUrl(nowSource) ?? undefined;
   const [percent, setPercent] = useState(THEN_NOW_START_PERCENT);
   const box = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);

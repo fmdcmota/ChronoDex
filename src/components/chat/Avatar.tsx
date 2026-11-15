@@ -4,6 +4,7 @@
  * Owner: Agent 4. Part of A4-07. `Guide.headshotUrl` is null until the pipeline's headshot
  * stage finishes (MASTER.md section 5.1), and the chat must still look finished before that.
  */
+import { useCachedMediaUrl } from '@/components/time-machine/mediaCache';
 
 /** Props for Avatar. */
 export interface AvatarProps {
@@ -38,7 +39,9 @@ const SILHOUETTE: [number, number, number, number][] = [
  * @param props.sizePx - Diameter in CSS pixels.
  * @returns The avatar element.
  */
-export function Avatar({ name, url, sizePx }: AvatarProps) {
+export function Avatar({ name, url: sourceUrl, sizePx }: AvatarProps) {
+  // A4-14: kept in Cache Storage, so the headshot shows at once on a second visit.
+  const url = useCachedMediaUrl(sourceUrl);
   const style = { width: sizePx, height: sizePx };
   // A plain img: headshots come from fal's CDN at many sizes, and next/image would need its domains configured.
   // eslint-disable-next-line @next/next/no-img-element
