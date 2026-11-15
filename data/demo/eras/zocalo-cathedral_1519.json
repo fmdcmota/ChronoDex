@@ -102,17 +102,17 @@
       "segments": [
         {
           "kind": "walk_on",
-          "url": "/demo/zocalo-cathedral_1519/walk_on.mp4?v=3ad2a6a319",
+          "url": "/demo/zocalo-cathedral_1519/walk_on.mp4?v=6becda0085",
           "durationS": 5
         },
         {
           "kind": "talk",
-          "url": "/demo/zocalo-cathedral_1519/talk.mp4?v=7bd6f073ae",
+          "url": "/demo/zocalo-cathedral_1519/talk.mp4?v=19a85bedbd",
           "durationS": 38.133
         },
         {
           "kind": "walk_off",
-          "url": "/demo/zocalo-cathedral_1519/walk_off.mp4?v=d60ea91241",
+          "url": "/demo/zocalo-cathedral_1519/walk_off.mp4?v=acaf0c426b",
           "durationS": 5
         }
       ],
@@ -197,6 +197,11 @@
       "model": "fal-ai/kling-video/ai-avatar/v2/standard",
       "falUrl": "https://v3b.fal.media/files/b/0ab2888a/JZozIB1EOwTfyV7NVUTRq_output.mp4",
       "seconds": 827
+    },
+    "talk_remade": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": null,
+      "seconds": 838
     }
   }
 }
