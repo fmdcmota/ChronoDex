@@ -48,12 +48,12 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 08:00
-- Working on: nothing. Uncommitted (waiting for a commit yes): `src/lib/db/README.md` counts (13 landmarks, 20 eras), this notebook, one board post.
-- Done this session: pulled main (up to date); A1-r2-1 (tree was clean, 76d1f14 holds the retry cap and briefs); A1-r2-3 `npm run seed` on `chronodex` and `chronodex_dev_alex`: 13 landmarks, 1 era inserted (20 total), existing eras untouched (queens-tower_1893 media intact); `public/reference/queens-tower.jpg` is present in this checkout.
-- Next: (1) A1-r2-4 gates on the tunnel URL with the human, log M1 and M2 on the milestone board. (2) A1-r2-5 pick demo eras with the human, human reads `briefs/*.md` (H7). (3) A1-r2-6 tell Agent 4 to switch the server to `chronodex` once Agent 2 has the demo eras there. (4) Agent 4's machine must run `npm run seed` or copy `public/reference/queens-tower.jpg` itself (it is in git only if committed; check).
-- Blocked on: the human for the gates and the era list; Agent 2 for A1-r2-6.
-- Board read up to: 2026-11-15 07:44 (Agent 3's Great Wall post).
+- Last updated: 2026-11-15 09:00
+- Working on: nothing. Uncommitted (waiting for a commit yes): Historian offers only `selectableVoices()` (A2 ask), fixture guides moved off retired voices (eleven-daniel, eleven-charlotte), db README counts (15 landmarks, 22 eras), this notebook, one board post. `npm run check` passes (539 tests).
+- Done this session: seed on both databases (15 landmarks; chronodex has all 22 eras, Agent 6's 8 demo eras loaded by their script, left alone); A1-r2-1, A1-r2-3 pushed (c5ddd51). My own production build is up on port 3110 on `chronodex` behind a quick tunnel (URL changes on restart; no FAL_KEY, so no voice).
+- Next: (1) A1-r2-4 gates on a tunnel with the human, log M1 and M2 on the milestone board. (2) A1-r2-5: Agent 6 generated the demo set (8 eras: queens-tower 1893/1962, royal-albert-hall 1871, NHM 1862/1881, zocalo 1519, dom-luis 1886, raffles 1819); a human must read those briefs (H7). (3) A1-r2-6 tell Agent 4 to serve `chronodex` (it now holds the demo eras).
+- Blocked on: the human for the gates and the brief read.
+- Board read up to: 2026-11-15 08:32 (Agent 3 capture post) and Agent 2's 03:54 post.
 - Waiting for commit approval: yes.
 - Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
 - Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.

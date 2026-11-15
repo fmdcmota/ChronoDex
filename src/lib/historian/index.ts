@@ -24,7 +24,7 @@
  */
 import { EraBriefSchema, eraIdOf, type EraBrief, type Landmark } from '@/lib/contracts';
 import { archiveDir, readEraDossier, readEraNotes, urlsInNotes, type EraDossier } from '@/lib/archive';
-import { VOICE_CATALOG } from '@/lib/fal/voices';
+import { selectableVoices } from '@/lib/fal/voices';
 import {
   DeepSeekError,
   completeDeepSeek,
@@ -229,8 +229,10 @@ async function runResearch(ctx: CallContext): Promise<{ notes: string; foundUrls
  * @throws HistorianError when it still fails after one correction.
  */
 async function runWriting(ctx: CallContext & { notes: string; foundUrls: string[] }): Promise<EraBrief> {
-  const prompt = buildWritingPrompt(ctx.landmark, ctx.year, ctx.notes, VOICE_CATALOG, ctx.foundUrls);
-  const voiceKeys = Object.keys(VOICE_CATALOG);
+  // Retired voices still resolve for stored eras but must never be given to a new guide.
+  const voices = selectableVoices();
+  const prompt = buildWritingPrompt(ctx.landmark, ctx.year, ctx.notes, voices, ctx.foundUrls);
+  const voiceKeys = Object.keys(voices);
   const where = `${ctx.landmark.id} ${ctx.year}`;
   const messages: DeepSeekMessage[] = [
     { role: 'system', content: prompt.system },

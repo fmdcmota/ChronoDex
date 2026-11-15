@@ -56,7 +56,7 @@ export const heroBrief: EraBrief = {
     bio: 'I have carried crates and opened doors here since the first stone was laid. I know every corridor and every visitor’s favourite gallery.',
     appearance:
       'A man of about fifty, stocky, grey side whiskers, dark blue porter’s uniform with brass buttons and a peaked cap.',
-    voiceKey: 'eleven-george',
+    voiceKey: 'eleven-daniel',
     script:
       'Good day to you! My name is Albert Finch, and I am a porter here at the Imperial Institute. You have arrived in 1893, the very year Her Majesty Queen Victoria opened these halls, built to celebrate her Golden Jubilee. Look up at the great tower, nearly three hundred feet of stone and brick, designed by Mr Collcutt. Gentlemen raise their hats to the ladies on these steps, and nobody would dream of stepping out without one. Visitors come to see wonders from every corner of the world, from timber to tea. When the bells ring out, we know the Queen has something to celebrate. Now, do mind the carriages as you go!',
     greeting: 'Good day! Albert Finch, porter of the Imperial Institute, at your service. What would you like to know?',
@@ -81,7 +81,7 @@ export function placeholderBrief(landmark: Pick<Landmark, 'id' | 'name'>, year: 
       ...structuredClone(heroBrief.guide),
       name: 'Edith Marsh',
       role: `Placeholder guide at ${landmark.name}`,
-      voiceKey: 'eleven-alice',
+      voiceKey: 'eleven-charlotte',
       greeting: `Hello! I’m Edith, your placeholder guide to ${landmark.name} in ${year}. Ask me anything.`,
     },
   };
