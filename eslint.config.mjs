@@ -64,6 +64,8 @@ const eslintConfig = defineConfig([
   },
   globalIgnores([
     ".next/**",
+    // The fmota.com/chronodex build (NEXT_DIST_DIR, spikes/agent-4/HOSTING.md).
+    ".next-chronodex/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
