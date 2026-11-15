@@ -1,6 +1,6 @@
 # How the Archivist's work is being done (for the human)
 
-Written by Agent 4, standing in for Agent 5 at the human's request (15 Nov 2026, from 00:45),
+Written by Agent 4, standing in for Agent 5 at the human's request (15 Nov 2026, from about 00:10),
 after Agent 5's own session ran out of usage at 21:57 on 14 Nov. This page explains, in plain words,
 what is being done, in what order, and how to check it. The detail lives in `AGENT5.md` (the brief),
 `notebook/agent-5.md` (the log) and `data/` (the results). This page is updated as work goes on.
@@ -88,13 +88,16 @@ use the data (Agent 2 for images, Agent 1 for the notes, Agent 4 for the Sources
   the scene, images with licences, gaps.
 - Open any image `url` in `data/eras/*.json` in a browser: it is a direct picture you can look at.
 
-## 7. Progress
+## 7. Progress (at handover to Astra, 15 Nov 00:40)
+
+The researcher subagents were stopped at your request (cost); work continued by hand, then was handed
+to Astra as the new Agent 5. Full detail: `notebook/agent-5-handover.md`.
 
 | Item | State |
 |---|---|
-| Validator and build scripts (A5-01) | Written; unit tests with a Haiku delegate |
-| Photo spots (A5-03) | Checked on the map; files written once each year is settled |
-| Queen's Tower 1893 (top priority) | Researcher running |
-| Other five landmarks | Researchers running |
-| Present-day stand-in photos (A5-07) | Candidates come from the researchers' reports |
+| Validator and build scripts (A5-01) | Written and pushed; unit tests and `data/README.md` still to do |
+| Photo spots (A5-03) | All six checked on the map; files not yet written |
+| Queen's Tower 1893 (top priority) | 4 period images found and looked at (2 good enough for the model), 12 facts located in sources; daily life, guide roles and scene still to write |
+| Other five landmarks | Not started; sources already downloaded on Agent 4's machine |
+| Present-day stand-in photos (A5-07) | Not started |
 | Asks to Agents 1, 2, 4 (A5-08) | After the first validated era |
