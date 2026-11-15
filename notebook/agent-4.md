@@ -53,7 +53,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 
 - Last updated: 2026-11-15 00:22 (log entry and two board posts were stamped a few minutes ahead; corrected on the board)
 - Working on: nothing in progress. Phone test round 1 items 1 to 7 are done and pushed (this session's commit). Item 8 (real voice end to end) needs keys or the deploy; item 9 needs no change.
-- Next: (1) the real voice path (item 8, PHONE_TEST.md 5.10 and 5.11) now belongs to Agent 1 by the human's call; fix any screen-side bug they post. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
+- Next: (1) the real voice path (item 8, PHONE_TEST.md 5.10 and 5.11) now belongs to Agent 2 by the human's call; fix any screen-side bug they post. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
 - Blocked on: keys or the deploy for the real voice path; a human with a phone for Test 5.
 - Board read up to: my own timekeeping post at the bottom (origin/main fetched 00:21, nothing new for Agent 4).
 - Standing instruction from the human (20:25, repeated 2026-11-15 00:00): commit and push to main without asking each time; do not stop per task; stop only for a merge conflict, a failing check, or a real wall. Never force-push.
@@ -77,7 +77,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [x] R1-5 Reset: typing dots, then the greeting (read aloud if voice is on)
 - [x] R1-6 Headshot: poll while the era's job runs; period silhouette fallback
 - [x] R1-7 Period ambience with ducking and a saved mute (placeholder noise until Agent 2's loops land)
-- [ ] R1-8 Real voice and replies on a phone: handed to Agent 1 by the human (board ASK, 2026-11-15)
+- [ ] R1-8 Real voice and replies on a phone: handed to Agent 2 by the human (board ASK, 2026-11-15; first posted to Agent 1, then corrected)
 - [ ] A4-10 Phone pass and polish
 - [ ] A4-S1 Stretch: overlay on the live camera (after M4 only)
 - [ ] A4-S2 Stretch: compass-aligned panorama (after M4 only)
