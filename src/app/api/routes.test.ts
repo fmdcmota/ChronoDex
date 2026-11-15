@@ -137,11 +137,11 @@ describe('POST /api/captures and the Dex', () => {
     expect((await capture({ playerId: 'p' })).status).toBe(400);
   });
 
-  it('refuses spoofed locations unless ALLOW_SPOOFED_LOCATION=1', async () => {
+  it('accepts spoofed locations unless ALLOW_SPOOFED_LOCATION=0 (spoofing is permanent for the demo)', async () => {
     const spoofed = { ...base, location: queensTower.photoSpot, spoofed: true };
-    expect((await capture(spoofed)).status).toBe(403);
-    process.env.ALLOW_SPOOFED_LOCATION = '1';
     expect((await capture(spoofed)).result).toMatchObject({ ok: true });
+    process.env.ALLOW_SPOOFED_LOCATION = '0';
+    expect((await capture({ ...spoofed, playerId: 'someone-else' })).status).toBe(403);
   });
 });
 

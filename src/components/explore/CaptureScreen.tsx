@@ -20,6 +20,7 @@
  */
 'use client';
 
+import { LOCATION_SPOOFING } from './lib/spoofing';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api, getPlayerId } from '@/lib/client';
@@ -36,8 +37,8 @@ import { useUnavailableTimeMachines } from './lib/use-era-ready';
 import { encodeJpeg, resizeFileToJpeg } from './lib/image-resize';
 import { LocationTracker, locationMessage, type LocationState, type PlayerFix } from './lib/location';
 
-/** True when the location-spoof tools may be used (MASTER.md section 8.2). */
-const DEV_TOOLS = process.env.NEXT_PUBLIC_DEV_TOOLS === '1';
+/** True when the location-spoof tools are shown: permanently on unless switched off (./lib/spoofing.ts). */
+const DEV_TOOLS = LOCATION_SPOOFING;
 
 /** A photo the player has taken, with a temporary address to show it. */
 interface Photo {
