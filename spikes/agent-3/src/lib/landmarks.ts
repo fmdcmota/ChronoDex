@@ -241,6 +241,19 @@ export const CITY_LANDMARKS: readonly Landmark[] = [
     referencePhotoUrl: '',
     eraYears: [1886],
   },
+  {
+    id: 'praca-do-comercio',
+    name: 'Praça do Comércio',
+    blurb: 'Lisbon’s riverside square, where a royal palace stood until the great earthquake of 1755.',
+    photoSpot: { lat: 38.70668, lng: -9.13648 },
+    subject: { lat: 38.70775, lng: -9.1365 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'legendary',
+    spriteUrl: '/sprites/praca-do-comercio.png',
+    badgeUrl: '/sprites/badges/praca-do-comercio.png',
+    referencePhotoUrl: '',
+    eraYears: [1754, 1775],
+  },
 ];
 
 /** Every landmark the art script draws: London first, then the other cities. */

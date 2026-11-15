@@ -593,6 +593,49 @@ function domLuisBridge(): PixelCanvas {
   return finish(c, 14);
 }
 
+/**
+ * Praça do Comércio (Lisbon): the riverside view north across the square, the white Rua Augusta arch
+ * with its statue group between two yellow Pombaline wings with arcades, and the bronze statue of
+ * King José I on horseback in front. Drawn by Agent 1 at the human's request (15 Nov) for the Lisbon
+ * landmark; Agent 3 may redraw it.
+ */
+function pracaDoComercio(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Yellow wings with terracotta roofs, a row of windows and an arcade at street level.
+  for (const [x0, x1] of [[1, 11], [20, 30]] as const) {
+    c.rect(x0, 13, x1, 25, P.gold);
+    c.rect(x1 - 1, 13, x1, 25, P.goldDark);
+    c.hline(x0, x1, 12, P.terracotta);
+    c.hline(x0 + 1, x1 - 1, 11, P.brick);
+    for (let x = x0 + 1; x <= x1 - 2; x += 3) {
+      c.set(x, 15, P.slate);
+      c.set(x, 18, P.slate);
+    }
+    c.hline(x0, x1, 20, P.stone);
+    for (let x = x0 + 1; x <= x1 - 1; x += 3) c.rect(x, 22, x + 1, 25, P.slate);
+  }
+  // The arch: white stone, shaded on the right, an opening onto Rua Augusta, a clock and the statue group.
+  c.rect(12, 7, 19, 25, P.stone);
+  c.rect(19, 7, 19, 25, P.stoneDark);
+  c.hline(11, 20, 9, P.stoneDark);
+  c.rect(14, 16, 17, 25, P.slate);
+  c.hline(15, 16, 15, P.slate);
+  c.rect(15, 11, 16, 12, P.gold);
+  c.rect(13, 5, 18, 6, P.stoneDark);
+  c.rect(15, 3, 16, 4, P.verdigris);
+  c.set(13, 4, P.verdigris);
+  c.set(18, 4, P.verdigris);
+  // José I on horseback, in bronze, on a white pedestal in front of the arch.
+  c.rect(13, 26, 18, 28, P.stone);
+  c.rect(18, 26, 18, 28, P.stoneDark);
+  c.rect(13, 23, 18, 24, P.verdigrisDark);
+  c.set(19, 22, P.verdigrisDark);
+  c.set(13, 25, P.verdigrisDark);
+  c.set(18, 25, P.verdigrisDark);
+  c.rect(15, 20, 16, 22, P.verdigris);
+  return finish(c, 14);
+}
+
 /** Width and height of one frame of the walking duck, in art pixels. */
 export const DUCK_FRAME_PX = 24;
 
@@ -721,4 +764,5 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'great-wall-badaling': greatWallBadaling,
   'zocalo-cathedral': zocaloCathedral,
   'dom-luis-bridge': domLuisBridge,
+  'praca-do-comercio': pracaDoComercio,
 };

@@ -1,0 +1,41 @@
+# Lisbon's New Square, Statue Just Unveiled (praca-do-comercio_1775)
+
+**Status: DRAFT. A human must check every claim against its source before generation spends credits (H7).**
+
+## Summary
+In 1775 the Praça do Comércio, rebuilt on the site of the Ribeira Palace destroyed in the 1755 earthquake, was a large U-shaped square open to the Tagus, still commonly called the Terreiro do Paço. Its centrepiece, Joaquim Machado de Castro's equestrian statue of King José I, was inaugurated on 6 June 1775, the king's birthday, in a ceremony also treated as a celebration of the Marquis of Pombal's reforms. The square was not finished: painted panels masked what was still lacking, the western tower stood only as wooden hoardings, and the triumphal arch took its present form about a century later. Everyday commercial and bureaucratic life there in 1775 is less well documented than the inauguration, and dated 1775 prices could not be confirmed from the sources read.
+
+## Fun facts
+- The square was laid out about 175 by 175 metres, and its two end towers were intended to recall the tower of the lost royal palace.
+- A panegyric of the day claimed more than 150,000 people crowded into the square for the statue's inauguration and behaved with unusual quiet and order.
+- An English print inscribed 1775 shows the eastern Alfândega tower already standing, while the western tower was still only wooden hoardings.
+- Lisboners kept using the old name Terreiro do Paço even after the new official name was imposed.
+- The statue is described as the first monumental statue dedicated to a king in Lisbon, and the king faces the river.
+
+## Sources
+- [Praça do Comércio — Wikipedia](https://en.wikipedia.org/wiki/Pra%C3%A7a_do_Com%C3%A9rcio)
+- [The inauguration of the equestrian statue of King José I, 1775 (SciELO)](https://qa1.scielo.br/j/topoi/a/y7sVFr9rcgZdPqgr8zyHr6H/?format=pdf&lang=pt)
+- [A Ribeira de Lisboa — historical description of the Tagus waterfront](https://upload.wikimedia.org/wikipedia/commons/c/c6/A_ribeira_de_Lisboa_-_descrip%C3%A7%C3%A3o_hist%C3%B3rica_da_margem_do_Tejo_desde_a_Madre-de-Deus_at%C3%A9_Santos-o-Velho_%28IA_ribeiradelisboad00cast%29.pdf)
+- [Lisbon places — Terreiro do Paço (eve.fcsh.unl.pt)](https://eve.fcsh.unl.pt/index.php/en/places/lisbon)
+
+## What the camera sees
+A wide, level square of pale stone and packed earth opens toward the river, its far end closed by a long arcaded facade with the street opening of the Rua Augusta at its centre. Near the middle stands a bronze equestrian statue on a tall stone pedestal, the king and horse seen from the front, facing the water. On the east side the customs range and its tower are built; on the west the matching tower is absent, replaced by wooden hoardings and unfinished bays. Some facades are covered with painted panels showing building fronts; scaffolding and unfinished masonry are visible. The ground is unpaved, with carts, mules and scattered people.
+
+Persists: The equestrian statue of King José I at the centre of the square, facing the river; The flat, open square floor between the river edge and the north range; The arcaded ground floors of the north range and the opening of the Rua Augusta; The Tagus beyond the Cais das Colunas behind the viewer
+Altered: The square's surface, unpaved here rather than a finished modern plaza; The north range, partly masked by painted panels and scaffolding; The customs buildings on the east side, already built but in an earlier form
+Not yet built: The present triumphal arch at the mouth of the Rua Augusta; The western tower, here only wooden hoardings; Paved, largely pedestrian square with cafés and hotels; The Museum of Lisbon in the west tower and the Terreiro do Paço metro station
+Gone: The Ribeira Palace, destroyed in 1755 and replaced by this square; Wooden hoardings and painted illusion panels on unfinished fronts
+
+Surroundings: Behind the viewer to the south lies the Tagus with quays, boats and cargo handling, and the marble steps of the Cais das Colunas used for arrivals from the river. North is the long arcaded range and the Rua Augusta axis into the Pombaline Baixa, with streets still partly new or being finished to the north-east and north-west. East stands the Alfândega range with its tower and the Terreiro do Trigo nearby; west runs the unfinished wing toward the Ribeira das Naus shipbuilding area, with hoardings where the western tower would stand.
+
+## Guide: Inês Carvalhal, porter carrying goods between the quays and the arcades
+I carry crates and baskets from the boats at the Cais das Colunas up to the arcades, where the clerks and merchants want them. I have watched this square rise from ruins and rubble, and I know every corner where the work is still going on.
+
+Appearance: A woman in her early thirties, sturdy and sun-weathered, wearing a dark wool skirt, a laced bodice, a linen shift with rolled sleeves, a headscarf tied over her hair, and a coarse apron; worn leather shoes and a wicker basket under one arm.
+Voice: eleven-pt-woman
+
+### Script
+Bom dia, I am Inês Carvalhal, a porter here. I haul crates from the boats up to these arcades for the clerks and merchants. Since the earthquake took the old palace, this whole square has been rising, and people still call it the Terreiro do Paço out of habit. Look at the king on his horse, unveiled this June on his birthday, the first such statue raised to a king in Lisbon, and he faces the river as if watching the ships. Some fronts here are only painted cloth over the work still going on, and the far tower is just hoardings. Mind your footing, the ground is rough. Go well, friend.
+
+### Greeting
+Bom dia! I am Inês, a porter here on the square — mind where you step, the ground is still rough from all the building.

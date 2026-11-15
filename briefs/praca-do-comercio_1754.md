@@ -1,0 +1,43 @@
+# Terreiro do Paço, Before the Rebuilding (praca-do-comercio_1754)
+
+**Status: DRAFT. A human must check every claim against its source before generation spends credits (H7).**
+
+## Summary
+The 1754 record for this spot is thin, and most detailed descriptions date from just before or just after the 1755 earthquake. In 1754 the square was called the Terreiro do Paço; the name Praça do Comércio belongs to the Pombaline rebuilding after 1755. The western side was occupied by the Paço Real, or Ribeira Palace, and an anonymous manuscript description of the palace written that year records its courtyards, clock tower and river-side aviary. An English visitor, George Whitefield, left an account of Lenten processions and drought in Lisbon in March 1754.
+
+## Fun facts
+- The square was still the Terreiro do Paço in 1754; the name Praça do Comércio comes from the Pombaline rebuilding after 1755.
+- The Paço Real, or Ribeira Palace, stood on the western side of the square from the early sixteenth century.
+- An anonymous 1754 manuscript describes a river-side palace garden with a large aviary of rare birds.
+- In 1754 the dowager Queen Maria Ana was living in the palace.
+- A new royal opera house beside the palace was still being finished in 1754 and opened on 31 March 1755.
+- In March 1754 Lisbon was observing Lent in an excessive drought, and daily processions went from one convent or another praying for rain.
+
+## Sources
+- [Visit Portugal — Praça do Comércio](https://www.visitportugal.com/pt-pt/NR/exeres/64BE2716-BB28-4041-8E05-594DF1BAAE95)
+- [Anonymous 1754 description of the Ribeira Palace (transcribed by Camilo Castelo Branco), NOVA repository](https://run.unl.pt/bitstreams/295df08c-44a6-475d-b10c-ce96511fca57/download#6#58#6)
+- [George Whitefield, A Brief Account of Some Lent Processions at Lisbon (1755)](http://archive.org/download/bim_eighteenth-century_a-brief-account-of-some-_whitefield-george_1755_0/bim_eighteenth-century_a-brief-account-of-some-_whitefield-george_1755_0.pdf#1#2#1)
+- [Lisbon in the eighteenth century, University of Lisbon repository](https://repositorio.ulisboa.pt/bitstream/10451/24514/1/ulfl201307_tm.pdf#5#23#5)
+- [Ópera do Tejo](https://browse.library.kiwix.org/content/wikipedia_it_all_maxi/Palazzo_della_Ribeira#1)
+
+## What the camera sees
+View north across the waterfront edge of the Terreiro do Paço. On the left, a long, irregular stone palace runs along the western side of the open space, its gallery and south front facing the square, with a squarer tower at the river end. A clock tower rises above the roofs behind. To the right of the open ground, the square runs toward a working waterfront with boatyards and shipping along the Tagus; the north side is the edge of dense old streets and church roofs, not a planned facade. The ground is uneven, with basalt cobbles at the edges and an open expanse in the middle. People, coaches, riders and clergy move across the space. No equestrian statue, no triumphal arch and no uniform arcaded facades appear anywhere.
+
+Persists: The open position of the square beside the Tagus; The river itself, opening the southern front
+Altered: The ground surface, which is uneven and roughly paved at the edges rather than the later ornamental pavement; The square's shape, which is ill-defined rather than the later enclosed U-shaped plaza
+Not yet built: The equestrian statue of José I; The Rua Augusta triumphal arch; The uniform Pombaline arcaded facades; The two square towers that recall the old palace tower
+Gone: The Paço Real, or Ribeira Palace, with its courtyards, clock tower and garden; The palace's river-side aviary of rare birds; The Forte tower and the king's residence within it
+
+Surroundings: West and north-west: the long, irregular Ribeira Palace, the Patriarchal complex with its unfinished chapel, and work on a new calçada begun in 1754. North: the old city rising inland. North-east: dense streets, churches and convents. East: the Ribeira das Naus shipbuilding area and the working riverfront. South: the Tagus, the square's principal open front and the port, with boats arriving and leaving. South-west: the palace garden and aviary.
+
+## Guide: Tomás Ferreira, Porter at the riverfront of the Terreiro do Paço
+I carry goods and messages between the boats and the houses of the square, so I know every coach driver and every doorman by name. I have worked this waterfront since I was a boy, and I know which complaints and which errands travel the fastest.
+
+Appearance: A man of about thirty, lean and weathered from outdoor work, with short dark hair and stubble. He wears a worn brown cloth coat over a linen shirt, loose dark breeches, thick woollen stockings and scuffed leather shoes, with a rope belt and a flat cap.
+Voice: eleven-pt-man
+
+### Script
+They call me Tomás, and I work these stones by the water, carrying goods between the boats and the houses. You will see the palace there on the west, and it is a great rambling thing, not one neat building. You should see the garden on the river side, with that aviary of rare birds inside it; the palace folk are proud of that. The old Queen Maria Ana sits in her rooms here. And do not expect the opera house to be ready next to us; they are still building it, and the masons are always underfoot. It is Lent and dry, so we have processions nearly every day, asking for rain. Good luck to you.
+
+### Greeting
+You have come to the Terreiro do Paço, friend. Mind the cobbles and stay clear of the coaches, and I will tell you what goes on here.

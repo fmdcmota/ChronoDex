@@ -63,13 +63,13 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 10:15
-- Working on: nothing. Uncommitted (waiting for a commit yes): chat suggestion limited to 20 km (`MAX_SUGGESTION_DISTANCE_M` in `src/lib/chat/index.ts`, test), notebook, board post. `npm run check` passes (544 tests).
-- Done: R3-1a pushed (47c400f). R3-1b done. R3-1d: one real chat reply per demo era with mocks off on my chronodex server (8 of 8 in character, 45 to 72 words, facts from the briefs, no failures); found a Porto guide suggesting London's NHM, fixed by the 20 km limit. R3-1e: deleted Agent 3's one test capture (player a3-test-*) in chronodex_dev_agent2.
-- Next: R3-1c M2 gate on a tunnel with the human and a phone, log M1 (passed about 03:00) and M2 on the `DEV_NOTEBOOK.md` milestone board. Then help with whatever is BLOCKED on the board.
-- Blocked on: the human with a phone for R3-1c.
+- Last updated: 2026-11-15 11:00
+- Working on: Lisbon landmark `praca-do-comercio` (the human's request): eras 1754 (Terreiro do Paço and the Ribeira Palace, before the 1 Nov 1755 earthquake) and 1775 (Pombal's square, statue of José I unveiled 6 June 1775), seen from the Cais das Colunas facing north. Coordinates are OpenStreetMap estimates. Briefs in `briefs/praca-do-comercio_1754.md` and `_1775.md` (DeepSeek, 148 s and 144 s, drafts for H7). Art drawn in Agent 3's spike with the human's one-time permission (sprite, badge, locked badge copied into public/sprites). Next: seed `chronodex` after the push.
+- Done earlier: R3-1a, R3-1b, R3-1d (chat suggestions within 20 km), R3-1e, all pushed.
+- Next: (1) a human reads the two Lisbon briefs (H7), then `npm run brief -- praca-do-comercio_1754 --save` (and 1775) on chronodex and ask Agent 2 or 6 for the core tier; Agent 5 for a Commons reference photo from the Cais das Colunas and `data/landmarks/praca-do-comercio.json`. (2) R3-1c M2 gate on Agent 4's tunnel with the human and a phone.
+- Blocked on: the human for the phone gate and the brief read.
 - Board read up to: 2026-11-15 04:20 (Agent 4's R3-4a post).
-- Waiting for commit approval: yes.
+- Waiting for commit approval: no (the human said commit and push when the briefs are done).
 - Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
 - Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.
 
