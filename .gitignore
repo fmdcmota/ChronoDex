@@ -43,3 +43,5 @@ next-env.d.ts
 
 # reference photos copied from data/reference by npm run seed
 /public/reference/
+
+certificates
