@@ -14,6 +14,7 @@ import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { THEN_NOW_START_PERCENT, percentAfterKey, percentFromPointer } from './thenNow';
 import { BTN_SECONDARY, TAG_DARK } from './pixel';
 import { useCachedMediaUrl } from './mediaCache';
+import { creditLine, usePictureCredits } from './usePictureCredits';
 
 /** Props for ThenNowSlider. */
 export interface ThenNowSliderProps {
@@ -21,6 +22,8 @@ export interface ThenNowSliderProps {
   thenUrl: string;
   /** Present-day photo (Landmark.referencePhotoUrl). */
   nowUrl: string;
+  /** The era, for the present-day photo's credit (A4-b). */
+  eraId?: string;
   /** The era's year, for the label. */
   year: number;
   /** Landmark name, for alt text. */
@@ -37,15 +40,18 @@ export interface ThenNowSliderProps {
  * @param props - Component props.
  * @param props.thenUrl - Era scene image.
  * @param props.nowUrl - Present-day reference photo.
+ * @param props.eraId - The era, for the present-day photo's credit.
  * @param props.year - The era's year, for labels.
  * @param props.landmarkName - For alt text.
  * @param props.onClose - Closes the overlay.
  * @returns The overlay.
  */
-export function ThenNowSlider({ thenUrl: thenSource, nowUrl: nowSource, year, landmarkName, onClose }: ThenNowSliderProps) {
+export function ThenNowSlider({ thenUrl: thenSource, nowUrl: nowSource, eraId, year, landmarkName, onClose }: ThenNowSliderProps) {
   // A4-14: both pictures through the browser cache. Empty src until resolved keeps the box laid out.
   const thenUrl = useCachedMediaUrl(thenSource) ?? undefined;
   const nowUrl = useCachedMediaUrl(nowSource) ?? undefined;
+  // A4-b: a CC BY-SA stand-in photo must carry its author and licence where it is shown.
+  const nowCredit = usePictureCredits(eraId).find((c) => c.role === 'reference');
   const [percent, setPercent] = useState(THEN_NOW_START_PERCENT);
   const box = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
@@ -126,6 +132,7 @@ export function ThenNowSlider({ thenUrl: thenSource, nowUrl: nowSource, year, la
       </div>
 
       <p className="m-0! px-4 pt-3 text-center text-xs text-(--paper)/70">Drag to compare. The {year} view is an AI reconstruction.</p>
+      {nowCredit && <p className="m-0! px-4 pt-1 text-center text-[10px] text-(--paper)/50">Present-day photo: {creditLine(nowCredit)}</p>}
     </div>
   );
 }

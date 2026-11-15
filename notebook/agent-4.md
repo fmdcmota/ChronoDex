@@ -78,7 +78,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 
 - Last updated: 2026-11-15 02:10
 - Working on: nothing in progress. Sunday priorities 1 to 4 (A4-11, A4-14, A4-12, A4-13) are done and pushed. Real Queen's Tower 1893 media is copied into GridFS in chronodex_dev_agent2 (Eras not rewritten yet).
-- Next (Sunday list): rerun `scripts/persist-media.ts` without `--copy-only` after Agent 2's A2-h; A4-15 real panorama on two phones (needs a human and a server on a database with real media); A4-16; A4-b licences in the Sources drawer; A4-a, A4-c, A4-10. Older: (1) the real voice path (item 8, PHONE_TEST.md 5.10 and 5.11) now belongs to Agent 2 by the human's call; fix any screen-side bug they post. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
+- Next (Sunday list): rerun `scripts/persist-media.ts` without `--copy-only` after Agent 2's A2-h; A4-15 real panorama on two phones (needs a human and a server on a database with real media); A4-16; A4-a, A4-c, A4-10. Older: (1) the real voice path (item 8, PHONE_TEST.md 5.10 and 5.11) now belongs to Agent 2 by the human's call; fix any screen-side bug they post. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
 - Blocked on: keys or the deploy for the real voice path; a human with a phone for Test 5.
 - Board read up to: my own timekeeping post at the bottom (origin/main fetched 00:21, nothing new for Agent 4).
 - Standing instruction from the human (20:25, repeated 2026-11-15 00:00): commit and push to main without asking each time; do not stop per task; stop only for a merge conflict, a failing check, or a real wall. Never force-push.
@@ -109,7 +109,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [x] A4-14 Browser media cache, year prefetch, era snapshot
 - [ ] A4-15 First real panorama on two phones
 - [ ] A4-16 Time Machine on a real era
-- [ ] A4-b Sources drawer licences from data/ATTRIBUTION.md
+- [x] A4-b Picture credits in the Sources drawer and Then/Now (GET /api/media/credits/[eraId])
 - [ ] A4-10 Phone pass and polish
 - [ ] A4-S1 Stretch: overlay on the live camera (after M4 only)
 - [ ] A4-S2 Stretch: compass-aligned panorama (after M4 only)
@@ -226,3 +226,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: none.
 - Next: once A2-h lands, rerun `persist-media.ts` without `--copy-only` on each database to rewrite the Eras (no downloads, files already stored). Then A4-15 with a phone.
+
+### 2026-11-15 02:15, A4-b: picture credits
+- Did: `src/lib/media/credits.ts` reads the Archivist's `data/landmarks/<id>.json` referencePhoto (only a Commons stand-in, not H1) and `data/eras/<eraId>.json` referenceImages, with licence deed links; `GET /api/media/credits/[eraId]` (5 min cache); `usePictureCredits` hook. The Sources drawer has a "Pictures" section (title linked to the file page, author, licence linked to its deed, and whether it is shown or only guided the AI); the Then/Now slider shows "Present-day photo: David Richfield, CC BY-SA 4.0" under the pictures.
+- Decided, and why: read the JSON, not the generated ATTRIBUTION.md, so a format change in the markdown cannot break it; the route lives under /api/media, the only API path granted to me. Credits fail silently.
+- Measured or verified: 3 new tests (incl. the real Queen's Tower 1893 delivery). Browser pane, dev server, /time/queens-tower: the drawer lists the CC BY-SA photo, the CC0 Rijksmuseum photograph and the public-domain postcard; Then/Now shows the photo credit. Typecheck and lint pass.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: none.
+- Next: A4-15 and A4-16 need a human with a phone and a server on a database with real media.

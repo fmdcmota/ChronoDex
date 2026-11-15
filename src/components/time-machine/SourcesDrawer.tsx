@@ -3,17 +3,20 @@
  *
  * Owner: Agent 4. Implements A4-09 (MASTER.md section 11) and assumption A9: generated views are
  * labelled as AI reconstructions and each era lists its sources, which answers the judge who asks
- * "how do you know?". Data is already on the Era (summary, funFacts, sources); no network call.
+ * "how do you know?". Data is already on the Era (summary, funFacts, sources). A4-b: picture credits (author and
+ * licence of the present-day photo and the period images, required by CC BY and CC BY-SA) come from
+ * GET /api/media/credits/[eraId].
  */
 'use client';
 
 import type { Era } from '@/lib/contracts';
 import { safeSourceUrl, sourceHost } from './sources';
+import { usePictureCredits } from './usePictureCredits';
 import { BTN_SECONDARY, PANEL_DARK, SECTION_LABEL } from './pixel';
 
 /** Props for SourcesDrawer. */
 export interface SourcesDrawerProps {
-  era: Pick<Era, 'year' | 'title' | 'summary' | 'funFacts' | 'sources'>;
+  era: Pick<Era, 'id' | 'year' | 'title' | 'summary' | 'funFacts' | 'sources'>;
   onClose: () => void;
 }
 
@@ -28,6 +31,7 @@ export interface SourcesDrawerProps {
  * @returns The drawer.
  */
 export function SourcesDrawer({ era, onClose }: SourcesDrawerProps) {
+  const credits = usePictureCredits(era.id);
   return (
     <div className="absolute inset-0 z-40 flex flex-col justify-end">
       <button type="button" aria-label="Close sources" onClick={onClose} className="absolute inset-0 bg-(--ink)/60" />
@@ -80,6 +84,40 @@ export function SourcesDrawer({ era, onClose }: SourcesDrawerProps) {
               );
             })}
           </ol>
+        )}
+
+        {credits.length > 0 && (
+          <>
+            <h3 className={`${SECTION_LABEL} mt-4 mb-1`}>Pictures</h3>
+            <ul className="space-y-2 text-sm">
+              {credits.map((c, i) => {
+                const page = c.pageUrl ? safeSourceUrl(c.pageUrl) : null;
+                const deed = c.licenceUrl ? safeSourceUrl(c.licenceUrl) : null;
+                return (
+                  <li key={i}>
+                    {page ? (
+                      <a href={page} target="_blank" rel="noopener noreferrer" className="text-(--gold) underline underline-offset-2">
+                        {c.title}
+                      </a>
+                    ) : (
+                      <span>{c.title}</span>
+                    )}
+                    <span className="block text-xs text-(--paper)/60">
+                      {c.role === 'reference' ? 'Shown in Then/Now and used by the AI. ' : 'Guided the AI reconstruction. '}
+                      {c.author},{' '}
+                      {deed ? (
+                        <a href={deed} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                          {c.licence}
+                        </a>
+                      ) : (
+                        c.licence
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
         )}
 
         <p className="mt-5! text-xs text-(--paper)/60">

@@ -281,6 +281,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
           <ThenNowSlider
             thenUrl={era.sceneImageUrl}
             nowUrl={landmark.referencePhotoUrl}
+            eraId={era.id}
             year={era.year}
             landmarkName={landmark.name}
             onClose={() => setComparing(false)}
