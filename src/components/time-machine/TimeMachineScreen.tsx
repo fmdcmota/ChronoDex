@@ -13,6 +13,7 @@
  *   The server refuses that when VIDEO_GENERATION is off; the narration then stands in.
  * Both calls are safe to repeat (the endpoint returns the active job), but each runs at most once per
  * era per visit, so a failing era is not retried in a loop. "Try again" retries by hand.
+ * Period ambience (./useAmbience.ts) plays for the selected year and drops while the guide speaks.
  */
 'use client';
 
@@ -27,6 +28,8 @@ import { SourcesDrawer } from './SourcesDrawer';
 import { ThenNowSlider } from './ThenNowSlider';
 import { hasSourceNotes } from './sources';
 import { YearBar } from './YearBar';
+import { AmbienceToggle } from './AmbienceToggle';
+import { useAmbience } from './useAmbience';
 import { BTN_PRIMARY, BTN_SECONDARY_SMALL, PANEL_DARK, PIXEL_FONT } from './pixel';
 
 /** Props for TimeMachineScreen. */
@@ -68,6 +71,8 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   /** A4-09: the sources drawer is open. */
   const [showSources, setShowSources] = useState(false);
   const [nowMs, setNowMs] = useState(() => Date.now());
+  /** The guide video or narration is playing: the ambience ducks. */
+  const [guideSpeaking, setGuideSpeaking] = useState(false);
   /** `${eraId}:core` and `${eraId}:video` once asked for, so each is requested at most once. */
   const asked = useRef(new Set<string>());
 
@@ -121,6 +126,9 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   }, [selectedId, accept]);
 
   const era = current?.era.id === selectedId ? current.era : null;
+  // From the year bar, not the loaded era, so the loop does not stop and restart while a year loads.
+  const selectedYear = eras?.find((e) => e.id === selectedId)?.year ?? null;
+  const ambience = useAmbience(selectedYear, guideSpeaking);
   const job = current?.era.id === selectedId ? current.job : null;
 
   // Generate what is missing, once.
@@ -152,6 +160,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
     if (eraId === selectedId) return;
     setSelectedId(eraId);
     setGuideDone(false);
+    setGuideSpeaking(false);
     setComparing(false);
     setShowSources(false);
     setError(null);
@@ -178,6 +187,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
           <h1 className={`${PIXEL_FONT} truncate text-2xl text-(--gold)`}>{landmark?.name ?? 'Time Machine'}</h1>
           <p className="m-0! truncate text-xs text-(--paper)/70">{era?.title ?? (era ? `${era.year}` : 'Choose a year')}</p>
         </div>
+        <AmbienceToggle muted={ambience.muted} onToggle={ambience.toggleMuted} />
         {era && hasSourceNotes(era) && (
           <button
             type="button"
@@ -211,7 +221,12 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
         )}
 
         {era?.guide && (era.narrationAudioUrl || era.guideVideo) && !job?.stages.some((s) => s.state === 'running' && s.key === 'narration') && (
-          <GuidePlayer key={era.id} era={{ ...era, guide: era.guide }} onFinished={() => setGuideDone(true)} />
+          <GuidePlayer
+            key={era.id}
+            era={{ ...era, guide: era.guide }}
+            onFinished={() => setGuideDone(true)}
+            onPlayingChange={setGuideSpeaking}
+          />
         )}
 
         {job && (

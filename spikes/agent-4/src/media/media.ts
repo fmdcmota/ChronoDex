@@ -9,7 +9,7 @@
 import '../style.css';
 import { SegmentPlayer, type PlayableSegment } from './segmentPlayer';
 import { recordTestClip, type TestClipSpec } from './testClips';
-import { HoldToTalkRecorder, extensionFor, pickAudioType } from './recorder';
+import { HoldToTalkRecorder, extensionFor, hasAudio, pickAudioType } from './recorder';
 import { sineWav } from './tone';
 
 /** Same order and kinds as the contract's SegmentKind. Lengths are short to keep the test quick. */
@@ -128,8 +128,11 @@ async function finish(): Promise<void> {
   talkBtn.textContent = 'Hold to talk';
   const rec = await recorder.stop();
   if (!rec) { log('recording too short or not started, discarded'); return; }
+  if (!hasAudio(rec)) log(`only ${rec.blob.size} bytes: the app says "Didn't catch that" and does not send this; the mic reopens on the next press`);
   const url = URL.createObjectURL(rec.blob);
   playback.src = url;
+  // Phone test round 1, MEDIA-6: without load() iOS played the new recording only on the second tap.
+  playback.load();
   saveLink.href = url;
   saveLink.download = `recording.${extensionFor(rec.type)}`;
   saveLink.hidden = false;

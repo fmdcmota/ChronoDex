@@ -88,6 +88,24 @@ on the phone and accept the certificate warning.
 | 4.9 | In the chat, send any message and wait for the reply | Under the reply, a **Next stop** card names another landmark with a distance and direction. Tapping it opens the map |
 | 4.10 | Look at both screens overall | Pixel font and gold/ink colours like the map; nothing cut off at the top (notch) or bottom (home bar); text readable outdoors |
 
+## Test 5: round 1 fixes (retest)
+
+Fixes for the round 1 findings. Rows 5.1 to 5.2 are in the spike (same pages as before) and in the app; 5.3 to 5.9
+are in the real app, mock data is fine for them. Row 5.10 needs mocks off and the deployed site (or keys on the laptop).
+
+| # | Do this | Pass if |
+|---|---|---|
+| 5.1 | Test 1 / 4.2 again: look around with motion on | The view follows the phone more tightly than before (less lag), and starts a little more zoomed in. Say if it is now too jittery or too narrow |
+| 5.2 | Media page 2B (MEDIA-5, MEDIA-6): record five times in a row, a few seconds each, tapping play after each | Every recording is thousands of bytes (none at 5 bytes), and each plays on the **first** tap of play. If a short one appears, the log now says the app would not send it |
+| 5.3 | In the chat, tap **Voice off** to turn it on, then off again | Two short soft notes, rising for on and falling for off. No harsh tone |
+| 5.4 | Hold the mic, say something, release | A rising pair of notes on press, falling on release. With mocks on the sample question is sent; a tap of under half a second sends nothing |
+| 5.5 | Tap ↺ | The thread empties, typing dots show for about a second, then the greeting arrives. With voice on, it is read aloud |
+| 5.6 | Look at the chat header | Albert's picture (a placeholder card with mocks on). For a guide with no picture yet: a pixel figure in a bowler hat, not initials |
+| 5.7 | Tap anywhere on the Time Machine or chat, sound on, ring switch **on** | A quiet background sound starts (soft noise for now; period recordings replace it when Agent 2's files land) |
+| 5.8 | Tap **Meet Albert**, or play a reply with voice on | The background sound drops while the guide talks and comes back after |
+| 5.9 | Tap the ♪ in either header, then reload | The background sound stops, the ♪ is struck through, and stays off after the reload. Tap again to bring it back |
+| 5.10 | Mocks off, a real era (Queen's Tower 1893 once it is generated): hold the mic and ask a question | Your own words appear as your bubble, a real reply streams in, and with voice on it is spoken in the guide's voice |
+
 ## How to report
 
 Paste lines like these to the agent:

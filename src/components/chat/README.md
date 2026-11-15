@@ -11,7 +11,9 @@ Owner: Agent 4. The `/chat/[eraId]` screen (MASTER.md section 1.2 part 3, tasks 
   this one (`nextStop.ts`, using Agent 3's `nearestLandmark`), linking to the map.
 - Colours and fonts come from `../time-machine/pixel.ts` (Agent 3's palette). Bubbles stay rounded on
   purpose: the spec asks for a text-message look.
-- `ChatHeader.tsx`, `MessageBubble.tsx`, `TypingIndicator.tsx`, `Avatar.tsx`: the look.
+- `audio.ts`: `playUrl` (load, play, retry once) and `playCue` (earcons from `tone.ts`, or silence).
+- `ChatHeader.tsx`, `MessageBubble.tsx`, `TypingIndicator.tsx`, `Avatar.tsx` (period silhouette until the headshot exists): the look.
+- Ambience and its ♪ switch come from `../time-machine/useAmbience.ts`.
 
 ## Run and test
 
@@ -23,7 +25,9 @@ The microphone and read-aloud need a phone over HTTPS: `spikes/agent-4/PHONE_TES
 ## Traps
 
 - iOS plays sound only on an element first played inside a tap. Replies arrive seconds later, so
-  one `<audio>` is unlocked on every send tap and reused (`unlockAudio`, using `tone.ts`).
+  one `<audio>` plays a cue on every tap (mic earcons, silence on Send) and is reused for replies.
+- iOS can end or mute a held-open mic track: `recorder.ts` reopens it, records with a 250 ms timeslice,
+  and a recording under 1 KB is never sent (iOS 26 records `audio/webm;codecs=opus`).
 - The text box is 16 px: smaller makes iOS zoom the page on focus.
 - Hold-to-talk needs pointer capture, `touch-none` and `[-webkit-touch-callout:none]`.
 - History is saved after the player's message and again after the reply, so a reload mid-reply keeps the question.

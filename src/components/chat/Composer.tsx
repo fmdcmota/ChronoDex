@@ -9,8 +9,9 @@
  */
 'use client';
 
-import { useRef, useState, type FormEvent, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type PointerEvent } from 'react';
 import { HoldToTalkRecorder, type Recording } from './recorder';
+import type { EarconKind } from './tone';
 import { PIXEL_FRAME } from '@/components/time-machine/pixel';
 
 /** Props for Composer. */
@@ -19,8 +20,11 @@ export interface ComposerProps {
   enabled: boolean;
   onSend: (text: string) => void;
   onRecording: (rec: Recording) => void;
-  /** Called on any tap that may later play audio, so the reply element can be unlocked on iOS. */
-  onUserGesture: () => void;
+  /**
+   * Called synchronously inside every tap that may later play audio, so the reply element is unlocked
+   * on iOS: "on" when the mic opens, "off" when it closes, "silent" on Send.
+   */
+  onCue: (kind: EarconKind | 'silent') => void;
   /** Shown when the microphone is refused or missing. */
   onMicError: (message: string) => void;
 }
@@ -32,21 +36,24 @@ export interface ComposerProps {
  * @param props.enabled - False while a reply streams or a recording is transcribed.
  * @param props.onSend - Called with the trimmed text.
  * @param props.onRecording - Called with a finished hold-to-talk recording.
- * @param props.onUserGesture - Called inside every tap that may later play audio (iOS unlock).
+ * @param props.onCue - Called inside every tap that may later play audio (iOS unlock, mic earcons).
  * @param props.onMicError - Called with a message when the microphone is refused or missing.
  * @returns The composer form.
  */
-export function Composer({ enabled, onSend, onRecording, onUserGesture, onMicError }: ComposerProps) {
+export function Composer({ enabled, onSend, onRecording, onCue, onMicError }: ComposerProps) {
   const [text, setText] = useState('');
   const [recording, setRecording] = useState(false);
   const recorder = useRef<HoldToTalkRecorder | null>(null);
   const holding = useRef(false);
 
+  // Release the microphone when the player leaves the chat, so the recording indicator goes away.
+  useEffect(() => () => recorder.current?.close(), []);
+
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const trimmed = text.trim();
     if (!trimmed || !enabled) return;
-    onUserGesture();
+    onCue('silent');
     onSend(trimmed);
     setText('');
   };
@@ -61,7 +68,7 @@ export function Composer({ enabled, onSend, onRecording, onUserGesture, onMicErr
     if (!enabled) return;
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
-    onUserGesture();
+    onCue('on');
     holding.current = true;
     setRecording(true);
     recorder.current ??= new HoldToTalkRecorder();
@@ -79,7 +86,9 @@ export function Composer({ enabled, onSend, onRecording, onUserGesture, onMicErr
   const up = () => {
     if (!holding.current) return;
     holding.current = false;
+    // finish() stops the recorder synchronously before its first await, so the off cue is not recorded.
     void finish();
+    onCue('off');
   };
 
   const showMic = text.trim() === '';
