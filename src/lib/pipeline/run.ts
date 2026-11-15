@@ -310,6 +310,12 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
       headshot: await media.toFalUrl(headshotUrl as string),
       narration: await media.toFalUrl(narrationUrl as string),
     };
+    // A store that cached a mock-mode upload ("/mock/reference.svg") hands back a site path, which fal cannot fetch
+    // and would only fail on after the guide frame was paid for (R3-2b, 15 Nov). Refuse it here, before any spend.
+    if (media !== passThroughMedia) {
+      const sitePaths = Object.entries(falInputs).filter(([, url]) => url.startsWith('/'));
+      if (sitePaths.length) throw new Error(`fal cannot fetch a site path: ${sitePaths.map(([name, url]) => `${name}=${url}`).join(', ')}`);
+    }
   } catch (err) {
     const reason = `Skipped: the stored inputs could not be sent to fal (${err instanceof Error ? err.message : String(err)})`;
     for (const key of videoKeys) await skip(key, reason.slice(0, 500));
