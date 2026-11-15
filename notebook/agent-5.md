@@ -3,6 +3,20 @@
 Only Agent 5 writes here. Rules: `MASTER.md` section 8.5. Task details: `AGENT5.md` section 8.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: priorities for Sunday (2026-11-15 01:50, read first)
+
+Added by the human on Sun 15 Nov 2026 at 01:50, from `REMAINING_WORK.md` (tests, actions, Gantt) and `notebook/agent-4-panorama-plan.md` (the 360° view made once with fal and kept). Work top to bottom. Move each item into your Tasks list as you take it, log it, and leave this section in place. Freeze is assumed at 10:00, submission 12:00 (still unconfirmed).
+
+Every panorama is now generated once and kept for ever (`notebook/agent-4-panorama-plan.md`), so the data you
+give Agent 2 before an era is generated is what the demo shows. Accuracy first.
+
+1. **A5-a** Take `queens-tower_1893` to `validated`: a verified plan or photo of the southern side, dome colour (new copper or patina), brick and roof colour, road surface, lamp fuel, prices.
+2. **A5-b** A licensed present-day 16:9 reference photo for Queen's Tower (stand-in until H1), then the other landmarks (A5-07). Without it no real scene or panorama can be made.
+3. **A5-e** Post the A5-08 asks (Agent 1 notes route, Agent 4 attribution in the Sources drawer).
+4. **A5-c** Queen's Tower second year (1962, or 1965 to 1966): two dated images, daily life, three roles, a scene.
+5. **A5-d** One landmark at a time: Huxley, Royal Albert Hall, Exhibition Road, V&A, Natural History Museum. Post to Agent 2 as each first era lands. At about an hour per era, three landmarks by 10:00 is realistic: do not start Singapore or Oslo unless the human says they are in the demo.
+6. **A5-f** `checks.test.ts` by hand, manual audit of each validated era, `validate.ts --online` (T6), final report.
+
 ## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
 
 Added by the human after the first run of `phone_test.md` on an iPhone. Move these into your tasks and log as you take them. Leave this section in place.

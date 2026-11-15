@@ -3,6 +3,27 @@
 Only Agent 4 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: priorities for Sunday (2026-11-15 01:50, read first)
+
+Added by the human on Sun 15 Nov 2026 at 01:50, from `REMAINING_WORK.md` (tests, actions, Gantt) and `notebook/agent-4-panorama-plan.md` (the 360° view made once with fal and kept). Work top to bottom. Move each item into your Tasks list as you take it, log it, and leave this section in place. Freeze is assumed at 10:00, submission 12:00 (still unconfirmed).
+
+**Main priority: the real 360° view of the past, generated once with fal and kept for ever.** Read
+`notebook/agent-4-panorama-plan.md` first. Every generated file (scene, panorama, headshot, narration, clips) must
+be saved by us the moment it exists, so no player and no visit ever pays fal for it again, and the 7-day fal
+expiry never forces a regeneration. The human grants you two new paths for this: `src/lib/media/` and
+`src/app/api/media/`, plus the new script `scripts/persist-media.ts`.
+
+1. **A4-11** Media store: `src/lib/media/` with GridFS (Atlas) and folder backends, the `media_assets` ledger, `persistFromUrl`, `toFalUrl`, tests, README. Post the API to Agent 2 on the board as soon as the signatures are fixed, so A2-h can start.
+2. **A4-14** Browser cache: `mediaCache.ts` (Cache Storage), prefetch of the landmark's other ready years, era snapshot in localStorage; wire into PanoramaView, ThenNowSlider, GuidePlayer and Avatar. No keys needed.
+3. **A4-12** `GET /api/media/[mediaId]`: stream, `immutable` cache header, ETag, Range 206 (iOS needs it for audio and video).
+4. **A4-13** `scripts/persist-media.ts`: copy existing eras' fal URLs into the store and rewrite the Era; run it on the dev databases (Queen's Tower 1893 already has real media there) before the 7 days run out.
+5. **A4-15** First real panorama on an iPhone and an Android phone (T12, M1 gate) as soon as A2-a and a reference photo land: level horizon, no seam in front, landmark centred. Fix the viewer if not.
+6. **A4-16** Time Machine on a real era (T15, M2/M3 gates): progress sheet ticks live, panorama appears, narration plays from `/api/media`, guide video when it exists.
+7. **A4-b** Sources drawer: licence and author for period images from `data/ATTRIBUTION.md` (CC BY and CC BY-SA require it).
+8. **A4-a** Fix whatever T7 to T9 (round 1 retest, Then/Now, Sources) and T15 turn up.
+9. **A4-c** If T8 shows the iPhone switching to the earpiece after the mic, release the mic after each recording.
+10. **A4-10** Phone pass and polish. Then stop at the 10:00 freeze. Stretch (A4-S1, A4-S2) only after M4.
+
 ## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
 
 Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.

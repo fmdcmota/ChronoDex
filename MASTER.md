@@ -191,6 +191,7 @@ One owner per path. You never edit a path you do not own. If you need a change t
 | `src/app/page.tsx`, `src/app/capture/`, `src/app/dex/`, `src/components/explore/` | Agent 3 |
 | `public/sprites/`, `public/manifest.webmanifest`, icons | Agent 3 |
 | `src/app/time/`, `src/app/chat/`, `src/components/time-machine/`, `src/components/chat/` | Agent 4 |
+| `src/lib/media/`, `src/app/api/media/`, `scripts/persist-media.ts` (generated-media store, `notebook/agent-4-panorama-plan.md`) | Agent 4 |
 
 **New dependencies.** Agent 1 installs the shared set at M0 (task A1-02). After that, anyone who needs a package adds it in a commit that touches only `package.json` and the lockfile, pulls first, pushes straight away, and notes it in their notebook page. If the lockfile conflicts, take the incoming lockfile, re-add your one line to `package.json`, and run `npm install`.
 
@@ -917,3 +918,4 @@ Each has a default. Silence means the default.
 |---|---|---|
 | 14 Nov 2026, 15:15 | Plan v1 | Fernando with Claude |
 | 14 Nov 2026, 15:30 | v1.1: agent board in `BOARD.md`, approval before every commit and push, Haiku delegation skill with a sheet per agent | Fernando with Claude |
+| 15 Nov 2026, 01:55 | Agent 4 owns the generated-media store (`src/lib/media/`, `src/app/api/media/`, `scripts/persist-media.ts`): every generated file is kept by us so it is never paid for twice | Fernando with Claude |

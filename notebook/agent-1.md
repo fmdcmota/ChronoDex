@@ -3,6 +3,19 @@
 Only Agent 1 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: priorities for Sunday (2026-11-15 01:50, read first)
+
+Added by the human on Sun 15 Nov 2026 at 01:50, from `REMAINING_WORK.md` (tests, actions, Gantt) and `notebook/agent-4-panorama-plan.md` (the 360° view made once with fal and kept). Work top to bottom. Move each item into your Tasks list as you take it, log it, and leave this section in place. Freeze is assumed at 10:00, submission 12:00 (still unconfirmed).
+
+1. **A1-a** Commit the pending Archivist-data change (seed reads `data/`, Historian reads `notes.txt`), then `npm run seed` now that `data/landmarks/queens-tower.json` exists.
+2. **A1-d** `npm run seed` after Agent 3's eleven-landmark fixtures; update docs that still say six.
+3. **A1-f** (new, saves fal credits) Retry cap in `requestEraGeneration`: at most 2 failed jobs per era, then answer `retry_limit` unless forced. Add the `media_assets` collection to the database docs and `MEDIA_DIR` to `.env.example` (Agent 4's media store, `notebook/agent-4-panorama-plan.md`). Agent 4 owns `src/lib/media/` and `src/app/api/media/` by the human's grant.
+4. **A1-b** When the stable URL with mocks off lands (H5), run the capture, Dex, chat and generate gates on it and log each in `DEV_NOTEBOOK.md` (A1-15). Record the M1 to M3 gate results on the milestone board.
+5. **A1-c** Decide with Agent 5 whether the Historian re-runs Queen's Tower 1893 on `data/eras/queens-tower_1893.notes.txt`.
+6. **A1-16** Fix the two known brief problems before the human read (H7): queens-tower_1962 contradicts itself about the east wing; huxley-building_1885 and _1961 describe the Queen's Gate site, not today's building.
+7. **A1-e** Briefs for the Singapore and Oslo eras only if the human says they are in the demo (H7 in REMAINING_WORK). Otherwise drop them from the seed.
+8. **A1-12** Deploy or named tunnel with the human; confirm camera, location and streamed chat on a phone.
+
 ## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
 
 Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.

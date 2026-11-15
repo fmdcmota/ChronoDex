@@ -3,6 +3,25 @@
 Only Agent 2 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: priorities for Sunday (2026-11-15 01:50, read first)
+
+Added by the human on Sun 15 Nov 2026 at 01:50, from `REMAINING_WORK.md` (tests, actions, Gantt) and `notebook/agent-4-panorama-plan.md` (the 360° view made once with fal and kept). Work top to bottom. Move each item into your Tasks list as you take it, log it, and leave this section in place. Freeze is assumed at 10:00, submission 12:00 (still unconfirmed).
+
+**Read `notebook/agent-4-panorama-plan.md`.** The human made "never generate the same thing twice" the top
+priority. Agent 4 builds the media store (`src/lib/media/`: `persistFromUrl`, `toFalUrl`); your part is in the
+pipeline.
+
+1. **A2-a** Scene stage accepts a relative `referencePhotoUrl` (`/reference/<id>.jpg`): read it, upload to fal once per landmark, reject `.svg` clearly. **Today the mock SVG would be sent to fal.** When Agent 4's `toFalUrl` lands, use it here.
+2. **A2-h** (new) In `runEraJob`, persist each stage's output with `persistFromUrl` before `patchEra`, so the Era stores `/api/media/<id>`, and pass every stage input through `toFalUrl`.
+3. **A2-i** (new, saves credits) Free local checks (aspect ratio, file size) before the paid critic; downscale period references to 1024 px on the long side before upload; never ask for 4K.
+4. **A2-b** Forward-view trial with Agent 5's two `same_view` images for Queen's Tower 1893; then the core tier for Queen's Tower 1893 for real (F1), so Agent 4 can run T12 on two phones.
+5. **A2-j** (new) Experiment E1: one panorama request from the reference photo, crop the centre as the scene; compare with the two-step result and report cost and look on the board. Adopt only if the human cannot tell them apart (saves about 45 % of image spend).
+6. **A2-c** Remove the two `placeholder-*` voice keys; finalise `VOICE_CATALOG` once the human picks voices (H3).
+7. **A2-d** The 45 s talk clip once the talk model is picked; split in two requests if refused. Queue it early: about 15 minutes of Kling time.
+8. **A2-e** Real end-to-end hold to talk, STT and TTS on the stable URL (T8); post screen-side bugs to Agent 4.
+9. **A2-f** `scripts/pregenerate.ts` for the demo eras once reference photos and Agent 5's references exist (core tier for all, video per the credit count), then `scripts/backup-media.ts`.
+10. **A2-g** Make sure nothing is left uncommitted on `agent-2`.
+
 ## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
 
 Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.

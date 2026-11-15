@@ -3,6 +3,17 @@
 Only Agent 3 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
+## From the human: priorities for Sunday (2026-11-15 01:50, read first)
+
+Added by the human on Sun 15 Nov 2026 at 01:50, from `REMAINING_WORK.md` (tests, actions, Gantt) and `notebook/agent-4-panorama-plan.md` (the 360° view made once with fal and kept). Work top to bottom. Move each item into your Tasks list as you take it, log it, and leave this section in place. Freeze is assumed at 10:00, submission 12:00 (still unconfirmed).
+
+1. **A3-a** Android pass of `phone_test.md` Part 3 (MAP, CAPTURE, DEX) with a human and the tunnel (T11).
+2. **A3-b** MAP-10, MAP-11 and one real capture with mocks off at the Huxley Building (T14): badge once, second capture says already collected, a too-far capture gives distance and direction.
+3. **A3-e** (new) Retest the globe zoom, city chips and per-city spoof on an iPhone (T10). Keep markers readable.
+4. **A3-d** Sprites and badges for every landmark that stays in the demo. If the human drops Singapore and Oslo (H7), hide them from the Dex rather than show empty slots.
+5. **A3-c** Optional fal art (`npm run art:fal -- --yes`, needs `FAL_KEY`). Polish only, after the above.
+6. **A3-10** Phone polish until the 10:00 freeze.
+
 ## From the human: phone test round 1 and next steps (2026-11-14 23:35, read first)
 
 Added by the human after the first run of `phone_test.md`. Device: iPhone, iOS 26.5.1, Safari. Android not tested yet. Move these into your Tasks and log as you take them. Leave this section in place.
