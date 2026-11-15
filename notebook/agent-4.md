@@ -103,6 +103,13 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [x] R1-6 Headshot: poll while the era's job runs; period silhouette fallback
 - [x] R1-7 Period ambience with ducking and a saved mute (placeholder noise until Agent 2's loops land)
 - [ ] R1-8 Real voice and replies on a phone: handed to Agent 2 by the human (board ASK, 2026-11-15; first posted to Agent 1, then corrected)
+- [x] A4-11 Media store `src/lib/media/` (GridFS + folder + memory backends, ledger, persistFromUrl, toFalUrl; GridFS checked on Atlas)
+- [x] A4-12 `GET /api/media/[mediaId]` (immutable, ETag, Range 206, 304, HEAD)
+- [ ] A4-13 `scripts/persist-media.ts`
+- [ ] A4-14 Browser media cache, year prefetch, era snapshot
+- [ ] A4-15 First real panorama on two phones
+- [ ] A4-16 Time Machine on a real era
+- [ ] A4-b Sources drawer licences from data/ATTRIBUTION.md
 - [ ] A4-10 Phone pass and polish
 - [ ] A4-S1 Stretch: overlay on the live camera (after M4 only)
 - [ ] A4-S2 Stretch: compass-aligned panorama (after M4 only)
@@ -203,3 +210,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing; each piece needed the screen code in view.
 - Problems: default vitest pool broken on this machine (see Current state). A dev server from this repo was already on port 3000, so the check used it. Item 8 could not run: no keys here.
 - Next: see Current state.
+
+### 2026-11-15 02:05, A4-11 and A4-12: media store and /api/media
+- Did: `src/lib/media/`: content-addressed store (id = first 32 hex of SHA-256), three backends (GridFS bucket `media` + ledger `media_assets` when MONGODB_URI is set; folder `MEDIA_DIR`, default `.media/`, which writes its own `.gitignore`; memory for tests). `persistFromUrl` (fal/http download once, `/public` path from disk, own URL passthrough, dedupe by source URL and by bytes), `persistBytes`, `toFalUrl` (reuses the recorded fal copy while over a day is left, else re-uploads free and records it; stores and uploads `/reference/*.jpg` once; refuses SVG), `openMedia`. `GET`/`HEAD /api/media/[mediaId]`: `Cache-Control: public, max-age=31536000, immutable`, ETag = id, Range 206, 416, 304. README.
+- Decided, and why: content hash as id, so dedupe is free and the URL can be cached for ever. Own MongoClient in gridfs.ts because src/lib/db exposes collections, not the Db. Assumed fal lifetime 6 days (fal says at least 7) and a re-upload under 1 day left. Old eras get `falUrlExpiresAt: null` so toFalUrl never trusts a guess.
+- Measured or verified: 21 new tests (store, folder backend, range, etag, route). GridFS backend run once on real Atlas in a throwaway database `chronodex_media_check_agent4` (put twice, get, find by source, whole and range read, fal URL update), then dropped. Full suite 473 pass with `--pool=vmThreads`; typecheck and lint pass.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: the mongodb driver types GridFS ids as ObjectId; cast, any _id works.
+- Next: A4-14 browser cache, then A4-13 persist script.
