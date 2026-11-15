@@ -42,11 +42,34 @@ The talk clip is the slowest, about 14 min for 38 s.
 **Stop:** Ctrl+C once stops claiming and lets the running job finish. Pressing it twice exits at once. Every fal
 request id is saved, so running the same command again resumes and never pays twice for a finished clip.
 
-## 3. Check the canary on a phone (Agent 4 adds detail)
+## 3. Check the canary on a phone (phone checks: Agent 4, R3-4f)
 
-- [ ] The Time Machine swaps from the preview guide to the real clips without a reload.
-- [ ] The guide walks on, talks, and walks off, with no visible gap and the same person in the same place.
-- [ ] Lips match the voice. Captions follow the talk clip. Ambience ducks under the voice.
+Use an iPhone in Safari through the tunnel URL on the board (and an Android phone if one is around). Sound on,
+silent switch off.
+
+**While it is being made** (open the Time Machine for the canary before or during the run):
+
+- [ ] Queen's Tower, year 1893. A **progress sheet** appears at the top with guide_frame, walk_on, talk and
+      walk_off, each with its model and a running time. The 360° view and the **▶ Meet** button stay usable.
+- [ ] The preview still plays while the job runs (portrait walks on, narration, captions). Nothing asks for a reload.
+- [ ] When the job ends the sheet folds away and the button resets to **▶ Meet**. **No reload.** (If the preview
+      was playing at that moment it stops and the button comes back: that is expected.)
+
+**The real clips** (tap ▶ Meet):
+
+- [ ] Walk on, talk, walk off play in order with **no black flash or freeze** between clips (under a frame).
+- [ ] Same person, same clothes, same spot in all three clips, and they match the chat's profile picture.
+- [ ] Lips match the voice through the talk clip. The voice is the narration voice, start to finish, not cut short.
+- [ ] **Captions** appear during the talk clip only and keep pace with the words.
+- [ ] The background ambience goes quiet under the voice and comes back after. The ♪ button still mutes it.
+- [ ] **Skip ›** stops everything at once and offers **Chat with <guide>**. The chat opens and replies.
+- [ ] Leave the page and come back: the clips start promptly (they come from the browser's cache).
+- [ ] iPhone only: the clips play inline (not forced full screen) and the sound comes out of the speaker, not the
+      earpiece. Lock and unlock the phone mid-clip: Meet or Skip still works.
+- [ ] Then/Now stays hidden for this era (expected until the scene is remade from a wide photo).
+
+**On the server side:**
+
 - [ ] The job's stages carry no `KEPT WITH PROBLEMS` flag. If one does, look at that clip before going on.
 
 If the canary is wrong, stop here and post on the board. Do not make the next era.
