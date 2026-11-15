@@ -13,6 +13,20 @@ const SPOT = {
   rah: { lat: 51.50003, lng: -0.17742 },
 };
 
+/**
+ * Wait until the map has no tiles left to load (then a moment more), or `ms` at the most. Without a map, just wait.
+ */
+async function settle(s, ms) {
+  const end = Date.now() + ms;
+  await sleep(600);
+  while (Date.now() < end) {
+    const done = await s.evaluate(`!window.__chronodexMap || window.__chronodexMap.areTilesLoaded()`).catch(() => true);
+    if (done) break;
+    await sleep(200);
+  }
+  await sleep(Math.min(1200, Math.max(0, end - Date.now())));
+}
+
 /** Clear what a previous run left in the browser, so every scene starts like a first visit. */
 async function fresh(s, pathName) {
   await s.goto('/?intro=0');
@@ -26,9 +40,17 @@ const SCENES = {
     const s = await launch();
     try {
       await s.gps(SPOT.exhibitionRoad.lat, SPOT.exhibitionRoad.lng);
-      await fresh(s, '/?intro=1');
-      await s.waitFor(`document.querySelector('.ci-enter')`);
-      await sleep(3500); // let the globe and tiles settle before recording
+      // Warm the tile cache: the landing street, the zooms on the way down, and the globe.
+      await fresh(s, '/?intro=0');
+      await s.waitFor(`window.__chronodexMap && window.__chronodexMap.isStyleLoaded() && document.querySelector('.player')`);
+      await settle(s, 4000);
+      for (const zoom of [14, 11, 8, 5, 1.6]) {
+        await s.evaluate(`window.__chronodexMap.jumpTo({ zoom: ${zoom} }), true`);
+        await settle(s, 1500);
+      }
+      await s.goto('/?intro=1');
+      await s.waitFor(`document.querySelector('.ci-enter') && window.__chronodexMap && window.__chronodexMap.isStyleLoaded()`);
+      await settle(s, 5000);
       await s.start('welcome');
       await sleep(2600);
       s.mark('tap');
@@ -45,17 +67,42 @@ const SCENES = {
       await s.gps(SPOT.exhibitionRoad.lat, SPOT.exhibitionRoad.lng);
       await fresh(s, '/?intro=0');
       await s.waitFor(`window.__chronodexMap && window.__chronodexMap.isStyleLoaded() && document.querySelector('.player')`);
-      await sleep(3000);
+      await settle(s, 4000);
       const ease = (opts) => s.evaluate(`window.__chronodexMap.easeTo(${JSON.stringify(opts)}), true`);
       const fly = (opts) => s.evaluate(`window.__chronodexMap.flyTo(${JSON.stringify(opts)}), true`);
+      const startCamera = await s.evaluate(`(() => { const m = window.__chronodexMap, c = m.getCenter(); return { center: [c.lng, c.lat], zoom: m.getZoom() }; })()`);
+      // Rehearsal: every place the camera will go, so its tiles are cached before the take.
+      // The World button zooms out over London through every level, and City comes back the same way.
+      const london = [-0.1759, 51.4986];
+      const outward = [15.35, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2.4, 1.6].map((zoom) => [london, zoom]);
+      for (const [centre, zoom] of [...outward, [[0, 30], 1.6], [[-38, 45.5], 2.8], [[-38, 45.5], 3.4], [[7, 25], 3.0], [[7, 25], 3.6], [[109, 39], 3.2], [[109, 39], 3.8]]) {
+        await s.evaluate(`window.__chronodexMap.jumpTo(${JSON.stringify({ center: centre, zoom })}), true`);
+        await settle(s, 1800);
+      }
+      await s.evaluate(`window.__chronodexMap.jumpTo(${JSON.stringify(startCamera)}), true`);
+      await settle(s, 3500);
       await s.start('map');
       await sleep(1200);
       s.mark('glide');
       await ease({ center: [-0.1759, 51.4986], zoom: 15.35, duration: 3800 });
       await sleep(4300);
       s.mark('world');
-      await s.tap('.globe-btn');
-      await sleep(2700);
+      // Camera moves are stepped (cdp.mjs): every frame is taken with its tiles drawn, so nothing pops in.
+      const cam = () => s.evaluate(`(() => { const m = window.__chronodexMap, c = m.getCenter(); return { lng: c.lng, lat: c.lat, zoom: m.getZoom() }; })()`);
+      const put = (lng, lat, zoom) => s.evaluate(`window.__chronodexMap.jumpTo({ center: [${lng}, ${lat}], zoom: ${zoom} }), true`);
+      const smooth = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+      const lerp = (a, b, k) => a + (b - a) * k;
+      /** A flight: the centre glides across while the zoom dips out by `dip` in the middle, like flyTo. */
+      const flight = async (to, durationS, dip = 0) => {
+        const from = await cam();
+        await s.stepped(async (k) => {
+          const e = smooth(k);
+          await put(lerp(from.lng, to.lng, e), lerp(from.lat, to.lat, e), lerp(from.zoom, to.zoom, e) - dip * Math.sin(Math.PI * k));
+        }, durationS);
+      };
+      const here = await cam();
+      await flight({ lng: here.lng, lat: here.lat, zoom: 1.6 }, 2.0);
+      await sleep(900);
       // Fly over each duck's route first (from the far side of the globe a duck's screen position means nothing),
       // then find the duck and settle on it, close enough to see it walk or sail.
       const routes = [
@@ -65,8 +112,7 @@ const SCENES = {
       ];
       for (const [label, centre, zoom] of routes) {
         s.mark(label);
-        await fly({ center: centre, zoom: zoom - 0.6, duration: 1700, essential: true });
-        await sleep(1800);
+        await flight({ lng: centre[0], lat: centre[1], zoom: zoom - 0.6 }, 1.7, 0.5);
         // The duck nearest this route on screen (the markers' order does not follow the routes); null if none is near.
         const at = await s.evaluate(`(() => {
           const m = window.__chronodexMap, c = m.getCanvas().getBoundingClientRect();
@@ -81,12 +127,20 @@ const SCENES = {
           return best && best.at;
         })()`);
         console.log(label, at);
-        if (at) await ease({ center: at, zoom, duration: 1100 });
+        if (at) await flight({ lng: at[0], lat: at[1], zoom }, 1.0);
         await sleep(1600);
       }
       s.mark('city');
-      await s.tap('.globe-btn');
-      await sleep(3200);
+      // Home to London: across the globe, then down into South Kensington.
+      const far = await cam();
+      await s.stepped(async (k) => {
+        const e = smooth(k);
+        const across = smooth(Math.min(1, k / 0.6));
+        const zoom = k < 0.5 ? lerp(far.zoom, 1.8, smooth(k / 0.5)) : lerp(1.8, 15.2, smooth((k - 0.5) / 0.5));
+        await put(lerp(far.lng, -0.1759, across), lerp(far.lat, 51.4986, across), zoom);
+        void e;
+      }, 2.8);
+      await sleep(1500);
       await s.stop();
     } finally { s.close(); }
   },
@@ -104,7 +158,7 @@ const SCENES = {
       await fresh(s, '/?intro=0');
       await s.waitFor(`window.__chronodexMap && window.__chronodexMap.isStyleLoaded() && document.querySelector('.player')`);
       await s.evaluate(`window.__chronodexMap.jumpTo({ center: [-0.17746, 51.49962], zoom: 16.55 }), true`);
-      await sleep(2500);
+      await settle(s, 5000);
       await s.start('capture');
       await sleep(1000);
       s.mark('walk');

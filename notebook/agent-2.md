@@ -432,3 +432,11 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 - Sound: the app's 1980-now music for the game parts; 1850-1899 music and street sound for 1871, stepped down under Edith; the chat's real chime (tone.ts); synthesised whoosh, shutter, coin and chest (ffmpeg `anoisesrc`/`aevalsrc`, commands in the shell history of this entry: pink noise band-passed with fades; two noise clicks; a square wave 988 then 1319 Hz; a 523/659/784 Hz blip).
 - Traps: the recording browser hides the dev indicator, MOCK DATA tag and spoof panel; the duck markers' order does not follow their routes; Git Bash rewrites "/time/..." arguments into Windows paths.
 - Waiting on: the team's voice-over. Then set each section's `dur` from it and `node build.mjs --vo <file>`.
+
+### 2026-11-15 07:52, demo video: final cut with the team's voice-over
+
+- The human's notes: let the map load first, no fades, use the WhatsApp voice-over, credits without model names ("all image and audio generation by fal") and with Ishan, Alex, Fernando and Azlan, and a duck walking across the credits.
+- Map loading: each map scene warms the tile cache before recording (the map scene rehearses its whole route). Fast zoom-outs still showed blank patches, so camera moves are now recorded frame by frame (`stepped()` in cdp.mjs: move, wait for every tile, screenshot); the welcome dive (zooming in) was already clean.
+- Voice-over: 87 s WhatsApp recording; ffmpeg silencedetect found the nine spoken blocks at the script's pauses; each is levelled (loudnorm) and placed at the start of its pictures (`VOICE_OVER` in timeline.mjs). Narration and Edith both about -18 dB; Edith's chat reply cut at her first sentence (11.1 s) so it ends before the closing line.
+- Hard cuts, no fades. Credits: the app's straw-hat duck sprite walks the ground line, frames swapped every 0.34 s like the app.
+- Output 2:00.0, 1920x1080; also copied to the repo root as chronodex-demo.mp4 for the human (untracked, not committed).

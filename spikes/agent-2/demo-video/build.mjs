@@ -2,7 +2,7 @@
  * Assemble the demo video from the recordings (frames/), the cards (cards/) and the sounds (assets/, the app's own
  * audio), following timeline.mjs. Owner: Agent 2. Spike.
  *
- * Usage: node spikes/agent-2/demo-video/build.mjs [--vo path/to/voiceover.mp3]
+ * Usage: node spikes/agent-2/demo-video/build.mjs   (the voice-over blocks come from timeline.mjs VOICE_OVER)
  * Output: out/chronodex-demo.mp4 (1920x1080, 30 fps, H.264 + AAC) and out/timeline.json (where each section and
  * sound landed). Work files go to work/. No network, no paid call.
  */
@@ -11,20 +11,19 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { HERE } from './cdp.mjs';
-import { BEDS, FPS, PHONE_SLOT, SECTIONS, SIZE } from './timeline.mjs';
+import { BEDS, CREDITS_DUCK, FPS, PHONE_SLOT, SECTIONS, SIZE, VOICE_OVER } from './timeline.mjs';
 
 const FFMPEG = createRequire(import.meta.url)('ffmpeg-static');
 const W = (...p) => path.join(HERE, 'work', ...p);
 const R = (p) => path.resolve(HERE, p);
 mkdirSync(W(), { recursive: true });
 mkdirSync(path.join(HERE, 'out'), { recursive: true });
-const args = process.argv.slice(2);
-const voIndex = args.indexOf('--vo');
-const VO = voIndex >= 0 ? path.resolve(args[voIndex + 1]) : null;
+const VO = existsSync(R(VOICE_OVER.file)) ? R(VOICE_OVER.file) : null;
+if (!VO) console.warn(`No voice-over at ${VOICE_OVER.file}: building without it.`);
 
 const ff = (...a) => execFileSync(FFMPEG, ['-hide_banner', '-loglevel', 'error', '-y', ...a], { stdio: ['ignore', 'inherit', 'inherit'] });
 const VENC = ['-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-r', String(FPS)];
-const FADE_S = 0.2;
+// Hard cuts between sections: no fades (the human's call, 15 Nov).
 
 /** Load a recording's frame index. */
 const recordings = new Map();
@@ -60,19 +59,17 @@ function phoneClip(part, speed, outFile, padToS) {
 }
 
 /** Put a phone clip into its card: background, the recording in the slot, the bezel over it. */
-function composePhone(bgPng, phoneMp4, durS, outFile, fade = { in: true, out: true }) {
-  const fades = [fade.in ? `fade=t=in:st=0:d=${FADE_S}` : null, fade.out ? `fade=t=out:st=${(durS - FADE_S).toFixed(3)}:d=${FADE_S}` : null].filter(Boolean).join(',');
+function composePhone(bgPng, phoneMp4, durS, outFile) {
   ff('-loop', '1', '-framerate', String(FPS), '-i', bgPng, '-i', phoneMp4, '-loop', '1', '-framerate', String(FPS), '-i', R('cards/bezel.png'),
-    '-filter_complex', `[0][1]overlay=${PHONE_SLOT.x}:${PHONE_SLOT.y}:eof_action=repeat[a];[a][2]overlay=0:0,trim=duration=${durS.toFixed(3)}${fades ? ',' + fades : ''}[v]`,
+    '-filter_complex', `[0][1]overlay=${PHONE_SLOT.x}:${PHONE_SLOT.y}:eof_action=repeat[a];[a][2]overlay=0:0,trim=duration=${durS.toFixed(3)}[v]`,
     '-map', '[v]', '-t', durS.toFixed(3), ...VENC, '-an', outFile);
 }
 
 /** A full-frame generated clip (Edith), scaled to 1080p, with the lower third over it. */
-function fullFrame(clip, outFile, fade) {
+function fullFrame(clip, outFile) {
   const len = clip.to - clip.from;
-  const fades = [fade.in ? `fade=t=in:st=0:d=${FADE_S}` : null, fade.out ? `fade=t=out:st=${(len - FADE_S).toFixed(3)}:d=${FADE_S}` : null].filter(Boolean).join(',');
   ff('-ss', String(clip.from), '-t', len.toFixed(3), '-i', R(clip.file), '-loop', '1', '-framerate', String(FPS), '-i', R('cards/guide-lower.png'),
-    '-filter_complex', `[0:v]scale=${SIZE.w}:${SIZE.h}:flags=lanczos,fps=${FPS},setsar=1[b];[b][1]overlay=0:0,trim=duration=${len.toFixed(3)}${fades ? ',' + fades : ''}[v]`,
+    '-filter_complex', `[0:v]scale=${SIZE.w}:${SIZE.h}:flags=lanczos,fps=${FPS},setsar=1[b];[b][1]overlay=0:0,trim=duration=${len.toFixed(3)}[v]`,
     '-map', '[v]', '-t', len.toFixed(3), ...VENC, '-an', outFile);
   return len;
 }
@@ -86,8 +83,16 @@ for (const sec of SECTIONS) {
   const start = clock;
   if (sec.card === 'end') {
     const out = W(`${sec.id}.mp4`);
-    ff('-loop', '1', '-framerate', String(FPS), '-i', R('cards/close.png'),
-      '-vf', `trim=duration=${sec.dur},fade=t=in:st=0:d=0.6,fade=t=out:st=${sec.dur - 1}:d=1`, '-t', String(sec.dur), ...VENC, '-an', out);
+    // The duck walks left to right across the ground strip, swapping its two frames like the app's ducks do.
+    const d = CREDITS_DUCK;
+    const fw = Math.round(160 * d.scale), fh = Math.round(128 * d.scale);
+    const x = `-${fw}+(${SIZE.w}+${fw})*t/${sec.dur}`;
+    ff('-loop', '1', '-framerate', String(FPS), '-i', R('cards/close.png'), '-loop', '1', '-framerate', String(FPS), '-i', R(d.sheet),
+      '-filter_complex',
+      `[1]split[s1][s2];[s1]crop=160:128:0:0,scale=${fw}:${fh}:flags=neighbor[f1];[s2]crop=160:128:160:0,scale=${fw}:${fh}:flags=neighbor[f2];` +
+      `[0][f1]overlay=x='${x}':y=${d.y}:enable='lt(mod(t,${2 * d.frameS}),${d.frameS})'[a];` +
+      `[a][f2]overlay=x='${x}':y=${d.y}:enable='gte(mod(t,${2 * d.frameS}),${d.frameS})',trim=duration=${sec.dur}[v]`,
+      '-map', '[v]', '-t', String(sec.dur), ...VENC, '-an', out);
     pieces.push(out);
     clock += sec.dur;
     placed.push({ id: sec.id, start, end: clock });
@@ -119,12 +124,12 @@ for (const sec of SECTIONS) {
     ff('-f', 'concat', '-safe', '0', '-i', listFile, '-c', 'copy', phoneMp4);
   }
   const composed = W(`${sec.id}.mp4`);
-  composePhone(R(`cards/${sec.id}-bg.png`), phoneMp4, phoneDur, composed, { in: true, out: !sec.fullFrame });
+  composePhone(R(`cards/${sec.id}-bg.png`), phoneMp4, phoneDur, composed);
   pieces.push(composed);
   let at = start + phoneDur;
   for (const [i, clip] of (sec.fullFrame ?? []).entries()) {
     const out = W(`${sec.id}-full-${i}.mp4`);
-    const len = fullFrame(clip, out, { in: i === 0, out: i === sec.fullFrame.length - 1 });
+    const len = fullFrame(clip, out);
     pieces.push(out);
     audioEvents.push({ file: R(clip.file), at, from: clip.from, len, vol: clip.vol, kind: 'clip' });
     at += len;
@@ -133,7 +138,7 @@ for (const sec of SECTIONS) {
   for (const snd of sec.sounds ?? []) {
     const ps = partStarts.find(({ part }) => part.scene === snd.at.scene && snd.at.t >= part.from && snd.at.t <= part.to);
     if (!ps) { console.warn(`sound ${snd.file} at ${snd.at.scene} ${snd.at.t} is outside the section's parts`); continue; }
-    audioEvents.push({ file: R(snd.file), at: ps.at + (snd.at.t - ps.part.from) / speed, vol: snd.vol, kind: 'sfx' });
+    audioEvents.push({ file: R(snd.file), at: ps.at + (snd.at.t - ps.part.from) / speed, vol: snd.vol, len: snd.len, kind: 'sfx' });
   }
   clock += sec.dur;
   placed.push({ id: sec.id, start, end: clock, speed: Number(speed.toFixed(3)) });
@@ -150,7 +155,7 @@ const modernA = { start: 0, end: sec('memory').end };
 const victorian = { start: sec('time').start, end: sec('chat').end };
 const close = sec('close');
 // Under Edith's own voice (her clips and her chat reply) the period music steps down.
-const duck = audioEvents.filter((e) => e.kind === 'clip' || /edith-reply/.test(e.file)).map((e) => [e.at, e.at + (e.len ?? 14.5)]);
+const duck = audioEvents.filter((e) => e.kind === 'clip' || /edith-reply/.test(e.file)).map((e) => [e.at, e.at + (e.len ?? 12)]);
 const duckExpr = duck.map(([a, b]) => `between(t,${(a - victorian.start).toFixed(2)},${(b - victorian.start).toFixed(2)})`).join('+');
 
 const inputs = [];
@@ -170,15 +175,18 @@ bed(BEDS.victorianMusic, victorian.start, victorian.end, 0.42, duckExpr ? `,volu
 bed(BEDS.victorianStreet, victorian.start, victorian.end, 0.45, duckExpr ? `,volume='if(${duckExpr},0.35,1)':eval=frame` : '');
 bed(BEDS.modern, close.start - 0.5, close.end, 0.4);
 for (const e of audioEvents) {
-  const i = addInput(e.kind === 'clip' ? ['-ss', String(e.from), '-t', e.len.toFixed(3), '-i', e.file] : ['-i', e.file]);
-  const fade = e.kind === 'clip' ? `,afade=t=out:st=${(e.len - 0.3).toFixed(3)}:d=0.3` : '';
+  const i = addInput(e.kind === 'clip' ? ['-ss', String(e.from), '-t', e.len.toFixed(3), '-i', e.file] : e.len ? ['-t', e.len.toFixed(3), '-i', e.file] : ['-i', e.file]);
+  const fade = e.len ? `,afade=t=out:st=${(e.len - 0.3).toFixed(3)}:d=0.3` : '';
   chains.push(`[${i}:a]aformat=sample_rates=48000:channel_layouts=stereo,volume=${e.vol}${fade},adelay=${Math.round(e.at * 1000)}:all=1[e${i}]`);
   labels.push(`[e${i}]`);
 }
-if (VO && existsSync(VO)) {
-  const i = addInput(['-i', VO]);
-  chains.push(`[${i}:a]aformat=sample_rates=48000:channel_layouts=stereo,volume=1.0[vo]`);
-  labels.push('[vo]');
+// The voice-over: each spoken block cut from the recording and laid where its pictures are (timeline.mjs).
+// WhatsApp records quietly and in mono; it is levelled once (loudnorm) and given a soft edge at each cut.
+for (const [n, b] of (VO ? VOICE_OVER.blocks : []).entries()) {
+  const len = b.to - b.from;
+  const i = addInput(['-ss', String(b.from), '-t', len.toFixed(3), '-i', VO]);
+  chains.push(`[${i}:a]aformat=sample_rates=48000:channel_layouts=stereo,loudnorm=I=-16:TP=-1.5:LRA=11,afade=t=in:d=0.04,afade=t=out:st=${(len - 0.08).toFixed(3)}:d=0.08,adelay=${Math.round(b.at * 1000)}:all=1[vo${n}]`);
+  labels.push(`[vo${n}]`);
 }
 const mixed = W('audio.wav');
 ff(...inputs, '-filter_complex',
@@ -187,6 +195,6 @@ ff(...inputs, '-filter_complex',
 
 const outFile = path.join(HERE, 'out', 'chronodex-demo.mp4');
 ff('-i', silent, '-i', mixed, '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', outFile);
-writeFileSync(path.join(HERE, 'out', 'timeline.json'), JSON.stringify({ totalS: total, sections: placed, sounds: audioEvents.map((e) => ({ file: path.basename(e.file), at: Number(e.at.toFixed(2)) })), voiceOver: VO }, null, 1));
+writeFileSync(path.join(HERE, 'out', 'timeline.json'), JSON.stringify({ totalS: total, sections: placed, sounds: audioEvents.map((e) => ({ file: path.basename(e.file), at: Number(e.at.toFixed(2)) })), voiceOver: VO && VOICE_OVER.blocks.map((b) => ({ line: b.line, at: b.at, end: Number((b.at + b.to - b.from).toFixed(2)) })) }, null, 1));
 console.log(`built ${outFile} (${total.toFixed(1)} s)`);
 console.table(placed);

@@ -10,7 +10,8 @@ Records the running app and assembles the 2-minute competition video. Never impo
 - `timeline.mjs`: sections, which slice of which recording, on-screen text, sound cues. Edit this to retime.
 - `cards.mjs`: renders the backgrounds, phone bezel, Edith's lower third and the end card (app's pixel font).
 - `make-earcons.mts`: the chat's real chimes from `src/components/chat/tone.ts`.
-- `build.mjs`: frames to clips, clips into cards, the sound mix, `out/chronodex-demo.mp4`. No network, no spend.
+- `build.mjs`: frames to clips, clips into cards (hard cuts), the voice-over blocks from `assets/voiceover.mp4`
+  (`VOICE_OVER` in timeline.mjs), the sound mix, `out/chronodex-demo.mp4`. No network, no spend.
 
 ## Run (repo root)
 
@@ -21,7 +22,7 @@ Records the running app and assembles the 2-minute competition video. Never impo
     cd spikes/agent-2/demo-video
     node scenes.mjs welcome map capture time
     DEMO_BASE=http://localhost:3100 node scenes.mjs chat    # one fal call: Edith's spoken reply, a few cents
-    node --import tsx make-earcons.mts && node cards.mjs && node build.mjs [--vo voiceover.mp3]
+    node --import tsx make-earcons.mts && node cards.mjs && node build.mjs
 
 Sound effects and the camera feed (`assets/`, `rah-camera.mjpeg`) are made with ffmpeg; commands in the notebook.
 
@@ -29,5 +30,6 @@ Sound effects and the camera feed (`assets/`, `rah-camera.mjpeg`) are made with 
 
 - Git Bash rewrites arguments that start with `/` into Windows paths: pass routes without the leading slash.
 - The screencast sends frames only when the screen changes; `build.mjs` holds each frame until the next.
+- Fast map moves outrun tile drawing even with a warm cache: record them with `stepped()` (frame by frame).
 - In the 360° view, drags go through CDP round trips, so six drags take about 20 s: the cut speeds the part up.
 - Never run the chat scene against mocks: the mock reply is canned and its voice is a beep.

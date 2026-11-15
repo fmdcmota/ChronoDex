@@ -69,34 +69,24 @@ function guideLower(sec) {
   <div style="position:absolute;left:72px;bottom:70px">
     <div class="pixel" style="font-size:40px;letter-spacing:.12em;color:${C.gold};text-shadow:3px 3px 0 #000">${sec.kicker}</div>
     <div class="pixel" style="font-size:96px;line-height:1;color:${C.paper};text-shadow:5px 5px 0 ${C.brick}, 9px 9px 0 #000">Edith Marlow</div>
-    <div class="body" style="margin-top:8px;font-size:32px;color:${C.paper}">Garden attendant · Royal Albert Hall, 1871 · Kling video, Eleven v4 voice</div>
+    <div class="body" style="margin-top:8px;font-size:32px;color:${C.paper}">Garden attendant · Royal Albert Hall, 1871 · video and voice generated with fal</div>
   </div>
   </body></html>`;
 }
 
-/** The end card: title, line, and what made it. */
+/** The end card: title, line, fal, the team, and a strip of ground for the duck that walks across it. */
 function endCard() {
-  const made = [
-    ['Scene and 360° view', 'Nano Banana Pro'],
-    ['Guide portrait', 'Nano Banana 2.1'],
-    ['Guide voice', 'ElevenLabs Eleven v4'],
-    ['Walk on and off', 'Kling v4 image to video'],
-    ['Talking guide', 'Kling AI Avatar v2'],
-    ['Period sound', 'Sonilo · ElevenLabs SFX'],
-    ['Voice chat', 'Eleven v4 Turbo · Scribe v2'],
-  ];
+  const team = ['Ishan', 'Alex', 'Fernando', 'Azlan'];
   return `<html><head><style>${BASE_CSS}</style></head><body style="${SKY}">
-  <div style="position:absolute;left:0;right:0;top:150px;text-align:center">
+  <div style="position:absolute;left:0;right:0;top:110px;text-align:center">
     <div class="pixel" style="font-size:44px;letter-spacing:.24em;color:${C.gold};text-shadow:3px 3px 0 #000">WELCOME, TIME TRAVELLER</div>
     <div class="pixel" style="font-size:230px;line-height:1;color:${C.paper};text-shadow:8px 8px 0 ${C.brick}, 16px 16px 0 #000">CHRONODEX</div>
-    <div class="body" style="margin-top:22px;font-size:44px;color:${C.paper}">Collect the city. Then step into its past.</div>
+    <div class="body" style="margin-top:18px;font-size:44px;color:${C.paper}">Collect the city. Then step into its past.</div>
+    <div class="pixel" style="margin-top:58px;font-size:44px;letter-spacing:.1em;color:${C.gold};text-shadow:3px 3px 0 #000">ALL IMAGE AND AUDIO GENERATION BY FAL</div>
+    <div class="pixel" style="margin-top:44px;font-size:36px;letter-spacing:.2em;color:${C.soft}">MADE BY</div>
+    <div class="pixel" style="margin-top:6px;font-size:72px;letter-spacing:.06em;color:${C.paper};text-shadow:4px 4px 0 #000">${team.join('  ·  ')}</div>
   </div>
-  <div style="position:absolute;left:260px;right:260px;top:640px">
-    <div class="pixel" style="text-align:center;font-size:40px;letter-spacing:.14em;color:${C.gold};margin-bottom:18px">EVERY PICTURE, VOICE AND VIDEO MADE WITH FAL</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 56px">
-      ${made.map(([what, model]) => `<div class="body" style="display:flex;justify-content:space-between;font-size:28px;color:${C.soft};border-bottom:2px solid #ffffff1a;padding:6px 0"><span>${what}</span><span style="color:${C.paper};font-weight:600">${model}</span></div>`).join('')}
-    </div>
-  </div>
+  <div style="position:absolute;left:0;right:0;top:1030px;height:6px;background:${C.verdigris};box-shadow:0 6px 0 #2f6b5c"></div>
   </body></html>`;
 }
 

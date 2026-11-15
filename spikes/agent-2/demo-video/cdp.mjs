@@ -149,29 +149,62 @@ export async function launch(opts = {}) {
   let rec = null;
   on('Page.screencastFrame', (p) => {
     send('Page.screencastFrameAck', { sessionId: p.sessionId }).catch(() => undefined);
-    if (!rec) return;
-    const t = p.metadata.timestamp - rec.t0;
+    if (!rec || rec.stepping) return;
+    const t = p.metadata.timestamp - rec.realStart + rec.base;
     if (t < 0) return;
     const file = `f${String(rec.frames.length).padStart(5, '0')}.jpg`;
     writeFileSync(path.join(rec.dir, file), Buffer.from(p.data, 'base64'));
     rec.frames.push({ file, t });
   });
   /** Marks a moment in the recording (seconds), for the edit. */
-  const mark = (label) => { if (rec) rec.marks.push({ label, t: Date.now() / 1000 - rec.t0 }); };
+  const clock = () => Date.now() / 1000 - rec.realStart + rec.base;
+  const mark = (label) => { if (rec) rec.marks.push({ label, t: clock() }); };
+  const screencast = () => send('Page.startScreencast', { format: 'jpeg', quality: 88, maxWidth: PHONE.width * PHONE.dpr, maxHeight: PHONE.height * PHONE.dpr, everyNthFrame: 1 });
+
+  /**
+   * Record a camera move frame by frame instead of in real time: for each of the move's frames, `setCamera(k)`
+   * (k from 0 to 1) moves the map, then the frame is taken once every tile is drawn. A fast zoom-out in real time
+   * outruns MapLibre's tile processing and shows blank patches; this cannot. The recording clock carries on as if
+   * the move had taken `durationS`. Live animations on the page (the ducks) run on during it, a little faster.
+   */
+  const stepped = async (setCamera, durationS, fps = 30) => {
+    await send('Page.stopScreencast');
+    await sleep(150);
+    let cursor = clock();
+    rec.stepping = true;
+    const n = Math.max(1, Math.round(durationS * fps));
+    for (let i = 0; i <= n; i++) {
+      await setCamera(i / n);
+      await evaluate(`new Promise((resolve) => {
+        const m = window.__chronodexMap, end = Date.now() + 4000;
+        const check = () => (m.areTilesLoaded() && !m.isMoving()) || Date.now() > end
+          ? requestAnimationFrame(() => requestAnimationFrame(() => resolve(true))) : setTimeout(check, 25);
+        check();
+      })`);
+      const shot = await send('Page.captureScreenshot', { format: 'jpeg', quality: 88 });
+      const file = `f${String(rec.frames.length).padStart(5, '0')}.jpg`;
+      writeFileSync(path.join(rec.dir, file), Buffer.from(shot.data, 'base64'));
+      rec.frames.push({ file, t: cursor + i / fps });
+    }
+    rec.base = cursor + (n + 1) / fps;
+    rec.realStart = Date.now() / 1000;
+    rec.stepping = false;
+    await screencast();
+  };
 
   const start = async (scene) => {
     const dir = path.join(HERE, 'frames', scene);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });
-    rec = { scene, dir, frames: [], marks: [], t0: Date.now() / 1000 };
-    await send('Page.startScreencast', { format: 'jpeg', quality: 88, maxWidth: PHONE.width * PHONE.dpr, maxHeight: PHONE.height * PHONE.dpr, everyNthFrame: 1 });
+    rec = { scene, dir, frames: [], marks: [], realStart: Date.now() / 1000, base: 0, stepping: false };
+    await screencast();
   };
   const stop = async () => {
     await send('Page.stopScreencast');
     await sleep(200);
+    const duration = clock();
     const r = rec;
     rec = null;
-    const duration = Date.now() / 1000 - r.t0;
     writeFileSync(path.join(r.dir, 'index.json'), JSON.stringify({ scene: r.scene, duration, frames: r.frames, marks: r.marks }, null, 1));
     const fps = r.frames.length / duration;
     console.log(`[${r.scene}] ${r.frames.length} frames in ${duration.toFixed(1)} s (${fps.toFixed(1)} fps)`);
@@ -179,5 +212,5 @@ export async function launch(opts = {}) {
   };
 
   const close = () => { try { ws.close(); } catch { /* closed */ } chrome.kill(); };
-  return { send, on, evaluate, waitFor, gps, goto, centreOf, tap, tapAt, click, drag, start, stop, mark, close, errors };
+  return { send, on, evaluate, waitFor, gps, goto, centreOf, tap, tapAt, click, drag, start, stop, mark, stepped, close, errors };
 }
