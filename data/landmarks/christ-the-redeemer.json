@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "christ-the-redeemer",
+  "name": "Christ the Redeemer, Corcovado",
+  "status": "partial",
+  "subject": {
+    "lat": -22.9518,
+    "lng": -43.2095
+  },
+  "photoSpot": {
+    "lat": -22.9519,
+    "lng": -43.2105
+  },
+  "facingDeg": 0,
+  "distanceM": 102.3,
+  "captureRadiusM": 50,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:Christ_the_Redeemer_-_From_Above.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Christ_the_Redeemer_-_From_Above.jpg",
+      "note": "The reference photo, taken from above the statue. Not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): directly above the statue, looking down over its head and arms (the human asked for the view of someone standing on top of Christ the Redeemer).",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/christ-the-redeemer.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Christ_the_Redeemer_-_From_Above.jpg",
+    "licence": "CC BY-SA 3.0",
+    "author": "Alexandre Cesar Salem e Silva",
+    "takenAt": null,
+    "takenFrom": null,
+    "facingDeg": 0,
+    "crop": "Commons 3659x1672 original, centre 2972 px wide cut to 16:9, scaled to 1600x900.",
+    "notes": "Straight down from just above the statue: its head and outstretched arms in the middle, the summit platform and stairs with crowds, the forest of the mountain, and the city at the right edge."
+  },
+  "eraYears": [
+    1931
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6."
+  ]
+}

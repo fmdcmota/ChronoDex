@@ -4,7 +4,7 @@
     "landmarkId": "queens-tower",
     "year": 1962,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "Queen’s Tower amid the rebuild, 1962",
     "summary": "By 1962 the old Institute complex around Queen’s Tower was being taken apart piece by piece: demolition of the rear galleries had begun in 1957, and the east wing of the main range had already been replaced by a college building. The Institute itself had been renamed the Commonwealth Institute in 1958 and moved to Holland Park in 1962. The record is thin for this year — no usable dated reference images survive, and the exact condition of the west wing in 1962 is unresolved, so read this as an interim sketch rather than a finished picture.",
     "funFacts": [
@@ -65,8 +65,27 @@
       "centreBearingDeg": 270.06447727016587
     },
     "narrationAudioUrl": "/demo/queens-tower_1962/narration.mp3?v=48a88b0c3f",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T04:26:06.600Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/queens-tower_1962/walk_on.mp4?v=5fb5388197",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/queens-tower_1962/talk.mp4?v=3c855e5bce",
+          "durationS": 34.666
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/queens-tower_1962/walk_off.mp4?v=5e205dc185",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T08:28:23.557Z"
   },
   "provenance": {
     "narration": {
@@ -107,6 +126,33 @@
         "problems": [],
         "checkCostUsd": 0.025048
       }
+    },
+    "guide_frame": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a99/NrpA-3LxCZ-Fn1tDe50ip_qx4e3SOW.jpg",
+      "seconds": 24,
+      "check": {
+        "passed": true,
+        "checked": true,
+        "attempts": 2,
+        "problems": [],
+        "checkCostUsd": 0.014877999999999999
+      }
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28aa9/1NJoIa9ClTHRlbtatKpt4_output.mp4",
+      "seconds": 139
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28aab/qdZ94PyeWPmCBYQSdYMs6_output.mp4",
+      "seconds": 157
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28ae9/10IZJW9T8xvDYUhT6hGxx_output.mp4",
+      "seconds": 772
     }
   }
 }

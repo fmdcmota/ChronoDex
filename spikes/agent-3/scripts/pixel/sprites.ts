@@ -508,6 +508,51 @@ export function memoryBoxSprite(): PixelCanvas {
   return finish(c, 14);
 }
 
+/** Christ the Redeemer (Rio de Janeiro): the pale statue with outstretched arms on the green Corcovado peak. Agent 6. */
+function christTheRedeemer(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // The mountain peak.
+  c.ellipse(15.5, 31, 13, 9, P.wood, (_x, y) => y <= 28);
+  c.ellipse(15.5, 31, 13, 9, P.park, (x, y) => y <= 28 && x < 13);
+  // Pedestal.
+  c.rect(13, 19, 18, 23, P.stoneDark);
+  c.rect(14, 18, 17, 18, P.stone);
+  // Robe and body.
+  c.rect(14, 8, 17, 17, P.stone);
+  c.rect(16, 8, 17, 17, P.stoneDark);
+  // Outstretched arms.
+  c.rect(4, 8, 27, 9, P.stone);
+  c.hline(16, 27, 9, P.stoneDark);
+  // Head.
+  c.rect(15, 5, 16, 7, P.stone);
+  c.set(16, 6, P.stoneDark);
+  return finish(c, 13);
+}
+
+/** Roman Forum: a temple front of tall columns under a pediment, with a triumphal arch beside it. Agent 6. */
+function romanForum(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Podium.
+  c.rect(3, 24, 22, 27, P.stone);
+  c.rect(19, 24, 22, 27, P.stoneDark);
+  // Columns.
+  for (const x of [4, 8, 12, 16, 20]) {
+    c.rect(x, 13, x + 1, 23, P.stone);
+    c.vline(x + 1, 13, 23, P.stoneDark);
+  }
+  // Entablature and pediment with a terracotta roof edge.
+  c.rect(3, 11, 22, 12, P.stone);
+  c.hline(3, 22, 12, P.stoneDark);
+  c.roof(12, 13, 5, 10, P.stone);
+  c.hline(4, 21, 10, P.terracotta);
+  // A small arch on the right.
+  c.rect(23, 15, 29, 27, P.terracotta);
+  c.rect(25, 20, 27, 27, P.slate);
+  c.hline(26, 26, 19, P.slate);
+  c.rect(23, 14, 29, 14, P.stoneDark);
+  return finish(c, 14);
+}
+
 /** Brandenburg Gate, East Berlin side (1987): six Doric columns under an attic with the quadriga, the grey Wall behind. Agent 6. */
 function brandenburgGateEast(): PixelCanvas {
   const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
@@ -800,4 +845,6 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'dom-luis-bridge': domLuisBridge,
   'praca-do-comercio': pracaDoComercio,
   'brandenburg-gate-east': brandenburgGateEast,
+  'christ-the-redeemer': christTheRedeemer,
+  'roman-forum': romanForum,
 };

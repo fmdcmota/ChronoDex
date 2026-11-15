@@ -267,6 +267,32 @@ export const CITY_LANDMARKS: readonly Landmark[] = [
     referencePhotoUrl: '',
     eraYears: [1987],
   },
+  {
+    id: 'christ-the-redeemer',
+    name: 'Christ the Redeemer, Corcovado',
+    blurb: 'The view from the statue’s feet, 700 m above Rio de Janeiro, where the Art Deco Christ was unveiled in 1931.',
+    photoSpot: { lat: -22.9519, lng: -43.2105 },
+    subject: { lat: -22.9518, lng: -43.2095 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'legendary',
+    spriteUrl: '/sprites/christ-the-redeemer.png',
+    badgeUrl: '/sprites/badges/christ-the-redeemer.png',
+    referencePhotoUrl: '',
+    eraYears: [1931],
+  },
+  {
+    id: 'roman-forum',
+    name: 'Roman Forum',
+    blurb: 'The heart of ancient Rome: temples, basilicas and the Sacred Way, seen as they stood under Emperor Hadrian.',
+    photoSpot: { lat: 41.892903, lng: 12.484103 },
+    subject: { lat: 41.8927, lng: 12.485 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'legendary',
+    spriteUrl: '/sprites/roman-forum.png',
+    badgeUrl: '/sprites/badges/roman-forum.png',
+    referencePhotoUrl: '',
+    eraYears: [120],
+  },
 ];
 
 /** Every landmark the art script draws: London first, then the other cities. */

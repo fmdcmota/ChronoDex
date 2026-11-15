@@ -4,7 +4,7 @@
     "landmarkId": "brandenburg-gate-east",
     "year": 1987,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "The gate behind the wire, 1987",
     "summary": "In 1987 the Brandenburg Gate stood inside the closed border strip, its Pariser Platz an empty, floodlit security zone, and the exact spot of this stop was not a normal public viewpoint. A reinforced anti-tank wall three metres thick ran directly in front of the gate, and a wing of the building housed an information centre that GDR citizens were not allowed to visit. That June, West Berlin's \"Concert for Berlin\" drew ever larger crowds on the East side towards the gate, and clashes with police along Unter den Linden were described as the most serious outbreak of public discontent in East Berlin in nearly ten years. Ronald Reagan spoke at the gate on 12 June 1987; details of surfaces, lighting and individual prices in 1987 are thin in the sources consulted.",
     "funFacts": [
@@ -94,8 +94,27 @@
       "centreBearingDeg": 271.71180796794386
     },
     "narrationAudioUrl": "/demo/brandenburg-gate-east_1987/narration.mp3?v=015262aadc",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T07:52:32.544Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/brandenburg-gate-east_1987/walk_on.mp4?v=911585899d",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/brandenburg-gate-east_1987/talk.mp4?v=1b678c62bd",
+          "durationS": 37.6
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/brandenburg-gate-east_1987/walk_off.mp4?v=ba1c695aa1",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T08:29:32.607Z"
   },
   "provenance": {
     "headshot": {
@@ -135,6 +154,39 @@
         ],
         "checkCostUsd": 0.013194
       }
+    },
+    "guide_frame": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28a96/CL7WS7YXtCA9f0CLsJILm_Xaq95Jh4.jpg",
+      "seconds": 22,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "the face is not large and clear",
+          "the street behind is distorted",
+          "Face is small relative to image height, not filling a sixth of frame",
+          "Image 1 shows a street scene with Brandenburg Gate, not matching required framing close to camera",
+          "Scene is a monument plaza, not a plain street as instructed"
+        ],
+        "checkCostUsd": 0.016078000000000002
+      }
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28aab/U54NY7V6aICR5gahfXKui_output.mp4",
+      "seconds": 156
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28aad/SWgfsYafWPJ10kOJvwM0J_output.mp4",
+      "seconds": 177
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28aef/u0uLvvKYOdWv6etlEhrlF_output.mp4",
+      "seconds": 845
     }
   }
 }

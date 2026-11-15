@@ -1,0 +1,155 @@
+{
+  "era": {
+    "id": "roman-forum_120",
+    "landmarkId": "roman-forum",
+    "year": 120,
+    "state": "ready",
+    "videoState": "missing",
+    "title": "Rome's Forum in the Year 120",
+    "summary": "In 120 the Roman Forum was the working civic, legal, commercial and religious heart of the city, framed by the temples of Saturn, Concord, Castor and Divus Julius, the two basilicas, the Curia and the House of the Vestals. Hadrian's great Temple of Venus and Roma did not yet exist: construction began in 121, when the Colossus of Nero was moved with 24 elephants to clear the site over Nero's Domus Aurea vestibule. Trajan's Forum had been dedicated around 113, and after Trajan's death in 117 Hadrian was erecting the Temple of Divus Trajanus there. No contemporary description or securely dated image of this exact viewpoint survives, so the scene must be reconstructed from building dates and topography.",
+    "funFacts": [
+      "The Temple of Venus and Roma, which today closes the Forum's east end, began construction in 121 and was inaugurated by Hadrian in 136 or 137.",
+      "The Colossus of Nero had to be moved using 24 elephants to clear the site for the Temple of Venus and Roma.",
+      "The Temple of Saturn, rebuilt in 42 BC by L. Munatius Plancus, housed the aerarium Saturni, the state treasury.",
+      "The Sacra Via's colonnades were lined with shop stalls, and the street was associated with business, gambling, litigation and prostitution as well as festivals and triumphs.",
+      "The Arch of Titus, built in 81, already stood at the eastern end of the Via Sacra, but the Arch of Septimius Severus (203) and the Temple of Antoninus and Faustina (about 140) did not yet exist.",
+      "The Heraclean Tablets preserve municipal regulations limiting daytime wagon traffic in Rome, with exceptions for certain construction or ceremonial vehicles."
+    ],
+    "sources": [
+      {
+        "title": "Roman Forum (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Roman_Forum"
+      },
+      {
+        "title": "Temple of Venus and Roma (Colosseo)",
+        "url": "https://colosseo.it/es/mirabilia/el-templo-de-venus-y-roma/#maincontent"
+      },
+      {
+        "title": "Temple of Venus and Roma (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Temple_of_Venus_and_Roma"
+      },
+      {
+        "title": "Roman Forum timeline (World History Encyclopedia)",
+        "url": "https://www.worldhistory.org/ajax/ajax_print_visual_timeline.php?height=550&tag=Roman_Forum&width=950#1"
+      },
+      {
+        "title": "Forum Romanum (Platner & Ashby, Topographical Dictionary)",
+        "url": "https://archive.org/stream/topographymonume00platiala/topographymonume00platiala_djvu.txt#18"
+      },
+      {
+        "title": "Hadrian's Rome (Open University)",
+        "url": "https://www.open.edu/openlearn/history-the-arts/hadrians-rome/content-section-5.4/?printable=1#4"
+      }
+    ],
+    "sceneBrief": {
+      "description": "Exactly the framing of the photograph: standing on the terrace at the foot of the Capitoline Hill, looking east down over the Forum, the same horizon, the same hills and the same positions of the monuments. In AD 120, under Emperor Hadrian, every building is whole and in use: on the left the Arch of Septimius Severus does not exist yet (it is built in AD 203), so there is open paving and the Curia, the senate house, with its tall brick front; in the centre the Temple of Vespasian stands complete with its six Corinthian columns, pediment and roof, gleaming white marble; on the right the Temple of Saturn with its full portico of tall columns on a high podium, and beyond it the two-storey arcades of the Basilica Julia. Down the middle the paved Forum square and the Sacred Way are crowded, lined with honorific columns and gilded bronze statues, and at the far end the Colosseum stands complete against the sky. No ruins, no modern buildings, no church: the left-hand church is replaced by Roman buildings.",
+      "changes": {
+        "persists": [
+          "The Temple of Saturn's podium at the foot of the Capitoline",
+          "The Basilica Julia on the south side of the forum",
+          "The Temple of Castor and Pollux",
+          "The Temple of Divus Julius",
+          "The Temple of Vespasian and Titus against the Capitoline slope",
+          "The Arch of Titus at the eastern end of the Via Sacra"
+        ],
+        "altered": [
+          "The Curia Julia — in 120 it is Domitian's restoration of 94, not the present Diocletianic building",
+          "The Temple of Saturn — in 120 it is the 42 BC rebuilding, not the fourth-century restoration whose columns survive",
+          "The Porticus Deorum Consentium — in 120 it is in its Flavian form, before its 367 restoration",
+          "The Temple of Venus and Roma — in 120 the site is still the Neronian vestibule of the Domus Aurea, with the Colossus still standing; construction starts in 121 and the visible temple is largely the Maxentian rebuilding after 307"
+        ],
+        "notYetBuilt": [
+          "The Temple of Antoninus and Faustina (about 140)",
+          "The Arch of Septimius Severus (203)",
+          "The Column of Phocas (608)",
+          "The Basilica of Maxentius (completed 313)",
+          "The Temple of Venus and Roma (begun 121)",
+          "ruins, broken columns or bare foundations",
+          "the church of Santi Luca e Martina or any church or dome",
+          "the Arch of Septimius Severus",
+          "cypress or umbrella pine trees growing among the ruins",
+          "tourists, railings, signs or modern buildings"
+        ],
+        "gone": [
+          "Nero's Domus Aurea vestibule on the Velia",
+          "The Colossus of Nero, still standing on the site before its move",
+          "The modern Via dei Fori Imperiali, which cuts through the ancient Velia"
+        ]
+      },
+      "surroundings": "Seen from eye height on the Capitoline terrace above the Forum in AD 120. Ahead (east), the Forum, the Sacred Way and the Colosseum. To the right (south), the Palatine Hill crowned by the vast imperial palaces of the emperors. To the left (north), the Curia and the Imperial Fora with the Forum of Trajan and its column. Behind the viewer (west), the Temple of Jupiter on the Capitoline Hill with its gilded roof and the Tabularium archives. Clear blue sky.",
+      "referenceImageUrls": []
+    },
+    "guide": {
+      "name": "Marcus Vetilius Primus",
+      "role": "Porter and delivery hand for the shop stalls along the Sacra Via",
+      "bio": "I carry goods and messages up and down the Sacra Via for the stallholders and the men who keep offices in the basilicas. I have worked this street since I was a boy, and I know which doorway leads where and who is owed money.",
+      "appearance": "A stocky man in his mid-thirties, close-cropped dark hair and stubble, hands rough from carrying loads. He wears a plain knee-length woollen tunic in undyed off-white, belted at the waist, with a leather satchel strap across one shoulder and simple leather shoes.",
+      "voiceKey": "eleven-it-man",
+      "script": "Welcome, friend — Marcus Vetilius Primus, porter, at your service. Mind your feet, the basalt paving is hard going. I carry loads for the stalls under these colonnades, and I can tell you this street is for business and for arguing as much as for festival. Wheeled carts are kept off the streets by day, so everything you see moving is carried on a back — like mine. You want justice or a bargain? Try the basilicas; men sit there all day chatting and throwing dice. And behind me, the Temple of Saturn holds the state treasury, so mind your purse. Good luck to you — I'm off to the stalls.",
+      "greeting": "You look lost, friend. I'm Marcus — I carry for the stalls along the Sacra Via, so I know my way about. What do you want to see?",
+      "headshotUrl": "/demo/roman-forum_120/headshot.jpg?v=d4e908f89b"
+    },
+    "sceneImageUrl": "/demo/roman-forum_120/scene.jpg?v=aa6c67072b",
+    "panorama": {
+      "url": "/demo/roman-forum_120/panorama.jpg?v=8dbcbcd0eb",
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "vFovDeg": 180,
+      "centreBearingDeg": 106.90993806695684
+    },
+    "narrationAudioUrl": "/demo/roman-forum_120/narration.mp3?v=0e5535f187",
+    "guideVideo": null,
+    "updatedAt": "2026-11-15T08:22:58.552Z"
+  },
+  "provenance": {
+    "narration": {
+      "model": "elevenlabs/tts/eleven-v4",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28ab6/LxpaaFIGLBt21nOuumObD_output.mp3",
+      "seconds": 12
+    },
+    "headshot": {
+      "model": "google/nano-banana-2.1",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28ab5/URsvpoQ6YDJfLTxSIktzX_e0gOOEG1.jpg",
+      "seconds": 18
+    },
+    "scene": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28ab6/zC2xq6M2WhbE6B4rDQzE__sQmxSqVk.jpg",
+      "seconds": 19,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "looks computer generated, not like a real photograph",
+          "not the same viewpoint as the reference photo, so Then/Now would not line up",
+          "Image 1 is not a photo of London at all; it depicts the Roman Forum, not a London street",
+          "Viewpoint and camera angle completely differ from image 2",
+          "Image has a glossy, painted/colorized illustration look rather than a real photograph",
+          "Scene shows ancient Rome rather than London in any era"
+        ],
+        "checkCostUsd": 0.020645999999999998
+      }
+    },
+    "panorama": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28ac9/SLSifeUb2zpUyFbtv3hdP_1794730975288.jpeg",
+      "seconds": 140,
+      "widthPx": 4032,
+      "heightPx": 2016,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 3,
+        "problems": [
+          "anachronism: This depicts Rome, not London, with Roman imperial architecture (Trajan's Column, Colosseum) instead of a Roman-British settlement street",
+          "Scene depicts ancient Rome (Colosseum, Trajan's Column) rather than Roman London as requested",
+          "Horizon/ground curves but is not centered vertically, pavement occupies too much of frame skewing projection",
+          "Left and right edges show different unrelated building clusters, not a continuous wrap",
+          "Image looks like a glossy CGI/painted render rather than a photographic panorama"
+        ],
+        "checkCostUsd": 0.04037
+      }
+    }
+  }
+}

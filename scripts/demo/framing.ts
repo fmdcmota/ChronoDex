@@ -105,6 +105,24 @@ export const DEMO_FRAMING: Record<EraId, DemoFraming> = {
     surroundings:
       'Seen from eye height in the new Praça do Comércio in 1775. To the left (west) and ahead (north), the long new arcaded buildings, partly in scaffolding, and the opening of the Rua Augusta. To the right (east), more new arcades. Behind the viewer (south), the open waterfront of the river Tagus with quays, small boats and tall sailing ships at anchor. Clear sky with a few clouds.',
   },
+  'christ-the-redeemer_1931': {
+    description:
+      'Exactly the framing of the photograph: the camera is on top of the statue of Christ the Redeemer, directly above its head, looking straight down, so the statue’s head and its outstretched arms fill the middle of the frame in the same place and size, with the summit platform below and the forested mountain falling away all round. In October 1931, the day the statue is unveiled, the pale soapstone of the statue is brand new and clean; the summit platform is a smaller plain concrete terrace with the new railway station below, crowded with people in 1930s hats, suits and dresses for the inauguration, priests in white vestments and a few flags; there are no modern escalators, lifts, glass shelters or kiosks. The forest is dense. At the edge of the frame the city far below is a low town of red tiled roofs, with no high-rise towers.',
+    mustNotAppear: ['escalators, lifts, glass shelters or modern kiosks', 'modern high-rise towers', 'tourists in modern clothes, phones or selfie sticks', 'any text or signs'],
+    periodCues:
+      'Rio de Janeiro on 12 October 1931: inauguration crowds in 1930s suits, hats and light dresses, Catholic clergy in white and gold vestments, Brazilian flags, the brand-new Art Deco statue in pale soapstone mosaic, the little electric rack railway train at the summit station, dense Atlantic rainforest, hazy tropical light, the muted colours of an early colour photograph',
+    surroundings:
+      'Seen from the very top of the statue of Christ the Redeemer in 1931, about 40 m above the summit and 740 m above Rio. Straight down, the statue’s head and outstretched arms and the crowded summit platform. All around at the horizon: to the east, Botafogo bay and Sugarloaf Mountain; to the north, Guanabara Bay with the low old city and the port; to the south, the Lagoa lagoon, Copacabana and Ipanema with only a few low buildings along the beaches; to the west, the forested peaks of the Tijuca range. The city lies far below the horizon, low and red-roofed, with no high-rise towers. Hazy sky.',
+  },
+  'roman-forum_120': {
+    description:
+      'Exactly the framing of the photograph: standing on the terrace at the foot of the Capitoline Hill, looking east down over the Forum, the same horizon, the same hills and the same positions of the monuments. In AD 120, under Emperor Hadrian, every building is whole and in use: on the left the Arch of Septimius Severus does not exist yet (it is built in AD 203), so there is open paving and the Curia, the senate house, with its tall brick front; in the centre the Temple of Vespasian stands complete with its six Corinthian columns, pediment and roof, gleaming white marble; on the right the Temple of Saturn with its full portico of tall columns on a high podium, and beyond it the two-storey arcades of the Basilica Julia. Down the middle the paved Forum square and the Sacred Way are crowded, lined with honorific columns and gilded bronze statues, and at the far end the Colosseum stands complete against the sky. No ruins, no modern buildings, no church: the left-hand church is replaced by Roman buildings.',
+    mustNotAppear: ['ruins, broken columns or bare foundations', 'the church of Santi Luca e Martina or any church or dome', 'the Arch of Septimius Severus', 'cypress or umbrella pine trees growing among the ruins', 'tourists, railings, signs or modern buildings'],
+    periodCues:
+      'Rome in AD 120: citizens in white togas, people in tunics and coloured cloaks, senators with purple-striped togas, soldiers of the Praetorian Guard, slaves carrying litters, market stalls, gleaming white and coloured marble, painted details and gilded bronze statues on the buildings, red terracotta roof tiles, bright Mediterranean sunlight, rendered as a real photograph',
+    surroundings:
+      'Seen from eye height on the Capitoline terrace above the Forum in AD 120. Ahead (east), the Forum, the Sacred Way and the Colosseum. To the right (south), the Palatine Hill crowned by the vast imperial palaces of the emperors. To the left (north), the Curia and the Imperial Fora with the Forum of Trajan and its column. Behind the viewer (west), the Temple of Jupiter on the Capitoline Hill with its gilded roof and the Tabularium archives. Clear blue sky.',
+  },
 };
 
 /**

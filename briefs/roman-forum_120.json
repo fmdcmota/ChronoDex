@@ -1,0 +1,80 @@
+{
+  "title": "Rome's Forum in the Year 120",
+  "summary": "In 120 the Roman Forum was the working civic, legal, commercial and religious heart of the city, framed by the temples of Saturn, Concord, Castor and Divus Julius, the two basilicas, the Curia and the House of the Vestals. Hadrian's great Temple of Venus and Roma did not yet exist: construction began in 121, when the Colossus of Nero was moved with 24 elephants to clear the site over Nero's Domus Aurea vestibule. Trajan's Forum had been dedicated around 113, and after Trajan's death in 117 Hadrian was erecting the Temple of Divus Trajanus there. No contemporary description or securely dated image of this exact viewpoint survives, so the scene must be reconstructed from building dates and topography.",
+  "funFacts": [
+    "The Temple of Venus and Roma, which today closes the Forum's east end, began construction in 121 and was inaugurated by Hadrian in 136 or 137.",
+    "The Colossus of Nero had to be moved using 24 elephants to clear the site for the Temple of Venus and Roma.",
+    "The Temple of Saturn, rebuilt in 42 BC by L. Munatius Plancus, housed the aerarium Saturni, the state treasury.",
+    "The Sacra Via's colonnades were lined with shop stalls, and the street was associated with business, gambling, litigation and prostitution as well as festivals and triumphs.",
+    "The Arch of Titus, built in 81, already stood at the eastern end of the Via Sacra, but the Arch of Septimius Severus (203) and the Temple of Antoninus and Faustina (about 140) did not yet exist.",
+    "The Heraclean Tablets preserve municipal regulations limiting daytime wagon traffic in Rome, with exceptions for certain construction or ceremonial vehicles."
+  ],
+  "sources": [
+    {
+      "title": "Roman Forum (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Roman_Forum"
+    },
+    {
+      "title": "Temple of Venus and Roma (Colosseo)",
+      "url": "https://colosseo.it/es/mirabilia/el-templo-de-venus-y-roma/#maincontent"
+    },
+    {
+      "title": "Temple of Venus and Roma (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Temple_of_Venus_and_Roma"
+    },
+    {
+      "title": "Roman Forum timeline (World History Encyclopedia)",
+      "url": "https://www.worldhistory.org/ajax/ajax_print_visual_timeline.php?height=550&tag=Roman_Forum&width=950#1"
+    },
+    {
+      "title": "Forum Romanum (Platner & Ashby, Topographical Dictionary)",
+      "url": "https://archive.org/stream/topographymonume00platiala/topographymonume00platiala_djvu.txt#18"
+    },
+    {
+      "title": "Hadrian's Rome (Open University)",
+      "url": "https://www.open.edu/openlearn/history-the-arts/hadrians-rome/content-section-5.4/?printable=1#4"
+    }
+  ],
+  "sceneBrief": {
+    "description": "A sunlit, crowded working forum seen from the Capitoline slope, looking south-east across the open paving. In the near foreground stands the Temple of Saturn on its high podium, with the Clivus Capitolinus rising behind it and the Porticus Deorum Consentium set against the rock below the Tabularium. Ahead and below, the forum floor is paved with polygonal blocks of dark grey-black basalt. To the left are the Curia Julia and the long colonnade of the Basilica Aemilia; to the right, on the south side, the Basilica Julia; further ahead the Temples of Castor and Pollux and of Divus Julius. Beyond Divus Julius the Via Sacra runs east towards the Arch of Titus. The street is a press of pedestrians in knee-length tunics, a few in woollen togas, with shop stalls under the colonnades and no wheeled carts moving in the daylight. The east end of the forum opens onto the Velia, where the vestibule of Nero's Domus Aurea still stands and the Colossus is still in place; there is no Temple of Venus and Roma.",
+    "changes": {
+      "persists": [
+        "The Temple of Saturn's podium at the foot of the Capitoline",
+        "The Basilica Julia on the south side of the forum",
+        "The Temple of Castor and Pollux",
+        "The Temple of Divus Julius",
+        "The Temple of Vespasian and Titus against the Capitoline slope",
+        "The Arch of Titus at the eastern end of the Via Sacra"
+      ],
+      "altered": [
+        "The Curia Julia — in 120 it is Domitian's restoration of 94, not the present Diocletianic building",
+        "The Temple of Saturn — in 120 it is the 42 BC rebuilding, not the fourth-century restoration whose columns survive",
+        "The Porticus Deorum Consentium — in 120 it is in its Flavian form, before its 367 restoration",
+        "The Temple of Venus and Roma — in 120 the site is still the Neronian vestibule of the Domus Aurea, with the Colossus still standing; construction starts in 121 and the visible temple is largely the Maxentian rebuilding after 307"
+      ],
+      "notYetBuilt": [
+        "The Temple of Antoninus and Faustina (about 140)",
+        "The Arch of Septimius Severus (203)",
+        "The Column of Phocas (608)",
+        "The Basilica of Maxentius (completed 313)",
+        "The Temple of Venus and Roma (begun 121)"
+      ],
+      "gone": [
+        "Nero's Domus Aurea vestibule on the Velia",
+        "The Colossus of Nero, still standing on the site before its move",
+        "The modern Via dei Fori Imperiali, which cuts through the ancient Velia"
+      ]
+    },
+    "surroundings": "To the west and north-west, the Capitoline Hill rises immediately behind the viewer, with the Tabularium, the Clivus Capitolinus and the temples of the Capitolium above; beyond it lie Trajan's Forum with its basilica, column and the Temple of Divus Trajanus. To the north, the Curia Julia, the Basilica Aemilia and the Argiletum lead towards the imperial fora and the Subura, with the Temple of Vespasian and Titus and the Temple of Concord against the Capitoline slope. To the east, the Via Sacra runs towards the Arch of Titus and the Colosseum; on the Velia the Neronian vestibule and the Colossus still occupy the site where the Temple of Venus and Roma will rise. To the south and south-east, the Palatine Hill with its imperial palaces and the Temple of Apollo overlooks the valley, with the Basilica Julia, the Vicus Tuscus and the Vicus Iugarius at its foot. To the south-west, beyond the Vicus Iugarius, the ground drops towards the Forum Boarium and the Tiber.",
+    "referenceImageUrls": []
+  },
+  "guide": {
+    "name": "Marcus Vetilius Primus",
+    "role": "Porter and delivery hand for the shop stalls along the Sacra Via",
+    "bio": "I carry goods and messages up and down the Sacra Via for the stallholders and the men who keep offices in the basilicas. I have worked this street since I was a boy, and I know which doorway leads where and who is owed money.",
+    "appearance": "A stocky man in his mid-thirties, close-cropped dark hair and stubble, hands rough from carrying loads. He wears a plain knee-length woollen tunic in undyed off-white, belted at the waist, with a leather satchel strap across one shoulder and simple leather shoes.",
+    "voiceKey": "eleven-it-man",
+    "script": "Welcome, friend — Marcus Vetilius Primus, porter, at your service. Mind your feet, the basalt paving is hard going. I carry loads for the stalls under these colonnades, and I can tell you this street is for business and for arguing as much as for festival. Wheeled carts are kept off the streets by day, so everything you see moving is carried on a back — like mine. You want justice or a bargain? Try the basilicas; men sit there all day chatting and throwing dice. And behind me, the Temple of Saturn holds the state treasury, so mind your purse. Good luck to you — I'm off to the stalls.",
+    "greeting": "You look lost, friend. I'm Marcus — I carry for the stalls along the Sacra Via, so I know my way about. What do you want to see?"
+  }
+}

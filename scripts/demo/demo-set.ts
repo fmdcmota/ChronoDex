@@ -25,8 +25,11 @@ export const DEMO_ERA_IDS: readonly EraId[] = [
   // East Berlin
   'brandenburg-gate-east_1987',
   // Lisbon
-  'praca-do-comercio_1754',
   'praca-do-comercio_1775',
+  // Rio de Janeiro
+  'christ-the-redeemer_1931',
+  // Rome
+  'roman-forum_120',
 ];
 
 /** The core-tier files kept for each era. */

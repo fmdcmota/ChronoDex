@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "roman-forum",
+  "name": "Roman Forum",
+  "status": "partial",
+  "subject": {
+    "lat": 41.8927,
+    "lng": 12.485
+  },
+  "photoSpot": {
+    "lat": 41.892903,
+    "lng": 12.484103
+  },
+  "facingDeg": 105,
+  "distanceM": 77.5,
+  "captureRadiusM": 50,
+  "geometryEvidence": [
+    {
+      "kind": "commons",
+      "ref": "File:Roman_Forum_looking_East_panorama.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Roman_Forum_looking_East_panorama.jpg",
+      "note": "The reference photo and its Commons coordinate (the Capitoline terrace). Not checked on site."
+    }
+  ],
+  "photoSpotReason": "Demo stand-in (Agent 6, 15 Nov 2026): the Capitoline terrace above the Forum, looking east along it.",
+  "referencePhoto": {
+    "status": "commons_stand_in",
+    "file": "data/reference/roman-forum.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Roman_Forum_looking_East_panorama.jpg",
+    "licence": "CC BY-SA 4.0",
+    "author": "Nicholas Hartmann",
+    "takenAt": null,
+    "takenFrom": null,
+    "facingDeg": 105,
+    "crop": "Commons 5581x3142 original (already about 16:9) scaled to 1600x900.",
+    "notes": "From the Capitoline terrace: Santi Luca e Martina and the Arch of Septimius Severus on the left, the Temple of Vespasian columns in the centre, the Temple of Saturn and the Palatine pines on the right."
+  },
+  "eraYears": [
+    120
+  ],
+  "eraYearsReason": {},
+  "rejectedYears": {},
+  "openQuestions": [
+    "Demo stand-in by Agent 6."
+  ]
+}
