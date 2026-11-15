@@ -22,6 +22,7 @@ import { haversineM, withinCaptureRange, type Landmark, type LandmarkId } from '
 import { buildGameMapStyle } from './lib/game-map-style';
 import { LocationTracker, locationMessage, type LocationState, type PlayerFix } from './lib/location';
 import { clearFix, loadFix, saveFix } from './lib/fix-store';
+import { DuckWalker } from './DuckWalker';
 import { directionHint, formatDistance, nearestLandmark } from './lib/geo-format';
 import { circlePolygon } from './lib/map-geometry';
 import { groupIntoRegions, pickRegion, REGION_GAP_M, shouldFly } from './lib/map-region';
@@ -540,6 +541,7 @@ export default function MapScreen() {
           </button>
         </details>
       )}
+      <DuckWalker />
     </div>
   );
 }

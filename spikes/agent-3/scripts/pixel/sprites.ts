@@ -440,6 +440,59 @@ function emmanuelCollege(): PixelCanvas {
   return finish(c, 14);
 }
 
+/** Width and height of one frame of the walking duck, in art pixels. */
+export const DUCK_FRAME_PX = 24;
+
+/**
+ * One frame of the walking Emma duck (the map's wandering mascot, see DuckWalker.tsx): a small
+ * mallard in a mortarboard, facing right, on two orange legs. Two frames (`step` 0 and 1) swap
+ * the legs and bob the body one pixel, which reads as a waddle. Not a landmark sprite, so it is
+ * not in SPRITES.
+ *
+ * @param step - 0 or 1, which leg is forward.
+ * @returns A 24 by 24 canvas with an outline and a soft ground shadow.
+ */
+export function duckWalkFrame(step: 0 | 1): PixelCanvas {
+  const c = new PixelCanvas(DUCK_FRAME_PX, DUCK_FRAME_PX);
+  const bob = step; // the body sits one pixel higher on the second frame
+  // Legs and webbed feet first, so the body overlaps their tops.
+  const front = step === 0 ? 13 : 10;
+  const back = step === 0 ? 8 : 12;
+  for (const x of [front, back]) {
+    c.rect(x, 18, x, 20, P.goldDark);
+    c.rect(x, 21, x + 2, 21, P.gold);
+  }
+  // Tail, lifted at the back.
+  for (const [x, y] of [[2, 11 - bob], [3, 11 - bob], [3, 12 - bob], [2, 12 - bob]] as const) c.set(x, y, P.inkSoft);
+  // Body: cream, shaded underneath.
+  c.ellipse(10.5, 14 - bob, 7.5, 4.6, P.stone);
+  c.ellipse(10.5, 14 - bob, 7.5, 4.6, P.stoneDark, (_x, y) => y >= 17 - bob);
+  // Folded wing.
+  c.ellipse(9, 13.5 - bob, 4.2, 2.4, P.stoneDark);
+  c.hline(6, 11, 13 - bob, P.stone);
+  // Brown chest, white collar, green neck and head.
+  c.ellipse(16, 13.5 - bob, 2.4, 3.2, P.brickDark);
+  c.rect(15, 7 - bob, 17, 11 - bob, P.verdigris);
+  c.hline(14, 18, 11 - bob, P.paper);
+  c.ellipse(17, 7 - bob, 3.4, 2.9, P.verdigris);
+  // Eye and a gold bill.
+  c.set(18, 6 - bob, P.ink);
+  c.rect(20, 7 - bob, 22, 8 - bob, P.gold);
+  c.set(22, 8 - bob, P.goldDark);
+  // Mortarboard with a gold tassel.
+  c.rect(13, 2 - bob, 20, 2 - bob, P.slate);
+  c.rect(15, 3 - bob, 19, 4 - bob, P.slate);
+  c.rect(20, 3 - bob, 20, 5 - bob, P.gold);
+  c.outline(P.ink);
+  // Ground shadow only where empty.
+  const shadow = new PixelCanvas(DUCK_FRAME_PX, DUCK_FRAME_PX);
+  shadow.ellipse(11.5, 22.5, 8, 1.4, SHADOW);
+  for (let y = 0; y < DUCK_FRAME_PX; y++) {
+    for (let x = 0; x < DUCK_FRAME_PX; x++) if (!c.filled(x, y) && shadow.filled(x, y)) c.set(x, y, SHADOW);
+  }
+  return c;
+}
+
 /** Every sprite, keyed by landmark id: the six London ids (MASTER.md section 12) and the other cities'. */
 export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'huxley-building': huxleyBuilding,

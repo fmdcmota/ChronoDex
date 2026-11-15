@@ -110,7 +110,13 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-15 First real panorama on two phones
 - [ ] A4-16 Time Machine on a real era
 - [x] A4-b Picture credits in the Sources drawer and Then/Now (GET /api/media/credits/[eraId])
-- [ ] A4-10 Phone pass and polish
+- [ ] A4-r2-1 Ambience: real two-layer loops, quieter in chat, silent while recording and while a reply speaks
+- [ ] A4-r2-2 Keep the phone server and tunnel up; switch to chronodex when told
+- [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
+- [ ] A4-r2-4 Map zoom-fade polish (Agent 3's handoff)
+- [ ] A4-r2-5 Real guide video on a phone
+- [ ] A4-r2-6 Voice input on the real chat, second phone
+- [ ] A4-10 Phone pass and polish (A4-r2-7 Android)
 - [ ] A4-S1 Stretch: overlay on the live camera (after M4 only)
 - [ ] A4-S2 Stretch: compass-aligned panorama (after M4 only)
 
@@ -234,3 +240,24 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: none.
 - Next: A4-15 and A4-16 need a human with a phone and a server on a database with real media.
+
+### 2026-11-15 02:45, A4-03: damped motion in the 360° view
+- Did: the human found the view jittery on the phone. `gyroDamping.ts`: per-angle dead zone (0.25°, roll 0.8°) then exponential smoothing (0.25 a frame), camera speed 5 (roll 8), between PSV's 'smooth' 3 and 'fast' 10. `attachGyroDamping` wraps the plugin instance's `__onBeforeRender` and swaps `dynamics.position.goto` and `roll.goto` for filtered ones during that call only; the filter resets when motion is switched on. 8 tests.
+- Decided, and why: wrap rather than fork the plugin, so a PSV upgrade that renames the handler just falls back to undamped motion. Not mirrored into the spike: the human now tests the real app.
+- Measured or verified: unit tests only. Tremor needs a real phone (PHONE_TEST.md 6.3).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: found while answering the human: no guide video exists for any era. The video tier is off and Agent 2's talk-model and voice picks (their H-A) are still open. Also Agent 2's ambience files are `<bucket>.m4a` plus `<bucket>-street.mp3`, while my player asks for `<bucket>.mp3`, so the placeholder noise still plays. Next for me.
+- Next: fix the ambience file names (two layers); phone results for Test 6.
+
+### 2026-11-15 03:05, A4-04: guide video preview (stand-in)
+- Did: the human asked for a sample video with the narration audio and captions until the real guide video exists. `GuideStandIn.tsx`: over the era's scene, the guide's headshot (Avatar, so the silhouette when missing) with a name plate walks on (1.8 s, step bob), pulses while the real narration plays with GuidePlayer's captions, walks off, then the chat is offered. Labelled "Preview · guide video coming". Web Animations API, fades only under reduced motion. GuidePlayer narration mode drives it; the tap plays and pauses the narration to unlock it for iOS, and it resumes when the guide has arrived.
+- Decided, and why: no sample clips exist on this machine (Agent 2's spike clips were made elsewhere) and a real clip costs about $4, so the preview is built from what the core tier already paid for. When `guideVideo` exists, the real clips play instead with no change.
+- Measured or verified: production build through the tunnel on chronodex_dev_agent2, 375x812: tap, portrait on stage (elementFromPoint), captions follow the narration, after about 40 s the stand-in left and "Chat with Albert" appeared, no errors. The pane's phone-size screenshots are cropped, so layout was checked by measurement. Not yet heard on an iPhone (PHONE_TEST 6.4).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: none.
+- Next: ambience file names; phone results.
+
+### 2026-11-15 03:10, phone tests 1 to 6 results, REMAINING_WORK_2.md
+- Did: the human sent the iPhone results; recorded in `REMAINING_WORK_2.md` section 2. Wrote that file at the human's request: tasks for Agents 1 to 4 and the humans, plus a new Gantt from 03:00. My tasks are A4-r2-1 to A4-r2-7 above.
+- Results: 6.1 to 6.3, 6.6 to 6.9 pass; 6.4 works but the ambience is too loud in the chat; 6.5 fails (Then/Now pictures are different viewpoints: the scene predates the reference photo); 5.1 fixed by the damping; 5.4 ambience too loud, it gets into the recording; test 2 and test 3 pass (voice input failed once, probably the phone); test 1 pass.
+- Next: A4-r2-1.
