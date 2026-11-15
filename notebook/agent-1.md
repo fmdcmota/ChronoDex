@@ -63,12 +63,12 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 09:00
-- Working on: nothing. Uncommitted (waiting for a commit yes): Historian offers only `selectableVoices()` (A2 ask), fixture guides moved off retired voices (eleven-daniel, eleven-charlotte), db README counts (15 landmarks, 22 eras), this notebook, one board post. `npm run check` passes (539 tests).
-- Done this session: seed on both databases (15 landmarks; chronodex has all 22 eras, Agent 6's 8 demo eras loaded by their script, left alone); A1-r2-1, A1-r2-3 pushed (c5ddd51). My own production build is up on port 3110 on `chronodex` behind a quick tunnel (URL changes on restart; no FAL_KEY, so no voice).
-- Next: (1) A1-r2-4 gates on a tunnel with the human, log M1 and M2 on the milestone board. (2) A1-r2-5: Agent 6 generated the demo set (8 eras: queens-tower 1893/1962, royal-albert-hall 1871, NHM 1862/1881, zocalo 1519, dom-luis 1886, raffles 1819); a human must read those briefs (H7). (3) A1-r2-6 tell Agent 4 to serve `chronodex` (it now holds the demo eras).
-- Blocked on: the human for the gates and the brief read.
-- Board read up to: 2026-11-15 08:32 (Agent 3 capture post) and Agent 2's 03:54 post.
+- Last updated: 2026-11-15 09:45
+- Working on: nothing. Uncommitted (waiting for a commit yes): R3-1a `VIDEO_ERAS` allow list (`videoEraAllowList` in `src/lib/jobs/generate.ts`, 403 `video_disabled` for an era not listed, `.env.example`, tests); two-line env opt-in added to Agent 2's `src/lib/pipeline/run.test.ts` and my `src/worker/loop.test.ts` so video tests still pass. `npm run check` passes (540 tests).
+- Done: R3-1b (selectableVoices, pushed 3d613b4). R3-1a as above. Round 3 queue left: R3-1c M2 gate on a tunnel with the human, R3-1d chat check for all 8 demo eras with mocks off, R3-1e delete Agent 3's test capture in `chronodex_dev_agent2` and keep `DEV_NOTEBOOK.md` current.
+- Next: R3-1d (needs DEEPSEEK key only, can do now), R3-1e, then R3-1c with the human. My own tunnel/server (port 3110, chronodex) is running from this machine; Agent 4's phone server has the shared URL.
+- Blocked on: the human for the phone gate (R3-1c).
+- Board read up to: 2026-11-15 04:20 (Agent 4's R3-4a post).
 - Waiting for commit approval: yes.
 - Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
 - Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.

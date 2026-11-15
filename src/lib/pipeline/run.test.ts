@@ -59,6 +59,7 @@ function makeDeps(failures: Failures = {}, durationOfTalkS: number | null = 44.2
 /** Queue and claim a job for the test era. */
 async function claim(includeVideo: boolean): Promise<Job> {
   process.env.VIDEO_GENERATION = 'on';
+  process.env.VIDEO_ERAS = ERA_ID;
   await requestEraGeneration(ERA_ID, includeVideo);
   const job = await claimNextJob('test-worker');
   if (!job) throw new Error('no job claimed');
@@ -79,6 +80,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.unstubAllEnvs();
   delete process.env.VIDEO_GENERATION;
+  delete process.env.VIDEO_ERAS;
 });
 
 describe('runEraJob, core tier', () => {

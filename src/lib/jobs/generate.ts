@@ -44,6 +44,19 @@ export function videoGenerationEnabled(): boolean {
 }
 
 /**
+ * The eras allowed to get the video tier: VIDEO_ERAS, a comma-separated list of era ids. Empty or unset
+ * means none, so switching VIDEO_GENERATION on cannot spend on every era a player opens (task R3-1a).
+ *
+ * @returns The allowed era ids.
+ */
+export function videoEraAllowList(): string[] {
+  return (process.env.VIDEO_ERAS ?? '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter((id) => id.length > 0);
+}
+
+/**
  * Tier states that a new job moves to `queued`. `generating` is included because, with no active
  * job, it can only be left over from a worker that crashed. `ready` is never touched.
  */
@@ -57,6 +70,7 @@ const QUEUEABLE: readonly AssetState[] = ['missing', 'failed', 'generating'];
  * 2. An active job exists: return it, whatever includeVideo says.
  * 3. includeVideo while VIDEO_GENERATION is off: refuse with 403 `video_disabled`. Ask again
  *    with includeVideo false for the core tier.
+ *    The era must also be listed in VIDEO_ERAS, else the same 403 `video_disabled`.
  * 4. Nothing is missing: return the era with `job: null`.
  * 5. The era has already failed `maxFailedJobsPerEra()` times: refuse with 429 `retry_limit`, unless
  *    `options.force`. Every failed job spent fal credits, and an era that keeps failing (a bad brief, a
@@ -83,6 +97,14 @@ export async function requestEraGeneration(eraId: EraId, includeVideo: boolean, 
       status: 403,
       code: 'video_disabled',
       message: 'Video generation is switched off on this server. Ask again with includeVideo false.',
+    };
+  }
+  if (includeVideo && !videoEraAllowList().includes(eraId)) {
+    return {
+      ok: false,
+      status: 403,
+      code: 'video_disabled',
+      message: `Video generation is not enabled for ${eraId}. Add it to VIDEO_ERAS, or ask again with includeVideo false.`,
     };
   }
 
