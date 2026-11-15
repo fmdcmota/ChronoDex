@@ -31,6 +31,7 @@ import { periodLook } from '@/lib/pipeline';
 import { PANORAMA_VFOV_DEG, runHeadshot, runNarration, runPanorama, runScene } from '@/lib/pipeline/stages';
 import { landmarks as fixtureLandmarks } from '@fixtures/index';
 import { demoPeriodCues, demoSceneBrief } from './framing';
+import { stampDemoUrls } from './stamp-urls';
 import { DEMO_ERA_IDS, demoAssetPath, demoAssetUrl, demoEraFile, type DemoAsset, type DemoEraFile, type DemoProvenance } from './demo-set';
 
 /** Jobs at once by default. Each mostly waits on fal. */
@@ -244,6 +245,7 @@ async function main(): Promise<void> {
     }
   };
   await Promise.all(Array.from({ length: Math.min(concurrency, ids.length) }, worker));
+  if (!dryRun) stampDemoUrls(); // a remade file gets a new URL, so no browser keeps the old one
   if (reuseDb) await (await import('@/lib/db')).closeMongo();
   console.log(failed.length ? `\nFailed: ${failed.join(', ')}. Run again to repeat only what is missing.` : '\nAll demo eras complete.');
   if (failed.length) process.exitCode = 1;

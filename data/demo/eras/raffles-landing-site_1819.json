@@ -90,17 +90,17 @@
       "voiceKey": "eleven-sg-woman",
       "script": "I am Siti Aminah, and this little boat is how you get across. A crossing costs one duit, a quarter of a cent, and I will not cheat you. Look around: most people here live on the water, not on land. My neighbours fish, sell food to the ships' crews and ferry folk like you. Across the river there is only mangrove and mud, so everyone lives on this side, near the Temenggong's house. If you visit a house, chew a little betel with your host; it is what we do, Malay, Indian and Peranakan alike. Mind your footing, the path is only earth and sand. Go carefully, and keep to the beach if you walk north.",
       "greeting": "Welcome, welcome. You look like you need to cross the river; sit down and mind the side, the water is calm enough.",
-      "headshotUrl": "/demo/raffles-landing-site_1819/headshot.jpg"
+      "headshotUrl": "/demo/raffles-landing-site_1819/headshot.jpg?v=28fb1a558a"
     },
-    "sceneImageUrl": "/demo/raffles-landing-site_1819/scene.jpg",
+    "sceneImageUrl": "/demo/raffles-landing-site_1819/scene.jpg?v=5f92b9beb6",
     "panorama": {
-      "url": "/demo/raffles-landing-site_1819/panorama.jpg",
+      "url": "/demo/raffles-landing-site_1819/panorama.jpg?v=eab32621a3",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 120.8510085019305
     },
-    "narrationAudioUrl": "/demo/raffles-landing-site_1819/narration.mp3",
+    "narrationAudioUrl": "/demo/raffles-landing-site_1819/narration.mp3?v=9dec335ab9",
     "guideVideo": null,
     "updatedAt": "2026-11-15T06:35:10.282Z"
   },

@@ -70,17 +70,17 @@
       "voiceKey": "eleven-daniel",
       "script": "Morning to you, I'm Thomas Pell, conductor on the exhibition omnibuses. Three pence for part of a route, sixpence for the whole, and we run from eight in the morning till near midnight, so there's no excuse for walking. Since the exhibition opened on the first of May we've put on extra carriages, even four three-horse omnibuses from Highbury, half-hourly, ninepence from there. It's a queer building, mind. The Building News called it one of the ugliest public buildings ever raised in this country, and those great glass domes they call tumid bubbles. Six million visits they reckon, and not a penny of admission troubles me. Right, that's my bus. Good day to you.",
       "greeting": "Step up, step up, plenty of room on top! Were you for the exhibition, or just watching the traffic go by?",
-      "headshotUrl": "/demo/natural-history-museum_1862/headshot.jpg"
+      "headshotUrl": "/demo/natural-history-museum_1862/headshot.jpg?v=5966ce0685"
     },
-    "sceneImageUrl": "/demo/natural-history-museum_1862/scene.jpg",
+    "sceneImageUrl": "/demo/natural-history-museum_1862/scene.jpg?v=1f2e614fb1",
     "panorama": {
-      "url": "/demo/natural-history-museum_1862/panorama.jpg",
+      "url": "/demo/natural-history-museum_1862/panorama.jpg?v=4c31928cba",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 263.4555251341519
     },
-    "narrationAudioUrl": "/demo/natural-history-museum_1862/narration.mp3",
+    "narrationAudioUrl": "/demo/natural-history-museum_1862/narration.mp3?v=67cc6ffb93",
     "guideVideo": null,
     "updatedAt": "2026-11-15T04:01:51.863Z"
   },

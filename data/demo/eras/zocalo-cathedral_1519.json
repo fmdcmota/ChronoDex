@@ -86,32 +86,32 @@
       "voiceKey": "eleven-mx-woman",
       "script": "I am Citlali, and I work as a porter, carrying loads on my back. I tie the strap here across my forehead, and I haul maize, cloth and pottery down these streets to the canoes waiting on the canals. Ahead of us is the walled precinct. On ordinary days only priests, warriors, rulers and the calmécac students go inside; the rest of us wait for the festivals, when the gates open and the crowds pour through. The great twin pyramid stands within, and near the wall there, a smaller temple. We pay in cacao beans, so many for a rabbit, many more for a turkey hen. May your load stay light, friend. Farewell.",
       "greeting": "You look like you have been staring at that wall a long while. I am Citlali, a porter, and I can tell you what we are looking at.",
-      "headshotUrl": "/demo/zocalo-cathedral_1519/headshot.jpg"
+      "headshotUrl": "/demo/zocalo-cathedral_1519/headshot.jpg?v=8f4b01fa53"
     },
-    "sceneImageUrl": "/demo/zocalo-cathedral_1519/scene.jpg",
+    "sceneImageUrl": "/demo/zocalo-cathedral_1519/scene.jpg?v=fc27933780",
     "panorama": {
-      "url": "/demo/zocalo-cathedral_1519/panorama.jpg",
+      "url": "/demo/zocalo-cathedral_1519/panorama.jpg?v=ecf1a3503d",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 356.6269506344589
     },
-    "narrationAudioUrl": "/demo/zocalo-cathedral_1519/narration.mp3",
+    "narrationAudioUrl": "/demo/zocalo-cathedral_1519/narration.mp3?v=4df6112c8c",
     "guideVideo": {
       "segments": [
         {
           "kind": "walk_on",
-          "url": "/demo/zocalo-cathedral_1519/walk_on.mp4",
+          "url": "/demo/zocalo-cathedral_1519/walk_on.mp4?v=3ad2a6a319",
           "durationS": 5
         },
         {
           "kind": "talk",
-          "url": "/demo/zocalo-cathedral_1519/talk.mp4",
+          "url": "/demo/zocalo-cathedral_1519/talk.mp4?v=7bd6f073ae",
           "durationS": 38.133
         },
         {
           "kind": "walk_off",
-          "url": "/demo/zocalo-cathedral_1519/walk_off.mp4",
+          "url": "/demo/zocalo-cathedral_1519/walk_off.mp4?v=d60ea91241",
           "durationS": 5
         }
       ],

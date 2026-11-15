@@ -66,17 +66,17 @@
       "voiceKey": "eleven-george",
       "script": "Hello there, I'm Thomas Carter, one of the porters here. You've come on a fine day to see our new museum, opened on the eighteenth of April, 1881. Mr Waterhouse designed it in the Romanesque style, with brick and terracotta walls — the terracotta came from Gibbs and Canning of Tamworth. The tenders came to three hundred and fifty-two thousand pounds, and the contractors failed in the summer of seventy-nine, just as we were nearly finished. Mr Owen, our first superintendent, wanted a cathedral to nature that anyone could visit free of charge, and free it is. Mind the path as you go — the gardens aren't finished yet. Good day to you.",
       "greeting": "Good morning, sir or madam. I'm Thomas Carter, the porter here — welcome to the new museum. Mind your step on the forecourt; the gardens aren't quite finished yet.",
-      "headshotUrl": "/demo/natural-history-museum_1881/headshot.jpg"
+      "headshotUrl": "/demo/natural-history-museum_1881/headshot.jpg?v=16f4dd18af"
     },
-    "sceneImageUrl": "/demo/natural-history-museum_1881/scene.jpg",
+    "sceneImageUrl": "/demo/natural-history-museum_1881/scene.jpg?v=03fd3e41cd",
     "panorama": {
-      "url": "/demo/natural-history-museum_1881/panorama.jpg",
+      "url": "/demo/natural-history-museum_1881/panorama.jpg?v=4f199afd50",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 263.4555251341519
     },
-    "narrationAudioUrl": "/demo/natural-history-museum_1881/narration.mp3",
+    "narrationAudioUrl": "/demo/natural-history-museum_1881/narration.mp3?v=c0cc52daef",
     "guideVideo": null,
     "updatedAt": "2026-11-15T04:03:08.548Z"
   },

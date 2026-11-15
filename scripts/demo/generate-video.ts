@@ -24,6 +24,7 @@ import path from 'node:path';
 import { EraSchema, type EraId, type VideoSegment } from '@/lib/contracts';
 import { uploadToFal, WALK_DURATION_S } from '@/lib/fal';
 import { runGuideFrame, runTalk, runWalkOff, runWalkOn } from '@/lib/pipeline/stages';
+import { stampDemoUrls } from './stamp-urls';
 import { DEMO_ERA_IDS, demoAssetPath, demoEraFile, type DemoEraFile } from './demo-set';
 
 /** The video-tier files kept per era. */
@@ -128,6 +129,7 @@ async function main(): Promise<void> {
     updatedAt: new Date().toISOString(),
   });
   writeFileSync(demoEraFile(eraId), `${JSON.stringify({ era, provenance }, null, 2)}\n`);
+  stampDemoUrls(); // a remade clip gets a new URL, so no browser keeps the old one
   if (failures.length) throw new Error(failures.join('; '));
   log('guide video complete. Next: npx tsx --env-file=.env.local scripts/demo/load-demo.ts');
 }

@@ -54,17 +54,17 @@
       "voiceKey": "eleven-george",
       "script": "Alfred Nunn, college porter, at your service. Mind the mud as we go — there’s a fair bit of shifting about here lately. The galleries at the back have been coming down since 1957, and the east wing’s gone already, replaced with a college building. The Institute folk packed up their things and went off to Holland Park this year; they’d been the Commonwealth Institute since 1958. The tower stays put, mind. We’ve no proper images of the place from this year, so I can only tell you what I see with my own eyes. Now then, I must get back to the gate. Good day to you.",
       "greeting": "Hallo there — Alfred Nunn, porter. You’ll want to mind your step round here, it’s all change about the old Institute.",
-      "headshotUrl": "/demo/queens-tower_1962/headshot.jpg"
+      "headshotUrl": "/demo/queens-tower_1962/headshot.jpg?v=e065edad7b"
     },
-    "sceneImageUrl": "/demo/queens-tower_1962/scene.jpg",
+    "sceneImageUrl": "/demo/queens-tower_1962/scene.jpg?v=4902161bb1",
     "panorama": {
-      "url": "/demo/queens-tower_1962/panorama.jpg",
+      "url": "/demo/queens-tower_1962/panorama.jpg?v=a5f5f7fc08",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 270.06447727016587
     },
-    "narrationAudioUrl": "/demo/queens-tower_1962/narration.mp3",
+    "narrationAudioUrl": "/demo/queens-tower_1962/narration.mp3?v=48a88b0c3f",
     "guideVideo": null,
     "updatedAt": "2026-11-15T04:26:06.600Z"
   },
