@@ -47,10 +47,10 @@ function isUsableReferenceUrl(url: string): boolean {
  * Cost and time: about $0.15 and 20 to 26 s at 1K, 16:9 (A2-02, 1376x768 out), plus about $0.0125 and 5 s for the
  * check. A failed check (an anachronism, or a computer-generated look) repeats the edit once with the critic's
  * advice added and keeps the better picture.
- * Realism (bake-off, Queen's Tower 1893): the period prompt alone already removed the polished film-set look,
- * and 1 to 3 real period photographs of the place, passed after the main image, made the vanished building
- * look like the real one. Trade-off: with references the model reframes the view, so the camera position is
- * no longer identical to the reference photo; the then/now slider may not line up.
+ * Realism: the period prompt alone already removed the polished film-set look. Period photographs as references
+ * made a vanished building look more like the real one, but the model then adopted their viewpoint, so the scene no
+ * longer matched the reference photo and Then/Now failed on a phone (6.5). So they are off here by default, and the
+ * critic also checks the viewpoint against the reference photo (a hard failure, so it is retried once).
  * The reference photo must already be 16:9: the model centre-crops anything else (A2-02 trap).
  * Side effects: one or two fal edits and one or two critic requests. Writes nothing; the orchestrator stores the URL.
  *
@@ -60,17 +60,21 @@ function isUsableReferenceUrl(url: string): boolean {
  *   photographs) are passed to the model as extra images, at most MAX_REFERENCE_PHOTOS.
  * @param input.year - The era's year.
  * @param input.look - `colour` (default) or `monochrome`. A human decision, see PromptStyle.
+ * @param input.usePeriodReferences - Attach the brief's period photographs. Default false: they made the model change
+ *   the viewpoint, which breaks Then/Now. The critic compares the viewpoint with the reference photo either way.
  * @param ctx - Resume id, callbacks, optional fallback endpoint, and `checks` to switch the critic off.
  * @returns URL of the edited scene on fal's CDN, with the model, timing and the critic's report.
  * @throws FalStageError when fal rejects the request or returns no image. The critic never throws.
  */
 export async function runScene(
-  input: { referencePhotoUrl: string; brief: SceneBrief; year: number; look?: PromptStyle['look'] },
+  input: { referencePhotoUrl: string; brief: SceneBrief; year: number; look?: PromptStyle['look']; usePeriodReferences?: boolean },
   ctx: StageContext = {},
 ): Promise<StageOutput> {
-  const references = usableReferenceUrls(input.brief.referenceImageUrls);
+  // Off by default: with period photographs attached, the model adopted their viewpoint and the scene no longer lined
+  // up with the reference photo in Then/Now (phone test 6.5). The panorama still uses them for the surroundings.
+  const references = input.usePeriodReferences ? usableReferenceUrls(input.brief.referenceImageUrls) : [];
   const prompt = buildScenePrompt(input.brief, input.year, { look: input.look, referenceCount: references.length });
-  const checkPrompt = buildSceneCheckPrompt(input.year, input.brief.changes.notYetBuilt);
+  const checkPrompt = buildSceneCheckPrompt(input.year, input.brief.changes.notYetBuilt, true);
   const { output, report } = await generateChecked({
     ctx,
     generate: (fix, runCtx) => runImageModel('scene', buildImageEditInput(withCorrection(prompt, fix), [input.referencePhotoUrl, ...references]), runCtx),
@@ -78,7 +82,7 @@ export async function runScene(
       // Free first (A2-i): a picture of the wrong shape never reaches the paid critic.
       const free = pictureProblems(picture, WIDESCREEN_RATIO);
       if (free.length) return { verdict: localVerdict(free, 'The picture must be exactly 16:9 landscape, the same framing as image 1.') };
-      return ({ verdict: await checkScene(picture.url, checkPrompt, criticContext(ctx)) });
+      return { verdict: await checkScene(picture.url, checkPrompt, criticContext(ctx), input.referencePhotoUrl) };
     },
   });
   return { ...output, check: report };

@@ -93,7 +93,26 @@ describe('reference photographs', () => {
     expect(buildPanoramaInput('p', 'CANVAS').image_urls).toEqual(['CANVAS']);
   });
 
-  it('runScene sends the reference photo first, then the period photographs, and says so in the prompt', async () => {
+  it('runScene sends no period photographs by default, because they changed the viewpoint (phone test 6.5)', async () => {
+    const submitted: Record<string, unknown>[] = [];
+    const queue: FalQueueLike = {
+      async submit(_e, options) {
+        submitted.push(options.input);
+        return { request_id: 'r1' };
+      },
+      async status() {
+        return { status: 'COMPLETED' };
+      },
+      async result() {
+        return { data: { images: [{ url: 'https://cdn/scene.jpg' }] } };
+      },
+    };
+    await runScene({ referencePhotoUrl: 'PRESENT', brief, year: 1893 }, { queue, pollIntervalMs: 0, checks: 'off' });
+    expect(submitted[0].image_urls).toEqual(['PRESENT']);
+    expect(submitted[0].prompt).not.toContain('real photograph of this place');
+  });
+
+  it('runScene sends the reference photo first, then the period photographs, and says so in the prompt, when asked', async () => {
     const submitted: Record<string, unknown>[] = [];
     const queue: FalQueueLike = {
       async submit(_endpoint, options) {
@@ -107,7 +126,7 @@ describe('reference photographs', () => {
         return { data: { images: [{ url: 'https://cdn/scene.jpg' }] } };
       },
     };
-    await runScene({ referencePhotoUrl: 'PRESENT', brief, year: 1893, look: 'monochrome' }, { queue, pollIntervalMs: 0 });
+    await runScene({ referencePhotoUrl: 'PRESENT', brief, year: 1893, look: 'monochrome', usePeriodReferences: true }, { queue, pollIntervalMs: 0 });
     expect(submitted[0].image_urls).toEqual(['PRESENT', 'https://upload.wikimedia.org/a.jpg', 'https://upload.wikimedia.org/b.jpg']);
     expect(submitted[0].prompt).toContain('images 2 to 3 are real photographs');
     expect(submitted[0].prompt).toContain('No colour at all');

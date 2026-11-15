@@ -218,10 +218,10 @@ async function executeJob(job: Job, deps: PipelineDeps): Promise<boolean> {
         if (sceneUrl) await skip('scene', null);
         else {
           const out = await step('scene', MODELS.scene.endpoint, async (ctx) => {
-            // toFalUrl refuses an .svg and uploads /reference/<id>.jpg once (A2-a); references are shrunk (A2-i).
+            // toFalUrl refuses an .svg and uploads /reference/<id>.jpg once (A2-a).
+            // No period photographs for the scene: they changed its viewpoint (phone test 6.5). The panorama uses them.
             const referencePhotoUrl = await media.toFalUrl(landmark.referencePhotoUrl);
-            const referenceImageUrls = await preparedReferences(brief.sceneBrief.referenceImageUrls ?? []);
-            const made = await deps.stages.scene({ referencePhotoUrl, brief: { ...brief.sceneBrief, referenceImageUrls }, year, look: periodLook() }, ctx);
+            const made = await deps.stages.scene({ referencePhotoUrl, brief: brief.sceneBrief, year, look: periodLook() }, ctx);
             return { ...made, url: await keep(made.url, 'scene') };
           });
           if (out) {

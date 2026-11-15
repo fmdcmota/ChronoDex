@@ -289,3 +289,21 @@ describe('the checked stages', () => {
     expect(out.check).toMatchObject({ passed: true, attempts: 2 });
   });
 });
+
+describe('scene viewpoint check (phone test 6.5)', () => {
+  it('sends the reference photo as image 2 and fails a scene whose viewpoint changed', async () => {
+    const moved = JSON.stringify({ anachronisms: [], looks_computer_generated: false, same_viewpoint: false, verdict: 'fail', problems: [], fix: 'keep the camera where it is' });
+    const queue = fakeFal([moved]);
+    const verdict = await checkScene('https://cdn/scene.jpg', buildSceneCheckPrompt(1893, [], true), { pollIntervalMs: 0, queue }, 'https://cdn/reference.jpg');
+    expect(queue.submitted[0].input.image_urls).toEqual(['https://cdn/scene.jpg', 'https://cdn/reference.jpg']);
+    expect(verdict.passed).toBe(false);
+    expect(verdict.hard.join(' ')).toMatch(/same viewpoint/);
+  });
+
+  it('passes a scene that kept the viewpoint, and asks about the viewpoint only when a reference is sent', async () => {
+    const kept = JSON.stringify({ anachronisms: [], looks_computer_generated: false, same_viewpoint: true, verdict: 'pass', problems: [], fix: '' });
+    expect((await checkScene('s', buildSceneCheckPrompt(1893, [], true), { pollIntervalMs: 0, queue: fakeFal([kept]) }, 'r')).passed).toBe(true);
+    expect(buildSceneCheckPrompt(1893, [], true)).toContain('"same_viewpoint"');
+    expect(buildSceneCheckPrompt(1893, [])).not.toContain('same_viewpoint');
+  });
+});
