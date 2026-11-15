@@ -4,7 +4,7 @@
     "landmarkId": "christ-the-redeemer",
     "year": 1931,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "Christ the Redeemer Inaugurated in Rio",
     "summary": "On 12 October 1931, Rio de Janeiro inaugurated the Christ the Redeemer statue atop Corcovado, a 30-metre Art Deco figure of reinforced concrete faced with soapstone. The monument was designed by Heitor da Silva Costa with sculptor Paul Landowski, and its head and hands were moulded in France and shipped to Brazil. The day's ceremonies included a camp mass at Estádio das Laranjeiras and a blessing by Cardinal Dom Sebastião Leme, with President Getúlio Vargas attending. The record for this year is patchy in English-language open sources; details of the inauguration time and lighting conflict, and some sources are available only as search snippets.",
     "funFacts": [
@@ -141,8 +141,27 @@
       "centreBearingDeg": 83.80231438125844
     },
     "narrationAudioUrl": "/demo/christ-the-redeemer_1931/narration.mp3?v=9ffa3a0786",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T08:32:20.096Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/christ-the-redeemer_1931/walk_on.mp4?v=3e6fe1294d",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/christ-the-redeemer_1931/talk.mp4?v=82bb81b65f",
+          "durationS": 34.933
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/christ-the-redeemer_1931/walk_off.mp4?v=40153242cf",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T08:52:22.989Z"
   },
   "provenance": {
     "narration": {
@@ -199,6 +218,37 @@
         ],
         "checkCostUsd": 0.039852
       }
+    },
+    "guide_frame": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b28/YPY0g_L9sy57Mjckc91Na_ETjkVk9O.jpg",
+      "seconds": 22,
+      "check": {
+        "passed": false,
+        "checked": true,
+        "attempts": 2,
+        "problems": [
+          "the street behind is distorted",
+          "Background is not a normal street scene; it shows an aerial view of Christ the Redeemer statue with a crowd, not matching the described street setting",
+          "Scale and perspective of background is inconsistent with a person standing close to camera"
+        ],
+        "checkCostUsd": 0.015878
+      }
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b3d/HSZukyJQzTRRaiHfTrxva_output.mp4",
+      "seconds": 165
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b41/ycike23v1aX4BZ_aAamvJ_output.mp4",
+      "seconds": 203
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b76/PS3kTfNIIVtgykCWNbE6F_output.mp4",
+      "seconds": 734
     }
   }
 }

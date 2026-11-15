@@ -4,7 +4,7 @@
     "landmarkId": "roman-forum",
     "year": 120,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "Rome's Forum in the Year 120",
     "summary": "In 120 the Roman Forum was the working civic, legal, commercial and religious heart of the city, framed by the temples of Saturn, Concord, Castor and Divus Julius, the two basilicas, the Curia and the House of the Vestals. Hadrian's great Temple of Venus and Roma did not yet exist: construction began in 121, when the Colossus of Nero was moved with 24 elephants to clear the site over Nero's Domus Aurea vestibule. Trajan's Forum had been dedicated around 113, and after Trajan's death in 117 Hadrian was erecting the Temple of Divus Trajanus there. No contemporary description or securely dated image of this exact viewpoint survives, so the scene must be reconstructed from building dates and topography.",
     "funFacts": [
@@ -98,8 +98,27 @@
       "centreBearingDeg": 106.90993806695684
     },
     "narrationAudioUrl": "/demo/roman-forum_120/narration.mp3?v=0e5535f187",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T08:22:58.552Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/roman-forum_120/walk_on.mp4?v=26687dcb69",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/roman-forum_120/talk.mp4?v=768aaf1bf3",
+          "durationS": 37.6
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/roman-forum_120/walk_off.mp4?v=b98ff7f7a6",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T08:53:39.047Z"
   },
   "provenance": {
     "narration": {
@@ -150,6 +169,33 @@
         ],
         "checkCostUsd": 0.04037
       }
+    },
+    "guide_frame": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b2d/--YVQOKn8UQuuCboKA3Cj_t55THiJA.jpg",
+      "seconds": 22,
+      "check": {
+        "passed": true,
+        "checked": true,
+        "attempts": 2,
+        "problems": [],
+        "checkCostUsd": 0.014778
+      }
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b3f/BH7aer9lGSG_ERHmq9G8P_output.mp4",
+      "seconds": 157
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b40/cJE6RcTXbIDR7GM_SSsJa_output.mp4",
+      "seconds": 165
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b80/nznW3TTn9L6yn3Lk_ycX3_output.mp4",
+      "seconds": 804
     }
   }
 }

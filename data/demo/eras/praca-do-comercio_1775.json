@@ -4,7 +4,7 @@
     "landmarkId": "praca-do-comercio",
     "year": 1775,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "Lisbon's New Square, Statue Just Unveiled",
     "summary": "In 1775 the Praça do Comércio, rebuilt on the site of the Ribeira Palace destroyed in the 1755 earthquake, was a large U-shaped square open to the Tagus, still commonly called the Terreiro do Paço. Its centrepiece, Joaquim Machado de Castro's equestrian statue of King José I, was inaugurated on 6 June 1775, the king's birthday, in a ceremony also treated as a celebration of the Marquis of Pombal's reforms. The square was not finished: painted panels masked what was still lacking, the western tower stood only as wooden hoardings, and the triumphal arch took its present form about a century later. Everyday commercial and bureaucratic life there in 1775 is less well documented than the inauguration, and dated 1775 prices could not be confirmed from the sources read.",
     "funFacts": [
@@ -83,8 +83,27 @@
       "centreBearingDeg": 41.72720849784025
     },
     "narrationAudioUrl": "/demo/praca-do-comercio_1775/narration.mp3?v=5a87772709",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T08:05:33.722Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/praca-do-comercio_1775/walk_on.mp4?v=db5dfc9a8b",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/praca-do-comercio_1775/talk.mp4?v=6672fef403",
+          "durationS": 34.666
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/praca-do-comercio_1775/walk_off.mp4?v=8567a42c31",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T08:52:01.207Z"
   },
   "provenance": {
     "narration": {
@@ -134,6 +153,33 @@
         ],
         "checkCostUsd": 0.040152
       }
+    },
+    "guide_frame": {
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b28/KoWXRrIDZypkLkxGgGln3_iHK2xt42.jpg",
+      "seconds": 22,
+      "check": {
+        "passed": true,
+        "checked": true,
+        "attempts": 1,
+        "problems": [],
+        "checkCostUsd": 0.006764
+      }
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b3a/Kg-DVz9BfFHnZAVaIBZhP_output.mp4",
+      "seconds": 163
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b3c/GbfPbRGbyVgOnku0VJgUr_output.mp4",
+      "seconds": 178
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28b75/Ania1ls4GXopOP88w7E93_output.mp4",
+      "seconds": 752
     }
   }
 }
