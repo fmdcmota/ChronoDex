@@ -105,6 +105,7 @@ are in the real app, mock data is fine for them. Row 5.10 needs mocks off and th
 | 5.8 | Tap **Meet Albert**, or play a reply with voice on | The background sound drops while the guide talks and comes back after |
 | 5.9 | Tap the ♪ in either header, then reload | The background sound stops, the ♪ is struck through, and stays off after the reload. Tap again to bring it back |
 | 5.10 | Mocks off, a real era (Queen's Tower 1893 once it is generated): hold the mic and ask a question | Your own words appear as your bubble, a real reply streams in, and with voice on it is spoken in the guide's voice |
+| 5.11 | After 5.10, with voice on, listen to the next spoken reply | As loud as the first one, from the speaker. If it suddenly comes from the earpiece or is much quieter after using the mic, say so: the fix is to release the mic after each recording |
 
 ## How to report
 
