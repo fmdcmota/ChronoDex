@@ -325,3 +325,4 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Agent 2's 02:30 ask: `closeMedia()` in @/lib/media closes the GridFS pool (`closeGridFs`); persist-media.ts uses it instead of a forced process.exit. Not run against a real database here (no keys in this worktree).
 - V6 mid-preview: mocks, Queen's Tower 1962, video requested, Meet tapped at 20 s; sampled every 0.7 s: Skip and the stand-in at 21.0 s, clips landed, at 21.7 s the button was Meet Edith again with the two video elements built. No reload. V6 is fully seen with mocks; captions on a real talk clip remain for the canary.
 - Checks: tsc, eslint, vitest on time-machine (72) and media (24).
+- 06:14 R3-4e: phone server had stopped answering (tunnel 502). Restarted next start on the latest main (17a524c, chronodex, video off) and a new quick tunnel: https://held-realistic-associates-inclusive.trycloudflare.com. PHONE_TEST.md updated.
