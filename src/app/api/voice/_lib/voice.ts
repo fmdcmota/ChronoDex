@@ -4,8 +4,31 @@
  * Owner: Agent 2 (Studio). Implements MASTER.md section 4.3 (voice routes) and 5.3 rule 1, task A2-11.
  * The `_lib` folder name keeps Next.js from treating this as a route.
  */
+import type { Era, EraId } from '@/lib/contracts';
+import { getEra } from '@/lib/db';
+import { withDemoEras } from '@/lib/demo';
 import { FalStageError, createRateLimiter, createSpeechCache } from '@/lib/fal';
+import { eras as fixtureEras } from '@fixtures/index';
 import { jsonError } from '../../_lib/http';
+
+/**
+ * Find the era whose guide speaks a reply. The database first; then the eras the app ships with (the
+ * kept demo set over the fixtures), which is what mock mode shows. Without that fallback a server
+ * pointed at a development database that lacks the demo eras answers "No era" for every chat reply.
+ *
+ * @param eraId - Era id from the request.
+ * @param lookup - Database lookup; tests pass a fake.
+ * @returns The era with a guide when one exists, else the database's era (no guide), else null.
+ */
+export async function findEraForVoice(
+  eraId: EraId,
+  lookup: (id: EraId) => Promise<Era | null> = getEra,
+): Promise<Era | null> {
+  const stored = await lookup(eraId);
+  if (stored?.guide) return stored;
+  const shipped = withDemoEras(fixtureEras).find((era) => era.id === eraId && era.guide);
+  return shipped ?? stored;
+}
 
 /** Speech requests allowed per caller per minute. A chat reply is one request, so 30 is a fast reader. */
 export const TTS_PER_MINUTE = 30;

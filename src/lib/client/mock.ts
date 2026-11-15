@@ -50,6 +50,7 @@ import {
 } from '@fixtures/index';
 import { withDemoEras, withDemoLandmarks } from '@/lib/demo';
 import { ApiError } from './errors';
+import { httpApi } from './http';
 import { randomUuid } from './player';
 import type { ChatOptions, ChronodexApi } from './types';
 
@@ -124,6 +125,11 @@ export interface MockApiOptions {
   latencyMs?: number;
   /** Delay between streamed chat words. Defaults to 45 ms. */
   chatWordDelayMs?: number;
+  /**
+   * Speak chat replies through the real POST /api/voice/tts instead of returning the sample clip.
+   * Defaults to true in a browser, false elsewhere (tests).
+   */
+  liveVoice?: boolean;
 }
 
 const DEFAULT_LATENCY_MS = 150;
@@ -148,6 +154,7 @@ export function createMockApi(options: MockApiOptions = {}): ChronodexApi {
   const now = options.now ?? Date.now;
   const latencyMs = options.latencyMs ?? DEFAULT_LATENCY_MS;
   const chatWordDelayMs = options.chatWordDelayMs ?? DEFAULT_CHAT_WORD_DELAY_MS;
+  const liveVoice = options.liveVoice ?? typeof window !== 'undefined';
   const storage =
     options.storage !== undefined
       ? options.storage
@@ -387,9 +394,13 @@ export function createMockApi(options: MockApiOptions = {}): ChronodexApi {
         : MOCK_REFERENCE_URL;
     },
 
-    async textToSpeech(eraId) {
-      await sleep(latencyMs);
+    async textToSpeech(eraId, text) {
       findEra(eraId);
+      // In the browser the guide speaks for real: the server's voice route answers with fal speech when
+      // it has a key (a chat reply costs a fraction of a cent). A sample clip here sounded like a broken
+      // play button. Tests (no window) keep the sample.
+      if (liveVoice) return httpApi.textToSpeech(eraId, text);
+      await sleep(latencyMs);
       return MOCK_AUDIO_URL;
     },
 

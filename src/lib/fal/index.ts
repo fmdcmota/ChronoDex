@@ -105,14 +105,16 @@ export function withAccentTag(text: string, accentTag: string | undefined): stri
  * @param voiceKey - Key into VOICE_CATALOG.
  * @param opts - Options.
  * @param opts.fast - True picks the cheaper, lower-latency model used for chat replies.
+ * @param opts.live - True speaks for real even in mock mode, when this server has a FAL_KEY. The chat's
+ *   play button uses it: a reply is cents at most, and a sample clip in its place sounds broken.
  * @param ctx - Optional runFal context, so the pipeline can save the request id and heartbeat.
- * @returns URL of an MP3 on fal's CDN. Mock mode returns a sample clip.
+ * @returns URL of an MP3 on fal's CDN. Mock mode returns a sample clip, unless `live` and a key.
  * @throws Error on an unknown voice key or text that is empty or too long. FalStageError when fal fails.
  */
 export async function synthesizeSpeech(
   text: string,
   voiceKey: string,
-  opts?: { fast?: boolean },
+  opts?: { fast?: boolean; live?: boolean },
   ctx?: FalRunContext,
 ): Promise<string> {
   const voice = getVoice(voiceKey);
@@ -121,7 +123,7 @@ export async function synthesizeSpeech(
   if (trimmed.length > MAX_TTS_CHARACTERS) {
     throw new Error(`synthesizeSpeech: ${trimmed.length} characters is over the ${MAX_TTS_CHARACTERS} limit`);
   }
-  if (mocksOn()) return MOCK_AUDIO_URL;
+  if (mocksOn() && !(opts?.live && process.env.FAL_KEY)) return MOCK_AUDIO_URL;
   if (voice.provider === 'gemini') {
     // Gemini has one model for narration and chat. The delivery (accent, warmth) goes in style_instructions.
     const endpoint = MODELS.gemini_speech.endpoint;

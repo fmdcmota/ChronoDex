@@ -11,10 +11,10 @@
  */
 import type { NextRequest } from 'next/server';
 import { TtsRequestSchema, type TtsResponse } from '@/lib/contracts';
-import { getEra } from '@/lib/db';
 import { synthesizeSpeech } from '@/lib/fal';
+import { MOCK_AUDIO_URL } from '@fixtures/index';
 import { handle, json, jsonError, readJson } from '../../_lib/http';
-import { callerKey, speechCache, tooManyRequests, ttsLimiter, upstreamError, voiceUnavailable } from '../_lib/voice';
+import { callerKey, findEraForVoice, speechCache, tooManyRequests, ttsLimiter, upstreamError, voiceUnavailable } from '../_lib/voice';
 
 /**
  * Speak a reply in the guide's voice.
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     const text = body.data.text.trim();
     if (!text) return jsonError(400, 'bad_request', 'text: must not be empty');
 
-    const era = await getEra(eraId);
+    const era = await findEraForVoice(eraId);
     if (!era) return jsonError(404, 'not_found', `No era "${eraId}"`);
     if (!era.guide) return jsonError(409, 'era_not_ready', 'This era has no guide yet. Generate it first.');
     const { voiceKey } = era.guide;
@@ -42,8 +42,9 @@ export async function POST(request: NextRequest): Promise<Response> {
     const unavailable = voiceUnavailable();
     if (unavailable) return unavailable;
     try {
-      const audioUrl = await synthesizeSpeech(text, voiceKey, { fast: true });
-      speechCache.set(voiceKey, text, audioUrl);
+      // `live`: a real voice even when the rest of the server runs on mocks, as long as it has a key.
+      const audioUrl = await synthesizeSpeech(text, voiceKey, { fast: true, live: true });
+      if (audioUrl !== MOCK_AUDIO_URL) speechCache.set(voiceKey, text, audioUrl);
       return json({ audioUrl } satisfies TtsResponse);
     } catch (error) {
       const response = upstreamError(error, 'POST /api/voice/tts');

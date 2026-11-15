@@ -10,7 +10,7 @@ import { MOCK_TRANSCRIPT_TEXT, createRateLimiter, createSpeechCache } from '@/li
 import { MOCK_AUDIO_URL } from '@fixtures/index';
 import { POST as stt } from './stt/route';
 import { POST as tts } from './tts/route';
-import { MIN_RECORDING_BYTES, isAcceptableAudioType, TTS_PER_MINUTE } from './_lib/voice';
+import { MIN_RECORDING_BYTES, findEraForVoice, isAcceptableAudioType, TTS_PER_MINUTE } from './_lib/voice';
 
 const HERO_ERA = eraIdOf('queens-tower', 1893);
 const EMPTY_ERA = eraIdOf('natural-history-museum', 1862);
@@ -36,8 +36,24 @@ beforeEach(() => {
   delete process.env.MONGODB_URI;
   resetMemoryDb();
   vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
+  // The tts route asks for live speech; with no key that stays the fixture clip, so nothing is spent.
+  vi.stubEnv('FAL_KEY', '');
 });
 afterEach(() => vi.unstubAllEnvs());
+
+describe('findEraForVoice', () => {
+  it('falls back to the eras the app ships with when the database lacks the era', async () => {
+    // Tests see the plain fixtures (the demo set is off under test); the hero era has a guide there.
+    const era = await findEraForVoice(HERO_ERA, async () => null);
+    expect(era?.guide?.voiceKey).toBeTruthy();
+  });
+
+  it('prefers the database era when it has a guide, and returns null for an unknown id', async () => {
+    const stored = await findEraForVoice(HERO_ERA);
+    expect(stored?.id).toBe(HERO_ERA);
+    expect(await findEraForVoice('nowhere_1900', async () => null)).toBeNull();
+  });
+});
 
 describe('POST /api/voice/tts', () => {
   it('answers { audioUrl } for an era with a guide', async () => {

@@ -10,6 +10,7 @@ import { MODELS } from './models';
 import { runFal, FalStageError, type FalQueueLike } from './run';
 import { synthesizeSpeech, transcribe, uploadToFal, MAX_TTS_CHARACTERS, MOCK_TRANSCRIPT_TEXT, resetMockWarning, warnIfMocksShadowKey } from './index';
 import { VOICE_CATALOG, getVoice } from './voices';
+import { MOCK_AUDIO_URL } from '@fixtures/index';
 
 /** Build a fake queue that reports the given statuses in order, then returns `data`. */
 function fakeQueue(statuses: string[], data: unknown = { ok: true }): FalQueueLike & { calls: string[] } {
@@ -175,6 +176,12 @@ describe('public functions', () => {
     expect(await synthesizeSpeech('hello', 'eleven-lily')).toMatch(/\S/);
     expect(await transcribe('https://example.com/a.mp3')).toMatch(/\?$/);
     expect(await uploadToFal(new Blob(['x']))).toMatch(/\S/);
+  });
+
+  it('keeps the sample clip for a live request when mocks are on and there is no key', async () => {
+    vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
+    vi.stubEnv('FAL_KEY', '');
+    expect(await synthesizeSpeech('hello', 'eleven-lily', { fast: true, live: true })).toBe(MOCK_AUDIO_URL);
   });
 
   it('refuses to upload without FAL_KEY when mocks are off', async () => {
