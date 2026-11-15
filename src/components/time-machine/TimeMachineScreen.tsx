@@ -31,6 +31,7 @@ import { PanoramaView } from './PanoramaView';
 import { ProgressSheet } from './ProgressSheet';
 import { SourcesDrawer } from './SourcesDrawer';
 import { ThenNowSlider } from './ThenNowSlider';
+import { canCompareThenNow } from './thenNow';
 import { hasSourceNotes } from './sources';
 import { YearBar } from './YearBar';
 import { AmbienceToggle } from './AmbienceToggle';
@@ -223,7 +224,8 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
 
   const guideName = era?.guide?.name.split(' ')[0];
   /** A4-06: the slider needs both images, and they share framing (section 5.1). */
-  const canCompare = Boolean(era?.sceneImageUrl && landmark?.referencePhotoUrl);
+  // R3-4c: hidden where the scene does not keep the reference photo's framing.
+  const canCompare = Boolean(era && canCompareThenNow(era.id, era.sceneImageUrl, landmark?.referencePhotoUrl));
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-(--ink) text-(--paper)">
