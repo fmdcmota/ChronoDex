@@ -6,7 +6,7 @@ Seed and mock data. Owner: Agent 1. Task A1-04.
 
 | File | Holds |
 |---|---|
-| `landmarks.ts` | The six landmarks of MASTER.md section 12, plus five in Singapore and Oslo |
+| `landmarks.ts` | The six landmarks of MASTER.md section 12, plus six in Singapore, Oslo and Cambridge |
 | `eras.ts` | One era per landmark year. `queens-tower_1893` is fully populated; the rest are `missing`. `placeholderBrief`, `populatedEra` |
 | `jobs.ts` | One sample job in each state, for the progress sheet |
 | `media.ts` | Placeholder media URLs: SVGs in `public/mock/`, plus a CC0 sample panorama, audio and video |

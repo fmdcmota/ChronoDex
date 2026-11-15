@@ -253,6 +253,8 @@ export default function MapScreen() {
     map.touchZoomRotate.disableRotation();
     map.keyboard.disableRotation();
     mapRef.current = map;
+    // Dev tools only: lets a test driver set the zoom exactly (for example to check the detail fade).
+    if (DEV_TOOLS) (window as unknown as { __chronodexMap?: MapLibreMap }).__chronodexMap = map;
 
     map.on('load', () => {
       // Capture zones: a dashed ring of captureRadiusM around each photo spot. "Stand in the ring."

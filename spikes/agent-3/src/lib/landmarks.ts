@@ -102,7 +102,7 @@ export const SPIKE_LANDMARKS: readonly Landmark[] = [
 ];
 
 /**
- * Landmarks in other cities (Singapore and Oslo), added 15 Nov 2026 to show the map style needs no
+ * Landmarks in other cities (Singapore, Oslo and Cambridge), added 15 Nov 2026 to show the map style needs no
  * per-city work (see ../../ADD_A_CITY.md). Kept apart from SPIKE_LANDMARKS so the London map spike
  * still opens framed on London. The art script draws sprites for both lists.
  *
@@ -114,7 +114,10 @@ export const SPIKE_LANDMARKS: readonly Landmark[] = [
  * Era years are candidates the Historian must confirm: Raffles landed 1819; Raffles Hotel opened
  * 1887; the Merlion statue was unveiled 1972; the Oseberg ship burial dates to 834 and the ship was
  * dug up in 1904; Akershus was begun about 1299 and rebuilt as a Renaissance castle after the
- * 1624 fire of Oslo.
+ * 1624 fire of Oslo; Emmanuel College was founded in 1584 and its chapel, designed by Christopher
+ * Wren, was completed in 1677. For Emmanuel the `subject` is the garden duck pond (read from the
+ * rendered map, the OSM point lies in the Paddock) and the photoSpot a path beside it, inside the
+ * college grounds, which are open to visitors in the daytime: check access before a real capture.
  */
 export const CITY_LANDMARKS: readonly Landmark[] = [
   {
@@ -181,6 +184,19 @@ export const CITY_LANDMARKS: readonly Landmark[] = [
     badgeUrl: '/sprites/badges/akershus-fortress.png',
     referencePhotoUrl: '',
     eraYears: [1299, 1624],
+  },
+  {
+    id: 'emmanuel-college',
+    name: 'Emmanuel College',
+    blurb: 'Founded in 1584 and known as Emma, a Cambridge college whose garden pond ducks are famous.',
+    photoSpot: { lat: 52.204144, lng: 0.125688 },
+    subject: { lat: 52.20421, lng: 0.125419 },
+    captureRadiusM: GAME.CAPTURE_RADIUS_M,
+    rarity: 'epic',
+    spriteUrl: '/sprites/emmanuel-college.png',
+    badgeUrl: '/sprites/badges/emmanuel-college.png',
+    referencePhotoUrl: '',
+    eraYears: [1584, 1677],
   },
 ];
 

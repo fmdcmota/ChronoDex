@@ -44,12 +44,12 @@ afterEach(() => {
 });
 
 describe('landmarks and eras', () => {
-  it('GET /api/landmarks lists eleven valid landmarks and is not cached', async () => {
+  it('GET /api/landmarks lists twelve valid landmarks and is not cached', async () => {
     const res = await listLandmarks();
     expect(res.status).toBe(200);
     expect(res.headers.get('cache-control')).toBe('no-store');
     const { landmarks: list } = await res.json();
-    expect(list).toHaveLength(11);
+    expect(list).toHaveLength(12);
     for (const l of list) LandmarkSchema.parse(l);
   });
 

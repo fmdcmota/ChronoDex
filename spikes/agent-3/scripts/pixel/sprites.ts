@@ -396,6 +396,50 @@ function akershusFortress(): PixelCanvas {
   return finish(c, 15);
 }
 
+/**
+ * Emmanuel College, Cambridge: "Emma"'s famous pond ducks. A mallard in a tiny mortarboard (the
+ * college's graduate) with a duckling, on the garden pond. The duck is the landmark.
+ */
+function emmanuelCollege(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  // Pond.
+  c.ellipse(15.5, 26, 14, 3.5, P.water);
+  c.hline(3, 9, 27, P.waterDeep);
+  c.hline(20, 27, 28, P.waterDeep);
+  // Tail, lifted at the back.
+  for (const [x, y] of [[4, 15], [5, 15], [3, 16], [4, 16], [5, 16], [5, 17]] as const) c.set(x, y, P.inkSoft);
+  // Body: cream, shaded underneath and on the right.
+  c.ellipse(14, 20, 9.5, 5.5, P.stone);
+  c.ellipse(14, 20, 9.5, 5.5, P.stoneDark, (_x, y) => y >= 23);
+  // Folded wing.
+  c.ellipse(12, 19.5, 5.5, 3, P.stoneDark);
+  c.hline(9, 15, 19, P.stone);
+  c.hline(10, 16, 21, P.inkSoft);
+  // Brown chest, white collar, green neck and head.
+  c.ellipse(21, 19.5, 3.2, 4, P.brickDark);
+  c.rect(21, 12, 24, 16, P.verdigris);
+  c.hline(20, 25, 16, P.paper);
+  c.ellipse(23.5, 10, 4.2, 3.8, P.verdigris);
+  c.rect(21, 12, 22, 14, P.verdigrisDark);
+  // Eye and a gold bill.
+  c.set(25, 9, P.ink);
+  c.rect(27, 10, 29, 11, P.gold);
+  c.set(29, 11, P.goldDark);
+  c.set(28, 12, P.goldDark);
+  // Mortarboard: a flat slate board over a cap, with a gold tassel.
+  c.rect(19, 4, 28, 5, P.slate);
+  c.rect(21, 6, 26, 7, P.slate);
+  c.hline(19, 28, 4, P.inkSoft);
+  c.rect(28, 5, 28, 8, P.gold);
+  c.set(28, 8, P.goldDark);
+  // Duckling following behind.
+  c.ellipse(27, 24, 2.6, 1.8, P.gold);
+  c.ellipse(29, 22.5, 1.6, 1.5, P.gold);
+  c.set(30, 22, P.ink);
+  c.set(30, 23, P.brick);
+  return finish(c, 14);
+}
+
 /** Every sprite, keyed by landmark id: the six London ids (MASTER.md section 12) and the other cities'. */
 export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'huxley-building': huxleyBuilding,
@@ -409,4 +453,5 @@ export const SPRITES: Record<LandmarkId, () => PixelCanvas> = {
   'merlion-park': merlionPark,
   'viking-ship-museum': vikingShipMuseum,
   'akershus-fortress': akershusFortress,
+  'emmanuel-college': emmanuelCollege,
 };

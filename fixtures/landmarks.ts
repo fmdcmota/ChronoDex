@@ -157,4 +157,14 @@ export const landmarks: Landmark[] = [
     eraYears: [1299, 1624],
     ...sharedFields('akershus-fortress'),
   },
+  {
+    id: 'emmanuel-college',
+    name: 'Emmanuel College',
+    blurb: 'Founded in 1584 and known as Emma, a Cambridge college whose garden pond ducks are famous.',
+    photoSpot: { lat: 52.204144, lng: 0.125688 },
+    subject: { lat: 52.20421, lng: 0.125419 },
+    rarity: 'epic',
+    eraYears: [1584, 1677],
+    ...sharedFields('emmanuel-college'),
+  },
 ];

@@ -61,6 +61,47 @@ function roadWidth(widthAtZ15Px: number): unknown[] {
   return ['interpolate', ['exponential', 1.6], ['zoom'], 13, widthAtZ15Px * 0.35, 15, widthAtZ15Px, 19, widthAtZ15Px * 9];
 }
 
+/**
+ * An opacity that rises smoothly from 0 to 1 over a zoom range, so a kind of detail (small roads,
+ * paths, buildings) fades in as the player zooms in instead of popping into view, the way Google
+ * Maps does it. Below `fromZoom` it is invisible, at `toZoom` and above it is solid.
+ *
+ * The ramp is eased (ease-in-out cubic bezier), not linear: a linear ramp has a visible "corner"
+ * where it starts and stops, which reads as a flicker; an S-curve starts and ends gently.
+ *
+ * Why not minzoom: a layer's `minzoom` switches it on in one frame, which looks like popping.
+ *
+ * @param fromZoom - Zoom where the detail starts to appear.
+ * @param toZoom - Zoom where it is fully opaque.
+ * @returns A MapLibre interpolate expression for `fill-opacity` or `line-opacity`.
+ */
+export function fadeIn(fromZoom: number, toZoom: number): unknown[] {
+  return ['interpolate', ['cubic-bezier', 0.42, 0, 0.58, 1], ['zoom'], fromZoom, 0, toZoom, 1];
+}
+
+/**
+ * Zoom ranges over which each kind of detail fades in. Solid from the end of the range up.
+ *
+ * Every range STARTS at a whole zoom level on purpose. The vector tiles bring in new features
+ * when the map crosses a whole zoom level (measured on 15 Nov 2026 with a zoom sweep over South
+ * Kensington: minor and mid roads arrive at zoom 12, footpaths and plazas at 13, most buildings
+ * at 14). A fade that starts in the middle of a level lets that new data appear already half
+ * visible, which is the "suddenly appearing" look. Starting at the level means the new data
+ * arrives at opacity 0 and then dissolves in.
+ */
+export const DETAIL_FADE = {
+  /** Secondary and tertiary roads. Below zoom 12 only the major roads show. */
+  midRoads: [12, 14.5],
+  /** Minor streets and service roads. */
+  minorRoads: [12, 15.5],
+  /** Footpaths and pedestrian squares. */
+  paths: [13, 16],
+  /** Rail lines. */
+  rail: [10, 12.5],
+  /** Buildings and their shadows: the big ones arrive at 13, nearly all of them at 14. */
+  buildings: [14, 15.8],
+} as const;
+
 /** Filter for line features of the given road classes that are not tunnels. */
 function roadFilter(classes: string[]): unknown[] {
   return [
@@ -155,7 +196,7 @@ export function buildGameMapStyle(): GameMapStyle {
         source: SRC,
         'source-layer': 'transportation',
         filter: ['==', ['geometry-type'], 'Polygon'],
-        paint: { 'fill-color': PALETTE.path },
+        paint: { 'fill-opacity': fadeIn(...DETAIL_FADE.paths), 'fill-color': PALETTE.path },
       },
 
       // Roads: every edge first, then every surface, so junctions join cleanly.
@@ -166,7 +207,7 @@ export function buildGameMapStyle(): GameMapStyle {
         'source-layer': 'transportation',
         filter: roadFilter(MINOR_ROADS),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': PALETTE.roadEdge, 'line-width': roadWidth(5) },
+        paint: { 'line-opacity': fadeIn(...DETAIL_FADE.minorRoads), 'line-color': PALETTE.roadEdge, 'line-width': roadWidth(5) },
       },
       {
         id: 'road-mid-edge',
@@ -175,7 +216,7 @@ export function buildGameMapStyle(): GameMapStyle {
         'source-layer': 'transportation',
         filter: roadFilter(MID_ROADS),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': PALETTE.roadEdge, 'line-width': roadWidth(8) },
+        paint: { 'line-opacity': fadeIn(...DETAIL_FADE.midRoads), 'line-color': PALETTE.roadEdge, 'line-width': roadWidth(8) },
       },
       {
         id: 'road-major-edge',
@@ -193,7 +234,7 @@ export function buildGameMapStyle(): GameMapStyle {
         'source-layer': 'transportation',
         filter: roadFilter(['path']),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': PALETTE.path, 'line-width': roadWidth(2.5) },
+        paint: { 'line-opacity': fadeIn(...DETAIL_FADE.paths), 'line-color': PALETTE.path, 'line-width': roadWidth(2.5) },
       },
       {
         id: 'road-minor',
@@ -202,7 +243,7 @@ export function buildGameMapStyle(): GameMapStyle {
         'source-layer': 'transportation',
         filter: roadFilter(MINOR_ROADS),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': PALETTE.road, 'line-width': roadWidth(3.5) },
+        paint: { 'line-opacity': fadeIn(...DETAIL_FADE.minorRoads), 'line-color': PALETTE.road, 'line-width': roadWidth(3.5) },
       },
       {
         id: 'road-mid',
@@ -211,7 +252,7 @@ export function buildGameMapStyle(): GameMapStyle {
         'source-layer': 'transportation',
         filter: roadFilter(MID_ROADS),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': PALETTE.road, 'line-width': roadWidth(6) },
+        paint: { 'line-opacity': fadeIn(...DETAIL_FADE.midRoads), 'line-color': PALETTE.road, 'line-width': roadWidth(6) },
       },
       {
         id: 'road-major',
@@ -228,7 +269,7 @@ export function buildGameMapStyle(): GameMapStyle {
         source: SRC,
         'source-layer': 'transportation',
         filter: roadFilter(['rail', 'transit']),
-        paint: { 'line-color': PALETTE.rail, 'line-width': 2, 'line-dasharray': [2, 2] },
+        paint: { 'line-opacity': fadeIn(...DETAIL_FADE.rail), 'line-color': PALETTE.rail, 'line-width': 2, 'line-dasharray': [2, 2] },
       },
 
       // Buildings: shadow, then the roof on top.
@@ -237,7 +278,7 @@ export function buildGameMapStyle(): GameMapStyle {
         type: 'fill',
         source: SRC,
         'source-layer': 'building',
-        paint: {
+        paint: { 'fill-opacity': fadeIn(...DETAIL_FADE.buildings),
           'fill-color': PALETTE.buildingShade,
           'fill-translate': [BUILDING_SHADOW_PX, BUILDING_SHADOW_PX],
           'fill-translate-anchor': 'viewport',
@@ -248,7 +289,7 @@ export function buildGameMapStyle(): GameMapStyle {
         type: 'fill',
         source: SRC,
         'source-layer': 'building',
-        paint: { 'fill-color': PALETTE.building, 'fill-outline-color': PALETTE.buildingShade },
+        paint: { 'fill-opacity': fadeIn(...DETAIL_FADE.buildings), 'fill-color': PALETTE.building, 'fill-outline-color': PALETTE.buildingShade },
       },
     ],
   };
