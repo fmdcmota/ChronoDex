@@ -114,9 +114,10 @@ export async function runImageModel(stage: FalStageKey, input: Record<string, un
   const { endpoint: override, ...runContext } = ctx;
   const endpoint = override ?? MODELS[stage].endpoint;
   const result = await runFal<FalImageResult>(endpoint, input, runContext);
-  const url = result.data.images?.[0]?.url;
+  const image = result.data.images?.[0];
+  const url = image?.url;
   if (!url) throw new FalStageError(`${endpoint} returned no image for stage ${stage}`, { endpoint, requestId: result.requestId });
-  return { url, model: endpoint, requestId: result.requestId, elapsedMs: result.elapsedMs };
+  return { url, model: endpoint, requestId: result.requestId, elapsedMs: result.elapsedMs, widthPx: image?.width, heightPx: image?.height };
 }
 
 /**

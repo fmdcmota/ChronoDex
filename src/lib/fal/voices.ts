@@ -7,9 +7,6 @@
  * listened and chosen. The voices below are ElevenLabs names whose British accent is from memory
  * (MASTER.md section 14, "not verified"), so treat the descriptions as unconfirmed until the human
  * picks. Replace this list from the picks and update notebook/agent-2.md in the same commit.
- *
- * The two `placeholder-*` keys exist only because Agent 1's fixtures and tests still name them.
- * They now map to real voices. TODO(agent-1): rename them in fixtures/eras.ts, then delete them here.
  */
 
 /** One voice the guide can speak with. */
@@ -51,18 +48,6 @@ export const VOICE_CATALOG: Record<string, VoiceEntry> = {
     description: 'Man in his forties or fifties, British accent, calm and authoritative (unconfirmed by ear)',
     provider: 'elevenlabs',
     voiceName: 'Daniel',
-    stability: DEFAULT_STABILITY,
-  },
-  'placeholder-male-older': {
-    description: 'Older man, British accent (same voice as eleven-george; old fixture key)',
-    provider: 'elevenlabs',
-    voiceName: 'George',
-    stability: DEFAULT_STABILITY,
-  },
-  'placeholder-female-younger': {
-    description: 'Younger woman, British accent (same voice as eleven-alice; old fixture key)',
-    provider: 'elevenlabs',
-    voiceName: 'Alice',
     stability: DEFAULT_STABILITY,
   },
 };

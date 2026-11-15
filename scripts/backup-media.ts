@@ -4,6 +4,7 @@
  * Owner: Agent 2 (Studio). Implements MASTER.md section 5.3 rule 8 and task A2-13. fal keeps generated files for at
  * least 7 days, and the URLs are public, so anything not saved by then is gone.
  *
+ * Our own stored files (`/api/media/<id>`, A2-h) are read from the media store; fal and other URLs are downloaded.
  * Usage (repo root; MONGODB_URI and MONGODB_DB in .env.local, or no MONGODB_URI to read the in-memory fixtures):
  *   npx tsx --env-file=.env.local scripts/backup-media.ts --dry-run     list every URL, download nothing
  *   npx tsx --env-file=.env.local scripts/backup-media.ts               download to spikes/agent-2/out/media-backup
@@ -17,6 +18,7 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { closeMongo, listEras, listLandmarks } from '@/lib/db';
+import { getMediaAsset, openMedia } from '@/lib/media';
 import { eraAssets, landmarkAssets, type EraAsset } from '@/lib/pipeline/assets';
 
 /** Default folder. spikes/agent-2/out is git-ignored, so a backup never lands in a commit. */
@@ -36,7 +38,33 @@ function flagValue(args: string[], flag: string): string | null {
 
 /** File extension from a URL path, or `bin`. */
 function extensionOf(url: string): string {
-  return new URL(url).pathname.match(/\.([a-z0-9]{2,5})$/i)?.[1]?.toLowerCase() ?? 'bin';
+  return new URL(url, 'http://local').pathname.match(/\.([a-z0-9]{2,5})$/i)?.[1]?.toLowerCase() ?? 'bin';
+}
+
+/** File extension from a content type, for stored files whose URL has none. */
+function extensionOfType(contentType: string): string {
+  const map: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a', 'video/mp4': 'mp4' };
+  return map[contentType] ?? 'bin';
+}
+
+/**
+ * Read one file: from our media store for `/api/media/<id>`, else over HTTP.
+ *
+ * @param url - The asset URL.
+ * @returns The bytes and an extension.
+ */
+async function readAsset(url: string): Promise<{ bytes: Buffer; ext: string }> {
+  const stored = url.match(/^\/api\/media\/([0-9a-f]+)$/);
+  if (stored) {
+    const asset = await getMediaAsset(stored[1]);
+    if (!asset) throw new Error(`no stored file ${stored[1]}`);
+    const chunks: Uint8Array[] = [];
+    for await (const chunk of (await openMedia(stored[1])) as unknown as AsyncIterable<Uint8Array>) chunks.push(chunk);
+    return { bytes: Buffer.concat(chunks), ext: extensionOfType(asset.contentType) };
+  }
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return { bytes: Buffer.from(await response.arrayBuffer()), ext: extensionOf(url) };
 }
 
 /** Run the script. */
@@ -61,20 +89,16 @@ async function main(): Promise<void> {
   const index: { url: string; file: string; bytes: number; skipped: boolean }[] = [];
   let failed = 0;
   for (const { group, asset } of plans) {
-    const file = path.join(out, group, `${asset.name}.${extensionOf(asset.url)}`);
     try {
+      const { bytes, ext } = await readAsset(asset.url);
+      const file = path.join(out, group, `${asset.name}.${ext}`);
       await mkdir(path.dirname(file), { recursive: true });
-      const response = await fetch(asset.url);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const expected = Number(response.headers.get('content-length') ?? 0);
       const existing = await stat(file).then((s) => s.size, () => -1);
-      if (expected > 0 && existing === expected) {
-        await response.body?.cancel();
+      if (existing === bytes.length) {
         index.push({ url: asset.url, file, bytes: existing, skipped: true });
         console.log(`skip   ${file} (already saved)`);
         continue;
       }
-      const bytes = Buffer.from(await response.arrayBuffer());
       await writeFile(file, bytes);
       index.push({ url: asset.url, file, bytes: bytes.length, skipped: false });
       console.log(`saved  ${file} (${Math.round(bytes.length / 1024)} KB)`);
@@ -93,4 +117,5 @@ main()
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
   })
-  .finally(() => closeMongo().catch(() => undefined));
+  // Exit explicitly: the media store's own database connection would otherwise keep the process alive.
+  .finally(() => closeMongo().catch(() => undefined).finally(() => process.exit(process.exitCode ?? 0)));

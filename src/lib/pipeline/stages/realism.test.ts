@@ -183,3 +183,12 @@ describe('periodLook', () => {
     expect(periodLook()).toBe('monochrome');
   });
 });
+
+describe('colour look with old photographs as references', () => {
+  it('tells the model to take shapes, not sepia tones, from the references in the colour look only', () => {
+    expect(buildScenePrompt(brief, 1893, { look: 'colour', referenceCount: 2 })).toContain('never black and white or sepia');
+    expect(buildPanoramaPrompt('x', [], 1893, { look: 'colour', referenceCount: 2 })).toContain('never black and white or sepia');
+    expect(buildScenePrompt(brief, 1893, { look: 'monochrome', referenceCount: 2 })).not.toContain('never black and white or sepia');
+    expect(buildScenePrompt(brief, 1893, { look: 'colour' })).not.toContain('never black and white or sepia');
+  });
+});

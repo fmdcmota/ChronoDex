@@ -91,6 +91,8 @@ async function main(): Promise<void> {
   const summary = await runWorker({ workerId, claim: claimNextJob, run: runEraJob, signal: controller.signal, concurrency, log });
   log(`Stopped. Jobs run: ${summary.jobsRun}. Errors survived: ${summary.errors}.`);
   await closeMongo();
+  // The media store keeps its own database connection open, which would keep the process alive after a clean stop.
+  process.exit(0);
 }
 
 main().catch((err: unknown) => {

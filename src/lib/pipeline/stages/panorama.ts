@@ -8,6 +8,7 @@ import sharp from 'sharp';
 import type { SceneBrief } from '@/lib/contracts';
 import { PANORAMA_UPSCALE_FACTOR, uploadToFal } from '@/lib/fal';
 import { criticContext, generateChecked } from './checked';
+import { localVerdict, pictureProblems } from './localChecks';
 import { checkPanorama, type CheckVerdict } from './critic';
 import { buildPanoramaCanvas, fetchBuffer, toEquirectangular, unpaintedFraction, PANORAMA_FEATHER_PX, PANORAMA_HEIGHT_PX, PANORAMA_WIDTH_PX } from './image';
 import { buildPanoramaInput, runImageModel, runUpscale } from './inputs';
@@ -81,9 +82,13 @@ export async function runPanorama(
     generate: async (fix, runCtx) => {
       const painted = await runImageModel('panorama', buildPanoramaInput(withCorrection(prompt, fix), canvasUrl, references), runCtx);
       const bytes = await fetchBuffer(painted.url);
-      return { ...painted, bytes, unpainted: await unpaintedFraction(bytes) };
+      const meta = await sharp(bytes).metadata();
+      return { ...painted, bytes, widthPx: meta.width, heightPx: meta.height, unpainted: await unpaintedFraction(bytes) };
     },
     judge: async (painted) => {
+      // Free checks first (A2-i): wrong shape or a near-empty file never reaches the paid critic.
+      const free = pictureProblems({ widthPx: painted.widthPx, heightPx: painted.heightPx, bytes: painted.bytes.length }, 2);
+      if (free.length) return { verdict: localVerdict(free, 'The output must be one 2:1 equirectangular image, exactly twice as wide as it is tall.') };
       // The cheap local check first: a half-grey picture needs no critic and its advice is obvious.
       if (painted.unpainted > PANORAMA_MAX_UNPAINTED) {
         const verdict: CheckVerdict = {

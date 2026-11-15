@@ -7,6 +7,7 @@
  */
 import { checkGuideFrame } from './critic';
 import { criticContext, generateChecked } from './checked';
+import { WIDESCREEN_RATIO, localVerdict, pictureProblems } from './localChecks';
 import { buildImageEditInput, runImageModel } from './inputs';
 import { buildGuideFrameCheckPrompt, buildGuideFramePrompt, withCorrection, type GuideLook } from './prompts';
 import type { StageContext, StageOutput } from './types';
@@ -39,7 +40,12 @@ export async function runGuideFrame(
   const { output, report } = await generateChecked({
     ctx,
     generate: (fix, runCtx) => runImageModel('guide_frame', buildImageEditInput(withCorrection(prompt, fix), [input.sceneUrl, input.headshotUrl]), runCtx),
-    judge: async (frame) => ({ verdict: await checkGuideFrame(frame.url, input.headshotUrl, checkPrompt, criticContext(ctx)) }),
+    judge: async (frame) => {
+      // Free first (A2-i): a picture of the wrong shape never reaches the paid critic.
+      const free = pictureProblems(frame, WIDESCREEN_RATIO);
+      if (free.length) return { verdict: localVerdict(free, 'The picture must be exactly 16:9 landscape, the same framing as image 1.') };
+      return ({ verdict: await checkGuideFrame(frame.url, input.headshotUrl, checkPrompt, criticContext(ctx)) });
+    },
   });
   return { ...output, check: report };
 }

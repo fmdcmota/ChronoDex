@@ -30,6 +30,10 @@ export interface StageOutput {
   requestId: string | null;
   /** Wall-clock milliseconds the stage took. */
   elapsedMs: number;
+  /** Picture width in pixels, when the model reports it (image stages). Used by the free checks. */
+  widthPx?: number;
+  /** Picture height in pixels, when the model reports it. */
+  heightPx?: number;
   /** Length of a video stage's clip in seconds, when the model reports it. */
   durationS?: number | null;
   /** What the critic made of the kept picture, for stages that are checked. Absent for the rest. */

@@ -133,4 +133,5 @@ main()
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
   })
-  .finally(() => closeMongo().catch(() => undefined));
+  // Exit explicitly: the media store's own database connection would otherwise keep the process alive.
+  .finally(() => closeMongo().catch(() => undefined).finally(() => process.exit(process.exitCode ?? 0)));
