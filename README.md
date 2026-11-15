@@ -20,7 +20,7 @@ Built in one weekend at the **Imperial AI Hackathon** (14 to 15 November 2026) b
 
 | | |
 |---|---|
-| **Live app** | **<https://chronodex.azlan.works>**. Open it on a phone: camera, location and motion need one |
+| **Live app** | **<(https://maternity-jonathan-finger-explaining.trycloudflare.com)>**. Open it on a phone: camera, location and motion need one |
 | **Where it works** | Six landmarks have ready eras: Queen's Tower, Royal Albert Hall and the Natural History Museum in London, plus Mexico City, Porto and Singapore. Ten more are on the map and unlock as their eras are generated |
 | **Not near one?** | You can still browse the map, the globe and the Dex. Captures need you within 50 m of a landmark's photo spot |
 | **Technical writeup** | [TECHNICAL_WRITEUP.md](TECHNICAL_WRITEUP.md): architecture, AI pipeline, data sources and APIs |
