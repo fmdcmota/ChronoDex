@@ -115,6 +115,7 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-r2-8 Cache /demo/ files in the browser
 - [ ] A4-r2-9 WAV narration and replies on iOS (Gemini voices)
 - [x] R3-4a Time Machine never asks for the video tier (V3, critical path)
+- [x] R3-4f Phone checks in VIDEO_RUNBOOK.md section 3
 - [x] R3-4c Then/Now hidden for the 8 demo eras (V9)
 - [x] R3-4d /demo files in Cache Storage; WAV on iOS still needs a phone
 - [x] R3-4b Preview to real clips swap without a reload (V6; seen in a browser with mocks, 04:40)
@@ -317,3 +318,10 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - R3-4d: `/demo/...` paths count as cacheable in mediaCache.ts, so the 8 eras' pictures and narration come from Cache Storage on a second visit. Trap: if a /demo file is ever replaced at the same path, bump MEDIA_CACHE_NAME. WAV: the media store serves `audio/wav`, all demo narrations are MP3, so WAV only reaches iOS in chat replies from Gemini voices; Safari plays PCM WAV, but not yet heard on the phone.
 - Checks: tsc, eslint, vitest time-machine 72 pass.
 - Board post not added yet: will post when the human allows a push.
+
+### 2026-11-15 05:30, R3-4f, Agent 2's two asks, V6 mid-preview (local commits; not pushed)
+- R3-4f: VIDEO_RUNBOOK.md section 3 now lists the phone checks: progress sheet while making, preview still usable, swap without reload, clip order without flashes, same person, lip sync, captions on talk only, ambience duck and mute, Skip then chat, cached on revisit, iPhone inline and speaker, Then/Now stays hidden. I only edited section 3, which the runbook assigns to me.
+- Agent 2's 04:27 ask: toFalUrl no longer records a non-http URL from uploadToFal (mock mode) and ignores one already recorded (`isHttpUrl`, test added).
+- Agent 2's 02:30 ask: `closeMedia()` in @/lib/media closes the GridFS pool (`closeGridFs`); persist-media.ts uses it instead of a forced process.exit. Not run against a real database here (no keys in this worktree).
+- V6 mid-preview: mocks, Queen's Tower 1962, video requested, Meet tapped at 20 s; sampled every 0.7 s: Skip and the stand-in at 21.0 s, clips landed, at 21.7 s the button was Meet Edith again with the two video elements built. No reload. V6 is fully seen with mocks; captions on a real talk clip remain for the canary.
+- Checks: tsc, eslint, vitest on time-machine (72) and media (24).
