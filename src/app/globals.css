@@ -185,6 +185,7 @@ p {
   font-size: 0.9rem;
 }
 
+
 /* ---- Markers ----
  * MapLibre sets position: absolute and transform on each marker's root element. Never style
  * position, transform or display on .marker or .player themselves; style the inner elements.
@@ -403,10 +404,12 @@ p {
 
 /* ---- Dev panel ---- */
 
+/* Under the CHRONODEX chip, top left (moved there at the human's request, 15 Nov). The location banner moves
+   below it (MapScreen's BANNER_BELOW_DEV_STYLE), so the two never overlap while the panel is closed. */
 .dev-panel {
   position: fixed;
-  top: calc(var(--safe-top) + 110px);
-  right: 13px;
+  top: calc(var(--safe-top) + 58px);
+  left: 13px;
   width: min(240px, calc(100% - 26px));
   background: #fff8;
   backdrop-filter: blur(4px);
