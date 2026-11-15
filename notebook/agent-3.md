@@ -56,12 +56,12 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 23:55
-- Working on: nothing. A3-03 to A3-09 are on `main`. This session added the MOCK DATA tag (layout.tsx and globals.css, `.mock-tag`) and friendlier wording for upload errors 415 and 429 (capture-messages.ts). `npm run check` passes (344 tests). Not committed yet: waiting for the human's yes.
-- Next: A3-10. (a) The Android pass and, once Agent 1 has deployed to Vercel, MAP-10, MAP-11 and one real capture with mocks off. All of it needs a human with the phones. (b) fal art: `npm run art:fal -- --yes` in `spikes/agent-3`, which needs a `FAL_KEY`; there is none in this machine's root `.env.local`. (c) Offer chat polish help to Agent 4 if they ask.
-- Blocked on: real phones (Android, deployed site) and a `FAL_KEY` on this machine for the optional fal art.
-- Board read up to: 2026-11-14 23:45 (@team, tests, to @agent-5)
-- Waiting for commit approval: the MOCK DATA tag, the 415/429 wording, this page, one board post, and the `certificates` line in .gitignore (Agent 1's file, added by Next's experimental HTTPS; ask Agent 1 or leave it out).
+- Last updated: 2026-11-15 04:45 (real clock; some board stamps run hours ahead)
+- Working on: nothing open that I can do alone. Everything of mine is pushed except one polish item (the Dom Luís bridge sprite, see the last log entry). A3-01 to A3-09 are done; the extras the human asked for are done and on `main`: Singapore, Oslo, Cambridge and Beijing landmarks with sprites, the city-aware map and hint, spoof rows per city, the globe zoom with a space backdrop, the detail fade by zoom (polish now Agent 4's), the three voyage ducks, the MOCK DATA tag, and the greying-out of landmarks with no ready era (`lib/era-ready.ts`).
+- Next, from `REMAINING_WORK_2.md` section 3.3: A3-r2-3 Android pass and A3-r2-6 Add to Home Screen on a real iPhone (both need a human and a phone; `spikes/agent-3/PHONE_TEST.md` lists the checks); R3-3c Map and Dex polish for the demo route Agent 6 writes (no `DEMO.md` yet); nothing new after 10:00. Optional: `npm run art:fal -- --yes` in `spikes/agent-3` needs a `FAL_KEY` in this machine's root `.env.local`.
+- Blocked on: a human with an Android phone and an iPhone; Agent 6's demo route.
+- Board read up to: 2026-11-15 09:00 (@agent-1, A1-r2-2, REPLY) and 04:12 (@agent-4, A4-r2-2)
+- Waiting for commit approval: the bridge sprite polish, this page and one board post.
 
 ## Tasks
 
@@ -206,3 +206,8 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Verified: dev server with mocks off and the in-memory store (Queen's Tower 1893 ready, the rest missing): 13 markers, 12 greyed, Queen's Tower not; Huxley card (collected) says "Time Machine: coming soon" and "Badge collected. Its Time Machine is coming soon." with no link; Queen's Tower card has "Open Time Machine"; the Dex has one link (Queen's Tower) and Huxley as a plain card saying "Time Machine coming soon". Not seen on a real phone, and the capture-award variant was checked by code, not screenshot (a mocks-off capture there needs a fal key for the upload).
 - Problems: an attempt to build a second production copy in /tmp for testing failed (a symlinked node_modules is refused by Turbopack, and copying iCloud-synced node_modules stalled); I tested on the dev server with environment overrides instead.
 - Next: A3-r2-3, the Android pass, needs a human with an Android phone. A3-r2-5: polish only from here.
+
+### 2026-11-15 04:45, A3-r2-5 on the tunnel, and the Dom Luís bridge polish
+- A3-r2-5: the phone server now reads `chronodex` at https://url-poems-screens-poll.trycloudflare.com (A4-r2-2). Checked in headless Chrome at 390x844 with GPS at Queen's Tower: 15 markers, 6 lit and 9 grey. Lit: Queen's Tower, Royal Albert Hall, Natural History Museum, Raffles' Landing Site, Zócalo and Metropolitan Cathedral, Dom Luís I Bridge. Grey: Huxley Building, Exhibition Road, V&A, Raffles Hotel, Merlion Park, Viking Ship Museum, Akershus Fortress, Emmanuel College, Great Wall at Badaling. That matches the API: eight ready eras across those six landmarks (Queen's Tower 2, Natural History Museum 2, the others 1), so "the 8 demo landmarks" in the plan are 8 eras on 6 landmarks. Dex 0 / 15 with 15 cards; no sprite or badge image fails to load; no MOCK DATA tag; the globe chip and three voyage ducks are present, so this server has the current build.
+- Polish (A3-r2-7): Agent 6 drew the Zócalo and Dom Luís sprites in my sprite file; the bridge read poorly (a dark mass with columns, abutments clipped by the sprite edge). Redrew it as a double-deck iron arch with a light truss spaced four apart (so the outline pass leaves sky between), a visible arch under the upper deck, and terracotta houses on granite banks, all inside the edge. `npm test` in the spike passes (84), art republished. The Zócalo sprite looks fine.
+- Not done: A3-r2-3 and A3-r2-6 need people and phones; R3-3c waits for the demo route.
