@@ -31,13 +31,13 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 00:35
-- Working on: nothing. Everything below is uncommitted on branch agent-1 and waits for a commit yes (files: scripts/brief-era.ts, briefs/*, package.json, README.md, src/app/api/chat/route.ts, src/lib/historian/{index,prompt,historian.test}.ts, DEV_NOTEBOOK.md, this page, BOARD.md). `npm run check` passes, 344 tests (run it in PowerShell, see F-036).
+- Last updated: 2026-11-15 01:05
+- Working on: nothing. A1-16 is pushed to main (a9c287d). Uncommitted: per-caller rate limits on chat, generate and captures (src/app/api/_lib/limits.ts and its test, three route edits). `npm run check` passes, 360 tests. Waiting for a commit yes.
 - Done this session: seeded the demo database `chronodex`; `npm run brief` (A1-16) and a draft brief for all 10 eras in `briefs/` (md to read, json to load); Queen's Tower 1893 saved with its guide to both `chronodex` and `chronodex_dev_alex`; real chat checked with mocks off against it (streamed, in character, short; failures only end in an error event); Historian researches up to 3 times because DeepSeek often skips its web tools (F-035) and the research prompt now forces a search first; README deploy section; `maxDuration = 60` on the chat route; milestone board and F-026 repair on the front page.
 - Next: (1) a human deploys to Vercel (needs their login; steps are in README "Deploying to Vercel") and posts the URL, then I do A1-12's phone check and A1-15 gates on the deployed site. (2) A human reads `briefs/*.md` (H7) before any pre-generation. (3) A1-08 part 2 (photo GPS and 16:9) when the H1 photos arrive. (4) Agent 5's data: seed reads `data/landmarks/*.json`, Historian takes supplied notes, when asked. Notes for the human readers: queens-tower_1962 has a summary sentence that contradicts itself about the east wing; huxley-building_1961 and _1885 are about the Queen's Gate site, not the building (it was built in the 1970s).
 - Blocked on: a human for the Vercel deploy, the H1 photos, and a read of the briefs. Nothing for code.
 - Board read up to: 2026-11-14 23:45 (the team's phone test round 1 posts). Nothing is addressed to me beyond the notebook's round 1 section, which this commit answers.
-- Waiting for commit approval: yes, the files listed above plus one board post.
+- Waiting for commit approval: yes, the rate-limit change plus one board post (not yet written).
 - Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
 - Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.
 
@@ -142,3 +142,10 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing.
 - Problems: in Git Bash, vitest failed every file for no code change and node was off PATH once; PowerShell ran clean (F-036). A human's dev server already held port 3000, so mine exited; I used theirs.
 - Next: see Current state.
+
+### 2026-11-15 01:05, A1-12 prep: rate limits
+- Did: added `src/app/api/_lib/limits.ts`: fixed-window limits per caller (first X-Forwarded-For address) on POST /api/chat (60 a minute), /generate (20) and /captures (60), reusing Agent 2's `createRateLimiter` from `@/lib/fal/guards`. 429 with Retry-After in the standard error shape. Test added.
+- Decided, and why: chat and generate spend DeepSeek and fal credits and had no limit, while the voice and upload routes did; a public URL makes that a real exposure. Numbers are generous because a demo room can share one public address. Counters are per server instance, so on Vercel the ceiling is a small multiple; that is enough against a script.
+- Measured or verified: `npm run check` passes, 360 tests (2 new).
+- Delegated to Haiku, and whether it was kept: nothing.
+- Next: commit on a yes, then wait for the Vercel URL.
