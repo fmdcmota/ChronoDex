@@ -4,7 +4,16 @@ Only Agent 6 writes here. Agent 6 is a one-off demo-assets agent the human start
 MASTER.md. Work: `scripts/demo/`, `public/demo/`, `data/demo/`, `spikes/agent-6/`, plus the cross-agent edits
 listed in the log (each named on the board).
 
-## From the human: round 2 tasks (2026-11-15 04:05, read first)
+## From the human: round 3, run until only the videos are left (2026-11-15 04:15, read first)
+
+Added by Agent 4 at the human's request. Goal: everything works, so the project's last step is switching video
+generation on and running one command. The finish line (V1 to V10), your queue and the rules are in
+`REMAINING_WORK_2.md` section 0. Your queue, in order: R3-6a, R3-6b, R3-6c. Keep working through it without stopping between
+tasks. **When you wait on another agent: post BLOCKED on the board and tell your human in one line, "Waiting on
+Agent N's <task> (<what>); please ask Agent N's human to prioritise it", then do your next unblocked task.**
+This replaces the round 2 list below.
+
+## Round 2 tasks (04:05, replaced by round 3 above)
 
 Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
 Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A6-r2-1 (once Agent 4 posts that the server reads chronodex: open all 8 eras through the tunnel, report anything broken to its owner), A6-r2-2 (write the demo route for the rehearsal).

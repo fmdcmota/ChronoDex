@@ -3,7 +3,16 @@
 Only Agent 1 writes here. Rules: `MASTER.md` section 8.5. Task details: `MASTER.md` section 11.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
-## From the human: round 2 tasks (2026-11-15 04:05, read first)
+## From the human: round 3, run until only the videos are left (2026-11-15 04:15, read first)
+
+Added by Agent 4 at the human's request. Goal: everything works, so the project's last step is switching video
+generation on and running one command. The finish line (V1 to V10), your queue and the rules are in
+`REMAINING_WORK_2.md` section 0. Your queue, in order: R3-1a (VIDEO_ERAS allow list, critical path), R3-1b, R3-1c, R3-1d, R3-1e. Keep working through it without stopping between
+tasks. **When you wait on another agent: post BLOCKED on the board and tell your human in one line, "Waiting on
+Agent N's <task> (<what>); please ask Agent N's human to prioritise it", then do your next unblocked task.**
+This replaces the round 2 list below.
+
+## Round 2 tasks (04:05, replaced by round 3 above)
 
 Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
 Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A1-r2-7 (Historian offers only selectableVoices()), A1-r2-9 (milestone board: M1 passed on an iPhone about 03:00), A1-r2-8 (delete Agent 3's test capture), then A1-r2-4 (M2 gates on the tunnel) as soon as Agent 4 posts that the server reads chronodex.

@@ -114,6 +114,8 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [x] A4-r2-2 Switch the phone server to chronodex now (Agent 6's 8 demo eras), reference photo in public/reference
 - [ ] A4-r2-8 Cache /demo/ files in the browser
 - [ ] A4-r2-9 WAV narration and replies on iOS (Gemini voices)
+- [ ] R3-4a Time Machine never asks for the video tier (V3, critical path)
+- [ ] R3-4b Preview to real clips swap tested with a fake guideVideo (V6)
 - [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
 - [x] A4-r2-4 Map zoom-fade polish (Agent 3's handoff): tiles kept loading while zooming, bigger cache
 - [ ] A4-r2-5 Real guide video on a phone
@@ -283,3 +285,8 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Did: copied data/reference/*.jpg to public/reference (git-ignored), rebuilt with MONGODB_DB=chronodex, restarted next start on 3110. The old quick tunnel had been dropped by Cloudflare ("Tunnel not found"), so started a new one: https://url-poems-screens-poll.trycloudflare.com.
 - Verified through the tunnel: home 200; queens-tower_1893, royal-albert-hall_1871, zocalo-cathedral_1519, dom-luis-bridge_1886 ready with their guides; /demo panorama and narration, /reference photo and the /api/media panorama all 200 with the right types.
 - Next: A4-r2-3 Then/Now, A4-r2-8, A4-r2-9.
+
+### 2026-11-15 04:15, round 3 plan
+- Did: at the human's request, `REMAINING_WORK_2.md` section 0: the video-ready finish line (V1 to V10), the relay rule (when waiting on another agent, post BLOCKED and tell your human to ask the other human to prioritise), long queues for Agents 1 to 6, who waits on whom, and a Gantt to video-ready by about 08:00. Notebooks 1, 2, 3, 5, 6 now open with their round 3 queue.
+- Found: with VIDEO_GENERATION=on the Time Machine would ask for the video tier on every ready era a player opens (8 x about $4.25, more than the $14.97 left). V3: R3-4a (mine) and R3-1a (Agent 1's allow list).
+- Next: R3-4a.

@@ -3,7 +3,16 @@
 Only Agent 5 writes here. Rules: `MASTER.md` section 8.5. Task details: `AGENT5.md` section 8.
 Questions and requests to other agents go on `BOARD.md`, not here.
 
-## From the human: round 2 tasks (2026-11-15 04:05, read first)
+## From the human: round 3, run until only the videos are left (2026-11-15 04:15, read first)
+
+Added by Agent 4 at the human's request. Goal: everything works, so the project's last step is switching video
+generation on and running one command. The finish line (V1 to V10), your queue and the rules are in
+`REMAINING_WORK_2.md` section 0. Your queue, in order: R3-5a (fact-check the 8 demo eras, critical path), R3-5b (wide Queen's Tower photo: Agent 2 is waiting on it), R3-5c. Keep working through it without stopping between
+tasks. **When you wait on another agent: post BLOCKED on the board and tell your human in one line, "Waiting on
+Agent N's <task> (<what>); please ask Agent N's human to prioritise it", then do your next unblocked task.**
+This replaces the round 2 list below.
+
+## Round 2 tasks (04:05, replaced by round 3 above)
 
 Added by Agent 4 at the human's request. Your tasks are in `REMAINING_WORK_2.md` section 3 (statuses at 04:05,
 Gantt in section 4); this list replaces the 01:50 priorities below where they differ. In order: A5-r2-1 first (fact-check the 8 demo eras' summary, facts and script against sources, post claims with none; no new eras before the freeze), then A5-r2-2 (a wide licensed photo of Queen's Tower from far back on Queen's Lawn, fixes Then/Now), then A5-r2-3 (credits for any period image the demo eras used).

@@ -1,7 +1,7 @@
 # Chronodex: what is left, round 2 (tasks per agent, Gantt)
 
 Written Sun 15 Nov 2026 at 03:10 by Agent 4 at the human's request, after phone tests 1 to 6. **Updated at 04:05**
-after pulling main: statuses, new tasks for Agents 1 to 6, and a new Gantt from 04:00. This replaces the
+after pulling main, and at 04:15 with round 3 (section 0): run long until only the videos are left. This replaces the
 action list and Gantt in `REMAINING_WORK.md`, which stays as the record of round 1. Freeze is still assumed at
 10:00 and submission at 12:00 (unconfirmed). Clock note: some board posts are stamped hours ahead of the real
 time; times here are the real clock.
@@ -9,6 +9,123 @@ time; times here are the real clock.
 **How agents use this file.** Read your section in 3, take tasks top to bottom, and log each in your notebook as
 usual. Ask on the board when a task waits on someone else. Do not edit other agents' sections: post corrections to
 `@team` instead.
+
+## 0. Round 3 (04:15): run long, until only the videos are left
+
+**The goal, from the human:** the agents keep working until everything works, so that the last step of the whole
+project is: switch `VIDEO_GENERATION=on`, run one command that makes the guide videos, switch it off. Nothing else.
+
+### 0.1 The finish line: "video-ready"
+
+Every box below must be ticked, by the owner named, before the human spends a cent on video.
+
+| # | Must be true | Owner |
+|---|---|---|
+| V1 | The 8 demo eras (section 1) open on an iPhone through the tunnel: 360° view, preview guide, captions, Sources, chat reply, voice reply | Agent 6 checks, owners fix |
+| V2 | M2 gate passed and logged: capture, Dex, chat, generate on a real phone | Agent 1 with a human |
+| V3 | **Video only starts on purpose.** The Time Machine never asks for the video tier by itself, and the server accepts video only for eras on an allow list (`VIDEO_ERAS`), so turning video on cannot spend on every era someone opens | Agent 4 (client), Agent 1 (server) |
+| V4 | Every input the video tier needs exists and fal can read it for each demo era: scene, headshot, narration (`/demo/...` paths go through `toFalUrl`); narration length fits the talk model (Kling) or is split | Agent 2 |
+| V5 | The video tier runs end to end in a dry run (mocks, no spend) through the worker on Agent 4's machine, writing `guideVideo` with three segments | Agent 2 |
+| V6 | The Time Machine swaps from the preview to the real clips as soon as `guideVideo` lands, without a reload; captions on the talk clip; ambience ducks; tested with a fake `guideVideo` | Agent 4 |
+| V7 | A one-page runbook `VIDEO_RUNBOOK.md`: the exact commands (env, worker, `pregenerate.ts --video --only <era>` one era at a time, `--max-usd`), how to watch progress, how to stop, what to check on a phone, then switch off. First era is the canary: check it before the next | Agent 2 |
+| V8 | Content is right: the 8 demo eras fact-checked (Agent 5) and their briefs read by a human (H7), because a video freezes the script | Agent 5, a human |
+| V9 | Then/Now is right or hidden for every demo era | Agent 4 (Agent 2 and 5 for the real fix) |
+| V10 | Everything is backed up: `public/demo/` in git, GridFS-only files on disk | Agent 2 |
+
+Budget: $14.97 left. At about $4.25 an era: the canary (Queen's Tower 1893), then at most two more.
+
+### 0.2 How agents work in round 3 (the relay rule)
+
+1. Work your queue in 0.3 top to bottom without stopping between tasks. Commit and push as you go.
+2. **When you are waiting on another agent:** post `BLOCKED` on the board naming the agent and task, **and tell
+   your own human in one line**: "Waiting on Agent N's <task id> (<what>). Please ask Agent N's human to
+   prioritise it." Then carry on with your next unblocked task. Do not sit idle.
+3. When you finish something another agent waits on, post `REPLY` to them at once (its own commit if needed).
+4. Before you stop for any reason, rewrite your notebook's Current state.
+
+### 0.3 Queues (long; work them in order)
+
+**Agent 1 (Core)**
+1. **R3-1a (V3, server)** `VIDEO_ERAS` env: comma-separated era ids that may get the video tier while
+   `VIDEO_GENERATION=on`; anything else answers 403 `video_disabled`. Document in `.env.example`. Tests.
+2. R3-1b Historian offers only `selectableVoices()` (A1-r2-7).
+3. R3-1c (V2) M2 gate on the tunnel with your human and a phone; log it; M1 as passed at about 03:00.
+4. R3-1d Chat check for all 8 demo eras with mocks off (a reply each, in character, short); fix prompt issues.
+5. R3-1e Delete Agent 3's test capture in `chronodex_dev_agent2`; keep `DEV_NOTEBOOK.md` current.
+6. Then: help with whatever is `BLOCKED` on the board.
+
+**Agent 2 (Studio)**
+1. R3-2a (V10) Back up the GridFS-only Queen's Tower 1893 panorama (A2-r2-6).
+2. R3-2b (V4) For each demo era: inputs exist and pass `toFalUrl`; narration length vs Kling's maximum; if over,
+   build the split (two talk requests played back to back, the player already handles extra segments).
+3. R3-2c (V5) Dry run of the video tier for all 8 eras through the worker on Agent 4's machine; fix what breaks.
+4. R3-2d (V7) Write `VIDEO_RUNBOOK.md`; have Agent 4 read it.
+5. R3-2e When Agent 5 lands a wide Queen's Tower photo: regenerate the 1893 scene only (about $0.17) (A2-r2-7).
+6. Do not run the real video tier until the human says go.
+
+**Agent 3 (Explorer)**
+1. R3-3a Check only the 8 demo landmarks light up on the tunnel (A3-r2-5).
+2. R3-3b With a human: Android pass, Add to Home Screen (A3-r2-3, A3-r2-6).
+3. R3-3c Map and Dex polish for the demo route Agent 6 writes; nothing new after 10:00.
+
+**Agent 4 (Time Machine)**
+1. **R3-4a (V3, client)** The Time Machine stops asking for the video tier; videos come only from the runbook.
+2. R3-4b (V6) Test the swap from preview to real clips with a fake `guideVideo` era; fix if it needs a reload.
+3. R3-4c (V9) Then/Now: apply Agent 2's crop for Queen's Tower 1893 or hide it; check the other 7 eras.
+4. R3-4d `/demo/...` files in the browser cache (A4-r2-8); WAV voices on iOS (A4-r2-9).
+5. R3-4e Keep the server and tunnel up; post every new URL.
+6. R3-4f Read Agent 2's runbook (V7) and add the phone checks.
+
+**Agent 5 (Archivist)**
+1. R3-5a (V8) Fact-check the 8 demo eras' summary, facts and script; post each unsupported claim to Agent 1.
+2. R3-5b A wide, licensed present-day photo of Queen's Tower from far back on Queen's Lawn (unblocks R3-2e).
+3. R3-5c Credits for period images the demo eras used.
+
+**Agent 6 (demo set)**
+1. R3-6a (V1) Open all 8 eras through the tunnel; post each problem to its owner.
+2. R3-6b The demo route and script for the rehearsal (`DEMO.md`).
+3. R3-6c Re-check V1 after every fix lands; keep the V1 to V10 table's ticks current on the board.
+
+### 0.4 Who is waiting on whom right now (04:15)
+
+| Waiting | On | For | Tell this human |
+|---|---|---|---|
+| Agent 2 (R3-2e, Then/Now real fix) | Agent 5 | R3-5b wide Queen's Tower photo | Agent 5's human: prioritise R3-5b after R3-5a |
+| Agent 1 (R3-1c gates) | a human with a phone | M2 walk-through | Agent 1's human |
+| Agent 2 (R3-2c dry run on this machine) | Agent 4's machine and human | access to run the worker here | Agent 4's human |
+| Final video step | Agent 1 R3-1a, Agent 4 R3-4a, Agent 2 R3-2b to R3-2d, Agent 5 R3-5a + human H7 | V3 to V8 | everyone: these are the critical path |
+| Agents 3 and 6 | Agent 4 | server on `chronodex` | nobody: done at 04:12 |
+
+The section 3 tables below keep the round 2 history.
+
+### 0.5 Gantt to video-ready (real clock)
+
+```
+                                          04 05 06 07 08 09 10 11 12
+ VIDEO-READY (critical path)
+  R3-4a client never asks for video        █
+  R3-1a server VIDEO_ERAS allow list       █  █
+  R3-2b inputs and Kling length per era    █  █
+  R3-2c video-tier dry run, all 8 eras        █  █
+  R3-4b preview to clips swap tested          █
+  R3-2d VIDEO_RUNBOOK.md                         █
+  R3-5a fact-check + H7 human read          █  █  █
+  R3-6a/c all 8 eras on a phone (V1)        █  █  ▒  ▒
+  R3-1c M2 gate (V2)                           ▒  ◆
+  VIDEO-READY: V1 to V10 ticked                        ◆
+  HUMAN: video on, canary era, then 1-2 more              █  █
+ PARALLEL
+  R3-4c Then/Now crop or hide               █
+  R3-5b wide photo -> R3-2e new 1893 scene     █  █  █
+  R3-3b Android, Add to Home Screen            ▒  ▒  ▒
+  R3-6b demo route                             █  █
+ FINISH
+  FEATURE FREEZE                                          ◆
+  rehearse, backup video, submit                             █  █  ◆
+```
+
+Video-ready by about 08:00 leaves two hours of credit-limited generation before the freeze. Section 4 below is
+the 04:00 chart, kept for history.
 
 ## 1. Where we are (04:05)
 
