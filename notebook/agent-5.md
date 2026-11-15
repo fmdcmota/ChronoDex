@@ -20,12 +20,14 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:31 (page created by Agent 4 at a human's request; Agent 5 has not started)
-- Working on: nothing yet.
-- Next: A5-01. Start with the prompt in `AGENT5.md` section 9.1.
-- Blocked on: nothing for A5-01 to A5-11. A5-12 waits for the team's H1 photos.
-- Board read up to: 2026-11-14 20:31 (the post that announced Agent 5).
-- Commits: standing instruction from the human (14 Nov, 20:25): commit and push to `main` without asking; stop only on a rebase conflict or a failing `npm run check`.
+- Last updated: 2026-11-15 00:55, by Agent 4 standing in for Agent 5 (human's request). Plain-words method for the human: `notebook/agent-5-guideline.md`.
+- Working on: Queen's Tower 1893 (top priority, for Agent 2's realism bake-off), done by the lead alone. The human said no subagents (cost).
+- Next: queens-tower_1893 era file and images, board post to Agent 2; then data/landmarks files; then the other eras in MASTER section 12 order.
+- Blocked on: nothing. A5-12 waits for the team's H1 photos.
+- Board read up to: 2026-11-15 00:30 (Agent 4's posts; nothing addressed to Agent 5 since 23:45).
+- Rescued: Agent 5's 14 Nov session (worktree data-sources-validation-2a554a, out of usage at 21:57) left scripts/data (schema, checks, files, notes, attribution) and spikes/agent-5 (RESEARCH_BRIEF.md, geo.mjs, outline.mjs, a git-ignored 4 MB cache of sources) uncommitted; copied here unchanged. Its photo spots are in the attempts log below.
+- Tooling: `npx vitest run --pool=vmThreads` on this machine (default pool broken on Node 26.13.1).
+- Commits: standing instruction from the human (14 Nov, 20:25): commit and push to `main` without asking; stop only on a rebase conflict or a failing check.
 
 ## Tasks
 
@@ -48,6 +50,8 @@ Searches and strategies tried per item, so a resumed session does not repeat the
 
 | Item | Strategy | Result | When |
 |---|---|---|---|
+| Photo spots, all six | Agent 5 (14 Nov) placed them from OSM; checked 15 Nov with spikes/agent-5/geo.mjs | All on or within 4.4 m of a footway, sidewalk or pedestrian way; none inside a building; sight line crosses only the subject. QT 51.497930,-0.176890 facing 0 (46.8 m); Huxley 51.498700,-0.179880 facing 75 (56.3 m); RAH 51.501780,-0.177410 facing 180 (85.1 m); Exhibition Road 51.497400,-0.174000 facing 358 (79.8 m); V&A 51.496650,-0.173920 facing 90 (27.7 m); NHM 51.495465,-0.176020 facing 0 (48.4 m) | 15 Nov 00:50 |
+| Six researcher subagents | Relaunched with Agent 5's prompts at 00:45 | Stopped by the human at about 00:50 for cost before writing anything. Do not use subagents | 15 Nov 00:50 |
 
 ## Log
 
@@ -64,3 +68,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 ## Final report
 
 Written at A5-11 (`AGENT5.md` section 9.7).
+
+### 2026-11-15 00:55, A5-01: rescue and validator (Agent 4 standing in)
+- Did: copied Agent 5's uncommitted work from its worktree. Wrote scripts/data/validate.ts (offline checks, `--era <eraId>`, `--online` with polite fetching) and scripts/data/build.ts (sources from citedSources, notes.txt, ATTRIBUTION.md). Checked the six photo spots on OSM (attempts log). Wrote notebook/agent-5-guideline.md for the human.
+- Decided, and why: no top-level await in validate.ts (tsx compiles to CJS here). Subagents stopped at the human's request; work continues single-threaded, Queen's Tower 1893 first.
+- Measured or verified: typecheck and lint pass; validator passes on an empty data/ and reports a missing era file.
+- Delegated to Haiku, and whether it was kept: checks.test.ts was handed over and then stopped before it wrote anything. Still to do.
+- Problems: Agent 5's session left no notebook entries; its state was reconstructed from files and its transcript.
+- Next: queens-tower_1893.
