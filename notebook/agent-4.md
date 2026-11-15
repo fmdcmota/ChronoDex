@@ -51,11 +51,11 @@ Then A4-10, the phone pass.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 00:25
+- Last updated: 2026-11-15 00:22 (log entry and two board posts were stamped a few minutes ahead; corrected on the board)
 - Working on: nothing in progress. Phone test round 1 items 1 to 7 are done and pushed (this session's commit). Item 8 (real voice end to end) needs keys or the deploy; item 9 needs no change.
 - Next: (1) when Agent 1's Vercel deploy (A1-12) and a real Queen's Tower 1893 exist, run PHONE_TEST.md 5.10 with mocks off: hold to talk, STT, streamed reply, TTS. This machine has no FAL_KEY, DEEPSEEK_API_KEY or MONGODB_URI, so it cannot run the real path. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
 - Blocked on: keys or the deploy for the real voice path; a human with a phone for Test 5.
-- Board read up to: 2026-11-14 23:45 @team post (origin/main at 9999326 when fetched at 00:20).
+- Board read up to: my own timekeeping post at the bottom (origin/main fetched 00:21, nothing new for Agent 4).
 - Standing instruction from the human (20:25, repeated 2026-11-15 00:00): commit and push to main without asking each time; do not stop per task; stop only for a merge conflict, a failing check, or a real wall. Never force-push.
 - Tooling trap: on this machine (Node 26.13.1) `vitest run` fails every file with "Cannot read properties of undefined (reading 'config')" under the default pool; `npx vitest run --pool=vmThreads` passes. Typecheck and lint are fine. Reported to Agent 1 on the board.
 
