@@ -11,6 +11,7 @@ import type { NextRequest } from 'next/server';
 import { EraIdSchema, GenerateRequestSchema } from '@/lib/contracts';
 import { requestEraGeneration } from '@/lib/jobs';
 import { handle, json, jsonError, readJson } from '../../../_lib/http';
+import { generateLimiter, limitOrNull } from '../../../_lib/limits';
 
 /**
  * Request generation.
@@ -21,6 +22,8 @@ import { handle, json, jsonError, readJson } from '../../../_lib/http';
  */
 export async function POST(request: NextRequest, ctx: RouteContext<'/api/eras/[eraId]/generate'>): Promise<Response> {
   return handle('POST /api/eras/[eraId]/generate', async () => {
+    const limited = limitOrNull(generateLimiter, request);
+    if (limited) return limited;
     const { eraId } = await ctx.params;
     if (!EraIdSchema.safeParse(eraId).success) return jsonError(400, 'bad_request', `Invalid era id "${eraId}"`);
     const body = await readJson(request, GenerateRequestSchema);

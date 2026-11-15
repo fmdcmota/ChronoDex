@@ -1,0 +1,69 @@
+{
+  "title": "A Brand-New Red House on Queen's Gate",
+  "summary": "In 1885 the site of today's Huxley Building held a brand-new red-brick house designed by Richard Norman Shaw for the barrister Henry Francis Makins. The lease was granted that March at £240 a year, though Makins did not appear in the Post Office Directory until 1886. The name 'Huxley Building' belonged elsewhere in 1885, to the Science Schools on Exhibition Road. The record for this exact year is thin: the house's completion state and street details are not confirmed.",
+  "funFacts": [
+    "Makins applied for a building lease in November 1883, proposing 'a House of ornamental design in Mr Norman Shaw's justly appreciated style of architecture in red brick'.",
+    "The builder was William Cubitt and Company, who had already built Makins's Palace Gate house and the Alliance Assurance building to Shaw's designs.",
+    "The house stood on a corner site; the planned mews access road to its south was abandoned and remained a cul-de-sac.",
+    "In 1885 the Royal Horticultural Society's twenty-acre garden lay immediately east, hosting the International Inventions Exhibition from 4 May.",
+    "The exhibition attracted three and three-quarters of a million visits over six months under the presidency of the Prince of Wales.",
+    "Shaw's house was demolished in 1970–71 and replaced by the present Huxley Building of Imperial College."
+  ],
+  "sources": [
+    {
+      "title": "Survey of London vol. 38: Queen's Gate and the Makins house",
+      "url": "https://www.british-history.ac.uk/survey-london/vol38/pp325-348"
+    },
+    {
+      "title": "Survey of London vol. 38: Royal Horticultural Society garden",
+      "url": "https://www.british-history.ac.uk/survey-london/vol38/pp124-132"
+    },
+    {
+      "title": "Survey of London vol. 38: Queen's Gate residents and services",
+      "url": "https://www.british-history.ac.uk/survey-london/vol38/pp317-324"
+    },
+    {
+      "title": "Grace's Guide: 1885 International Inventions Exhibition",
+      "url": "https://gracesguide.co.uk/index.php?title=1885_International_Inventions_Exhibition&diff=prev&oldid=1339620"
+    },
+    {
+      "title": "Getty CONA: 180 Queen's Gate",
+      "url": "https://www.getty.edu/cona/CONAFullSubject.aspx?subid=700054340"
+    },
+    {
+      "title": "Survey of London plate 103: No. 180 Queen's Gate interiors",
+      "url": "https://www.british-history.ac.uk/survey-london/vol38/plate-103"
+    }
+  ],
+  "sceneBrief": {
+    "description": "Looking east from Queen's Gate, the camera faces the west elevation of a newly built red-brick house by Richard Norman Shaw. A three-storeyed canted bay rises to a tall gable springing from prominent scroll motifs and capped with a shaped pediment. Irregular mullioned-and-transomed windows with leaded lights break the plain brickwork. At the south-west corner a recessed entrance porch on squat pillars carries an order of pilasters above. To the south, the house's side front shows two enormous chimney-breasts flanking a two-storeyed arched recess, facing a short cul-de-sac.",
+    "changes": {
+      "persists": [],
+      "altered": [
+        "Queen's Gate itself, now lined with later buildings",
+        "The general street line along Queen's Gate"
+      ],
+      "notYetBuilt": [
+        "The present Huxley Building of Imperial College",
+        "The block of flats later built on Makins's north side"
+      ],
+      "gone": [
+        "Shaw's red-brick house of 1883–5, demolished in 1970–71",
+        "The Royal Horticultural Society's twenty-acre garden",
+        "The International Inventions Exhibition buildings and pleasure grounds",
+        "The great conservatory, arcades and canals of the RHS garden"
+      ]
+    },
+    "surroundings": "North: Queen's Gate continues toward Kensington Gore and the Royal Albert Hall, with open ground rather than a built frontage on the east side. East: the west front of No. 180, and beyond it the RHS garden and the busy International Inventions Exhibition. South: Queen's Gate runs down toward Cromwell Road, with the cul-de-sac approach road immediately south of the house. West: across the street, the Kensington side of Queen's Gate, built up in the Italianate stucco tradition of the estate.",
+    "referenceImageUrls": []
+  },
+  "guide": {
+    "name": "Ellen Pratt",
+    "role": "Laundry maid at a neighbouring household",
+    "bio": "I work in the wash-house of a house nearby, and I know every back gate and coal hole in Queen's Gate. I've watched that red-brick house go up brick by brick, and I can tell you who's moving in and who isn't.",
+    "appearance": "A woman of about twenty-five, slight and quick-moving, in a dark stuff dress with a white apron, a plain cap and her sleeves rolled to the elbow.",
+    "voiceKey": "eleven-alice",
+    "script": "I'm Ellen Pratt, and I do laundry for a household just along Queen's Gate. You're looking at the new red-brick house, Mr Shaw's design, and it's only just finished. The lease was signed in March at two hundred and forty pounds a year, though the family haven't moved in yet, not by the directory. Behind it, where the garden is, they've got the International Inventions Exhibition running since the fourth of May, and they say three and three-quarters of a million visits before it closes. We hear the music drifting over from the bandstand while we're at the wash-house. Mind how you go now, I've got sheets to fetch.",
+    "greeting": "You're staring at that red house, aren't you? I'm Ellen, I work just along the street — ask me anything about the place."
+  }
+}

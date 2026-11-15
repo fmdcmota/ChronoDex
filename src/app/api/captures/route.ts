@@ -13,6 +13,7 @@ import type { NextRequest } from 'next/server';
 import { CaptureRequestSchema, resolveCapture, type Capture, type CaptureResult } from '@/lib/contracts';
 import { insertCapture, listLandmarks } from '@/lib/db';
 import { handle, json, jsonError, readJson } from '../_lib/http';
+import { captureLimiter, limitOrNull } from '../_lib/limits';
 
 /** Distances are stored to the decimetre. GPS is nowhere near that precise anyway. */
 const DISTANCE_DECIMALS_FACTOR = 10;
@@ -42,6 +43,8 @@ function isWebUrl(url: string): boolean {
  */
 export async function POST(request: NextRequest): Promise<Response> {
   return handle('POST /api/captures', async () => {
+    const limited = limitOrNull(captureLimiter, request);
+    if (limited) return limited;
     const body = await readJson(request, CaptureRequestSchema);
     if (!body.ok) return body.response;
     const { playerId, photoUrl, location, accuracyM, spoofed } = body.data;

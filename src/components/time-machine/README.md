@@ -9,9 +9,10 @@ Owner: Agent 4. The `/time/[landmarkId]` screen (MASTER.md section 1.2 part 2, t
 - `PanoramaView.tsx`: Photo Sphere Viewer + gyroscope. Full 2:1 or a cropped band via `panoData.ts`.
 - `GuidePlayer.tsx`: walk_on, talk, walk_off back to back (`segmentPlayer.ts`), or the narration
   until a video exists, with captions from `captions.ts`.
-- `ProgressSheet.tsx`: the job's stages with model ids and seconds. Collapses to a pill for the video tier.
-  While the job is queued it says so, and after a minute that the studio (worker) may be offline.
+- `ProgressSheet.tsx`: the job's stages with model ids and seconds, a pill for the video tier, a queue note.
 - `YearBar.tsx`: one button per era with a state marker.
+- `useAmbience.ts`, `ambience.ts`, `AmbienceToggle.tsx`: period loop (`public/audio/ambience/<bucket>.mp3`,
+  soft noise until it exists) through Web Audio, ducked while the guide speaks, mute saved per device.
 - `pixel.ts`: class strings for the game look (pixel font, pixel frames, ink, paper and gold) built on
   Agent 3's CSS variables in `globals.css`. The chat imports it too.
 - `ThenNowSlider.tsx` (A4-06): reference photo vs scene image with a draggable divider, maths in
@@ -30,10 +31,10 @@ then follow `spikes/agent-4/PHONE_TEST.md` Test 4.
 ## Traps
 
 - The screen is `fixed inset-0 z-40`, over the app shell: it is immersive and has its own back link.
-- PSV touches `window`: it is imported inside an effect, never at module top.
-- PanoramaView's `className` sets its position. Do not add `relative` inside it: it beat `absolute` once.
+- PSV touches `window`, so it is imported inside an effect. PanoramaView's `className` sets its position.
 - Sound starts only from a tap ("Meet …"). SegmentPlayer primes its standby video inside that tap for iOS.
 - Agent 3's `globals.css` styles bare `h2` and `p` outside any layer, so they beat Tailwind classes.
   Use Tailwind's important suffix (`m-0!`) where a `p` margin gets in the way.
 - A pixel frame is a box-shadow 3 px outside the box: a parent with `overflow` clips it unless it has padding.
 - No lookbehind regexes: Safari before iOS 16.4 cannot parse them and the whole page would fail.
+- iOS ignores `audio.volume`, hence Web Audio for ambience; Web Audio is silent with the ring switch off.

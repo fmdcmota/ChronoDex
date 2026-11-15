@@ -24,6 +24,8 @@ export interface GuidePlayerProps {
   era: Pick<Era, 'guideVideo' | 'narrationAudioUrl'> & { guide: Guide };
   /** Called when the guide has finished or the player skips. The screen then offers the chat. */
   onFinished: () => void;
+  /** Called with true when the guide starts and false when they stop, so the screen can lower the ambience. */
+  onPlayingChange?: (playing: boolean) => void;
 }
 
 /** What the player is doing. */
@@ -37,9 +39,10 @@ type Phase = 'ready' | 'playing' | 'done';
  * @param props - Component props.
  * @param props.era - The era's guide, video and narration.
  * @param props.onFinished - Called once when the guide is done or skipped.
+ * @param props.onPlayingChange - Called with true on start and false on finish, skip or a blocked start.
  * @returns The player overlay.
  */
-export function GuidePlayer({ era, onFinished }: GuidePlayerProps) {
+export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerProps) {
   const { guide, guideVideo, narrationAudioUrl } = era;
   const [phase, setPhase] = useState<Phase>('ready');
   const [caption, setCaption] = useState<Caption | null>(null);
@@ -105,6 +108,7 @@ export function GuidePlayer({ era, onFinished }: GuidePlayerProps) {
   function finish() {
     setPhase('done');
     setCaption(null);
+    onPlayingChange?.(false);
     onFinished();
   }
 
@@ -112,11 +116,13 @@ export function GuidePlayer({ era, onFinished }: GuidePlayerProps) {
   const start = () => {
     setProblem(null);
     setPhase('playing');
+    onPlayingChange?.(true);
     const p = player.current;
     const a = audio.current;
     const started = p ? p.play() : a ? a.play() : Promise.reject(new Error('nothing to play'));
     started.catch(() => {
       setPhase('ready');
+      onPlayingChange?.(false);
       setProblem('Tap again to hear the guide. Your browser blocked the sound.');
     });
   };

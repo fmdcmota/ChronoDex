@@ -1,0 +1,45 @@
+FACTS:
+- Queen Victoria formally opened the Imperial Institute on 10 May 1893. (fun fact) [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- The tower formed the centre of a roughly 700-foot frontage with smaller towers at both ends. [https://www.imperial.ac.uk/about/history/queens-tower/]
+- The exterior used Portland Whitbed stone and contrasting brickwork. [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- Imperial Institute Road was laid out south of the building in 1888–92. [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- The central tower rose to 287 feet; its base walls were nine feet thick. (fun fact) [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- The official opening used a temporary hall; the proposed great hall was never built. (fun fact) [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- A billiard-room was added in 1893 to attract subscribing Fellows. (fun fact) [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- Domed entrances to the Eastern and Western Galleries were built in 1891. [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- The ten bells were cast by John Taylor of Loughborough. (fun fact) [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- The later Royal College of Science building on the south side of the road began construction in 1900, so it must not appear in an 1893 view. [https://www.british-history.ac.uk/survey-london/vol38/pp233-247]
+DAILY LIFE:
+- The period street photograph shows a man wearing a dark jacket and a rounded brimmed hat; use this as visible clothing evidence, not a universal dress code. [https://commons.wikimedia.org/wiki/File:Gezicht_op_het_Imperial_Institute_te_Londen,_RP-F-00-4232.jpg]
+- A horse-drawn delivery vehicle is visible outside the Institute in the period photograph. [https://commons.wikimedia.org/wiki/File:Gezicht_op_het_Imperial_Institute_te_Londen,_RP-F-00-4232.jpg]
+- The 1893 billiard-room illustrates the Institute’s attempt to attract Fellows through club amenities. [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- Punch’s July 1893 satire places attendants and a constable among visitors queuing to see royal wedding presents in the North Gallery. It is evidence of contemporary representation, not a literal crowd count or transcript. [https://www.gutenberg.org/cache/epub/35734/pg35734-images.html]
+- The same sketch depicts visitors complaining about the heat and queue, and mentions retreating to the grounds for air. Treat the comic exaggeration as satire. [https://www.gutenberg.org/cache/epub/35734/pg35734-images.html]
+- Building work involved masons and carpenters; the Survey records labour disputes in 1890–91 and work nearing completion early in 1894. [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- Plausible job for a fictional guide here in 1893: Gallery attendant (represented in Punch’s July 1893 satire; fictional character, duties only). [https://www.gutenberg.org/cache/epub/35734/pg35734-images.html]
+- Plausible job for a fictional guide here in 1893: Mason working on the Institute’s finishing works (documented trade; assignment to a particular day in 1893 is fictional). [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- Plausible job for a fictional guide here in 1893: Carpenter associated with the Institute building works (documented trade; fictional individual). [https://www.british-history.ac.uk/survey-london/vol38/pp220-227]
+- Dress in 1893: Use the photograph’s dark jacket and rounded brimmed hat as a restrained visual reference; no attendant uniform or trade-specific outfit has been verified.
+- Speech in 1893: Use clear everyday English. Punch supplies evidence of conversational exchanges but its comic dialect is not a reliable accent specification; do not copy its caricature.
+- Prices in 1893: No Institute admission price or local cab fare for 1893 has been verified. Omit numerical prices from the guide script.
+- Transport in 1893: Horse-drawn delivery traffic is directly visible in the photograph; particular cab routes and fares remain unverified.
+SCENE FROM THE PHOTO SPOT:
+- Face north towards the central domed tower, attached at its base to the Imperial Institute’s long, richly ornamented frontage. Extend connected wings to both sides, with repeated windows, steep gables, chimneys, smaller towers and alternating pale masonry and darker brick bands. A broad carriage road and kerbed pavements occupy the foreground; add sparse horse-drawn traffic and pedestrians in clothing supported by the period photograph. Slender street lamps are visible, but their fuel is not established here. Do not show today’s isolated tower, open lawn around its base or modern campus blocks. Colour guidance: pale Portland stone is supported by the text; brick appears darker in the monochrome images, but its exact hue and the dome’s 1893 patina remain unverified. Use the images for architectural forms, never their sepia cast as material colour.
+- Still there today, unchanged: The central tower’s upper masonry and domed silhouette, allowing for later repair.
+- There in 1893 but different today: The tower’s base is integrated into the Institute frontage rather than the later rebuilt freestanding base.
+- Exists today but not yet built in 1893: Modern campus blocks and landscaped space occupying the demolished Institute footprint.
+- There in 1893 and gone today: The Institute’s connected east and west front wings and smaller end towers; The associated domed gallery entrances.
+ALL AROUND:
+- North: the tower and connected Institute frontage dominate and block a direct view through to the rear galleries and gardens. East and west: continue the frontage and carriage road laterally; do not replace the wings with open lawn. South: the road and its opposite frontage must be reconstructed from a period plan, still missing from this dossier. The later Royal College of Science building was not yet present; this is not evidence that the entire southern plot was bare. Do not invent specific southern buildings, shop signs or planting. A full 360-degree reconstruction therefore has lower confidence behind the viewer than in the documented forward view.
+IMAGES:
+- https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Gezicht_op_het_Imperial_Institute_te_Londen%2C_RP-F-00-4232.jpg/1920px-Gezicht_op_het_Imperial_Institute_te_Londen%2C_RP-F-00-4232.jpg (page: https://commons.wikimedia.org/wiki/File:Gezicht_op_het_Imperial_Institute_te_Londen,_RP-F-00-4232.jpg, CC0, Rijksmuseum (metadata credit); photographer Frith & Co. (object description), 1887–c. 1900, same view: Imperial Institute south frontage, oblique street-level photograph)
+- https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/1903-11-04_front_Imperial_Institute_London.jpg/1920px-1903-11-04_front_Imperial_Institute_London.jpg (page: https://commons.wikimedia.org/wiki/File:1903-11-04_front_Imperial_Institute_London.jpg, Public domain, Unknown author, 1892–1903, same view: Imperial Institute south frontage on a postcard mailed in 1903)
+GAPS:
+- The rearward (southern) panorama lacks a verified 1893 plan or photograph. The forward facade is better documented than the full 360-degree scene.
+- Neither retained image has a securely established 1893 exposure date. The first has a broad catalogue range; the second predates its 1903 mailing. Do not transfer incidental construction or planting details without corroboration.
+- The exact 1893 dome patina, brick hue, roof covering, road paving material and lamp fuel are unresolved. Sepia and postcard printing do not establish colours.
+- No verified admission prices or local fares; no verified gallery-attendant uniform. Do not invent them.
+- Roles describe fictional people supported by documented occupations. The Punch source is satire and must not be treated as a literal eyewitness transcript.
+- BHO and Imperial live web requests returned 403 in this session; their full previously downloaded text was read locally. Commons metadata was refreshed successfully and both cached images were visually inspected.
+- No independent subagent audit was run: the human prohibited subagents. A second manual source-to-claim review was performed in the same session.
+- The two forward-view reference images are ready for a cautious facade trial. Full-era validation remains pending the southern panorama and stronger period-detail evidence; thin_record is an interim research status, not a claim that all archives are exhausted. Both existing game years remain unchanged.

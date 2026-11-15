@@ -86,10 +86,10 @@ const viewer = new Viewer({
   panoData: providerFor(first.vFovDeg),
   defaultYaw: 0,
   defaultPitch: 0,
-  defaultZoomLvl: 30,
+  defaultZoomLvl: 45,
   // Gyroscope button only appears where the device supports it.
   navbar: ['zoom', 'move', 'gyroscope', 'fullscreen'],
-  plugins: [GyroscopePlugin.withConfig({ touchmove: true, roll: true, moveMode: 'smooth' })],
+  plugins: [GyroscopePlugin.withConfig({ touchmove: true, roll: true, moveMode: 'fast' })],
 });
 const gyro = viewer.getPlugin<GyroscopePlugin>(GyroscopePlugin);
 
@@ -129,7 +129,7 @@ motionBtn.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
   if (gyro.isEnabled()) gyro.stop();
-  viewer.animate({ yaw: 0, pitch: 0, zoom: 30, speed: '4rpm' });
+  viewer.animate({ yaw: 0, pitch: 0, zoom: 45, speed: '4rpm' });
 });
 
 modeEl.addEventListener('change', () => {

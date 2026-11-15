@@ -1,0 +1,9 @@
+{
+  "name": "chronodex-agent-5-spikes",
+  "private": true,
+  "type": "module",
+  "description": "Agent 5 (Archivist) throwaway helpers: OSM geometry checks, Commons metadata fetches, reference photo crops. Never imported by src/.",
+  "dependencies": {
+    "sharp": "^0.35.5"
+  }
+}

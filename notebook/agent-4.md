@@ -51,24 +51,33 @@ Then A4-10, the phone pass.
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:30
-- Working on: nothing in progress. Everything up to the restyle is on main (4382e09). This session's last commit adds the real-API fixes below and the PHONE_TEST.md Test 4 rows.
-- Next: A4-08 once Agent 2 lands `/api/voice/tts` and `/api/voice/stt` (neither exists on main or origin/agent-2 at 20:25). Phone results from `spikes/agent-4/PHONE_TEST.md` Tests 1 to 4. When Atlas and a worker run, check one real era end to end with mocks off. A4-10 phone polish after that.
-- Blocked on: Agent 2's voice routes (A4-08), phone results from a human.
-- Board read up to: 2026-11-14 19:55 @team review post (origin/main at a505547 when fetched at 20:25).
-- Standing instruction from the human (20:25): commit and push to main without asking each time; stop only to flag a merge conflict or a failing check. Never force-push.
+- Last updated: 2026-11-15 00:22 (log entry and two board posts were stamped a few minutes ahead; corrected on the board)
+- Working on: nothing in progress. Phone test round 1 items 1 to 7 are done and pushed (this session's commit). Item 8 (real voice end to end) needs keys or the deploy; item 9 needs no change.
+- Next: (1) the real voice path (item 8, PHONE_TEST.md 5.10 and 5.11) now belongs to Agent 2 by the human's call; fix any screen-side bug they post. (2) Phone results for PHONE_TEST.md Test 5 (round 1 retest). (3) When Agent 2's `public/audio/ambience/*.mp3` land, check they replace the placeholder noise (no code change expected). (4) A4-10 phone polish.
+- Blocked on: keys or the deploy for the real voice path; a human with a phone for Test 5.
+- Board read up to: my own timekeeping post at the bottom (origin/main fetched 00:21, nothing new for Agent 4).
+- Standing instruction from the human (20:25, repeated 2026-11-15 00:00): commit and push to main without asking each time; do not stop per task; stop only for a merge conflict, a failing check, or a real wall. Never force-push.
+- Tooling trap: on this machine (Node 26.13.1) `vitest run` fails every file with "Cannot read properties of undefined (reading 'config')" under the default pool; `npx vitest run --pool=vmThreads` passes. Typecheck and lint are fine. Reported to Agent 1 on the board.
 
 ## Tasks
 
-- [ ] A4-01 360° viewer spike on a real phone
+- [x] A4-01 360° viewer spike on a real phone (VIEW-1 to VIEW-10 pass on iPhone, iOS 26.5.1, phone test round 1)
 - [x] A4-02 Time Machine screen and year bar (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
 - [x] A4-03 360° view component (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
 - [x] A4-04 Guide player: clips in order, narration fallback, captions (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
 - [x] A4-05 Progress sheet (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
 - [x] A4-06 Then/now slider (desktop, mock mode; phone check still to ask)
 - [x] A4-07 Chat screen (desktop, mock mode; phone check asked in PHONE_TEST.md Test 4)
-- [ ] A4-08 Voice in and out
+- [ ] A4-08 Voice in and out (screens call the real routes; recorder, playback and cues fixed after phone round 1; real path not yet seen, PHONE_TEST.md 5.10)
 - [x] A4-09 Sources drawer and next-step prompts (desktop, mock mode; phone check still to ask)
+- [x] R1-1 Gyro smoothing 'fast', zoom 45 (app and spike)
+- [x] R1-2 Recorder: reopen a dead or muted mic, 250 ms timeslice, never send under 1 KB
+- [x] R1-3 Audio: load() before play(), retry once (chat replies; spike recording playback)
+- [x] R1-4 Soft mic on/off earcons for the voice switch and hold-to-talk
+- [x] R1-5 Reset: typing dots, then the greeting (read aloud if voice is on)
+- [x] R1-6 Headshot: poll while the era's job runs; period silhouette fallback
+- [x] R1-7 Period ambience with ducking and a saved mute (placeholder noise until Agent 2's loops land)
+- [ ] R1-8 Real voice and replies on a phone: handed to Agent 2 by the human (board ASK, 2026-11-15; first posted to Agent 1, then corrected)
 - [ ] A4-10 Phone pass and polish
 - [ ] A4-S1 Stretch: overlay on the live camera (after M4 only)
 - [ ] A4-S2 Stretch: compass-aligned panorama (after M4 only)
@@ -161,3 +170,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Decided, and why: Agent 5 writes data files only; its data reaches the app through small ASKs to Agents 1 and 2 (seed reads data/landmarks, Historian accepts pre-made notes), so no frozen contract changes. I did not edit MASTER.md or CLAUDE.md (human-owned); the human was told what to add.
 - Problems: AGENT5.md section 7's API parameters were written from memory and not run; the brief tells Agent 5 to verify them first.
 - Next: unchanged (A4-08 when the voice routes land; phone results).
+
+### 2026-11-15 00:25, phone test round 1: items 1 to 7
+- Did: (1) PanoramaView: gyroscope `moveMode` 'fast' (PSV 5.15 has only 'smooth', which eases at speed 3, and 'fast' at 10; no finer setting), `DEFAULT_ZOOM_LVL` 30 to 45; same in the spike. (2) `recorder.ts`: `streamIsUsable` checks every audio track is live, unmuted and enabled before each press and reopens the mic if not; `start(250)`; a blob under `MIN_RECORDING_BYTES` (1 KB) closes the stream and the chat shows "Didn't catch that" instead of sending. Copied into the spike's recorder unchanged; media page logs a near-empty recording and calls `load()` after setting the playback src (MEDIA-6). (3) New `chat/audio.ts`: `playUrl` (pause, src, load, play, retry once after canplay) for TTS replies. (4) `tone.ts`: `notesWav`, `earconWav('on'|'off')` (E5 to A5 rising or falling, 80 ms notes, 20 ms gap, 15 ms raised-cosine fades, peak 0.22) and `silenceWav`; `playCue` plays them on the shared reply element, so every tap still unlocks it for iOS. Voice switch: rising/falling; mic press: rising, release: falling (played after the recorder has stopped); Send and listen: silence. (5) Reset clears, shows the dots for `GREETING_DELAY_MS` (1 s), then the greeting, read aloud if voice is on. (6) The chat polls the era while a job runs and the guide or headshot is missing ("Your guide is on the way" before the guide exists); Avatar falls back to a 16x16 pixel silhouette in a bowler hat. (7) `ambience.ts` (bucket by year, gain 0.15 / 0.05 ducked / 0 muted, a brown-noise placeholder loop with a crossfaded seam) and `useAmbience.ts` (Web Audio buffer source through a gain node, unlocked and resumed on document taps, mute in localStorage through useSyncExternalStore), `AmbienceToggle.tsx` ♪ in both headers. GuidePlayer reports `onPlayingChange` so the Time Machine ducks during narration or the clips; the chat ducks while a reply is spoken. PHONE_TEST.md Test 5 lists the retest.
+- Decided, and why: Web Audio, not `<audio loop>`, for ambience, because iOS ignores `HTMLMediaElement.volume` (no quiet level, no duck) and element loops gap. Ambience follows the year bar's selected year, not the loaded era, so it does not stop and restart while a year loads. The mic-on earcon plays at press; on later presses recording starts at once, so it may be faintly recorded. Echo cancellation is on and Scribe ignores tones, so I did not delay recording (that would clip first words). Placeholder noise rather than silence so the duck and mute can be tested before Agent 2's files land.
+- Measured or verified: typecheck and lint pass; `vitest --pool=vmThreads` 356 tests pass (new: earcon envelope, pitch direction, length, silence; hasAudio; streamIsUsable; ambience buckets, gain, placeholder length and seam). Headless Chrome at 375x812 against the dev server in mock mode, with a fake mic: voice switch plays the cue and starts ambience at 0.15; mic hold runs `MediaRecorder.start(250)` with `audio/webm;codecs=opus` and sends the mock transcript; reset shows the dots then the greeting; the ♪ switch sets gain 0 and persists into the Time Machine; Meet Albert ducks to 0.05 and Skip restores 0.15; the ambience file 404s and the placeholder plays. Nothing seen on a phone yet.
+- Delegated to Haiku, and whether it was kept: nothing; each piece needed the screen code in view.
+- Problems: default vitest pool broken on this machine (see Current state). A dev server from this repo was already on port 3000, so the check used it. Item 8 could not run: no keys here.
+- Next: see Current state.

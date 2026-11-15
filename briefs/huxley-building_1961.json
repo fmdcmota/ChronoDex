@@ -1,0 +1,74 @@
+{
+  "title": "1961: The Name Is the Trap",
+  "summary": "In 1961 the Huxley Building was not at 180 Queen's Gate. The name still belonged to the old Science Schools building on Exhibition Road, where Tom Kibble found the Theoretical Physics group squeezed into cramped, shared offices. The Queen's Gate site was in flux: the Bodleian says the Makins family left their Norman Shaw house in 1960 and demolition followed 'shortly,' while other records date the demolition to 1970 or 1971. The record of daily life and street detail for this exact spot in 1961 is thin, so this brief avoids invented prices, traffic and dress.",
+  "funFacts": [
+    "The Huxley name moved to Queen's Gate only in 1974–7; in 1961 the old Huxley Building on Exhibition Road still housed Mathematics and Meteorology.",
+    "The house at 180 Queen's Gate was designed by Richard Norman Shaw and built 1883–5 for Henry Francis Makins.",
+    "Tom Kibble, who became a Lecturer in 1961, remembered Theoretical Physics sharing a half-window office and using one big students' office for tea and coffee.",
+    "Britain still used pounds, shillings and pence in 1961; decimal currency arrived on 15 February 1971.",
+    "Baden-Powell House on Queen's Gate was officially opened by Queen Elizabeth II in 1961."
+  ],
+  "sources": [
+    {
+      "title": "Survey of London: Queen's Gate and Imperial College",
+      "url": "https://www.british-history.ac.uk/survey-london/vol38/pp233-247#2"
+    },
+    {
+      "title": "The Story of Physics at South Kensington",
+      "url": "https://www.imperial.ac.uk/physics/about-us/department-history/the-story-of-physics-at-south-kensington/"
+    },
+    {
+      "title": "Bodleian Archives: Makins family papers",
+      "url": "https://archives.bodleian.ox.ac.uk/repositories/2/top_containers/18487"
+    },
+    {
+      "title": "Getty CONA: 180 Queen's Gate",
+      "url": "https://www.getty.edu/cona/CONAFullSubject.aspx?subid=700054340"
+    },
+    {
+      "title": "RIBA Pix: 180 Queen's Gate, Kensington",
+      "url": "https://www.ribapix.com/180-Queens-Gate-Kensington-London_RIBA10893?ribasearch=aHR0cHM6Ly93d3cucmliYXBpeC5jb20vc2VhcmNoP2Fkdj1mYWxzZSZjaWQ9MCZtaWQ9MCZ2aWQ9MCZxPSUyMlJpY2hhcmQlMjBOb3JtYW4lMjBTaGF3JnNpZD1mYWxzZSZpc2M9dHJ1ZSZvcmRlckJ5PTAmcGFnZW51bWJlcj04JnZpZXdtb2RlPWdyaWQ="
+    },
+    {
+      "title": "Survey of London plate 103: 180 Queen's Gate interiors, 1956",
+      "url": "https://prod.british-history.ac.uk/survey-london/vol38/plate-103"
+    },
+    {
+      "title": "Wikimedia Commons: Huxley Building, Imperial College London",
+      "url": "https://commons.wikimedia.org/wiki/Category:Huxley_Building,_Imperial_College_London"
+    }
+  ],
+  "sceneBrief": {
+    "description": "A view east across Queen's Gate. On the east side, either a substantial late-Victorian detached house in red brick and tile behind its front boundary wall, or a cleared site with builder's hoarding and early foundation work. The street is a wide Victorian avenue. A low hostel building with modern brick and stone dressings, Baden-Powell House, stands to the right at the Cromwell Road end. The Imperial College campus edge and older college buildings lie beyond the immediate frontage. No modern Huxley Building.",
+    "changes": {
+      "persists": [
+        "The wide Victorian avenue of Queen's Gate",
+        "The Imperial College campus on the east side",
+        "The Natural History Museum frontage further south",
+        "Kensington Gardens and the Royal Albert Hall to the north"
+      ],
+      "altered": [
+        "Baden-Powell House, opened in 1961, still stands but its surroundings and use have changed",
+        "The old Huxley Building on Exhibition Road was still in academic use in 1961 and later became the Henry Cole Building"
+      ],
+      "notYetBuilt": [
+        "The present Huxley Building at 180 Queen's Gate, erected in the 1970s"
+      ],
+      "gone": [
+        "The Norman Shaw house at 180 Queen's Gate, demolished between 1960 and 1971 according to conflicting records",
+        "The old Huxley Building on Exhibition Road retained its name and academic role in 1961 but was later renamed"
+      ]
+    },
+    "surroundings": "West side of Queen's Gate: Victorian terraces and the Queen's Gate Gardens area. East: the 180 Queen's Gate site and Imperial College. South: Queen's Gate towards Cromwell Road, with the newly opened Baden-Powell House, and beyond it the Natural History Museum. North: Queen's Gate running up to Kensington Road, the Royal Albert Hall, the Albert Memorial and Kensington Gardens. East beyond the immediate site: the Science Museum, the Natural History Museum and the retained Queen's Tower.",
+    "referenceImageUrls": []
+  },
+  "guide": {
+    "name": "Arthur Pemberton",
+    "role": "College porter at Imperial College",
+    "bio": "I've been a porter at Imperial College for nearly twenty years, and I've watched the college spread its wings down Queen's Gate. I know every shortcut, every office, and every cup of tea that gets made in this place.",
+    "appearance": "Mid-fifties, sturdy build, wearing a dark porter's uniform with a peaked cap and brass buttons.",
+    "voiceKey": "eleven-george",
+    "script": "Arthur Pemberton's the name — I'm a porter here at Imperial College. You've caught us at a busy time, 1961, and the place is growing. Funny thing about names: the Huxley Building isn't here at Queen's Gate at all. It's still the old Science Schools building up on Exhibition Road, and the Theoretical Physics lads are squeezed in there — sharing half a window, making tea in the same office as the students. That's Tom Kibble's lot, new Lecturer this year. And mind your pounds, shillings and pence — we're a long way from decimal yet. Baden-Powell House opened just down the road this year, too. Right, I'd best get on — good luck to you.",
+    "greeting": "Morning! Arthur Pemberton, college porter. You look like you're after the Huxley Building — well, there's a story there."
+  }
+}

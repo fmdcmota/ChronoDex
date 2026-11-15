@@ -13,6 +13,13 @@ import { ChatInputError, pickNextLandmark, streamGuideReply, toChatTurns } from 
 import { formatSseEvent } from '@/lib/client/sse';
 import { getEra, getLandmark, listCaptures, listLandmarks } from '@/lib/db';
 import { handle, jsonError, readJson } from '../_lib/http';
+import { chatLimiter, limitOrNull } from '../_lib/limits';
+
+/**
+ * Longest the function may run, in seconds. A reply streams for a few seconds, but Vercel's default
+ * limit can be as low as 10 s and would cut a slow DeepSeek answer mid-sentence.
+ */
+export const maxDuration = 60;
 
 /**
  * Stream a reply from the era's guide.
@@ -22,6 +29,8 @@ import { handle, jsonError, readJson } from '../_lib/http';
  */
 export async function POST(request: NextRequest): Promise<Response> {
   return handle('POST /api/chat', async () => {
+    const limited = limitOrNull(chatLimiter, request);
+    if (limited) return limited;
     const body = await readJson(request, ChatRequestSchema);
     if (!body.ok) return body.response;
     const { eraId, playerId, messages } = body.data;

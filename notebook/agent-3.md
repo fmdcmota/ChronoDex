@@ -26,12 +26,12 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 20:28
-- Working on: nothing. A3-03 to A3-09 are built, verified in headless Chrome at phone size (fake camera and GPS) and unit tested. `npm run check` passes (227 tests). Waiting for commit approval.
-- Next: A3-10, the phone pass on iOS Safari and Android Chrome. It needs a human with real phones: camera, GPS, "Add to Home Screen", pull-to-refresh and safe-area insets are the unknowns. Then polish what that finds. After that, anything the team asks for: for example swap the hand-drawn sprites for fal ones (`npm run art:fal -- --yes` in `spikes/agent-3`, needs `FAL_KEY`), or real H1 photo GPS into `fixtures/landmarks.ts` (Agent 1's file) once the photos exist.
-- Blocked on: real phones (A3-10). `POST /api/uploads` does not exist yet (Agent 2, A2-11), so with mocks off a capture stops at "The server cannot take photos yet" and offers Try again. With mocks on the whole flow works.
-- Board read up to: 2026-11-14 20:30 (@agent-4, A4-05, A4-07)
-- Waiting for commit approval: all A3-03 to A3-09 work (UI kit, capture, Dex, manifest and icons, map hand-off), this page and one board post.
+- Last updated: 2026-11-14 23:55
+- Working on: nothing. A3-03 to A3-09 are on `main`. This session added the MOCK DATA tag (layout.tsx and globals.css, `.mock-tag`) and friendlier wording for upload errors 415 and 429 (capture-messages.ts). `npm run check` passes (344 tests). Not committed yet: waiting for the human's yes.
+- Next: A3-10. (a) The Android pass and, once Agent 1 has deployed to Vercel, MAP-10, MAP-11 and one real capture with mocks off. All of it needs a human with the phones. (b) fal art: `npm run art:fal -- --yes` in `spikes/agent-3`, which needs a `FAL_KEY`; there is none in this machine's root `.env.local`. (c) Offer chat polish help to Agent 4 if they ask.
+- Blocked on: real phones (Android, deployed site) and a `FAL_KEY` on this machine for the optional fal art.
+- Board read up to: 2026-11-14 23:45 (@team, tests, to @agent-5)
+- Waiting for commit approval: the MOCK DATA tag, the 415/429 wording, this page, one board post, and the `certificates` line in .gitignore (Agent 1's file, added by Next's experimental HTTPS; ask Agent 1 or leave it out).
 
 ## Tasks
 
@@ -81,3 +81,11 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Delegated to Haiku, and whether it was kept: nothing. Each piece needed judgement or a visual check.
 - Problems: (1) iCloud: 19 "file 2" duplicates appeared in `src/` (all byte-identical to tracked files, removed by exact name) and my `node_modules` lost its native vitest binding (fixed with `npm ci`). Worse, in real-API mode `next dev` inside the iCloud folder reloads the page forever (hundreds of "Compiled in 1ms"; mock mode is fine). The same repo copied to /tmp does not do it, so the folder location is the cause. (2) Bug found by testing: Map to Capture lost the recent position because the tracker's "locating" state wiped the fallback; fixed. (3) Bug found by testing: starting the tracker after the async permission check could leave a GPS watch running after unmount (also in the Map); fixed with a cancelled flag in both. (4) Light-on-light GPS chip on the camera screen; fixed. (5) A multipart POST to a missing route returns 409 from Next, not 404; wording now covers it. (6) The `package-lock.json` in my tree had lost its `libc` fields (npm on a Mac); I restored the committed one.
 - Next: A3-10, the phone pass.
+
+### 2026-11-14 23:55, A3-10 (part): MOCK DATA tag and upload error wording
+- Did: a fixed "Mock data" tag in `layout.tsx`, shown when `NEXT_PUBLIC_USE_MOCKS=1` (read at start, so a restart is needed after changing it). Bottom-left corner, 1 px above the bottom edge, z-50 (over the z-40 Time Machine and chat), `pointer-events: none`. Added player wording for HTTP 429 and for 415 on the upload step.
+- Decided, and why: bottom-left, not the top or bottom-right, because screenshots at 390x844 showed the right side collides with the Capture and Look around buttons and the top with the HUD chips and header buttons. Only the bottom-left strip was clear on the map, the Dex, the capture screen and the Time Machine.
+- Measured or verified: headless Chrome at phone size on `/`, `/dex`, `/capture`, `/time/queens-tower`: the tag shows on all four and overlaps nothing. 344 tests pass.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: no `FAL_KEY` on this machine, so the optional fal art was not run. Port 3000 was briefly held by a VS Code helper process, so the first screenshot run hit nothing.
+- Next: Android pass when a human has the phone.

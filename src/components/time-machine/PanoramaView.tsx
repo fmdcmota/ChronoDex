@@ -20,8 +20,16 @@ import type { Panorama } from '@/lib/contracts';
 import { hFovDegOf, maxOffsetRad, panoDataFor } from './panoData';
 import { BTN_SECONDARY, TAG_DARK } from './pixel';
 
-/** Starting zoom, 0 (widest) to 100. Wide enough to read the scene on a phone held upright. */
-const DEFAULT_ZOOM_LVL = 30;
+/**
+ * Starting zoom, 0 (widest) to 100. Phone test round 1 (iPhone) found 30 a bit wide, so it is 45.
+ * Tune on a phone.
+ */
+const DEFAULT_ZOOM_LVL = 45;
+/**
+ * Gyroscope smoothing. PSV 5.15 offers only 'smooth' (eases at speed 3) and 'fast' (speed 10).
+ * Phone test round 1 found 'smooth' laggy, so the view follows the phone more tightly.
+ */
+const GYRO_MOVE_MODE = 'fast';
 /** Degrees in a full turn. */
 const FULL_TURN_DEG = 360;
 
@@ -83,7 +91,7 @@ export function PanoramaView({ panorama, className = 'relative h-64' }: Panorama
         defaultZoomLvl: DEFAULT_ZOOM_LVL,
         navbar: false,
         loadingTxt: 'Travelling…',
-        plugins: [GyroscopePlugin.withConfig({ touchmove: true, roll: true, moveMode: 'smooth' })],
+        plugins: [GyroscopePlugin.withConfig({ touchmove: true, roll: true, moveMode: GYRO_MOVE_MODE })],
       });
       viewerRef.current = viewer;
 
