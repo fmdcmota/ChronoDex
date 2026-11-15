@@ -18,6 +18,7 @@ describe('isCacheableMediaUrl', () => {
     expect(isCacheableMediaUrl('/api/media/0123456789abcdef0123456789abcdef', ORIGIN)).toBe(true);
     expect(isCacheableMediaUrl(`${ORIGIN}/api/media/0123`, ORIGIN)).toBe(true);
     expect(isCacheableMediaUrl('https://v3.fal.media/files/lion/pano.jpg', ORIGIN)).toBe(true);
+    expect(isCacheableMediaUrl('/demo/queens-tower_1893/scene.jpg', ORIGIN)).toBe(true);
     expect(isCacheableMediaUrl('/mock/panorama.jpg', ORIGIN)).toBe(false);
     expect(isCacheableMediaUrl('/api/eras/x', ORIGIN)).toBe(false);
     expect(isCacheableMediaUrl('http://v3.fal.media/x.jpg', ORIGIN)).toBe(false);

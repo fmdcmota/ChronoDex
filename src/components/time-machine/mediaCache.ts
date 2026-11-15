@@ -34,7 +34,9 @@ export function isCacheableMediaUrl(url: string, origin = typeof window === 'und
   } catch {
     return false;
   }
-  if (u.origin === new URL(origin).origin) return u.pathname.startsWith('/api/media/');
+  // R3-4d: `/demo/<eraId>/...` are the demo set's files, committed and never rewritten in place (a regenerated
+  // asset gets a new /api/media URL). If one is ever replaced at the same path, bump MEDIA_CACHE_NAME.
+  if (u.origin === new URL(origin).origin) return u.pathname.startsWith('/api/media/') || u.pathname.startsWith('/demo/');
   return u.protocol === 'https:' && FAL_HOST_PATTERN.test(u.hostname);
 }
 
