@@ -17,6 +17,7 @@ import { api, getPlayerId } from '@/lib/client';
 import type { Capture, Landmark } from '@/lib/contracts';
 import { Button, Card, Spinner } from '@/components/ui';
 import { describeApiFailure } from './lib/capture-messages';
+import { useUnavailableTimeMachines } from './lib/use-era-ready';
 import { parseDexCache, readDexCacheRaw, saveDexCache } from './lib/dex-cache';
 import {
   buildDexEntries,
@@ -42,7 +43,7 @@ interface DexData {
 const subscribeNever = (): (() => void) => () => undefined;
 
 /** One badge card, collected or locked. */
-function DexCard({ entry }: { entry: DexEntry }) {
+function DexCard({ entry, noTimeMachine }: { entry: DexEntry; noTimeMachine: boolean }) {
   const { landmark, capture } = entry;
   const [photoBroken, setPhotoBroken] = useState(false);
   if (!capture) {
@@ -57,25 +58,41 @@ function DexCard({ entry }: { entry: DexEntry }) {
       </li>
     );
   }
+  const body = (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element -- pixel art must stay crisp; next/image would re-encode it */}
+      <img className="dex-badge" src={landmark.badgeUrl} alt="" />
+      <div className="dex-name">{landmark.name}</div>
+      <span className={`rarity rarity-${landmark.rarity}`}>{landmark.rarity.toUpperCase()}</span>
+      {/* The player's own photo. A blob: address from an earlier visit may be gone, so hide it if it fails. */}
+      {!photoBroken && isShowablePhotoUrl(capture.photoUrl) && (
+        // eslint-disable-next-line @next/next/no-img-element -- the player's own photo at an arbitrary host
+        <img
+          className="dex-photo"
+          src={capture.photoUrl}
+          alt={`Your photo of ${landmark.name}`}
+          loading="lazy"
+          onError={() => setPhotoBroken(true)}
+        />
+      )}
+      <span className="muted dex-date">{formatCaptureDate(capture.capturedAt)}</span>
+      {noTimeMachine && <span className="muted dex-date">Time Machine coming soon</span>}
+    </>
+  );
+  // No generated era to open yet: show the badge, but do not link into an empty Time Machine.
+  if (noTimeMachine) {
+    return (
+      <li>
+        <div className="dex-card" aria-label={`${landmark.name}, collected. Time Machine coming soon`}>
+          {body}
+        </div>
+      </li>
+    );
+  }
   return (
     <li>
       <Link className="dex-card" href={`/time/${landmark.id}`} aria-label={`${landmark.name}, collected. Open the Time Machine`}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- pixel art must stay crisp; next/image would re-encode it */}
-        <img className="dex-badge" src={landmark.badgeUrl} alt="" />
-        <div className="dex-name">{landmark.name}</div>
-        <span className={`rarity rarity-${landmark.rarity}`}>{landmark.rarity.toUpperCase()}</span>
-        {/* The player's own photo. A blob: address from an earlier visit may be gone, so hide it if it fails. */}
-        {!photoBroken && isShowablePhotoUrl(capture.photoUrl) && (
-          // eslint-disable-next-line @next/next/no-img-element -- the player's own photo at an arbitrary host
-          <img
-            className="dex-photo"
-            src={capture.photoUrl}
-            alt={`Your photo of ${landmark.name}`}
-            loading="lazy"
-            onError={() => setPhotoBroken(true)}
-          />
-        )}
-        <span className="muted dex-date">{formatCaptureDate(capture.capturedAt)}</span>
+        {body}
       </Link>
     </li>
   );
@@ -144,6 +161,9 @@ export default function DexScreen() {
   const entries = data ? buildDexEntries(data.landmarks, data.captures) : [];
   const collected = countCollected(entries);
   const total = entries.length;
+  // Landmarks with no generated era yet get a badge but no link into an empty Time Machine (A3-r2-4).
+  const landmarkIds = useMemo(() => (fresh?.landmarks ?? cached?.landmarks)?.map((l) => l.id), [fresh, cached]);
+  const noTimeMachine = useUnavailableTimeMachines(landmarkIds);
 
   return (
     <main className="screen">
@@ -209,7 +229,7 @@ export default function DexScreen() {
       {data && total > 0 && (
         <ul className="dex-grid">
           {entries.map((entry) => (
-            <DexCard key={entry.landmark.id} entry={entry} />
+            <DexCard key={entry.landmark.id} entry={entry} noTimeMachine={noTimeMachine.has(entry.landmark.id)} />
           ))}
         </ul>
       )}
