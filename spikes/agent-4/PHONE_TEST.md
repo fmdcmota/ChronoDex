@@ -107,6 +107,28 @@ are in the real app, mock data is fine for them. Row 5.10 needs mocks off and th
 | 5.10 | Mocks off, a real era (Queen's Tower 1893 once it is generated): hold the mic and ask a question | Your own words appear as your bubble, a real reply streams in, and with voice on it is spoken in the guide's voice |
 | 5.11 | After 5.10, with voice on, listen to the next spoken reply | As loud as the first one, from the speaker. If it suddenly comes from the earpiece or is much quieter after using the mic, say so: the fix is to release the mic after each recording |
 
+## Test 6: the real 360° view and Time Machine (A4-15, A4-16; M1 and M2 gates)
+
+Real data, mocks off, served from Agent 4's computer through a Cloudflare tunnel:
+**https://members-polo-subsequently-glass.trycloudflare.com** (changes if the tunnel restarts; the board has the
+latest). The database is `chronodex_dev_agent2`, the only one with a generated era (Queen's Tower 1893, guide
+Albert Neale). Video generation is off, so nothing here spends fal credits. Do it on an iPhone and an Android phone.
+**Do not tap 1962**: it is not generated, and tapping it queues a paid job that the next worker run would make.
+
+| # | Do | Pass when |
+|---|---|---|
+| 6.1 | Open `<tunnel>/time/queens-tower` | 1893 opens with the period street view, no "Mock data" tag in the corner |
+| 6.2 | Drag around a full turn | The horizon is level, no visible seam straight ahead, the tower is in the centre at the start, and the view behind you is plausible (it is less certain there) |
+| 6.3 | Tap **Look around**, allow motion, turn on the spot | The view follows the phone smoothly; Reset brings the tower back to the centre |
+| 6.4 | Tap **Meet Albert** | Albert's narration plays from the speaker with captions, and the background sound dips while he talks |
+| 6.5 | Tap **Then/Now**, drag the divider | The 1893 view lines up with today's photo; the line under it reads "Present-day photo: David Richfield, CC BY-SA 4.0" |
+| 6.6 | Tap **Sources** | Summary, facts, sources, and a "Pictures" list with the photo credits |
+| 6.7 | Close the tab, reopen the same link | 1893 appears at once with no "Travelling…" wait (kept on the phone) |
+| 6.8 | Open `<tunnel>/api/media/a00664efd61df7d36468b43764e54933` | Safari or Chrome plays the narration from our own server (proves iOS gets the byte ranges it needs) |
+| 6.9 | After the narration, tap **Chat with Albert** and ask something | Albert's picture in the header, a real reply streams in |
+
+Report as for the other tests: for example `iPhone: 6.1 to 6.9 pass` or `6.2 fail, seam on the left`.
+
 ## How to report
 
 Paste lines like these to the agent:
