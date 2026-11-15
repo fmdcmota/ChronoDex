@@ -59,12 +59,20 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
   const stage = useRef<HTMLDivElement | null>(null);
   const player = useRef<SegmentPlayer | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
+  // Unmounting mid-play (the clips landed, R3-4b, or the year changed) must lift the ambience duck.
+  const playingChange = useRef(onPlayingChange);
+  useEffect(() => {
+    playingChange.current = onPlayingChange;
+  });
+  useEffect(() => () => playingChange.current?.(false), []);
 
-  const segments = useMemo<PlayableSegment[]>(() => {
-    if (!guideVideo) return [];
-    if (guideVideo.stitchedUrl) return [{ url: guideVideo.stitchedUrl, kind: 'stitched' }];
-    return guideVideo.segments.map((s) => ({ url: s.url, kind: s.kind }));
-  }, [guideVideo]);
+  // R3-4b: keyed on the clip list, not the object. Every poll brings a fresh `guideVideo` object, and keying
+  // on it rebuilt the SegmentPlayer (and cut playback) every 3 s while the job's last stages still ran.
+  const videoKey = guideVideoKey(guideVideo);
+  const segments = useMemo<PlayableSegment[]>(
+    () => (videoKey ? (JSON.parse(videoKey) as PlayableSegment[]) : []),
+    [videoKey],
+  );
   const hasVideo = segments.length > 0;
   const talkDurationS = guideVideo?.segments.find((s) => s.kind === 'talk')?.durationS ?? 0;
 
@@ -220,4 +228,21 @@ export function GuidePlayer({ era, onFinished, onPlayingChange }: GuidePlayerPro
       )}
     </>
   );
+}
+
+/**
+ * A stable string for the clips a guide video would play, so a fresh object with the same clips compares equal.
+ *
+ * Used by GuidePlayer to memoise its clip list, and by TimeMachineScreen to remount the player (back to the
+ * Meet button, now playing the real clips) the moment `guideVideo` lands or changes, without a reload (R3-4b).
+ *
+ * @param guideVideo - The era's guide video, or null while there is none.
+ * @returns JSON of `{ url, kind }[]` (the stitched file alone when present), or '' when there is nothing to play.
+ */
+export function guideVideoKey(guideVideo: Era['guideVideo']): string {
+  if (!guideVideo) return '';
+  const list: PlayableSegment[] = guideVideo.stitchedUrl
+    ? [{ url: guideVideo.stitchedUrl, kind: 'stitched' }]
+    : guideVideo.segments.map((s) => ({ url: s.url, kind: s.kind }));
+  return list.length ? JSON.stringify(list) : '';
 }

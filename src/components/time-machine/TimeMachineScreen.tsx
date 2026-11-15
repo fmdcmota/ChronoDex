@@ -26,7 +26,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { GAME, type Era, type EraId, type EraResponse, type Landmark, type LandmarkId } from '@/lib/contracts';
 import { api } from '@/lib/client';
-import { GuidePlayer } from './GuidePlayer';
+import { GuidePlayer, guideVideoKey } from './GuidePlayer';
 import { PanoramaView } from './PanoramaView';
 import { ProgressSheet } from './ProgressSheet';
 import { SourcesDrawer } from './SourcesDrawer';
@@ -257,7 +257,9 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
 
         {era?.guide && (era.narrationAudioUrl || era.guideVideo) && !job?.stages.some((s) => s.state === 'running' && s.key === 'narration') && (
           <GuidePlayer
-            key={era.id}
+            // R3-4b: a new key when the clips land, so a preview in progress (or finished) gives way to a fresh
+            // Meet button that plays the real video. Without it the player sat on a blank video layer.
+            key={`${era.id}|${guideVideoKey(era.guideVideo)}`}
             era={{ ...era, guide: era.guide }}
             onFinished={() => setGuideDone(true)}
             onPlayingChange={setGuideSpeaking}
