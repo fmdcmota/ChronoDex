@@ -1,42 +1,44 @@
-# The Queen Opens the Imperial Institute (queens-tower_1893)
+# Queen's Tower Opens, May 1893 (queens-tower_1893)
 
 **Status: DRAFT. A human must check every claim against its source before generation spends credits (H7).**
 
 ## Summary
-On 10 May 1893 Queen Victoria officially opened the Imperial Institute, the national memorial of her Golden Jubilee, in a ceremony held in a temporary hall because the Great Hall was unfinished. She called it 'a really momentous day, like a small Jubilee' and thought the building 'looked very grand and imposing, with its high tower'. The Queen's Tower, 287 feet tall, had been topped out the previous November, and its ten bells, the Alexandra Peal, rang at one o'clock as the ceremony ended. Some details of the day, such as the exact route of the procession past this spot, remain uncertain in the records.
+Queen Victoria formally opened the Imperial Institute on 10 May 1893, and its central tower rose 287 feet above a frontage of roughly 700 feet. The exterior used Portland Whitbed stone with contrasting brickwork, and Imperial Institute Road had been laid out south of the building in 1888–92. Work was still finishing: the Survey records labour disputes in 1890–91 and building near completion early in 1894. The record is thin in places — no verified 1893 admission prices, local fares or attendant uniform, and the surviving photographs have no securely established 1893 exposure date.
 
 ## Fun facts
-- The Queen's Tower is 287 feet tall and has 324 steps from ground level to the base of its copper-covered dome.
-- The ten bells, the Alexandra Peal, were donated by Mrs Elizabeth M. Millar of Melbourne and first rang at 1 p.m. on 10 May 1893.
-- The foundation stone was laid by Queen Victoria in July 1887, and the building was designed by T. E. Collcutt in the neo-Renaissance style.
-- The final cost is said to have been £354,000, and in 1892–3 the rates assessment rose to £15,877 instead of the anticipated £4,168.
-- Two large stone lions that flanked the entrance now stand near the base of the Queen's Tower.
+- The central tower rose to 287 feet, and its base walls were nine feet thick.
+- The official opening used a temporary hall; the proposed great hall was never built.
+- The tower's ten bells were cast by John Taylor of Loughborough.
+- A billiard-room was added in 1893 to attract subscribing Fellows.
+- The tower formed the centre of a roughly 700-foot frontage with smaller towers at both ends.
+- Domed entrances to the Eastern and Western Galleries were built in 1891.
 
 ## Sources
-- [Queen's Tower – Imperial College London](https://www.imperial.ac.uk/about/history/queens-tower/?utm_medium=website&utm_source=archdaily.com.br)
-- [Jug – Doulton Ceramic Factory (V&A)](https://collections.vam.ac.uk/item/O1677024/jug-doulton-ceramic-factory/)
-- [Queen's Tower – Historic England List Entry](https://historicengland.org.uk/listing/the-list/list-entry/1231643?section=official-list-entry#1)
-- [Photograph of the Opening of the Imperial Institute, 10 May 1893 – Royal Collection Trust](https://www.rct.uk/collection/2300441/photograph-of-the-opening-of-the-imperial-institute-10-may-1893)
-- [Imperial Institute – Grace's Guide](https://www.gracesguide.co.uk/Imperial_Institute)
+- [Survey of London, vol. 38: Imperial Institute](https://www.british-history.ac.uk/survey-london/vol38/pp220-227)
+- [Imperial College London: history of Queen's Tower](https://www.imperial.ac.uk/about/history/queens-tower/)
+- [Survey of London, vol. 38: Royal College of Science](https://www.british-history.ac.uk/survey-london/vol38/pp233-247)
+- [Photograph of the Imperial Institute, Rijksmuseum (CC0)](https://commons.wikimedia.org/wiki/File:Gezicht_op_het_Imperial_Institute_te_Londen,_RP-F-00-4232.jpg)
+- [Punch, July 1893 (Project Gutenberg)](https://www.gutenberg.org/cache/epub/35734/pg35734-images.html)
+- [Imperial Institute south frontage on a postcard mailed in 1903 (image, Public domain, Unknown author)](https://commons.wikimedia.org/wiki/File:1903-11-04_front_Imperial_Institute_London.jpg)
 
 ## What the camera sees
-Facing north from about 33 metres south of the tower, the camera sees the long south facade of the Imperial Institute, 700 feet wide, in Portland stone with red brick bands. The Queen's Tower rises centrally to 287 feet, crowned by a copper-covered dome, with smaller towers at the east and west ends. In the foreground is the new roadway of Imperial Institute Road, laid out in 1888–92. Horse-drawn omnibuses, hansom cabs and private carriages pass; the building is externally near-complete, though the Great Hall inside is unfinished.
+Facing north towards the Imperial Institute's south frontage in 1893. The central domed tower rises steeply, attached at its base to a long, richly ornamented facade. Connected wings extend to both sides, with repeated windows, steep gables, chimneys, smaller towers at the ends, and alternating pale masonry and darker brick bands. Domed entrances to the Eastern and Western Galleries sit along the frontage. In the foreground a broad carriage road and kerbed pavements carry sparse horse-drawn traffic and a few pedestrians, one man in a dark jacket and rounded brimmed hat; slender street lamps line the pavement. Pale Portland stone is supported by the text; the exact brick hue and the dome's patina are not established, so keep to neutral greys and muted warm stone rather than sepia.
 
-Persists: The Queen's Tower itself, now free-standing and Grade II listed; The line of Imperial College Road, formerly Imperial Institute Road
-Altered: The site is now occupied by modern Imperial College buildings and Queen's Lawn; The tower stands alone rather than as part of the Institute's long facade
-Not yet built: The Royal College of Music's Prince Consort Road building (foundation stone laid 8 July 1893, opened 2 May 1894); The present Science Museum building; The V&A's Aston Webb building (not begun until 1899); All modern Imperial College buildings
-Gone: The Imperial Institute building, except for the tower; The Royal Horticultural Society's garden, across whose site the Institute was laid out; The Eastern and Western Galleries of 1869–71 that flanked the Institute
+Persists: The central tower's upper masonry and domed silhouette, allowing for later repair.
+Altered: The tower's base, here integrated into the Institute frontage rather than the later rebuilt freestanding base.
+Not yet built: Modern campus blocks and landscaped space occupying the demolished Institute footprint.
+Gone: The Institute's connected east and west front wings and smaller end towers.; The domed entrances to the Eastern and Western Galleries.
 
-Surroundings: To the north are the Institute's rear gardens, with the Royal Albert Hall and Kensington Gore beyond. To the north-east and east lie Exhibition Road, the Science Schools and the Natural History Museum. To the south-east is the South Kensington Museum, later the Victoria and Albert Museum. To the south, beyond Imperial Institute Road, is the line of Prince Consort Road, where the Royal College of Music is under construction. To the south-west stands the Brompton Oratory. To the west are Queen's Gate and its large Victorian houses.
+Surroundings: To the north the tower and connected frontage dominate, blocking any view through to the rear galleries and gardens. East and west the frontage and carriage road continue laterally — do not replace the wings with open lawn. To the south, the road and its opposite frontage must be reconstructed from a period plan that is still missing from this dossier; the Royal College of Science building is not yet there, but that is not evidence the southern plot was bare. Do not invent southern buildings, shop signs or planting. The rearward view therefore has lower confidence than the documented forward view.
 
-## Guide: Thomas Reeves, Hansom cab driver
-I've driven a hansom cab through these South Kensington streets for twelve years, and I know every turning by heart. On opening day I had my best fares in months, ferrying folk to see the Queen and her new Institute.
+## Guide: Thomas Meecham, Mason on the Institute's finishing works
+I've been setting and dressing stone on this building while the last of the work is brought to a finish. My days are dust and mortar and the ring of chisels, but I never tire of looking up at that tower.
 
-Appearance: A man of about 45, lean and weathered, wearing a dark coachman's coat, a top hat and a muffler, with a whip in one hand and reins in the other.
+Appearance: Man of about forty, lean and broad-shouldered from years of lifting stone, weathered face and short dark beard. Wears a dark jacket, a rounded brimmed hat, a work-worn waistcoat and sturdy trousers with dusty boots; his hands are rough and pale with stone dust.
 Voice: eleven-daniel
 
 ### Script
-Thomas Reeves, at your service, ma'am — hansom cab driver, and glad to be off my box for a minute. You've come on a fine day for it. The Queen opened the Institute this very morning, and the streets were packed tight as sardines. She called it a small Jubilee, so they say. That tower's two hundred and eighty-seven feet, and there's three hundred and twenty-four steps to the dome — I wouldn't fancy the climb. The ten bells rang out at one o'clock sharp. Now, mind the horse omnibuses when you cross; they'll not stop for you. Good day to you, and safe travels.
+Thomas Meecham, that's me, mason on the Institute's finishing works. The Queen herself opened the place on the tenth of May, and fine it looked for the day, though plenty of us were still at it after. That central tower stands two hundred and eighty-seven feet, and the walls at its base are nine feet thick, so there's substance to it. They rang the ten bells cast by John Taylor of Loughborough, and the sound carried. There's a billiard-room opened this year too, meant to draw in subscribing Fellows. Mind the delivery carts in the road. Good day to you, and take care on the kerb.
 
 ### Greeting
-Afternoon! Thomas Reeves, cab driver. You've picked a grand day to stand here — the Queen herself opened the Institute this morning.
+Morning to you. I'm Thomas Meecham, mason on the Institute's finishing works — mind the carts as you cross, and have a look up at that tower.

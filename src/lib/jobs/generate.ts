@@ -7,12 +7,31 @@
  */
 import { eraNeedsGeneration, type AssetState, type Era, type EraId, type EraResponse } from '@/lib/contracts';
 import { getEra, patchEra } from '@/lib/db';
-import { enqueueEraJob, getActiveJob } from './queue';
+import { countFailedJobs, enqueueEraJob, getActiveJob } from './queue';
 
 /** The result of a generate request: an EraResponse, or a refusal the route turns into an HTTP error. */
 export type GenerationOutcome =
   | { ok: true; response: EraResponse }
-  | { ok: false; status: 403 | 404; code: 'not_found' | 'video_disabled'; message: string };
+  | { ok: false; status: 403 | 404 | 429; code: 'not_found' | 'video_disabled' | 'retry_limit'; message: string };
+
+/** Options for requestEraGeneration. */
+export interface GenerateOptions {
+  /** Generate even if the era has already failed the maximum number of times. For scripts and developers, not for players. */
+  force?: boolean;
+}
+
+/** How many failed jobs an era may have before a new request is refused, unless MAX_FAILED_JOBS_PER_ERA says otherwise. */
+export const DEFAULT_MAX_FAILED_JOBS_PER_ERA = 2;
+
+/**
+ * The failed-job limit per era: MAX_FAILED_JOBS_PER_ERA when it is a whole number of at least 1, else 2.
+ *
+ * @returns The limit.
+ */
+export function maxFailedJobsPerEra(): number {
+  const n = Number(process.env.MAX_FAILED_JOBS_PER_ERA);
+  return Number.isInteger(n) && n >= 1 ? n : DEFAULT_MAX_FAILED_JOBS_PER_ERA;
+}
 
 /**
  * Tell whether the video tier may be generated. Off unless VIDEO_GENERATION is exactly "on",
@@ -39,15 +58,19 @@ const QUEUEABLE: readonly AssetState[] = ['missing', 'failed', 'generating'];
  * 3. includeVideo while VIDEO_GENERATION is off: refuse with 403 `video_disabled`. Ask again
  *    with includeVideo false for the core tier.
  * 4. Nothing is missing: return the era with `job: null`.
- * 5. Otherwise enqueue a job and mark the missing tiers `queued`.
+ * 5. The era has already failed `maxFailedJobsPerEra()` times: refuse with 429 `retry_limit`, unless
+ *    `options.force`. Every failed job spent fal credits, and an era that keeps failing (a bad brief, a
+ *    model that rejects the scene) will keep failing.
+ * 6. Otherwise enqueue a job and mark the missing tiers `queued`.
  *
  * Side effects: may insert a job and patch the era's state fields.
  *
  * @param eraId - The era.
  * @param includeVideo - Whether the caller wants the video tier as well.
+ * @param options - `force` skips the retry limit.
  * @returns The outcome.
  */
-export async function requestEraGeneration(eraId: EraId, includeVideo: boolean): Promise<GenerationOutcome> {
+export async function requestEraGeneration(eraId: EraId, includeVideo: boolean, options: GenerateOptions = {}): Promise<GenerationOutcome> {
   const era = await getEra(eraId);
   if (!era) return { ok: false, status: 404, code: 'not_found', message: `No era "${eraId}"` };
 
@@ -64,6 +87,18 @@ export async function requestEraGeneration(eraId: EraId, includeVideo: boolean):
   }
 
   if (!eraNeedsGeneration(era, includeVideo)) return { ok: true, response: { era, job: null } };
+
+  if (!options.force) {
+    const failed = await countFailedJobs(eraId);
+    if (failed >= maxFailedJobsPerEra()) {
+      return {
+        ok: false,
+        status: 429,
+        code: 'retry_limit',
+        message: `This era has failed ${failed} times and will not be retried automatically. Ask a developer to look at the job errors.`,
+      };
+    }
+  }
 
   const job = await enqueueEraJob(eraId, includeVideo);
   // A worker could in theory claim the job and mark a tier generating between the enqueue above

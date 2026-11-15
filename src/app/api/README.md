@@ -7,7 +7,7 @@ HTTP routes of MASTER.md section 4.3. Owner: Agent 1, except `uploads/` and `voi
 | `GET /api/landmarks` | `landmarks/route.ts` |
 | `GET /api/landmarks/[landmarkId]/eras` | `landmarks/[landmarkId]/eras/route.ts` |
 | `GET /api/eras/[eraId]` | `eras/[eraId]/route.ts` |
-| `POST /api/eras/[eraId]/generate` | `eras/[eraId]/generate/route.ts` |
+| `POST /api/eras/[eraId]/generate` | `eras/[eraId]/generate/route.ts` (429 `retry_limit` after 2 failed jobs; `?force=1` skips it when `ALLOW_FORCE_GENERATE=1`) |
 | `GET /api/players/[playerId]/dex` | `players/[playerId]/dex/route.ts` |
 | `POST /api/captures` | `captures/route.ts` |
 | `POST /api/chat` | `chat/route.ts` (SSE; 400 bad history, 404 unknown era, 409 `era_not_ready`) |

@@ -28,7 +28,9 @@ export async function POST(request: NextRequest, ctx: RouteContext<'/api/eras/[e
     if (!EraIdSchema.safeParse(eraId).success) return jsonError(400, 'bad_request', `Invalid era id "${eraId}"`);
     const body = await readJson(request, GenerateRequestSchema);
     if (!body.ok) return body.response;
-    const outcome = await requestEraGeneration(eraId, body.data.includeVideo);
+    // `?force=1` skips the retry limit, and only works where a developer switched it on.
+    const force = new URL(request.url).searchParams.get('force') === '1' && process.env.ALLOW_FORCE_GENERATE === '1';
+    const outcome = await requestEraGeneration(eraId, body.data.includeVideo, { force });
     return outcome.ok ? json(outcome.response) : jsonError(outcome.status, outcome.code, outcome.message);
   });
 }

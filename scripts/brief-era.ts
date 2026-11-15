@@ -7,6 +7,9 @@
  *   npm run brief -- queens-tower_1893             one era
  *   npm run brief -- --all                         every era in the fixtures
  *   npm run brief -- queens-tower_1893 --save      also store the brief on the era in the database
+ *   npm run brief -- queens-tower_1893 --force --save --replace
+ *                                                  regenerate, and overwrite a brief already stored, but only
+ *                                                  while the era has no generated media (see saveBrief)
  *
  * What it does, per era: calls `writeEraBrief` (DeepSeek with web search, 2 to 3 minutes and well
  * under $0.10 of tokens on deepseek-flash, see notebook/agent-1.md), then writes
@@ -14,9 +17,12 @@
  * A brief that already exists on disk is not regenerated unless `--force` is passed, so a rerun after
  * a failure never pays twice.
  *
+ * If `data/eras/<eraId>.notes.txt` exists the Historian writes from it with no web search, and the
+ * Archivist's sources and images are merged in (src/lib/archive).
+ *
  * `--save` patches title, summary, funFacts, sources, sceneBrief and guide onto the era in the database
  * named by MONGODB_URI and MONGODB_DB. It never touches `state`, media fields or an era that already
- * has a brief, so the pipeline (which skips its brief stage when one exists) carries on from here and
+ * has a brief (unless `--replace`, and then only an era with no media), so the pipeline (which skips its brief stage when one exists) carries on from here and
  * nothing generated is overwritten. The brief stays a draft until a human has read it (H7).
  * Side effects: DeepSeek requests, files in briefs/, optional database writes. No fal calls.
  */
@@ -113,17 +119,26 @@ async function briefOne(eraId: EraId, force: boolean): Promise<{ brief: EraBrief
  *
  * @param eraId - The era to patch.
  * @param brief - The brief to store. The guide's headshot stays null until the pipeline makes it.
- * @returns True if the database was written, false if the era already had a brief or does not exist.
+ * @param replace - Overwrite a brief the era already has. Refused once the era has any generated media,
+ *   because the headshot, scene and narration were made from the old guide and brief and would no longer match.
+ * @returns True if the database was written, false if the era already had a brief, has media, or does not exist.
  */
-async function saveBrief(eraId: EraId, brief: EraBrief): Promise<boolean> {
+async function saveBrief(eraId: EraId, brief: EraBrief, replace: boolean): Promise<boolean> {
   const era = await getEra(eraId);
   if (!era) {
     console.warn(`${eraId}: not in the database (run npm run seed first)`);
     return false;
   }
   if (era.guide || era.sceneBrief) {
-    console.log(`${eraId}: already has a brief in the database, left alone`);
-    return false;
+    const hasMedia = Boolean(era.sceneImageUrl || era.panorama || era.narrationAudioUrl || era.guide?.headshotUrl || era.guideVideo);
+    if (!replace) {
+      console.log(`${eraId}: already has a brief in the database, left alone (pass --replace to overwrite)`);
+      return false;
+    }
+    if (hasMedia || era.state !== 'missing') {
+      console.warn(`${eraId}: has generated media or is not 'missing', so its brief was NOT replaced`);
+      return false;
+    }
   }
   await patchEra(eraId, {
     title: brief.title,
@@ -156,7 +171,7 @@ async function main(): Promise<void> {
   for (const eraId of ids) {
     try {
       const { brief } = await briefOne(eraId, flags.has('--force'));
-      if (save) await saveBrief(eraId, brief);
+      if (save) await saveBrief(eraId, brief, flags.has('--replace'));
     } catch (err) {
       console.error(`${eraId}: FAILED:`, err instanceof Error ? err.message : err);
       process.exitCode = 1;

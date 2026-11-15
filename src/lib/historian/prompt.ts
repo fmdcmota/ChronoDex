@@ -163,7 +163,7 @@ Rules:
   - appearance: age, build and period clothing, for an image model.
   - voiceKey: exactly one of these keys, matching the guide's sex and age:
 ${voiceList}
-  - script: ${SCRIPT_MIN_WORDS} to ${SCRIPT_MAX_WORDS} words, spoken aloud by the guide to the visitor. It opens with the guide introducing themself by name, covers customs of the time and at least two facts from funFacts, and ends with a friendly goodbye as they walk off. Plain speech, no stage directions.
+  - script: ${SCRIPT_MIN_WORDS} to ${SCRIPT_MAX_WORDS} words, spoken aloud by the guide to the visitor. It opens with the guide introducing themself by name, covers customs of the time and at least two facts from funFacts, and ends with a friendly goodbye as they walk off. Plain speech, no stage directions. The guide lives in ${year} and knows nothing after it: never say "never", "later", "eventually" or "today" about things that happen after ${year}, never mention a demolition, rebuilding or change that has not happened yet, and describe plans or unfinished work as they stand in ${year} ("they are still building", "it is not finished yet"). Facts about later outcomes belong in the summary and funFacts, not in the guide's mouth.
   - greeting: one or two sentences, the guide's first chat message.`;
   return { system, user };
 }

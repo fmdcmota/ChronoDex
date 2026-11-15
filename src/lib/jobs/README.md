@@ -4,7 +4,7 @@ The generation job queue. Owner: Agent 1. MASTER.md sections 4.4 and 5.3, tasks 
 
 **Entry points** (`import { ... } from '@/lib/jobs'`):
 - Worker side: `claimNextJob(workerId)`, `patchStage(jobId, key, patch)`, `heartbeatJob(jobId)`, `finishJob(jobId, state)`, `getJob(jobId)`, and `releaseJob(jobId)` (a worker shutting down on purpose puts its running job back in the queue, so the next worker resumes at once instead of waiting out the lease; stages and saved fal request ids are kept, and it stays the era's active job).
-- API side: `requestEraGeneration(eraId, includeVideo)` (the whole rule behind POST generate), `enqueueEraJob`, `getActiveJob`, `videoGenerationEnabled()`.
+- API side: `requestEraGeneration(eraId, includeVideo, { force? })` (the whole rule behind POST generate; after `MAX_FAILED_JOBS_PER_ERA` failed jobs, default 2, it answers 429 `retry_limit` unless forced, and `countFailedJobs` is what it counts), `enqueueEraJob`, `getActiveJob`, `videoGenerationEnabled()`.
 
 **Guarantees.** One active job per era (unique partial index on `eraId` where `active` is true). Atomic claims. A running job not updated for `JOB_LEASE_MS` (10 min) is handed to the next worker, which resumes from the saved `falRequestId`s. `patchStage` renews the lease; call `heartbeatJob` during long fal waits.
 

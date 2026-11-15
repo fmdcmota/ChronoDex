@@ -11,6 +11,7 @@ import { runEraJob } from '@/lib/pipeline';
 import {
   JOB_LEASE_MS,
   claimNextJob,
+  countFailedJobs,
   enqueueEraJob,
   finishJob,
   getActiveJob,
@@ -128,6 +129,47 @@ describe('requestEraGeneration', () => {
     process.env.VIDEO_GENERATION = 'on';
     const ok = await requestEraGeneration(eraId, true);
     expect(ok.ok && ok.response.era.videoState).toBe('queued');
+  });
+
+  /** Queue, claim and fail one job for the era, as a worker that keeps failing would. */
+  const failOnce = async (eraId: string) => {
+    const queued = await requestEraGeneration(eraId, false, { force: true });
+    if (!queued.ok || !queued.response.job) throw new Error('expected a job');
+    await claimNextJob('w');
+    await finishJob(queued.response.job.id, 'failed');
+  };
+
+  it('stops queueing an era after 2 failed jobs, counts them, and lets force through', async () => {
+    const eraId = eraIdOf('royal-albert-hall', 1871);
+    await failOnce(eraId);
+    expect(await countFailedJobs(eraId)).toBe(1);
+    const second = await requestEraGeneration(eraId, false);
+    expect(second.ok).toBe(true);
+    await claimNextJob('w');
+    if (second.ok && second.response.job) await finishJob(second.response.job.id, 'failed');
+    expect(await countFailedJobs(eraId)).toBe(2);
+
+    const refused = await requestEraGeneration(eraId, false);
+    expect(refused).toMatchObject({ ok: false, status: 429, code: 'retry_limit' });
+    expect(await getActiveJob(eraId)).toBeNull();
+    const forced = await requestEraGeneration(eraId, false, { force: true });
+    expect(forced.ok && forced.response.job?.state).toBe('queued');
+  });
+
+  it('reads the limit from MAX_FAILED_JOBS_PER_ERA, ignoring nonsense values', async () => {
+    vi.stubEnv('MAX_FAILED_JOBS_PER_ERA', '1');
+    const eraId = eraIdOf('royal-albert-hall', 1871);
+    await failOnce(eraId);
+    expect(await requestEraGeneration(eraId, false)).toMatchObject({ ok: false, code: 'retry_limit' });
+    vi.stubEnv('MAX_FAILED_JOBS_PER_ERA', 'lots');
+    expect((await requestEraGeneration(eraId, false)).ok).toBe(true);
+  });
+
+  it('does not count failures against another era, or when the era is already done', async () => {
+    await failOnce(eraIdOf('royal-albert-hall', 1871));
+    await failOnce(eraIdOf('royal-albert-hall', 1871));
+    expect((await requestEraGeneration(eraIdOf('v-and-a', 1941), false)).ok).toBe(true);
+    expect(await requestEraGeneration(eraIdOf('queens-tower', 1893), false)).toMatchObject({ ok: true, response: { job: null } });
   });
 
   it('returns job null when nothing is missing', async () => {

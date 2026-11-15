@@ -7,6 +7,7 @@
 export {
   JOB_LEASE_MS,
   claimNextJob,
+  countFailedJobs,
   enqueueEraJob,
   finishJob,
   getActiveJob,
@@ -16,4 +17,4 @@ export {
   releaseJob,
   resetMemoryJobs,
 } from './queue';
-export { requestEraGeneration, videoGenerationEnabled, type GenerationOutcome } from './generate';
+export { maxFailedJobsPerEra, requestEraGeneration, videoGenerationEnabled, type GenerateOptions, type GenerationOutcome } from './generate';

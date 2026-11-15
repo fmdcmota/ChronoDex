@@ -117,6 +117,19 @@ export async function enqueueEraJob(eraId: EraId, includeVideo: boolean): Promis
 }
 
 /**
+ * How many jobs for an era have ended in failure. The generate rule uses this to stop an era that keeps
+ * failing from spending fal credits again and again (task A1-f).
+ *
+ * @param eraId - The era.
+ * @returns The number of finished jobs whose state is `failed`.
+ */
+export async function countFailedJobs(eraId: EraId): Promise<number> {
+  if (!usingMongo()) return [...memory().values()].filter((e) => e.job.eraId === eraId && e.job.state === 'failed').length;
+  const { jobs } = await collections();
+  return jobs.countDocuments({ eraId, state: 'failed' });
+}
+
+/**
  * The era's active (queued or running) job.
  *
  * @param eraId - The era.
