@@ -77,6 +77,12 @@ describe('describeApiFailure', () => {
     }
   });
 
+  it('words a rate limit and a non-JPEG upload', () => {
+    expect(describeApiFailure(new ApiError(429, 'rate_limited', 'x'), 'upload')).toContain('Too many photos');
+    expect(describeApiFailure(new ApiError(429, 'rate_limited', 'x'), 'capture')).toContain('Too many photos');
+    expect(describeApiFailure(new ApiError(415, 'unsupported_type', 'x'), 'upload')).toContain('not a photo');
+  });
+
   it('never shows the raw server message', () => {
     expect(describeApiFailure(new ApiError(500, 'internal', 'stack trace at db.ts:12'))).not.toContain('db.ts');
   });

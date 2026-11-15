@@ -14,6 +14,13 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "@fontsource/jersey-10/400.css";
 import "./globals.css";
 
+/**
+ * True when the screens serve fixtures instead of the real API. Shown as a fixed "Mock data" tag
+ * because a whole phone-test round once took canned chat replies for real ones. The variable is
+ * inlined at build or dev-server start, so changing it needs a restart.
+ */
+const MOCKS_ON = process.env.NEXT_PUBLIC_USE_MOCKS === "1";
+
 /** Page title and description. */
 export const metadata: Metadata = {
   title: "Chronodex",
@@ -50,7 +57,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="h-full">{children}</body>
+      <body className="h-full">
+        {children}
+        {MOCKS_ON ? (
+          <div className="mock-tag" role="status">
+            Mock data
+          </div>
+        ) : null}
+      </body>
     </html>
   );
 }

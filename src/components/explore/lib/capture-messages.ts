@@ -87,6 +87,8 @@ export function describeApiFailure(error: unknown, step: ApiStep = 'capture'): s
   if (!failure) return 'Something went wrong. Try again.';
   if (failure.status === 0) return 'Could not reach the server. Check your signal and try again.';
   if (failure.status === 413) return 'That photo is too big to send. Take it again.';
+  if (failure.status === 429) return 'Too many photos too fast. Wait a few seconds and try again.';
+  if (step === 'upload' && failure.status === 415) return 'That file is not a photo we can use. Take it again.';
   if (step === 'upload' && UPLOAD_ROUTE_MISSING_STATUSES.includes(failure.status)) {
     return 'The server cannot take photos yet. Try again later.';
   }

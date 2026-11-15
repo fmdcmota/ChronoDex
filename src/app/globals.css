@@ -826,3 +826,22 @@ a.btn {
     animation: none;
   }
 }
+
+/* "Mock data" tag (A3): a thin strip in the bottom-left corner, above the full-screen Time Machine
+   and chat (z-40), beside the home indicator rather than under it, and never catches a tap. */
+.mock-tag {
+  position: fixed;
+  z-index: 50;
+  left: calc(env(safe-area-inset-left, 0px) + 4px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) * 0.4 + 1px);
+  padding: 0 4px;
+  font-size: 11px;
+  line-height: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--gold);
+  border: 1px solid var(--ink);
+  opacity: 0.92;
+  pointer-events: none;
+}
