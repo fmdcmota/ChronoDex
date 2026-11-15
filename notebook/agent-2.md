@@ -76,8 +76,8 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 04:27 (real clock)
-- Working on: round 3 queue (REMAINING_WORK_2.md section 0). R3-2a, R3-2b, R3-2c, R3-2d done (see the log). VIDEO_RUNBOOK.md is the one-page procedure for the videos.
+- Last updated: 2026-11-15 05:41 (real clock)
+- Working on: the human asked for a welcome intro on the map (done, see the log; it is in Agent 3's files, posted to Agent 3). Round 3: R3-2a to R3-2d done.
 - Next: R3-2e (regenerate the Queen's Tower 1893 scene only, about $0.17) once Agent 5's R3-5b wide photo lands; then the real canary only when the human says go and fal has credit. Re-run `spikes/agent-2/video-inputs.mts` (mocks OFF) on chronodex after the top-up: 7 of 8 eras' inputs could not be uploaded because fal is locked.
 - Blocked on: **fal account locked, "Exhausted balance"** (free upload refused at 04:20): every fal call fails (uploads, voice replies, STT, video). The human must top up. Also Agent 5's R3-5b for R3-2e. FAL_KEY, DEEPSEEK_API_KEY and MONGODB_URI are in the root `.env.local` (mocks on there: put NEXT_PUBLIC_USE_MOCKS= before any real command); Node v26.13.1.
 - Board read up to: 2026-11-15 04:25 (@agent-4 R3-4b)
@@ -408,3 +408,12 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 - **pregenerate.ts also:** a free fal preflight (one tiny upload) before anything real is queued, so a locked account stops the run first; the estimate counts only the tiers an era still needs (the demo eras were overstated by the core tier, $0.62 each). Queen's Tower 1893 video: about $4.34.
 - **R3-2d (V7) done.** `VIDEO_RUNBOOK.md`: preconditions, the free rehearsal, the canary with `--max-usd 5 --concurrency 1`, how to watch and stop, the phone checks (Agent 4 to extend), backup, next eras, switching off, a failure table. Includes `VIDEO_ERAS` for Agent 1's R3-1a.
 - Delegated nothing. Tests: 542 pass.
+
+### 2026-11-15 05:41, welcome intro (the human's request, in Agent 3's files)
+
+- The human asked me directly for a welcome screen: "welcome to Chronodex", a themed enter button, then ask for location and zoom through clouds to the player on the map. It lives in Agent 3's paths (`src/components/explore/`), so the board post hands it to Agent 3.
+- Built: `WelcomeIntro.tsx` (overlay), `WelcomeIntro.styles.ts` (its CSS as a string), `lib/intro.ts` (pure logic: once per session via sessionStorage, `?intro=1`/`?intro=0`, where it lands) with 6 tests, and a few lines in `MapScreen.tsx`: while the intro is up the map opens on the globe above the opening city and drawPlayer does not auto-centre; the intro does the first move.
+- Flow: "WELCOME, TIME TRAVELLER" / CHRONODEX over a slowly spinning globe framed by pixel clouds, button "ENTER THE TIMESTREAM". The press calls `tracker.start()` synchronously (iOS shows the location prompt only inside a tap), shows "LOCKING ON TO YOU_", waits for a fix (12 s cap), then the clouds close in, white out and burst past while the map flies from the globe to the player at zoom 17 (5.2 s). Refused or no fix: it lands on the opening city's landmarks with a note, and the first later fix still centres the map. Reduced motion: a short fade and a jump.
+- Trap found: `next.config.ts` maps every `*.css` through Tailwind `as: "*.css"`, so a `.module.css` loses its class map (every className empty). Hence the CSS string with `ci-` prefixes.
+- Checked in headless Chrome over CDP at 390x844 against the running dev server (mock data): title, cloud cover, landing on Queen's Tower with a granted fake GPS; and the refused path landing on the South Kensington landmarks. Not yet seen on a real phone.
+- Tests: 556 pass.

@@ -28,6 +28,8 @@ import { circlePolygon } from './lib/map-geometry';
 import { groupIntoRegions, pickRegion, REGION_GAP_M, shouldFly } from './lib/map-region';
 import { PALETTE } from './lib/palette';
 import { useUnavailableTimeMachines } from './lib/use-era-ready';
+import { shouldShowIntro } from './lib/intro';
+import WelcomeIntro, { sessionStorageOrNull } from './WelcomeIntro';
 
 /**
  * Screen pixels kept clear around the landmarks when the map first frames them. Markers stand
@@ -116,6 +118,10 @@ export default function MapScreen() {
   const hasCentredRef = useRef(false);
   /** Accuracy used by the dev click-to-spoof handler, which is registered once. Mirrors the state. */
   const spoofAccuracyRef = useRef(DEFAULT_SPOOF_ACCURACY_M);
+  // The welcome intro (WelcomeIntro.tsx) plays once per session. While it is up the map opens on the globe and the
+  // intro, not drawPlayer, makes the first move to the player. This screen only renders in the browser (ssr: false).
+  const [introOpen, setIntroOpen] = useState(() => shouldShowIntro(sessionStorageOrNull(), window.location.search));
+  const introOpenRef = useRef(introOpen);
 
   const [landmarks, setLandmarks] = useState<Landmark[] | null>(null);
   const [collected, setCollected] = useState<Set<LandmarkId>>(new Set());
@@ -156,7 +162,7 @@ export default function MapScreen() {
       player.added = true;
     }
     map.getSource<GeoJSONSource>('accuracy')?.setData(circlePolygon(fix.position, fix.accuracyM));
-    if (!hasCentredRef.current) {
+    if (!hasCentredRef.current && !introOpenRef.current) {
       hasCentredRef.current = true;
       const to = { center: [fix.position.lng, fix.position.lat] as [number, number], zoom: FOUND_ZOOM };
       const here = map.getCenter();
@@ -238,9 +244,11 @@ export default function MapScreen() {
     const map = new MapLibreMap({
       container: containerRef.current,
       style: buildGameMapStyle(),
-      // Open framed on one region (city): the nearest to the player's last fix, else the biggest.
-      bounds: landmarkBounds(openingRegion(landmarks)),
-      fitBoundsOptions: { padding: FIT_PADDING_PX },
+      // Open framed on one region (city): the nearest to the player's last fix, else the biggest. During the welcome
+      // intro, open on the whole globe above that region instead, so the intro can fall from space to the street.
+      ...(introOpenRef.current
+        ? { center: landmarkBounds(openingRegion(landmarks)).getCenter(), zoom: WORLD_ZOOM }
+        : { bounds: landmarkBounds(openingRegion(landmarks)), fitBoundsOptions: { padding: FIT_PADDING_PX } }),
       minZoom: MIN_ZOOM,
       maxZoom: 19,
       // A game map stays north-up and flat.
@@ -515,6 +523,22 @@ export default function MapScreen() {
             </button>
           )}
         </div>
+      )}
+
+      {introOpen && (
+        <WelcomeIntro
+          mapRef={mapRef}
+          trackerRef={trackerRef}
+          fallbackBounds={() => (landmarks ? landmarkBounds(openingRegion(landmarks)) : null)}
+          landingZoom={FOUND_ZOOM}
+          fitPadding={FIT_PADDING_PX}
+          onDone={(centredOnPlayer) => {
+            introOpenRef.current = false;
+            // After a landing on the player the next fix must not jump the camera; after a fallback it should.
+            hasCentredRef.current = centredOnPlayer;
+            setIntroOpen(false);
+          }}
+        />
       )}
 
       {DEV_TOOLS && (
