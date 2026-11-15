@@ -423,3 +423,20 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 - The spoof panel was still in the code but hidden: `NEXT_PUBLIC_DEV_TOOLS` was empty in the root `.env.local`. Set it to 1, and `ALLOW_SPOOFED_LOCATION=1` so the server accepts spoofed captures with mocks off (local file only, git-ignored).
 - Moved the panel to the top left under the CHRONODEX chip (globals.css `.dev-panel`); the location banner moves to 100 px while dev tools are on. A new `.banner-below-dev` rule never reached the browser (absent from the served CSS even after a rebuild), so it is an inline style in MapScreen.
 - Removed "Chronodex uses your location ..." under the intro button. Checked in headless Chrome: panel, banner, spoof to Queen's Tower enables its capture.
+
+### 2026-11-15 07:24, demo video: first cut (the human's request)
+
+- The human updated FAL_KEY and allowed fal for voice only, never video. Used once: Edith's spoken chat reply (Eleven v4 Turbo through `/api/voice/tts`, a few cents). A free storage upload confirmed the key works.
+- Built `spikes/agent-2/demo-video/` (README there): headless Chrome over CDP at 390x844 @2x records each scene at 35 to 55 fps from the running app; `timeline.mjs` cuts them to SCRIPT.md's times; Chrome renders the cards in the app's pixel font; ffmpeg (`ffmpeg-static` 6.1, the spike's own package) assembles. Output: `out/chronodex-demo.mp4`, 1920x1080, 30 fps, 2:00.0, about 25 MB (git-ignored).
+- Scenes: welcome (intro and cloud dive), map (glide over South Kensington, World, the three ducks, City), capture (walk into the Royal Albert Hall ring, fake camera fed the reference photo, coin twirl), memory (Dex, chest opened), time (360° turned all the way round, tilt, Sources), guide (Edith's clips; then full frame from `public/demo/royal-albert-hall_1871/`: walk on plus her introduction, 0 to 5.75 s of talk.mp4), chat (real reply on a mocks-off `next start` on port 3100 with `MONGODB_DB=chronodex VIDEO_GENERATION=off`), end card listing the fal models.
+- Sound: the app's 1980-now music for the game parts; 1850-1899 music and street sound for 1871, stepped down under Edith; the chat's real chime (tone.ts); synthesised whoosh, shutter, coin and chest (ffmpeg `anoisesrc`/`aevalsrc`, commands in the shell history of this entry: pink noise band-passed with fades; two noise clicks; a square wave 988 then 1319 Hz; a 523/659/784 Hz blip).
+- Traps: the recording browser hides the dev indicator, MOCK DATA tag and spoof panel; the duck markers' order does not follow their routes; Git Bash rewrites "/time/..." arguments into Windows paths.
+- Waiting on: the team's voice-over. Then set each section's `dur` from it and `node build.mjs --vo <file>`.
+
+### 2026-11-15 07:52, demo video: final cut with the team's voice-over
+
+- The human's notes: let the map load first, no fades, use the WhatsApp voice-over, credits without model names ("all image and audio generation by fal") and with Ishan, Alex, Fernando and Azlan, and a duck walking across the credits.
+- Map loading: each map scene warms the tile cache before recording (the map scene rehearses its whole route). Fast zoom-outs still showed blank patches, so camera moves are now recorded frame by frame (`stepped()` in cdp.mjs: move, wait for every tile, screenshot); the welcome dive (zooming in) was already clean.
+- Voice-over: 87 s WhatsApp recording; ffmpeg silencedetect found the nine spoken blocks at the script's pauses; each is levelled (loudnorm) and placed at the start of its pictures (`VOICE_OVER` in timeline.mjs). Narration and Edith both about -18 dB; Edith's chat reply cut at her first sentence (11.1 s) so it ends before the closing line.
+- Hard cuts, no fades. Credits: the app's straw-hat duck sprite walks the ground line, frames swapped every 0.34 s like the app.
+- Output 2:00.0, 1920x1080; also copied to the repo root as chronodex-demo.mp4 for the human (untracked, not committed).

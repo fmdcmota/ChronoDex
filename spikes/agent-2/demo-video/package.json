@@ -1,0 +1,9 @@
+{
+  "name": "chronodex-demo-video",
+  "private": true,
+  "description": "Agent 2 spike: records the app and assembles the 2-minute demo video. Own dependencies, never imported by src/.",
+  "type": "module",
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0"
+  }
+}
