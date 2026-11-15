@@ -120,7 +120,7 @@ Albert Neale). Video generation is off, so nothing here spends fal credits. Do i
 | 6.1 | Open `<tunnel>/time/queens-tower` | 1893 opens with the period street view, no "Mock data" tag in the corner |
 | 6.2 | Drag around a full turn | The horizon is level, no visible seam straight ahead, the tower is in the centre at the start, and the view behind you is plausible (it is less certain there) |
 | 6.3 | Tap **Look around**, allow motion, turn on the spot | The view follows the phone smoothly; Reset brings the tower back to the centre |
-| 6.4 | Tap **Meet Albert** | Albert's narration plays from the speaker with captions, and the background sound dips while he talks |
+| 6.4 | Tap **Meet Albert** | Preview of the guide video ("Preview · guide video coming"): Albert's portrait walks on over the 1893 street, speaks the narration from the speaker with captions while the background sound dips, then walks off and "Chat with Albert" appears |
 | 6.5 | Tap **Then/Now**, drag the divider | The 1893 view lines up with today's photo; the line under it reads "Present-day photo: David Richfield, CC BY-SA 4.0" |
 | 6.6 | Tap **Sources** | Summary, facts, sources, and a "Pictures" list with the photo credits |
 | 6.7 | Close the tab, reopen the same link | 1893 appears at once with no "Travelling…" wait (kept on the phone) |

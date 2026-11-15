@@ -282,7 +282,8 @@ export function createMediaStore(deps: MediaStoreDeps): MediaStore {
 
     if (url.startsWith('/')) {
       const file = publicFile(deps.publicDir, url);
-      const bytes = new Uint8Array(await readFile(file));
+      // The path is checked to stay under public/; the comment stops Turbopack tracing the whole project.
+      const bytes = new Uint8Array(await readFile(/*turbopackIgnore: true*/ file));
       return persistBytes(bytes, { ...options, contentType: options.contentType ?? contentTypeFor(null, file), sourceUrl: url });
     }
     if (!/^https?:\/\//i.test(url)) throw new Error(`Cannot persist "${url.slice(0, 60)}": not an http(s) URL or a site path`);
