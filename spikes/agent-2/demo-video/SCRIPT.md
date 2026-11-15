@@ -31,9 +31,9 @@ Royal Albert Hall is the one landmark followed all the way through.
 | **0:28 to 0:44** · Collect | The dot walks into the Royal Albert Hall ring. The button lights up: **Capture Royal Albert Hall**. The camera opens and a photo is taken. The badge coin drops, twirls, bounces and shines. Cut to the Dex: the counter goes up and the new badge glows in colour. | **[APP SOUND]** shutter, then the coin landing (added in the edit). | "Stand within fifty metres of a landmark, take its picture, and you win its badge." **[PAUSE 3 s]** "Every badge lands in your Dex," |
 | **0:44 to 0:52** · Memory box | The little pixel chest in the corner bounces as the photo lands. Tap it: the photos open as a stack of polaroids with their dates. | | "and every photo you take is kept in your memory box, right on your phone." |
 | **0:52 to 1:16** · Time Machine, Royal Albert Hall 1871 | Open the Time Machine. The year bar slides to **1871**. The 360° view fills the screen: the camera turns slowly from the hall across the Horticultural Society's garden and back, then tilts up to the roof. Show the "AI reconstruction" label. Open the Sources drawer for a second. | **[APP SOUND]** the 1850 to 1899 ambience: music-hall piano and hooves on the cobbles, at full volume during the pause. | "Then the payoff: the Time Machine. Pick a year. Here it's 1871, the spring the Royal Albert Hall opened, and you can look all the way around the place as it stood." **[PAUSE 5 s]** "Every era is researched with its sources, and even the music and street sounds are made for the period." |
-| **1:16 to 1:38** · The guide | Edith Marlow walks on into the 1871 scene, stops, and talks to camera, with captions. | **[APP SOUND]** Edith's own voice, about 9 s: "They say the organ inside has ten thousand pipes, and the whole place sits about eight thousand people." The ambience dips under her. | "Then someone from that year walks up to meet you." **[PAUSE 10 s]** |
-| **1:38 to 1:50** · Chat | The chat thread: Edith's portrait, name and role at the top, her greeting bubble. The player types "What did a ticket cost on opening night?". Her reply streams in. Tap play on the reply. | **[APP SOUND]** the send and receive chimes, then a few words of her spoken reply. | "And she'll keep talking, by text or by voice, in her own voice." **[PAUSE 3 s]** |
-| **1:50 to 2:00** · Close | The progress sheet: each stage with its fal model and time (scene, panorama, voice, guide video). Then the CHRONODEX title card. | Music bed swells and ends. | "Every picture, voice and video is generated with fal, checked, and kept. Chronodex: collect the city, then step into its past." |
+| **1:17 to 1:30** · The guide | A tap on **▶ Meet Edith**, then her generated video full frame: she walks on into the 1871 scene and introduces herself. | **[APP SOUND]** Edith's own voice, about 6 s: "I'm Edith Marlow, and I keep the beds and paths in this garden, so mind where you step." The ambience dips under her. | "Then someone from that year walks up to meet you." **[PAUSE 10 s]** |
+| **1:30 to 1:49** · Chat | The chat thread: Edith's portrait, name and role at the top, her greeting bubble. The player types "What did tickets cost?". Her real reply streams in. Tap play on the reply. | **[APP SOUND]** the chat chime, then her spoken reply: "For the opening night they ran from a guinea and a shilling up in the picture gallery to fifteen guineas for a second-tier box of five seats…" | "And she'll keep talking, by text or by voice, in her own voice." **[PAUSE 3 s]** |
+| **1:49 to 2:00** · Close | The end card: CHRONODEX, "Collect the city. Then step into its past.", and the fal model behind each part. | Music bed swells and ends. | "Every picture, voice and video is generated with fal, checked, and kept. Chronodex: collect the city, then step into its past." |
 
 ### The voice-over on its own (to read from)
 
@@ -72,13 +72,13 @@ Royal Albert Hall is the one landmark followed all the way through.
 
 ## For the edit (Agent 2's notes, not read aloud)
 
-- **Format:** 1920×1080, because the demo screen is landscape (MASTER A7). The phone screen is recorded at 390×844
-  and sits in the centre in a simple phone frame, with a short caption beside it for each block.
-- **Capture:** each block is recorded from the running app (headless Chrome at phone size, location spoofed onto
-  the landmark), then cut to the voice-over's timing. The coin and shutter sounds and the music bed are added in the
-  edit. The ambience, Edith's clip and the chat chimes are the app's own files.
-- **Needs:** ffmpeg to assemble the video. It is not installed on this machine; it will go in
-  `spikes/agent-2/demo-video/`'s own package (`ffmpeg-static`), touching nothing shared. The chat's spoken reply
-  needs fal credit. Without a top-up, that block shows the text reply and the chimes only, and Edith's voice
-  comes from her video.
-- **Then/Now slider:** left out. It is hidden for the demo eras whose scene does not match the reference viewpoint.
+- **Built:** a first cut with on-screen titles in place of the voice, timed to the target times above:
+  `spikes/agent-2/demo-video/out/chronodex-demo.mp4` (1920x1080, 30 fps, 2:00). How it is made: `README.md` here.
+- **When the voice-over arrives:** each section's length is set from where its lines fall (the pauses mark the
+  blocks), then `node build.mjs --vo <file>` lays the voice over the cut with the music lowered under it.
+- **Recorded from the real app:** phone-sized headless Chrome, location set onto each landmark, the camera fed the
+  Royal Albert Hall reference photo. The chat is a real reply and Edith's real spoken reply (the one fal call: Eleven
+  v4 Turbo speech). Her guide clip is the generated video itself. Sound effects (whoosh, shutter, coin, chest) are
+  synthesised; the chat chime, the period music and street sounds are the app's own files.
+- **Left out:** the Then/Now slider (hidden for demo eras whose scene does not match the reference viewpoint) and
+  the live progress sheet (every demo era is already made; the end card lists the models instead).
