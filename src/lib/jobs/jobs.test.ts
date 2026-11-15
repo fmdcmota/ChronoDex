@@ -31,6 +31,7 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.useRealTimers();
   delete process.env.VIDEO_GENERATION;
+  delete process.env.VIDEO_ERAS;
 });
 
 describe('job queue', () => {
@@ -127,8 +128,19 @@ describe('requestEraGeneration', () => {
     const eraId = eraIdOf('royal-albert-hall', 1871);
     expect(await requestEraGeneration(eraId, true)).toMatchObject({ ok: false, status: 403, code: 'video_disabled' });
     process.env.VIDEO_GENERATION = 'on';
+    process.env.VIDEO_ERAS = eraId;
     const ok = await requestEraGeneration(eraId, true);
     expect(ok.ok && ok.response.era.videoState).toBe('queued');
+  });
+
+  it('refuses video for an era that is not in VIDEO_ERAS even when video is on', async () => {
+    const eraId = eraIdOf('royal-albert-hall', 1871);
+    process.env.VIDEO_GENERATION = 'on';
+    expect(await requestEraGeneration(eraId, true)).toMatchObject({ ok: false, status: 403, code: 'video_disabled' });
+    process.env.VIDEO_ERAS = ' queens-tower_1893 , other_1900 ';
+    expect(await requestEraGeneration(eraId, true)).toMatchObject({ ok: false, status: 403 });
+    // The core tier is never blocked by the list.
+    expect((await requestEraGeneration(eraId, false)).ok).toBe(true);
   });
 
   /** Queue, claim and fail one job for the era, as a worker that keeps failing would. */
@@ -185,6 +197,7 @@ describe('pipeline stub, end to end', () => {
     // The real pipeline (Agent 2) calls Claude and fal; mocks switch it to its no-spend dry run.
     vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
     process.env.VIDEO_GENERATION = 'on';
+    process.env.VIDEO_ERAS = eraId;
     await requestEraGeneration(eraId, true);
     const job = await claimNextJob('w');
     expect(job?.eraId).toBe(eraId);

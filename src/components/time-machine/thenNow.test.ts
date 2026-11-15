@@ -2,7 +2,7 @@
  * Unit tests for the then/now slider maths. Owner: Agent 4 (A4-06).
  */
 import { describe, expect, it } from 'vitest';
-import { THEN_NOW_START_PERCENT, clampPercent, percentAfterKey, percentFromPointer } from './thenNow';
+import { THEN_NOW_MISALIGNED_ERAS, THEN_NOW_START_PERCENT, canCompareThenNow, clampPercent, percentAfterKey, percentFromPointer } from './thenNow';
 
 describe('clampPercent', () => {
   it('keeps values inside 0 to 100', () => {
@@ -44,5 +44,17 @@ describe('percentAfterKey', () => {
   });
   it('ignores other keys', () => {
     expect(percentAfterKey(50, 'a')).toBeNull();
+  });
+});
+
+describe('canCompareThenNow (R3-4c)', () => {
+  it('needs both pictures', () => {
+    expect(canCompareThenNow('x_1900', null, '/r.jpg')).toBe(false);
+    expect(canCompareThenNow('x_1900', '/s.jpg', '')).toBe(false);
+    expect(canCompareThenNow('x_1900', '/s.jpg', '/r.jpg')).toBe(true);
+  });
+  it('hides the demo eras whose scene is from another viewpoint', () => {
+    expect(canCompareThenNow('queens-tower_1893', '/s.jpg', '/r.jpg')).toBe(false);
+    expect(THEN_NOW_MISALIGNED_ERAS.size).toBe(8);
   });
 });

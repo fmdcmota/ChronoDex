@@ -5,7 +5,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { ChatStreamEvent, Era, Guide } from '@/lib/contracts';
 import { HERO_ERA_ID, eras, landmarks } from '@fixtures/index';
-import { ChatInputError, buildGuideSystemPrompt, pickNextLandmark, streamGuideReply, toChatTurns } from './index';
+import { ChatInputError, MAX_SUGGESTION_DISTANCE_M, buildGuideSystemPrompt, pickNextLandmark, streamGuideReply, toChatTurns } from './index';
 import { DEEPSEEK_CHAT_URL, DeepSeekError, collectUrls, completeDeepSeek, streamDeepSeek } from './deepseek';
 import { fakeFetch, sse } from './test-fakes';
 
@@ -49,6 +49,14 @@ describe('prompt and suggestion', () => {
     expect(next!.name).not.toBe(queensTower.name);
     expect(next!.name).not.toBe('Royal Albert Hall');
     expect(pickNextLandmark(queensTower, landmarks, new Set(landmarks.map((l) => l.id)))).toBeNull();
+  });
+
+  it('suggests nothing from another city', () => {
+    const porto = landmarks.find((l) => l.id === 'dom-luis-bridge')!;
+    const others = landmarks.filter((l) => l.id !== porto.id);
+    const next = pickNextLandmark(porto, others, new Set());
+    expect(next === null || next.distanceM <= MAX_SUGGESTION_DISTANCE_M).toBe(true);
+    expect(pickNextLandmark(porto, landmarks.filter((l) => l.id === porto.id || l.id === 'queens-tower'), new Set())).toBeNull();
   });
 
   it('builds a prompt with the persona, the facts, the suggestion and the greeting', () => {

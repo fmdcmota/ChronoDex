@@ -115,7 +115,9 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A4-r2-8 Cache /demo/ files in the browser
 - [ ] A4-r2-9 WAV narration and replies on iOS (Gemini voices)
 - [x] R3-4a Time Machine never asks for the video tier (V3, critical path)
-- [x] R3-4b Preview to real clips swap without a reload (V6; unit-tested, not yet seen in a browser with a fake guideVideo)
+- [x] R3-4c Then/Now hidden for the 8 demo eras (V9)
+- [x] R3-4d /demo files in Cache Storage; WAV on iOS still needs a phone
+- [x] R3-4b Preview to real clips swap without a reload (V6; seen in a browser with mocks, 04:40)
 - [ ] R3-4b Preview to real clips swap tested with a fake guideVideo (V6)
 - [ ] A4-r2-3 Then/Now check after Agent 2 regenerates the scene from the reference photo
 - [x] A4-r2-4 Map zoom-fade polish (Agent 3's handoff): tiles kept loading while zooming, bigger cache
@@ -303,3 +305,15 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Did: `guideVideoKey(guideVideo)` (stable JSON of the clip list); GuidePlayer memoises on it; TimeMachineScreen keys GuidePlayer on `eraId|guideVideoKey`, so the clips' arrival remounts it to a fresh Meet button that plays the real video. Unmount now calls `onPlayingChange(false)` so the ambience duck lifts. Test `guideVideoKey.test.ts`.
 - Measured or verified: tsc (after `next typegen`, needed in a fresh worktree), eslint, vitest --pool=vmThreads on time-machine: 70 pass. Not yet run in a browser with a fake guideVideo landing mid-session.
 - Next: R3-4c Then/Now.
+
+### 2026-11-15 04:40, R3-4b browser check
+- Did: dev-tools-only hook `window.chronodexDev.requestVideo()` in TimeMachineScreen (only with NEXT_PUBLIC_DEV_TOOLS=1) that asks for the open era's video tier like the runbook script. Mock mode, Chrome: Queen's Tower 1962 core tier generated, Meet Edith started the preview, requestVideo() during it; after the mock job the screen showed Meet Edith again without a reload, and tapping it played the mock clips (video element playing, Skip shown).
+- Trap: a fresh worktree has an empty node_modules; npx found the main checkout's packages for tsc/lint/vitest, but `next dev` failed (Turbopack: next/package.json not found) until `npm ci` here.
+- Not checked: whether the preview had already ended before the clips landed (the mock narration is short), and captions on the talk clip.
+- Next: R3-4c Then/Now.
+
+### 2026-11-15 04:55, R3-4c and R3-4d (local commits only: the human said not to push for now)
+- R3-4c: compared each demo scene with data/reference/<landmark>.jpg side by side. None of the 8 keeps the reference's viewpoint (Agent 6's scenes are period views from other spots; Dom Luis is closest but from the road deck). Agent 2's 1893 crop was for an older scene. Added `THEN_NOW_MISALIGNED_ERAS` and `canCompareThenNow` in thenNow.ts; the button is hidden for those 8. Remove an id when its scene is regenerated from the reference (R3-2e). Also hides it for the mock hero era (queens-tower_1893).
+- R3-4d: `/demo/...` paths count as cacheable in mediaCache.ts, so the 8 eras' pictures and narration come from Cache Storage on a second visit. Trap: if a /demo file is ever replaced at the same path, bump MEDIA_CACHE_NAME. WAV: the media store serves `audio/wav`, all demo narrations are MP3, so WAV only reaches iOS in chat replies from Gemini voices; Safari plays PCM WAV, but not yet heard on the phone.
+- Checks: tsc, eslint, vitest time-machine 72 pass.
+- Board post not added yet: will post when the human allows a push.

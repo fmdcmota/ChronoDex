@@ -17,4 +17,4 @@ export {
   releaseJob,
   resetMemoryJobs,
 } from './queue';
-export { maxFailedJobsPerEra, requestEraGeneration, videoGenerationEnabled, type GenerateOptions, type GenerationOutcome } from './generate';
+export { maxFailedJobsPerEra, requestEraGeneration, videoEraAllowList, videoGenerationEnabled, type GenerateOptions, type GenerationOutcome } from './generate';

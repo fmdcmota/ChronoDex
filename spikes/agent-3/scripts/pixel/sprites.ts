@@ -519,35 +519,44 @@ function zocaloCathedral(): PixelCanvas {
   return finish(c, 14);
 }
 
-/** Dom Luís I Bridge (Porto): an iron arch over the Douro with the upper deck on top and the lower deck at its feet. Agent 6. */
+/**
+ * Dom Luís I Bridge (Porto): a double-deck iron arch over the Douro, the upper deck across the top,
+ * the lower deck at the arch's feet, granite banks with terracotta houses. Drawn by Agent 6,
+ * redrawn by Agent 3 (15 Nov, polish) for readability: a thin light truss instead of dark columns,
+ * and nothing touching the edge of the sprite.
+ */
 function domLuisBridge(): PixelCanvas {
   const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  /** Height of the arch's underside at column x: feet on the lower deck, crown at the upper deck. */
+  const arch = (x: number) => Math.round(24 - 8 * (1 - ((x - 15.5) / 10) ** 2));
   // River.
-  c.rect(2, 26, 29, 28, P.water);
-  c.hline(4, 11, 27, P.waterDeep);
+  c.rect(3, 26, 28, 28, P.water);
+  c.hline(5, 11, 27, P.waterDeep);
   c.hline(18, 26, 28, P.waterDeep);
-  // Granite abutments on both banks.
-  c.rect(0, 9, 3, 28, P.stone);
-  c.rect(2, 9, 3, 28, P.stoneDark);
-  c.rect(28, 9, 31, 28, P.stone);
-  c.rect(30, 9, 31, 28, P.stoneDark);
-  // The arch: a parabola two pixels deep, from the river banks up to the upper deck.
-  for (let x = 4; x <= 27; x++) {
-    const t = (x - 15.5) / 11.5;
-    const y = Math.round(25 - 14 * (1 - t * t));
-    c.rect(x, y, x, y + 1, P.slate);
+  // Granite banks, each with a terracotta-roofed house on top.
+  for (const [x0, x1] of [[1, 5], [26, 30]] as const) {
+    c.rect(x0, 12, x1, 28, P.stone);
+    c.rect(x1 - 1, 12, x1, 28, P.stoneDark);
+    c.hline(x0, x1, 18, P.stoneDark);
+    c.rect(x0 + 1, 8, x1 - 1, 11, P.stone);
+    c.hline(x0, x1, 7, P.terracotta);
+    c.hline(x0 + 1, x1 - 1, 6, P.brick);
+    c.set(x0 + 2, 9, P.slate);
   }
-  // Uprights from the arch to the upper deck, near the banks.
-  for (const x of [5, 7, 24, 26]) {
-    const t = (x - 15.5) / 11.5;
-    c.vline(x, 11, Math.round(25 - 14 * (1 - t * t)), P.inkSoft);
-  }
-  // Upper deck across the top, iron with a rail.
-  c.rect(0, 9, 31, 10, P.slate);
-  c.hline(0, 31, 8, P.inkSoft);
   // Lower deck through the arch's feet.
-  c.rect(4, 22, 27, 22, P.slate);
-  return finish(c, 15);
+  c.rect(6, 23, 25, 23, P.slate);
+  // Truss: thin uprights from the upper deck down to the arch, in a lighter iron.
+  // Spaced four apart so the outline pass leaves clear sky between them.
+  for (const x of [8, 12, 16, 20, 24]) c.vline(x, 13, arch(x) - 1, P.inkSoft);
+  // The arch itself, two pixels deep, with a light edge on top so it separates from the truss.
+  for (let x = 6; x <= 25; x++) {
+    c.set(x, arch(x), P.glass);
+    c.set(x, arch(x) + 1, P.slate);
+  }
+  // Upper deck across the top, with a rail that catches the light.
+  c.rect(5, 11, 26, 12, P.slate);
+  c.hline(5, 26, 10, P.glass);
+  return finish(c, 14);
 }
 
 /** Width and height of one frame of the walking duck, in art pixels. */

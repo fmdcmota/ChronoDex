@@ -31,6 +31,7 @@ import { PanoramaView } from './PanoramaView';
 import { ProgressSheet } from './ProgressSheet';
 import { SourcesDrawer } from './SourcesDrawer';
 import { ThenNowSlider } from './ThenNowSlider';
+import { canCompareThenNow } from './thenNow';
 import { hasSourceNotes } from './sources';
 import { YearBar } from './YearBar';
 import { AmbienceToggle } from './AmbienceToggle';
@@ -183,6 +184,19 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
     return () => clearInterval(timer);
   }, [pollId, accept]);
 
+  // Dev tools only (NEXT_PUBLIC_DEV_TOOLS=1): `window.chronodexDev.requestVideo()` asks for the video tier of the
+  // open era, the way the runbook's script does, so the preview-to-clips swap (R3-4b, V6) can be watched with
+  // mocks. Never set in the demo build, so it can never spend.
+  useEffect(() => {
+    if (process.env.NEXT_PUBLIC_DEV_TOOLS !== '1' || !liveEra) return;
+    const eraId = liveEra.id;
+    const w = window as unknown as { chronodexDev?: { requestVideo: () => Promise<void> } };
+    w.chronodexDev = { requestVideo: () => api.generateEra(eraId, true).then(accept) };
+    return () => {
+      delete w.chronodexDev;
+    };
+  }, [liveEra, accept]);
+
   // Tick the elapsed time in the progress sheet.
   useEffect(() => {
     if (!job) return;
@@ -210,7 +224,8 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
 
   const guideName = era?.guide?.name.split(' ')[0];
   /** A4-06: the slider needs both images, and they share framing (section 5.1). */
-  const canCompare = Boolean(era?.sceneImageUrl && landmark?.referencePhotoUrl);
+  // R3-4c: hidden where the scene does not keep the reference photo's framing.
+  const canCompare = Boolean(era && canCompareThenNow(era.id, era.sceneImageUrl, landmark?.referencePhotoUrl));
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-(--ink) text-(--paper)">

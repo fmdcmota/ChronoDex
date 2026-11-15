@@ -161,6 +161,7 @@ describe('worker with the real queue', () => {
     vi.stubEnv('NEXT_PUBLIC_USE_MOCKS', '1');
     process.env.VIDEO_GENERATION = 'on';
     const eraId = eraIdOf('natural-history-museum', 1862);
+    process.env.VIDEO_ERAS = eraId;
     const outcome = await requestEraGeneration(eraId, true);
     const jobId = outcome.ok ? outcome.response.job?.id : undefined;
     expect(jobId).toBeTruthy();
@@ -178,6 +179,7 @@ describe('worker with the real queue', () => {
       log: quiet,
     });
     delete process.env.VIDEO_GENERATION;
+    delete process.env.VIDEO_ERAS;
 
     expect(await getEra(eraId)).toMatchObject({ state: 'ready', videoState: 'ready' });
     expect((await getJob(jobId as string))?.state).toBe('succeeded');

@@ -45,12 +45,19 @@ const CHAT_FAILED_MESSAGE = 'The guide seems lost for words. Try asking again in
 const CHAT_REFUSED_MESSAGE = 'The guide would rather not answer that one. Try asking something else.';
 
 /**
- * Pick the landmark the guide should suggest: the nearest one the player has not collected.
+ * Farthest a guide will send a player on foot, in metres. Beyond this the landmark is in another city
+ * (a Porto guide suggesting London's museums was seen in the R3-1d check) and no suggestion is better.
+ */
+export const MAX_SUGGESTION_DISTANCE_M = 20_000;
+
+/**
+ * Pick the landmark the guide should suggest: the nearest one the player has not collected,
+ * within MAX_SUGGESTION_DISTANCE_M.
  *
  * @param current - The landmark being chatted about. Never suggested.
  * @param all - Every landmark.
  * @param collectedIds - Ids of landmarks the player has collected.
- * @returns The suggestion, or null when everything else is collected.
+ * @returns The suggestion, or null when everything else is collected or too far away.
  */
 export function pickNextLandmark(
   current: Landmark,
@@ -60,6 +67,7 @@ export function pickNextLandmark(
   const candidates = all
     .filter((l) => l.id !== current.id && !collectedIds.has(l.id))
     .map((l) => ({ name: l.name, distanceM: haversineM(current.photoSpot, l.photoSpot) }))
+    .filter((c) => c.distanceM <= MAX_SUGGESTION_DISTANCE_M)
     .sort((a, b) => a.distanceM - b.distanceM);
   return candidates[0] ?? null;
 }

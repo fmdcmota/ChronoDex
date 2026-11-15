@@ -63,12 +63,12 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 09:00
-- Working on: nothing. Uncommitted (waiting for a commit yes): Historian offers only `selectableVoices()` (A2 ask), fixture guides moved off retired voices (eleven-daniel, eleven-charlotte), db README counts (15 landmarks, 22 eras), this notebook, one board post. `npm run check` passes (539 tests).
-- Done this session: seed on both databases (15 landmarks; chronodex has all 22 eras, Agent 6's 8 demo eras loaded by their script, left alone); A1-r2-1, A1-r2-3 pushed (c5ddd51). My own production build is up on port 3110 on `chronodex` behind a quick tunnel (URL changes on restart; no FAL_KEY, so no voice).
-- Next: (1) A1-r2-4 gates on a tunnel with the human, log M1 and M2 on the milestone board. (2) A1-r2-5: Agent 6 generated the demo set (8 eras: queens-tower 1893/1962, royal-albert-hall 1871, NHM 1862/1881, zocalo 1519, dom-luis 1886, raffles 1819); a human must read those briefs (H7). (3) A1-r2-6 tell Agent 4 to serve `chronodex` (it now holds the demo eras).
-- Blocked on: the human for the gates and the brief read.
-- Board read up to: 2026-11-15 08:32 (Agent 3 capture post) and Agent 2's 03:54 post.
+- Last updated: 2026-11-15 10:15
+- Working on: nothing. Uncommitted (waiting for a commit yes): chat suggestion limited to 20 km (`MAX_SUGGESTION_DISTANCE_M` in `src/lib/chat/index.ts`, test), notebook, board post. `npm run check` passes (544 tests).
+- Done: R3-1a pushed (47c400f). R3-1b done. R3-1d: one real chat reply per demo era with mocks off on my chronodex server (8 of 8 in character, 45 to 72 words, facts from the briefs, no failures); found a Porto guide suggesting London's NHM, fixed by the 20 km limit. R3-1e: deleted Agent 3's one test capture (player a3-test-*) in chronodex_dev_agent2.
+- Next: R3-1c M2 gate on a tunnel with the human and a phone, log M1 (passed about 03:00) and M2 on the `DEV_NOTEBOOK.md` milestone board. Then help with whatever is BLOCKED on the board.
+- Blocked on: the human with a phone for R3-1c.
+- Board read up to: 2026-11-15 04:20 (Agent 4's R3-4a post).
 - Waiting for commit approval: yes.
 - Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
 - Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.
