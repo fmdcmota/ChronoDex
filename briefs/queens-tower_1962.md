@@ -1,0 +1,42 @@
+# The Tower in the Rubble, 1962 (queens-tower_1962)
+
+**Status: DRAFT. A human must check every claim against its source before generation spends credits (H7).**
+
+## Summary
+In 1962 the Queen's Tower was still wrapped in the remains of the Imperial Institute. The east wing had been replaced by a College building by that year, and the west wing stood until 1965, so the tower read as a survivor inside a building site. Some archive summaries date the demolition of the east galleries to 1962 itself, and the sources are not perfectly consistent about month and sequence. The tower was not yet free-standing; new foundations and rebuilding of its lower portion came only between 1966 and 1968.
+
+## Fun facts
+- The tower is 287 ft (87 m) tall, built of Portland stone with a copper dome, and has 325 steps to the base of the dome.
+- The Imperial Institute was built 1887–93 to mark Queen Victoria's Golden Jubilee and cost £354,753, against about £429,000 raised by public subscription.
+- Two stone lions stood at the foot of the tower; they were two of four that had flanked the Institute entrance, the other two going to the Commonwealth Institute.
+- The tower's bells, the Alexandra Peal, were rung on royal anniversaries.
+- Imperial Institute Road was an ordinary through-road for traffic until 1962, when it was closed to public traffic.
+
+## Sources
+- [Queen's Tower – Imperial College London](https://www.imperial.ac.uk/about/history/queens-tower/?utm_medium=website&utm_source=archdaily.com.br)
+- [Queen's Tower, London – Wikipedia (archived)](https://web.archive.org/web/20220523152016/https://en.wikipedia.org/wiki/Queen%27s_Tower,_London#1)
+- [Imperial College Expansion Scheme – Archives Hub](https://archiveshub.jisc.ac.uk/files/exeter/gb029-eulms61add.1.xml)
+- [Imperial College Estate – planning document](https://docs.planning.org.uk/20210310/115/QPNGAMRPHKM00/a721bec8zvtglt2g.pdf#1#3#1)
+- [Queen's Tower – London Remembers](https://www.londonremembers.com/memorials/queen-s-tower-ic)
+
+## What the camera sees
+Looking due north from about 34 m south of the tower, on or beside the line of Imperial Institute Road. Ahead rises the 287-ft Queen's Tower, Portland stone with a copper dome, but its lower stages are still engaged with surviving Institute fabric and a new College building that has replaced the east wing. The tower reads as a tall survivor inside a building site, with scaffolding, hoardings and rubble plausible for much of the year. To the left the Institute's west wing still stands; to the right the new College building has already risen. The road is ordinary mid-century London asphalt with kerbs.
+
+Persists: The Queen's Tower itself, Portland stone with its copper dome; The line of the road from south to north towards the tower
+Altered: The tower is not yet free-standing; its lower stages are engaged with surviving and new building fabric; Imperial Institute Road is closed to public traffic in 1962, becoming a construction-adjacent enclave
+Not yet built: The Skempton Building and other post-war blocks framing Queen's Lawn; The open, pedestrianised Imperial College Road and the free-standing tower above Queen's Lawn/Dangoor Plaza
+Gone: The Imperial Institute's west wing, which stood until 1965; The east galleries of the Imperial Institute, demolished in 1962 in some archive accounts; The City and Guilds College building, demolished in 1962–63; The west wing of the Royal College of Science, demolished in 1961–2
+
+Surroundings: North: the tower and the remnant/new Imperial College building, with Prince Consort Road beyond. North-east and east: new post-war Imperial College buildings by Norman & Dawbarn, then Exhibition Road with the Huxley Building, Science Museum and Victoria and Albert Museum. South-east: the City and Guilds College site in demolition, Beit Quadrangle and the Exhibition Road frontage. South: the Royal College of Science building, half-standing and half-demolition site, with the Science Museum and Natural History Museum beyond. South-west: the Royal School of Mines and Prince Consort Road, leading to the Natural History Museum and the Albert Memorial. West: the surviving west wing of the Imperial Institute until 1965, then Queen's Gate and the Royal Albert Hall. North-west: Queen's Gate and the edge of Kensington Gardens.
+
+## Guide: Tom Whitlock, Builder's labourer on the demolition site
+I've been on this site since the first partial demolition in 1957, clearing rubble and stacking stone. I know every corner of the old Institute, and I can tell you the tower is the one thing we're not allowed to touch.
+
+Appearance: A man in his fifties, stocky and weathered, wearing a flat cap, a heavy wool jacket, corduroy trousers and scuffed boots, with work gloves tucked into his belt.
+Voice: eleven-george
+
+### Script
+Hello there, I'm Tom Whitlock, and I've been working this demolition since 1957, clearing rubble and stacking stone. They tell me the tower's staying, and I'm glad of it. It's two hundred and eighty-seven feet of Portland stone, with three hundred and twenty-five steps up to the base of the dome. The east wing's already gone, replaced by a new College building, and the west wing comes down in a few years. The road here used to carry traffic till this year, when they closed it. The bells, the Alexandra Peal, still ring on royal anniversaries. Mind the rubble now. I'll be off to shift some more stone. Goodbye.
+
+### Greeting
+Afternoon. Mind where you step round here — there's rubble and hoardings all about. You've come to see the tower, have you?

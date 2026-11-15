@@ -1,0 +1,43 @@
+# The Great Exhibition of 1862 (natural-history-museum_1862)
+
+**Status: DRAFT. A human must check every claim against its source before generation spends credits (H7).**
+
+## Summary
+In 1862 the site of today's Natural History Museum was occupied by the International Exhibition building, a vast temporary palace of brick, iron, wood and glass designed by Captain Francis Fowke. It opened with a state ceremony on 1 May 1862 and drew over six million visits between May and October. The building was widely disliked, mocked for its "tumid bubbles" of domes, and it survived only until the autumn of 1864. The Natural History Museum itself came later, in 1873 to 1881, so the record here is of an exhibition hall, not a museum.
+
+## Fun facts
+- Captain Francis Fowke's building covered about 23½ acres and housed over 28,000 national and international exhibits of art and industry.
+- Its two crystal domes were claimed by the commissioners to be the largest in diameter ever erected.
+- The Building News called it "one of the ugliest public buildings that was ever raised in this country".
+- Omnibus companies ran extra services for the crowds, including four three-horse omnibuses from Highbury to the Exhibition, half-hourly, at 9d. from Highbury.
+- The site was leased rent-free to the 1862 Commissioners, and the building was treated as potentially temporary, surviving only until the autumn of 1864.
+- Immediately north lay the Royal Horticultural Society's gardens, opened by the Queen and Prince Albert in June 1861.
+
+## Sources
+- [Survey of London: the 1862 Exhibition building and its site](https://www.british-history.ac.uk/survey-london/vol38/pp137-147#1)
+- [Survey of London: Cromwell Road and Freake's houses](https://www.british-history.ac.uk/survey-london/vol38/pp201-216#2)
+- [V&A: Fowke's design for the 1862 International Exhibition](https://collections.vam.ac.uk/item/O1178779/1862-international-exhibition-south-kensington-design/1862-international-exhibition-south-kensington-design-fowke/)
+- [Historic England: opening of the International Exhibition, 1862](https://historicengland.org.uk/images-books/photos/item/BB80/00009)
+- [Survey of London: the Natural History Museum site](https://www.british-history.ac.uk/survey-london/vol38/plate-63)
+
+## What the camera sees
+Looking north across a newly made Cromwell Road at the south front of Fowke's International Exhibition building: a long, sheer brick frontage rising straight from the footpaths, with two enormous glass domes and a great apsidal hall behind. No railings or gardens set it back, and because the road was built about five feet above the old ground, the building looks slightly sunken. Horse-drawn omnibuses, cabs, vans and carriages crowd the roadway; visitors in full-skirted crinolines and formal daywear walk the pavements, with mounted Household Cavalry among the traffic.
+
+Persists: The line of Cromwell Road and the position of the Exhibition Road and Queen's Gate junctions
+Altered: Cromwell Road itself, now carrying motor traffic instead of omnibuses and cabs; The south side of Cromwell Road, where Freake's new Italianate terraces stood half-built
+Not yet built: Alfred Waterhouse's Natural History Museum, built 1873 to 1881; South Kensington Underground station, opened on Christmas Eve 1868; The Science Museum as it exists today
+Gone: The International Exhibition building, demolished by the autumn of 1864
+
+Surroundings: North: the exhibition's south front with its twin glass domes, and beyond it the Royal Horticultural Society's gardens and glasshouses. East: the building's frontage running away along Exhibition Road. West: its western frontage along Queen's Gate. South, behind the viewer: Freake's new Italianate houses, No. 21 occupied, Nos. 23 and 25 bare carcases, Nos. 27 and 29 empty plots, and No. 33 the Duke of Rutland's. All around, new roads, footpaths and building plots make the district feel like a building site.
+
+## Guide: Thomas Pell, Omnibus conductor on the exhibition routes
+I've been running the omnibuses since I was a lad of fourteen, and this year I've never seen the like, with crowds pouring down Cromwell Road from morning till midnight. I call the stops, take the fares and keep the peace on board, and I know this district's streets better than any map.
+
+Appearance: A wiry man of about thirty, clean-shaven with sideburns, in a worn dark coat, a cloth cap and a leather satchel for fares.
+Voice: eleven-daniel
+
+### Script
+Morning to you, I'm Thomas Pell, conductor on the exhibition omnibuses. Three pence for part of a route, sixpence for the whole, and we run from eight in the morning till near midnight, so there's no excuse for walking. Since the exhibition opened on the first of May we've put on extra carriages, even four three-horse omnibuses from Highbury, half-hourly, ninepence from there. It's a queer building, mind. The Building News called it one of the ugliest public buildings ever raised in this country, and those great glass domes they call tumid bubbles. Six million visits they reckon, and not a penny of admission troubles me. Right, that's my bus. Good day to you.
+
+### Greeting
+Step up, step up, plenty of room on top! Were you for the exhibition, or just watching the traffic go by?

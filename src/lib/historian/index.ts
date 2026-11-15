@@ -50,11 +50,19 @@ const WRITING_TIMEOUT_MS = 3 * 60 * 1000;
 /** Retries for a DeepSeek 429, 5xx or dropped connection, and the pause before the first. */
 const MAX_TRANSIENT_RETRIES = 2;
 const DEFAULT_RETRY_DELAY_MS = 3000;
+/** Research attempts when the model skips the web tools, so no source is reported. */
+const MAX_RESEARCH_ATTEMPTS = 3;
 /** How many characters of a bad reply to show in a log or an error. */
 const SNIPPET_CHARS = 200;
 
 /** The Historian could not produce a valid brief. The message says why. */
 export class HistorianError extends Error {}
+
+/**
+ * Research finished but DeepSeek's tools reported no URLs, usually because the model answered from
+ * memory without searching. It is random, not systematic, so `writeEraBrief` researches once more.
+ */
+class NoSourcesError extends HistorianError {}
 
 /** Options for writeEraBrief. Tests inject the fetch and zero the delay. */
 export interface WriteEraBriefOptions {
@@ -98,7 +106,18 @@ export async function writeEraBrief(landmark: Landmark, year: number, options: W
   const retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
   const model = historianModel();
 
-  const research = await runResearch({ landmark, year, model, base, retryDelayMs, signal: options.signal });
+  const researchCtx = { landmark, year, model, base, retryDelayMs, signal: options.signal };
+  let research: Awaited<ReturnType<typeof runResearch>> | undefined;
+  for (let attempt = 1; !research; attempt++) {
+    try {
+      research = await runResearch(researchCtx);
+    } catch (err) {
+      // Seen on 14 Nov 2026: three runs in five answered without searching; the others searched
+      // dozens of URLs. Random, so research again, a bounded number of times.
+      if (!(err instanceof NoSourcesError) || attempt >= MAX_RESEARCH_ATTEMPTS) throw err;
+      console.warn(`Historian: research for ${landmark.id} ${year} used no web tools (attempt ${attempt}), trying again`);
+    }
+  }
   return runWriting({ landmark, year, model, base, retryDelayMs, signal: options.signal, ...research });
 }
 
@@ -143,7 +162,7 @@ async function runResearch(ctx: CallContext): Promise<{ notes: string; foundUrls
   if (!notes) throw new HistorianError(`Research for ${where} returned no notes`);
   // Only URLs the tools themselves reported count as found: a URL typed into the notes from
   // memory proves nothing.
-  if (done.urls.length === 0) throw new HistorianError(`Research for ${where} found no sources, so no claim could be cited`);
+  if (done.urls.length === 0) throw new NoSourcesError(`Research for ${where} found no sources, so no claim could be cited (finish: ${done.finishReason}, ${notes.length} characters of notes)`);
   return { notes, foundUrls: done.urls };
 }
 

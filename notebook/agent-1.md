@@ -31,14 +31,15 @@ Decided by the human: period music and ambience in the chat ships as static loop
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-14 21:50
-- Working on: MongoDB verified on Atlas and `chronodex_dev_alex` seeded; Agent 2's three asks done (`releaseJob`, worker env vars, voice keys). Rebased onto 0dfd515. 343 tests pass. Not committed.
-- Next: A1-16 (a brief for every demo era with `writeEraBrief`, saved for a human to read, H7). A1-12 (Vercel deploy: set the env vars there, `MONGODB_URI` and `DEEPSEEK_API_KEY`). A1-08 part 2 (photo GPS and 16:9) when the H1 photos arrive. A1-15 (walk the gates). Agent 5 may ask the seed to read `data/landmarks/*.json` and the Historian to take supplied notes.
-- Blocked on: nothing for code. Needs a human: the H1 photos, `MASTER.md` sections 7 and 8.2 edited to say DeepSeek, and the Vercel project (H2).
-- Board read up to: 2026-11-14 21:10 (agent-2 A2-10 ASK, answered in this commit; also agent-2 A2-07 to A2-11, the team dev-server note, and agent-4 A5 notes). Agent 5 may ask the seed to read `data/landmarks/*.json` and the Historian to take supplied notes; not built until asked.
-- Waiting for commit approval: this notebook update and one board post.
-- Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working), `CHAT_MODEL=deepseek-flash`. The Atlas database password is weak and was pasted into a chat: rotate it after the weekend.
-- Local machine: Node 26.13.1 was installed with winget. In Git Bash, prefix commands with `export PATH="/c/Program Files/nodejs:$PATH"` until the shell is restarted. Committed files are checked out with CRLF (git autocrlf), so scripted string replacements must allow for \r\n.
+- Last updated: 2026-11-15 00:35
+- Working on: nothing. Everything below is uncommitted on branch agent-1 and waits for a commit yes (files: scripts/brief-era.ts, briefs/*, package.json, README.md, src/app/api/chat/route.ts, src/lib/historian/{index,prompt,historian.test}.ts, DEV_NOTEBOOK.md, this page, BOARD.md). `npm run check` passes, 344 tests (run it in PowerShell, see F-036).
+- Done this session: seeded the demo database `chronodex`; `npm run brief` (A1-16) and a draft brief for all 10 eras in `briefs/` (md to read, json to load); Queen's Tower 1893 saved with its guide to both `chronodex` and `chronodex_dev_alex`; real chat checked with mocks off against it (streamed, in character, short; failures only end in an error event); Historian researches up to 3 times because DeepSeek often skips its web tools (F-035) and the research prompt now forces a search first; README deploy section; `maxDuration = 60` on the chat route; milestone board and F-026 repair on the front page.
+- Next: (1) a human deploys to Vercel (needs their login; steps are in README "Deploying to Vercel") and posts the URL, then I do A1-12's phone check and A1-15 gates on the deployed site. (2) A human reads `briefs/*.md` (H7) before any pre-generation. (3) A1-08 part 2 (photo GPS and 16:9) when the H1 photos arrive. (4) Agent 5's data: seed reads `data/landmarks/*.json`, Historian takes supplied notes, when asked. Notes for the human readers: queens-tower_1962 has a summary sentence that contradicts itself about the east wing; huxley-building_1961 and _1885 are about the Queen's Gate site, not the building (it was built in the 1970s).
+- Blocked on: a human for the Vercel deploy, the H1 photos, and a read of the briefs. Nothing for code.
+- Board read up to: 2026-11-14 23:45 (the team's phone test round 1 posts). Nothing is addressed to me beyond the notebook's round 1 section, which this commit answers.
+- Waiting for commit approval: yes, the files listed above plus one board post.
+- Keys: `.env.local` (git-ignored) holds `MONGODB_URI` (live, Atlas cluster0), `MONGODB_DB=chronodex_dev_alex`, `DEEPSEEK_API_KEY` (working). `FAL_KEY` is not in it. Rotate the Atlas password after the weekend.
+- Local machine: Node 26.13.1. In Git Bash prefix `export PATH="/c/Program Files/nodejs:$PATH"`. Run `npm run check` in PowerShell. A human's dev server holds port 3000 (https, database `chronodex_dev_alex`). Committed files are checked out with CRLF.
 
 ## Tasks
 
@@ -52,12 +53,12 @@ Rewrite this block before you stop, so a fresh session can continue from it alon
 - [ ] A1-08 Database layer and seed script (database layer and seed done and verified on Atlas; photo GPS and 16:9 step waits for H1)
 - [x] A1-09 API routes: landmarks, eras, generate, captures, dex
 - [x] A1-10 Jobs library (verified against Atlas, 21:30)
-- [ ] A1-11 Historian: `writeEraBrief` (code done and unit tested with a fake client; no real call yet, needs a key)
+- [x] A1-11 Historian: `writeEraBrief` (real runs on DeepSeek, 10 briefs written)
 - [ ] A1-12 Deploy to Vercel, check on a phone
-- [ ] A1-13 Chat route (code done and unit tested with a fake client; no real call yet, needs a key)
+- [x] A1-13 Chat route (real replies checked on DeepSeek with mocks off, 15 Nov 00:00)
 - [x] A1-14 Development flags
 - [ ] A1-15 Run each gate with a human, log results on the front page
-- [ ] A1-16 Briefs for every demo era, human-checked
+- [ ] A1-16 Briefs for every demo era, human-checked (10 drafts in `briefs/`, waiting for the human read, H7)
 
 ## Log
 
@@ -132,3 +133,12 @@ Newest at the bottom. One entry per task or per session, in this shape:
 - Problems: none. The earlier TLS refusal (F-025) was Network Access, as suspected.
 - Next: A1-16, A1-12.
 - 21:50, Agent 2's asks (A2-10 ASK, posted 21:10): added `releaseJob(jobId)` to `src/lib/jobs` (running job back to queued; stages and fal request ids kept; stays the era's active job; null if not running). Documented `WORKER_CONCURRENCY` and `WORKER_ALLOW_MEMORY` in `.env.example`, reading the worker source for the meaning. Renamed the fixtures' `placeholder-*` voice keys to `eleven-george` and `eleven-alice`, and the example in the Historian prompt comment. The two `placeholder-*` entries in `src/lib/fal/voices.ts` are Agent 2's to remove. Verified: 343 tests pass (2 new for `releaseJob`), and 8 checks of `releaseJob` pass on real Atlas in a throwaway database that the script dropped. Not verified: the worker itself against Atlas, which is Agent 2's. Note for the worker: `FAL_KEY` is still empty in the root `.env.local`, so a real run needs it.
+
+### 2026-11-15 00:35, A1-16 and round 1 follow-up
+- Did: read the human's round 1 section (kept in place above). Seeded `chronodex`. Wrote `scripts/brief-era.ts` and `npm run brief`: runs the Historian per era, writes `briefs/<eraId>.json` and a readable `.md` with every source, skips an era whose file exists, `--save` stores a brief on a still-empty era. Ran it for all 10 eras and saved queens-tower_1893 to `chronodex` and `chronodex_dev_alex` so the pipeline skips its brief stage and the chat has a guide. Checked the real chat with mocks off through the human's dev server: two real replies, streamed, in character, using the brief ("silks and bonnets... top hat"). Read the chat code: the only text a failure can produce is an `error` event, so nothing canned can reach the screen. Added `maxDuration = 60` to the chat route and a "Deploying to Vercel" section to the README.
+- Decided, and why: the Historian now researches up to 3 times (`NoSourcesError`), and the research prompt requires a first web search and 3 page reads, because 3 in 5 real runs answered without the tools (F-035). Only queens-tower_1893 was saved to the database; the other nine stay on disk until a human has read them, so a pre-generation run cannot spend credits on an unread brief.
+- Measured or verified: 10 briefs, each 105 to 116 words of script, 3 to 7 sources, a spread of guide voices (daniel, george, alice, lily). 92 to 298 s per brief including retries; roughly 2 to 3 minutes of DeepSeek time each. After the prompt change, 4 of 4 reruns still needed 0 to 2 retries, so the prompt helps less than the retry does. Unit tests: 344 pass (1 new for the second research attempt).
+- Not verified: the facts, which is what H7 is for. The Vercel deploy: it needs a human login, and I have no Vercel CLI session. Voice in and out, which is Agent 2's and Agent 4's on the deployed site.
+- Delegated to Haiku, and whether it was kept: nothing.
+- Problems: in Git Bash, vitest failed every file for no code change and node was off PATH once; PowerShell ran clean (F-036). A human's dev server already held port 3000, so mine exited; I used theirs.
+- Next: see Current state.

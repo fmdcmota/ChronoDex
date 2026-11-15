@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run lint && npm run test",
     "worker": "tsx --env-file-if-exists=.env.local src/worker/index.ts",
-    "seed": "tsx --env-file-if-exists=.env.local scripts/seed.ts"
+    "seed": "tsx --env-file-if-exists=.env.local scripts/seed.ts",
+    "brief": "tsx --env-file-if-exists=.env.local scripts/brief-era.ts"
   },
   "dependencies": {
     "@fal-ai/client": "^1.11.0",

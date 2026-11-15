@@ -21,9 +21,9 @@ Agent 1 updates this when a human has walked through the gate (`MASTER.md` secti
 
 | | Milestone | Target | Status | Passed at | Notes |
 |---|---|---|---|---|---|
-| M0 | Foundation | Sat 16:15 | Built on branch agent-1, awaiting commit approval and a human walk-through | | With mocks on, the six landmarks list and a fake job advances (unit tested). Not yet seen in a browser |
+| M0 | Foundation | Sat 16:15 | On `main`. Phone round 1 (iPhone, iOS 26.5.1, mocks on) passed for map, capture, Dex and 360° viewer | Sat 23:35 (round 1) | Android not tested. With mocks off, captures persist in Atlas (SRV-1 to SRV-4 pass) |
 | M1 | Risky parts proven | Sat 17:45 | Not started | | |
-| M2 | Vertical slice | Sat 20:00 | Not started | | |
+| M2 | Vertical slice | Sat 20:00 | Partly. Real capture, Dex, chat reply and a real Queen's Tower 1893 brief with guide work against Atlas. Missing: deployed site, real panorama, narration, phone run of the real Time Machine | | Waiting on the Vercel deploy (needs a human login) and Agent 2's core tier for the era |
 | M3 | Full loop | Sat 23:00 | Not started | | |
 | M4 | Content complete | Sun 02:00 | Not started | | |
 | M5 | Demo ready | Sun 10:00 | Not started | | |
@@ -100,8 +100,7 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-023 | 14 Nov | After a rebase, git (autocrlf on Windows) checks files out with CRLF. Scripted string replacements written with \n then fail to match | Seen at A1-13 |
 | F-024 | 14 Nov | Twice, `npm run check` showed every test file failing with "Tests no tests" straight after a file write. Every rerun passed and it could not be reproduced. Rerun before debugging | Seen at A1-13, cause unknown |
 | F-025 | 14 Nov | MongoDB Atlas answers a client whose IP is not on the Network Access list with a TLS failure ("tlsv1 alert internal error", SSL alert number 80), not with an auth error. Open Network Access (`0.0.0.0/0` for the weekend) | Seen at A1-08 |
-| F-026 | 14 Nov | DeepSeek: `POST https://api.deepseek.com/chat/completions`, `Authorization: Bearer`, OpenAI-style SSE ending in `data: [DONE]`. Models `deepseek-flash` and `deepseek-v4-pro`; thinking is on by default and `reasoning_effort: "none"` turns it off. Flash is $0.30 in and | F-024 | 14 Nov | Twice, `npm run check` showed every test file failing with "Tests no tests" straight after a file write. Every rerun passed and it could not be reproduced. Rerun before debugging | Seen at A1-13, cause unknown |
-.20 out per million tokens at peak, half off-peak and at weekends | api-docs.deepseek.com, 14 Nov |
+| F-026 | 14 Nov | DeepSeek: `POST https://api.deepseek.com/chat/completions`, `Authorization: Bearer`, OpenAI-style SSE ending in `data: [DONE]`. Models `deepseek-flash` and `deepseek-v4-pro`; thinking is on by default and `reasoning_effort: "none"` turns it off. Flash is $0.30 in and $1.20 out per million tokens at peak, half off-peak and at weekends | api-docs.deepseek.com, 14 Nov |
 | F-027 | 14 Nov | An Anthropic Console value starting `apikey_01` is the key's id, not the secret. The secret starts `sk-ant-` and is shown once, at creation | 401 from models.list at A1-11 |
 | F-028 | 14 Nov | On a clean `npm ci` with Node 26.13.1, vitest 5.1.0 starts and `npm run check` passes (181 tests, 15 files). `TECHNICAL_REVIEW.md` reports vitest failing to find its runner on Node 26 in every file. That machine's `node_modules` may be damaged (the review also reports iCloud writing conflict copies into it). Try `rm -rf node_modules && npm ci` before changing Node | Agent 1, 14 Nov 19:30 |
 | F-029 | 14 Nov | The key `sk-b339...` given as an Anthropic key is rejected by Anthropic (401 `invalid x-api-key`). Its shape (`sk-` and 32 hex characters, no `ant`) matches a DeepSeek key, not an Anthropic one, which starts `sk-ant-`. It was not tested against DeepSeek | models.list at A1-13 |
@@ -110,6 +109,8 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 | F-032 | 14 Nov | DeepSeek web tools: declare `tools: [{ "type": "deepseek_web_search" }, { "type": "deepseek_read_url" }]`. The server runs the searches inside one request. The last chunk's delta carries `server_tool_calls` (with `sources[].url`) and `annotations` (`url_citation.url`). They cannot be combined with `response_format: json_object` (400). One research request read about 850k tokens, nearly all cache hits, and used 2 to 3 searches. Tool prices are on DeepSeek's pricing page and are not known here | api-docs.deepseek.com guides web_tools and build_a_chatbot, and a real run at A1-11 |
 | F-033 | 14 Nov | DeepSeek JSON mode (`response_format: json_object`) needs the word "json" and an example in the prompt, and blanks a reply that is not valid JSON, returning empty content with `finish_reason: stop` | api-docs.deepseek.com guides json_mode |
 | F-034 | 14 Nov | Resolves F-025: opening Atlas Network Access fixed the TLS refusal. The MongoDB backend now passes 16 checks on real Atlas (partial unique index for one active job per era, atomic claim, unique capture index, idempotent seed). The dev database `chronodex_dev_alex` on cluster0 is seeded: 6 landmarks and 10 eras, all `missing`. Seeding never overwrites an existing era | Agent 1, 14 Nov 21:30 |
+| F-035 | 14 Nov | DeepSeek's web tools are not always used: with the same research prompt, 3 of 5 real runs answered from memory and reported no URLs, and the other two searched dozens (237 in one). `writeEraBrief` therefore researches up to 3 times before failing with "found no sources". A run costs 2 to 3 minutes | Seen at A1-16 |
+| F-036 | 14 Nov | In this machine's Git Bash, `node` is not on PATH until `export PATH="/c/Program Files/nodejs:$PATH"`, and vitest there once failed every file with "failed to find the runner". PowerShell with the same PATH runs `npm run check` cleanly. If the suite fails everywhere with no code change, use PowerShell before debugging | Seen at A1-16 |
 
 ## Session log
 
@@ -173,3 +174,9 @@ Things learned the hard way, so nobody learns them twice. Add the source.
 
 - Did: `releaseJob` added and verified on Atlas, `WORKER_CONCURRENCY` and `WORKER_ALLOW_MEMORY` documented, fixture voice keys renamed to the real catalogue keys.
 - Next: real briefs for the demo eras (A1-16), the Vercel deploy (A1-12).
+
+### 2026-11-15 00:10, round 1 follow-up (Agent 1)
+
+- Did: read the human's round 1 notes. Seeded the demo database `chronodex`. Added `npm run brief` (A1-16) and saved a real Queen's Tower 1893 brief with its guide to both `chronodex` and `chronodex_dev_alex`, so the real chat can be judged. Real chat checked with mocks off against that era: streamed, in character, from the brief, and a failure can only end in an `error` event (no canned text exists in the chat path). Historian now researches up to 3 times when the model skips the web tools (F-035). README has a Vercel deploy section.
+- Not done: the Vercel deploy itself. It needs a human to log in to Vercel and import the repo (no CLI login on this machine). Briefs for the other nine eras were running at the time of writing; see `briefs/`.
+- Next: a human deploys using the README section and posts the URL; then A1-15 gates on the deployed site.

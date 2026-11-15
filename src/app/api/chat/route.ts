@@ -15,6 +15,12 @@ import { getEra, getLandmark, listCaptures, listLandmarks } from '@/lib/db';
 import { handle, jsonError, readJson } from '../_lib/http';
 
 /**
+ * Longest the function may run, in seconds. A reply streams for a few seconds, but Vercel's default
+ * limit can be as low as 10 s and would cut a slow DeepSeek answer mid-sentence.
+ */
+export const maxDuration = 60;
+
+/**
  * Stream a reply from the era's guide.
  *
  * @param request - Body: ChatRequest. Aborting the request stops generation.

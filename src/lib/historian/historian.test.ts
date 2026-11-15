@@ -160,6 +160,13 @@ describe('writeEraBrief', () => {
     expect((fetch.calls[0].init.headers as Record<string, string>).Authorization).toBe('Bearer test-key');
   });
 
+  it('researches a second time when the first used no web tools, and only then', async () => {
+    const fetch = fakeFetch(sse(['guess'], 'stop', 50, {}), researchAnswer('NOTES-SECOND'), writingAnswer(heroBrief));
+    expect(await run(fetch)).toEqual(heroBrief);
+    expect(fetch.calls).toHaveLength(3);
+    expect(fetch.calls[1].body.tools).toBeDefined();
+  });
+
   it('drops invented sources silently when enough real ones remain', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     const withInvented = { ...heroBrief, sources: [...heroBrief.sources, { title: 'Invented', url: 'https://invented.example/x' }] };
@@ -206,7 +213,8 @@ describe('writeEraBrief', () => {
     await expect(run(fakeFetch())).rejects.toThrow(/DEEPSEEK_API_KEY/);
     process.env.DEEPSEEK_API_KEY = 'test-key';
 
-    await expect(run(fakeFetch(sse(['notes'], 'stop', 50, {})))).rejects.toThrow(/no sources/);
+    const noSources = () => sse(['notes'], 'stop', 50, {});
+    await expect(run(fakeFetch(noSources(), noSources(), noSources()))).rejects.toThrow(/no sources/);
     await expect(run(fakeFetch(sse([], 'stop', 50, { serverToolCalls: [{ sources: [{ url: 'https://a.example/' }] }] })))).rejects.toThrow(/no notes/);
     await expect(run(fakeFetch(sse(['n'], 'length')))).rejects.toThrow(/tokens/);
     await expect(run(fakeFetch(sse(['n'], 'content_filter')))).rejects.toThrow(/declined/);
