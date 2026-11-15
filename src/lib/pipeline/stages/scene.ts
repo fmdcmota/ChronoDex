@@ -62,18 +62,19 @@ function isUsableReferenceUrl(url: string): boolean {
  * @param input.look - `colour` (default) or `monochrome`. A human decision, see PromptStyle.
  * @param input.usePeriodReferences - Attach the brief's period photographs. Default false: they made the model change
  *   the viewpoint, which breaks Then/Now. The critic compares the viewpoint with the reference photo either way.
+ * @param input.periodCues - Place-specific period detail, see PromptStyle.periodCues. Default: the London cues.
  * @param ctx - Resume id, callbacks, optional fallback endpoint, and `checks` to switch the critic off.
  * @returns URL of the edited scene on fal's CDN, with the model, timing and the critic's report.
  * @throws FalStageError when fal rejects the request or returns no image. The critic never throws.
  */
 export async function runScene(
-  input: { referencePhotoUrl: string; brief: SceneBrief; year: number; look?: PromptStyle['look']; usePeriodReferences?: boolean },
+  input: { referencePhotoUrl: string; brief: SceneBrief; year: number; look?: PromptStyle['look']; usePeriodReferences?: boolean; periodCues?: string },
   ctx: StageContext = {},
 ): Promise<StageOutput> {
   // Off by default: with period photographs attached, the model adopted their viewpoint and the scene no longer lined
   // up with the reference photo in Then/Now (phone test 6.5). The panorama still uses them for the surroundings.
   const references = input.usePeriodReferences ? usableReferenceUrls(input.brief.referenceImageUrls) : [];
-  const prompt = buildScenePrompt(input.brief, input.year, { look: input.look, referenceCount: references.length });
+  const prompt = buildScenePrompt(input.brief, input.year, { look: input.look, referenceCount: references.length, periodCues: input.periodCues });
   const checkPrompt = buildSceneCheckPrompt(input.year, input.brief.changes.notYetBuilt, true);
   const { output, report } = await generateChecked({
     ctx,

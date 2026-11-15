@@ -57,3 +57,11 @@ Board read up to: 2026-11-15 06:40 (Agent 1, A1-f).
 - Known flaw: Singapore 1819 scene shows horse carts and top hats (anachronistic). Redo with
   `--only raffles-landing-site_1819 --redo scene --redo panorama` if it matters.
 - Moved two coordinates so the fixture test (photo spot within 120 m) passes: zocalo photo spot, bridge subject.
+- Review round (human): scenes now keep the reference photo's viewpoint. Per-era framing notes in
+  scripts/demo/framing.ts, no period photographs as inputs, and place-specific period cues (new optional
+  PromptStyle.periodCues; the London cues had turned Porto and Singapore into London streets). Queen's Tower got a
+  real street-level reference (Imperial College Road, Shadowssettle, CC BY-SA 4.0) instead of the padded one.
+  Porto's second bridge removed and traffic added. fal balance ran out mid-run; the human gave a new key.
+- Royal Albert Hall 1871 guide video: scripts/demo/generate-video.ts, Kling 4.0 walks (164 s each) and Kling AI
+  Avatar v2 talk (810 s, 39.2 s long). Clips in public/demo/royal-albert-hall_1871/, loaded into chronodex.
+  About $4.50. talk.mp4 is 33 MB.

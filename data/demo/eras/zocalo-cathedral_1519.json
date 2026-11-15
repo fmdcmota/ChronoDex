@@ -46,7 +46,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "A sunlit view looking north across packed-earth and stone-paved streets toward a long walled enclosure. At the wall, low platforms and stairways lead up onto the precinct, whose interior floor is laid with smooth stone slabs; the courtyards are paved with large white flagstones, brown plaster filling the gaps, and swept spotless. Inside, painted and plastered temple platforms cluster together, and slightly to the right of centre a great twin pyramid rises above everything, two steep staircases climbing one face to two shrines at the top. Figures in cotton mantles and sandals move along the approach; porters carry loads on tumplines. Behind and around, flat-roofed adobe houses of one or two storeys, canals of grey-green water crossed by wooden beam bridges, and canoes. Bright, hazy highland daylight.",
+      "description": "Exactly the framing of the photograph: a raised view across the great square, looking north to where the cathedral stands today, the same horizon and the same mountains in the haze. In 1519 this is Tenochtitlan: across a wide plaza paved with smooth white stucco rises the wall of the sacred precinct, decorated with carved serpent heads, and behind it, filling the place of the cathedral, the twin-shrine pyramid of the Templo Mayor with its two temples on top, plus smaller temple platforms. White plastered flat-roofed palaces to the left and right. People in white cotton cloaks and loincloths cross the plaza, porters carry loads with tumplines, a few warriors with feathered shields.",
       "changes": {
         "persists": [
           "The northward line of sight toward the ceremonial centre's area",
@@ -61,7 +61,11 @@
           "The Metropolitan Cathedral, whose south façade now closes the view",
           "The Sagrario Metropolitano",
           "The Palacio Nacional",
-          "The Zócalo as an open paved plaza"
+          "The Zócalo as an open paved plaza",
+          "the cathedral or any church",
+          "horses, wheels or carts",
+          "trees in planters or a flagpole",
+          "Spanish soldiers"
         ],
         "gone": [
           "The Templo Mayor's seventh-phase twin pyramid, visible above the precinct",
@@ -94,7 +98,7 @@
     },
     "narrationAudioUrl": "/demo/zocalo-cathedral_1519/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.432Z"
+    "updatedAt": "2026-11-15T04:26:11.840Z"
   },
   "provenance": {
     "narration": {
@@ -109,25 +113,26 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283ad/scAXpTbmoGEDg_olMSWSK_s4nuFVdV.jpg",
-      "seconds": 24,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284c7/8jfoBlW11Ylklfz9U_5bp_0joEktjK.jpg",
+      "seconds": 20,
       "check": {
         "passed": false,
         "checked": true,
         "attempts": 2,
         "problems": [
           "looks computer generated, not like a real photograph",
-          "Image depicts Tenochtitlan's Templo Mayor, not a street in London",
-          "No English architecture, no Thames, no London street scene present",
-          "Scene has glossy, rendered CGI appearance rather than photographic qualities",
-          "Lighting and texture look artificially smooth and digitally composed"
+          "anachronism: This depicts an Aztec/Mesoamerican ceremonial complex (Tenochtitlan-style temple plaza), not a street in London",
+          "anachronism: No London architecture, no English buildings, no European street scene present at all",
+          "Image shows a completely wrong location and culture (Mesoamerican temple complex instead of London street)",
+          "No London elements present whatsoever",
+          "Image has a glossy, staged, CGI/film-set appearance rather than a genuine photograph"
         ],
-        "checkCostUsd": 0.011658
+        "checkCostUsd": 0.011448
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283bc/_jhgCv91ktGneGYI9EB-j_1794712929904.jpeg",
+      "falUrl": "https://v3b.fal.media/files/b/0ab2853c/50lqHeClz6nDiUiTpLFfc_1794716768882.jpeg",
       "seconds": 98,
       "widthPx": 4032,
       "heightPx": 2016,
@@ -136,15 +141,14 @@
         "checked": true,
         "attempts": 2,
         "problems": [
-          "anachronism: Aztec/Mesoamerican stepped pyramid temple complex and canal city resembling Tenochtitlan rather than 1519 London",
-          "anachronism: no Thames, medieval English buildings, church spires or London architecture visible",
-          "anachronism: small object resembling a modern vehicle at bottom edge of image",
-          "Scene depicts a Mesoamerican lake city, not London",
-          "Missing Tudor-era English architecture, Thames river, and London Bridge",
-          "Image resembles a CGI render rather than a photo-realistic panorama",
-          "Possible small anachronistic object at bottom of frame"
+          "anachronism: Aztec/Mesoamerican Templo Mayor style city instead of London",
+          "anachronism: people in Aztec/Mesoamerican clothing rather than 16th century English attire",
+          "anachronism: canals and chinampas layout resembling Tenochtitlan, not London streets",
+          "Image depicts Tenochtitlan-style Mesoamerican city instead of a London street",
+          "People and architecture are not consistent with London in 1519",
+          "Overly glossy CGI rendering rather than photographic realism"
         ],
-        "checkCostUsd": 0.027658000000000002
+        "checkCostUsd": 0.026398
       }
     }
   }

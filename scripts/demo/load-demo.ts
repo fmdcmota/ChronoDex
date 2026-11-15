@@ -10,8 +10,8 @@
  *   add --only <eraId> (repeatable)
  *
  * Each `data/demo/eras/<eraId>.json` whose Era is `ready` replaces that Era's text and media fields in full (URLs
- * `/demo/<eraId>/...`, served from `public/`). The guide video fields are left as the database has them, so a video
- * made later is not lost. Eras that are not ready are skipped with a note. Costs nothing.
+ * `/demo/<eraId>/...`, served from `public/`). The guide video fields are written only when the file has a kept video
+ * (scripts/demo/generate-video.ts); otherwise the database's own are left alone. Eras that are not ready are skipped with a note. Costs nothing.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { closeMongo, getEra, getLandmark, mongoConfigured, patchEra } from '@/lib/db';
@@ -41,10 +41,10 @@ async function main(): Promise<void> {
     }
     if (!(await getLandmark(parsed.landmarkId))) throw new Error(`Landmark ${parsed.landmarkId} is not in the database. Run npm run seed first.`);
     if (!(await getEra(eraId))) throw new Error(`Era ${eraId} is not in the database. Run npm run seed first.`);
-    const { id: ignoredId, videoState: ignoredVideoState, guideVideo: ignoredVideo, ...patch } = parsed;
+    // The video fields are written only when this era's video is kept here too; otherwise the database keeps its own.
+    const { id: ignoredId, videoState, guideVideo, ...core } = parsed;
     void ignoredId;
-    void ignoredVideoState;
-    void ignoredVideo;
+    const patch: Partial<Era> = videoState === 'ready' ? { ...core, videoState, guideVideo } : core;
     console.log(`${dryRun ? 'would ' : ''}load ${eraId}: ${parsed.title} (guide ${parsed.guide?.name})`);
     if (!dryRun) await patchEra(eraId, { ...patch, updatedAt: new Date().toISOString() });
     loaded += 1;

@@ -35,6 +35,12 @@ export interface PromptStyle {
    * the prompt tells the model to copy their architecture and street detail. Default 0.
    */
   referenceCount?: number;
+  /**
+   * Period detail to ask for in place of periodCues(year), which describes a London street. Set it for places
+   * outside Britain, for example "ox carts with barrels, rabelo boats, women carrying baskets on their heads" for
+   * Porto in 1886 (Agent 6: the London cues turned Porto and Singapore into London streets, 15 Nov 2026).
+   */
+  periodCues?: string;
 }
 
 /**
@@ -134,7 +140,7 @@ export function buildScenePrompt(brief: SceneChanges, year: number, style: Promp
     `REMOVE, because they did not exist yet:\n${bullets(brief.changes.notYetBuilt, 'anything modern')}`,
     `CHANGE to how they looked in ${year}:\n${bullets(brief.changes.altered, 'surfaces and street furniture to period versions')}`,
     `ADD BACK, because they stood here then and are gone now:\n${bullets(brief.changes.gone, 'nothing')}`,
-    `Period detail to include, at a natural density: ${periodCues(year)}.`,
+    `Period detail to include, at a natural density: ${style.periodCues ?? periodCues(year)}.`,
     realismBlock(year, look),
   ]
     .filter(Boolean)
@@ -168,7 +174,7 @@ export function buildPanoramaPrompt(surroundings: string, notYetBuilt: string[],
     'Keep the photograph in the middle exactly as it is. Continue its buildings, street, pavement and sky outward with matching perspective, light and colour, and no visible borders.',
     referenceBlock(2, style.referenceCount ?? 0, look),
     `What surrounds the viewer: ${surroundings}`,
-    `Period detail to include, at a natural density: ${periodCues(year)}.`,
+    `Period detail to include, at a natural density: ${style.periodCues ?? periodCues(year)}.`,
     `Not yet built in ${year}, so none of this appears anywhere in the panorama:\n${bullets(notYetBuilt, 'anything modern')}`,
     'Use correct equirectangular projection: the horizon is a straight level line across the exact vertical middle, straight vertical lines stay vertical, sky fills the top and the ground fills the bottom.',
     'The left and right edges must join seamlessly, because they meet behind the viewer.',

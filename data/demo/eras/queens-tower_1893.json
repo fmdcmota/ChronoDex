@@ -42,7 +42,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "Facing north towards the Imperial Institute's south frontage in 1893. The central domed tower rises steeply, attached at its base to a long, richly ornamented facade. Connected wings extend to both sides, with repeated windows, steep gables, chimneys, smaller towers at the ends, and alternating pale masonry and darker brick bands. Domed entrances to the Eastern and Western Galleries sit along the frontage. In the foreground a broad carriage road and kerbed pavements carry sparse horse-drawn traffic and a few pedestrians, one man in a dark jacket and rounded brimmed hat; slender street lamps line the pavement. Pale Portland stone is supported by the text; the exact brick hue and the dome's patina are not established, so keep to neutral greys and muted warm stone rather than sepia.",
+      "description": "Exactly the framing of the photograph: standing on Imperial Institute Road looking west and slightly up, a long building front running diagonally from the left edge into the distance, the tower rising behind it on the right with its dome against the sky. In 1893 the long building on the left is the brand-new Imperial Institute's ornate south frontage, in the same position and perspective as the modern library: pale Portland stone banded with red brick, rows of tall round-arched windows, carved friezes, gables and small domed turrets along the roofline. The central tower on the right is the same tower, new and clean, its copper dome bright copper-brown, not yet green. A clear sky with light smoke haze.",
       "changes": {
         "persists": [
           "The central tower's upper masonry and domed silhouette, allowing for later repair."
@@ -51,7 +51,11 @@
           "The tower's base, here integrated into the Institute frontage rather than the later rebuilt freestanding base."
         ],
         "notYetBuilt": [
-          "Modern campus blocks and landscaped space occupying the demolished Institute footprint."
+          "Modern campus blocks and landscaped space occupying the demolished Institute footprint.",
+          "the modern library building",
+          "glass curtain walls",
+          "concrete panels",
+          "trees in front of the frontage"
         ],
         "gone": [
           "The Institute's connected east and west front wings and smaller end towers.",
@@ -59,10 +63,7 @@
         ]
       },
       "surroundings": "To the north the tower and connected frontage dominate, blocking any view through to the rear galleries and gardens. East and west the frontage and carriage road continue laterally — do not replace the wings with open lawn. To the south, the road and its opposite frontage must be reconstructed from a period plan that is still missing from this dossier; the Royal College of Science building is not yet there, but that is not evidence the southern plot was bare. Do not invent southern buildings, shop signs or planting. The rearward view therefore has lower confidence than the documented forward view.",
-      "referenceImageUrls": [
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Gezicht_op_het_Imperial_Institute_te_Londen%2C_RP-F-00-4232.jpg/1920px-Gezicht_op_het_Imperial_Institute_te_Londen%2C_RP-F-00-4232.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/1903-11-04_front_Imperial_Institute_London.jpg/1920px-1903-11-04_front_Imperial_Institute_London.jpg"
-      ]
+      "referenceImageUrls": []
     },
     "guide": {
       "name": "Thomas Meecham",
@@ -80,24 +81,38 @@
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
-      "centreBearingDeg": 0
+      "centreBearingDeg": 270.06447727016587
     },
     "narrationAudioUrl": "/demo/queens-tower_1893/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.420Z"
+    "updatedAt": "2026-11-15T04:08:49.031Z"
   },
   "provenance": {
     "scene": {
-      "model": "copied from the database era",
-      "falUrl": "/api/media/b98afa9e609948f46d0acf2a77cfd4c9",
-      "seconds": 0
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab284ca/Ecd6iYzfQ8MNsNrqW4-vB_qIvpjYDq.jpg",
+      "seconds": 22,
+      "check": {
+        "passed": true,
+        "checked": true,
+        "attempts": 2,
+        "problems": [],
+        "checkCostUsd": 0.009536
+      }
     },
     "panorama": {
-      "model": "copied from the database era",
-      "falUrl": "/api/media/fa36d9c3a0ba45674c9da7ee6e701efd",
-      "seconds": 0,
+      "model": "fal-ai/nano-banana-pro/edit",
+      "falUrl": "https://v3b.fal.media/files/b/0ab284d4/INt42FE5UoP54FfTu2qN__1794715726681.jpeg",
+      "seconds": 82,
       "widthPx": 4032,
-      "heightPx": 2016
+      "heightPx": 2016,
+      "check": {
+        "passed": true,
+        "checked": true,
+        "attempts": 1,
+        "problems": [],
+        "checkCostUsd": 0.012124
+      }
     },
     "headshot": {
       "model": "copied from the database era",

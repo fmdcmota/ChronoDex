@@ -49,7 +49,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "A view south-east across the mouth of a small river on a humid tropical morning. The near bank is solid ground crowded with kampong houses of timber and attap thatch, some raised on posts, with nipah fencing and fruit trees; a large atap-roofed timber hall sits among them. The river is busy with small sampans and dugout boats ferrying people and goods, with houseboats moored upstream. Across the water the far bank is unbroken mangrove and api-api swamp and grey mud flats, with no buildings at all. Downstream to the left, jungle runs to a rocky point at the river mouth; beyond it, open sea with ships at anchor. Behind, a forested hill rises.",
+      "description": "Exactly the framing of the photograph: standing on the north bank of the Singapore River, looking south across the water at the opposite bank, the river in the foreground. In 1819 there is no town: the far bank is muddy shore and mangrove, a handful of Malay stilt houses with attap roofs and a few beached sampans, low jungle-covered ground rising behind, tall tropical trees against a humid sky. Small boats and a dugout on the brown river, a British naval longboat with sailors rowing in the distance.",
       "changes": {
         "persists": [
           "The Singapore River and its mouth",
@@ -65,7 +65,12 @@
           "Cavenagh Bridge",
           "Boat Quay shophouses and godowns",
           "The Merlion and the CBD skyline",
-          "Riverside promenade, roads and street lighting"
+          "Riverside promenade, roads and street lighting",
+          "horses, carts or carriages",
+          "skyscrapers or shophouses",
+          "men in top hats",
+          "paved roads",
+          "brick buildings or a European street"
         ],
         "gone": [
           "The Temenggong's palace and the huts of his followers",
@@ -97,7 +102,7 @@
     },
     "narrationAudioUrl": "/demo/raffles-landing-site_1819/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.437Z"
+    "updatedAt": "2026-11-15T04:26:10.538Z"
   },
   "provenance": {
     "narration": {
@@ -112,34 +117,43 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283ad/j_0s3RzU9Q1z2T737xiJn_qBVyKb2N.jpg",
-      "seconds": 20,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284c7/Pz3n7Wn4DaX4YAqQ8fosz_rMVOH4Lj.jpg",
+      "seconds": 18,
       "check": {
         "passed": false,
         "checked": true,
         "attempts": 2,
         "problems": [
           "looks computer generated, not like a real photograph",
-          "This depicts a Southeast Asian riverside fishing village with thatched stilt houses and tropical jungle, not a street in London",
-          "No London architecture, buildings, or urban infrastructure present",
-          "Image has an overly polished, synthetic CGI/render quality with unnatural lighting and texture consistency",
-          "Composition and setting entirely mismatched with the requested 1819 London street scene"
+          "Image shows a tropical river village with stilt houses and palm trees, not a London street scene",
+          "No urban architecture, buildings, or street elements consistent with 1819 London",
+          "Color and rendering style appear overly smooth and polished, resembling a digital painting rather than a period photograph",
+          "Content entirely mismatched with the requested subject of a London street in 1819"
         ],
-        "checkCostUsd": 0.012046000000000001
+        "checkCostUsd": 0.012208
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283bc/aBBs2yVrMUyAxE1YiNFFq_1794712925381.jpeg",
-      "seconds": 99,
+      "falUrl": "https://v3b.fal.media/files/b/0ab2853c/CbTMsIEIBFrPhA9Vvy_oD_1794716767304.jpeg",
+      "seconds": 96,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
-        "passed": true,
+        "passed": false,
         "checked": true,
         "attempts": 2,
-        "problems": [],
-        "checkCostUsd": 0.025388
+        "problems": [
+          "not a 360 panorama (the critic saw: tiled)",
+          "visible seam or repeated panel",
+          "Image is composed of multiple stacked panel-like scenes rather than a single spherical panorama",
+          "Not a London street scene, shows a tropical river village instead",
+          "No sky/ground wraparound consistent with equirectangular projection",
+          "Horizon line not level or centered, multiple horizons present",
+          "Left and right edges do not align into a continuous scene",
+          "Looks like a composited painting/render, not a photograph"
+        ],
+        "checkCostUsd": 0.025938000000000003
       }
     }
   }

@@ -62,6 +62,7 @@ interface Painted extends StageOutput {
  * @param input.year - The era's year.
  * @param input.horizonFraction - Where the horizon sits in the scene from the top. Optional; see image.ts.
  * @param input.look - `colour` (default) or `monochrome`, as for the scene.
+ * @param input.periodCues - Place-specific period detail, as for the scene.
  * @param input.featherPx - Soft edge around the pasted scene, in canvas pixels. Default PANORAMA_FEATHER_PX; 0 gives a hard edge.
  * @param input.upscaleFactor - Enlargement after painting. Default PANORAMA_UPSCALE_FACTOR; 1 or less skips it.
  *   A failed upscale is not an error: the unenlarged panorama is kept.
@@ -70,7 +71,7 @@ interface Painted extends StageOutput {
  * @throws FalStageError when fal fails or returns no image. Error when a download fails. The critic never throws.
  */
 export async function runPanorama(
-  input: { sceneUrl: string; brief: SceneBrief; year: number; horizonFraction?: number; look?: PromptStyle['look']; upscaleFactor?: number; featherPx?: number },
+  input: { sceneUrl: string; brief: SceneBrief; year: number; horizonFraction?: number; look?: PromptStyle['look']; periodCues?: string; upscaleFactor?: number; featherPx?: number },
   ctx: StageContext = {},
 ): Promise<PanoramaOutput> {
   const startMs = Date.now();
@@ -80,6 +81,7 @@ export async function runPanorama(
   const prompt = buildPanoramaPrompt(input.brief.surroundings, input.brief.changes.notYetBuilt, input.year, {
     look: input.look,
     referenceCount: references.length,
+    periodCues: input.periodCues,
   });
   const checkPrompt = buildPanoramaCheckPrompt(input.year);
 

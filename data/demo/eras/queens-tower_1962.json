@@ -25,7 +25,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "A tall Victorian campanile of pale stone rises from the middle of a partly dismantled Institute complex. The east side of the main frontage is a newer college building, not the original wing; there are no finished lawns or landscaped setting around the tower’s foot. Do not show the complete 1893 frontage, and do not show the isolated tower on its later foundations.",
+      "description": "Exactly the framing of the photograph: standing on Imperial Institute Road looking west and slightly up, a long building front running diagonally from the left edge into the distance, the tower rising behind it on the right with its dome against the sky. In 1962 the Imperial Institute wing on the left is being demolished: its stone and brick front is half gone, empty window openings with sky behind them, scaffolding and timber hoardings along it, rubble at its foot, and a tall builder's crane beyond. The tower on the right still stands, its stone soot-darkened and its copper dome green. At the far end the bare concrete frame of a new college building is going up. Overcast 1960s sky.",
       "changes": {
         "persists": [
           "The central tower’s upper structure, still unchanged."
@@ -34,7 +34,10 @@
           "The surrounding Institute complex, being replaced by Imperial College buildings; the east wing has already gone."
         ],
         "notYetBuilt": [
-          "The 1966–68 freestanding foundation and rebuilt lower structure of the tower."
+          "The 1966–68 freestanding foundation and rebuilt lower structure of the tower.",
+          "the finished modern library with its glass band",
+          "shops, shop signs or a shopping street",
+          "buses or traffic"
         ],
         "gone": [
           "The pre-demolition east wing of the Institute frontage."
@@ -59,11 +62,11 @@
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
-      "centreBearingDeg": 0
+      "centreBearingDeg": 270.06447727016587
     },
     "narrationAudioUrl": "/demo/queens-tower_1962/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.423Z"
+    "updatedAt": "2026-11-15T04:26:06.600Z"
   },
   "provenance": {
     "narration": {
@@ -78,37 +81,31 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28383/AnGpJEz-IVPbnwc-lOWhW_HZiL0GBV.jpg",
-      "seconds": 24,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284c9/GZLb_R139aFEd4H0EG7RG_WIXvVJsx.jpg",
+      "seconds": 22,
       "check": {
         "passed": false,
         "checked": true,
         "attempts": 2,
         "problems": [
-          "anachronism: Freestanding rebuilt tower structure shown mid-demolition/reconstruction that dates from the 1966–68 works, not 1962",
-          "The tower depicted with its freestanding foundation and rebuilt lower structure did not exist in 1962, as this construction phase occurred 1966–68"
+          "anachronism: Cars visible on the street, which are counted as traffic",
+          "Street contains parked and moving cars which qualifies as traffic, contrary to requirements"
         ],
-        "checkCostUsd": 0.010686000000000001
+        "checkCostUsd": 0.010461999999999999
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab28391/s1OoDp6kE-K3hjdw2Ariy_1794712497492.jpeg",
-      "seconds": 94,
+      "falUrl": "https://v3b.fal.media/files/b/0ab2853c/Eaw8_ZJY8HQSftfbN6sJx_1794716762798.jpeg",
+      "seconds": 92,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
-        "passed": false,
+        "passed": true,
         "checked": true,
         "attempts": 2,
-        "problems": [
-          "not a 360 panorama (the critic saw: flat_photo)",
-          "Single vanishing point perspective typical of an ordinary photograph, not a 360 panorama",
-          "No wraparound of street or buildings to left/right or behind camera",
-          "Straight converging kerbs with no spherical distortion",
-          "Left and right edges do not depict a continuous connected scene"
-        ],
-        "checkCostUsd": 0.025078000000000003
+        "problems": [],
+        "checkCostUsd": 0.025048
       }
     }
   }

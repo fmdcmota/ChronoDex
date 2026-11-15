@@ -30,6 +30,7 @@ import { uploadToFal } from '@/lib/fal';
 import { periodLook } from '@/lib/pipeline';
 import { PANORAMA_VFOV_DEG, runHeadshot, runNarration, runPanorama, runScene } from '@/lib/pipeline/stages';
 import { landmarks as fixtureLandmarks } from '@fixtures/index';
+import { demoPeriodCues, demoSceneBrief } from './framing';
 import { DEMO_ERA_IDS, demoAssetPath, demoAssetUrl, demoEraFile, type DemoAsset, type DemoEraFile, type DemoProvenance } from './demo-set';
 
 /** Jobs at once by default. Each mostly waits on fal. */
@@ -66,47 +67,6 @@ function readBrief(eraId: EraId): EraBrief {
   const file = path.join(process.cwd(), 'briefs', `${eraId}.json`);
   if (!existsSync(file)) throw new Error(`No brief for ${eraId}. Run: npm run brief -- ${eraId}`);
   return EraBriefSchema.parse(JSON.parse(readFileSync(file, 'utf8')));
-}
-
-/** Commons asks automated clients for a descriptive User-Agent. Generic: no personal details. */
-const HTTP_HEADERS = { 'User-Agent': 'chronodex-demo/0.1 (hackathon prototype)' };
-
-/**
- * Turn the brief's period references into URLs an image model can download.
- *
- * Why: the Historian sometimes lists a web page (a Commons file page, an archive catalogue entry) where a model needs
- * an image file, and fal then fails the whole scene with file_download_error (seen on royal-albert-hall_1871 and
- * natural-history-museum_1862, 15 Nov 2026). A Commons `File:` page is resolved to a 1280 px image through the
- * Commons API; any other URL is kept only if it answers with an image content type. Each image is downloaded here
- * and uploaded to fal storage (free), because Wikimedia refuses fal's own downloader (dom-luis-bridge_1886).
- *
- * @param urls - SceneBrief.referenceImageUrls.
- * @returns fal storage URLs of the images, in the same order, at most four.
- */
-async function usableReferenceImages(urls: string[]): Promise<string[]> {
-  const kept: string[] = [];
-  for (const url of urls) {
-    if (kept.length >= 4) break;
-    try {
-      const commonsTitle = url.match(/commons\.wikimedia\.org\/wiki\/(File:[^?#]+)/)?.[1];
-      if (commonsTitle) {
-        const api = new URL('https://commons.wikimedia.org/w/api.php');
-        for (const [k, v] of Object.entries({ action: 'query', format: 'json', titles: decodeURIComponent(commonsTitle), prop: 'imageinfo', iiprop: 'url', iiurlwidth: '1280' })) api.searchParams.set(k, v);
-        const data = (await (await fetch(api, { headers: HTTP_HEADERS })).json()) as { query?: { pages?: Record<string, { imageinfo?: { thumburl?: string }[] }> } };
-        const thumb = Object.values(data.query?.pages ?? {})[0]?.imageinfo?.[0]?.thumburl;
-        const image = thumb ? await fetch(thumb, { headers: HTTP_HEADERS }) : null;
-        if (image?.ok) kept.push(await uploadToFal(new Blob([new Uint8Array(await image.arrayBuffer())], { type: image.headers.get('content-type') ?? 'image/jpeg' })));
-        continue;
-      }
-      const response = await fetch(url, { method: 'GET', headers: HTTP_HEADERS });
-      const type = response.headers.get('content-type') ?? '';
-      if (response.ok && type.startsWith('image/')) kept.push(await uploadToFal(new Blob([new Uint8Array(await response.arrayBuffer())], { type })));
-      else await response.body?.cancel();
-    } catch {
-      // Unreachable reference: leave it out rather than fail the scene.
-    }
-  }
-  return kept.slice(0, 4);
 }
 
 /**
@@ -169,14 +129,8 @@ async function makeEra(eraId: EraId, options: { redo: Set<string>; reuseDb: bool
   const todo = (['scene', 'panorama', 'headshot', 'narration'] as const).filter(need);
   log(todo.length ? `to make: ${todo.join(', ')}` : 'all files present');
   if (options.dryRun) return null;
-  if (need('scene')) {
-    // Only the scene stage reads the period references; fetching them costs time, so skip it otherwise.
-    const listed = brief.sceneBrief.referenceImageUrls;
-    brief.sceneBrief.referenceImageUrls = await usableReferenceImages(listed);
-    if (brief.sceneBrief.referenceImageUrls.length !== listed.length) {
-      log(`period references: kept ${brief.sceneBrief.referenceImageUrls.length} of ${listed.length} as image files`);
-    }
-  }
+  // The reference photo's own viewpoint, so the scene and the photo show the same place (see ./framing.ts).
+  brief.sceneBrief = demoSceneBrief(eraId, brief.sceneBrief);
 
   if (options.reuseDb && todo.length) {
     const { getEra } = await import('@/lib/db');
@@ -202,7 +156,7 @@ async function makeEra(eraId: EraId, options: { redo: Set<string>; reuseDb: bool
   const scenePart = (async () => {
     if (need('scene')) {
       const referenceUrl = await uploadToFal(new Blob([new Uint8Array(readFileSync(photoPath))], { type: 'image/jpeg' }));
-      const out = await runScene({ referencePhotoUrl: referenceUrl, brief: brief.sceneBrief, year, look: periodLook() }, ctx);
+      const out = await runScene({ referencePhotoUrl: referenceUrl, brief: brief.sceneBrief, year, look: periodLook(), periodCues: demoPeriodCues(eraId) }, ctx);
       await download(out.url, demoAssetPath(eraId, 'scene'));
       provenance.scene = { model: out.model, falUrl: out.url, seconds: Math.round(out.elapsedMs / 1000), check: out.check ?? null };
       log(`scene done in ${Math.round(out.elapsedMs / 1000)} s (${out.model})`);
@@ -210,7 +164,7 @@ async function makeEra(eraId: EraId, options: { redo: Set<string>; reuseDb: bool
     if (need('panorama')) {
       // Upload our saved scene (free): it works for a copied scene and after the fal URL has expired.
       const sceneFalUrl = await uploadToFal(new Blob([new Uint8Array(readFileSync(demoAssetPath(eraId, 'scene')))], { type: 'image/jpeg' }));
-      const out = await runPanorama({ sceneUrl: sceneFalUrl, brief: brief.sceneBrief, year, look: periodLook() }, ctx);
+      const out = await runPanorama({ sceneUrl: sceneFalUrl, brief: brief.sceneBrief, year, look: periodLook(), periodCues: demoPeriodCues(eraId) }, ctx);
       await download(out.url, demoAssetPath(eraId, 'panorama'));
       provenance.panorama = { model: out.model, falUrl: out.url, seconds: Math.round(out.elapsedMs / 1000), widthPx: out.widthPx, heightPx: out.heightPx, check: out.check ?? null };
       log(`panorama done in ${Math.round(out.elapsedMs / 1000)} s, ${out.widthPx}x${out.heightPx}`);
@@ -239,7 +193,8 @@ async function makeEra(eraId: EraId, options: { redo: Set<string>; reuseDb: bool
     landmarkId,
     year,
     state: failures.length ? 'failed' : 'ready',
-    videoState: 'missing',
+    // A guide video made by generate-video.ts is kept when the core tier is remade.
+    videoState: previous?.era.videoState === 'ready' ? 'ready' : 'missing',
     title: brief.title,
     summary: brief.summary,
     funFacts: brief.funFacts,
@@ -252,7 +207,7 @@ async function makeEra(eraId: EraId, options: { redo: Set<string>; reuseDb: bool
         ? { url: demoAssetUrl(eraId, 'panorama'), widthPx: pano.widthPx, heightPx: pano.heightPx, vFovDeg: PANORAMA_VFOV_DEG, centreBearingDeg: bearingDeg(landmark.photoSpot, landmark.subject) }
         : null,
     narrationAudioUrl: existsSync(demoAssetPath(eraId, 'narration')) ? demoAssetUrl(eraId, 'narration') : null,
-    guideVideo: null,
+    guideVideo: previous?.era.videoState === 'ready' ? previous.era.guideVideo : null,
     updatedAt: new Date().toISOString(),
   });
   const file: DemoEraFile = { era, provenance };

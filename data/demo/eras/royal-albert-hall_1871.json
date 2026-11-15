@@ -4,7 +4,7 @@
     "landmarkId": "royal-albert-hall",
     "year": 1871,
     "state": "ready",
-    "videoState": "missing",
+    "videoState": "ready",
     "title": "The Royal Albert Hall Opens, 1871",
     "summary": "The Royal Albert Hall opened on 29 March 1871, built between 1867 and 1871 to a design by Captain Francis Fowke, who died in 1865, and completed by Lieutenant-Colonel Henry Scott. Queen Victoria laid the foundation stone in 1867 but was too overcome to speak at the opening, so the Prince of Wales declared the hall open. The hall was an elliptical red-brick and terra-cotta building, 135 ft high, costing about £200,000. From this spot in 1871 you stood not on a street but inside the Royal Horticultural Society's twenty-acre garden, and no period photograph taken from this exact point is known.",
     "funFacts": [
@@ -29,7 +29,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "A view from inside a formal Victorian garden looking north. In the foreground, gravelled terraces step up between clipped formal planting and straight canals of water. Beyond them rise brick-and-terra-cotta arcades, and at the centre a great glass conservatory. Behind and above the conservatory, the long elliptical red-brick and terra-cotta mass of the Royal Albert Hall fills the skyline, about 135 feet high, with a private doorway facing the garden. To left and right, permanent exhibition galleries and arcades frame the garden. The day is chilly and overcast, the light flat, no motor vehicles anywhere.",
+      "description": "Exactly the framing of the photograph: standing on the road directly in front of the north porch of the Royal Albert Hall, looking straight at it, the curved drum filling the frame from edge to edge. In 1871 the hall has just opened: clean, bright red brick and buff terracotta, the mosaic frieze fresh under the cornice. The central arch of the porch is an open carriage entrance with tall timber doors, no glass. In front, a macadam carriage road with gas lamps, two or three horse-drawn carriages and a hansom cab setting down concert-goers, Victorian men in top hats and women in bustled dresses on the pavement.",
       "changes": {
         "persists": [
           "The Royal Albert Hall itself, still an elliptical red-brick and terra-cotta building on the same footprint."
@@ -43,7 +43,11 @@
           "The Albert Memorial, under construction in 1871 and opened in July 1872.",
           "Imperial College buildings, the Royal College of Music and the Queen's Tower.",
           "The Science Museum, which now covers the southern part of the old garden site.",
-          "The Natural History Museum, begun in 1873."
+          "The Natural History Museum, begun in 1873.",
+          "glass in the arch",
+          "bollards",
+          "modern signage or a banner",
+          "the Albert Memorial reflected in glass"
         ],
         "gone": [
           "The Royal Horticultural Society's twenty-acre garden, maintained from 1861 to about 1886.",
@@ -52,9 +56,7 @@
         ]
       },
       "surroundings": "North: the Royal Albert Hall, then Kensington Gore, Hyde Park and Kensington Gardens, with the unfinished Albert Memorial rising beyond. East: the garden's arcades and entrance towards Exhibition Road, and the South Kensington Museum complex. South: the garden falling away in terraces to its boundary, roughly where the Science Museum now stands. West: Queen's Gate and the garden's western arcades, with unbuilt ground beside the hall. Everywhere, horse-drawn carriages and cabs rather than motors, and gaslight after dark.",
-      "referenceImageUrls": [
-        "https://commons.wikimedia.org/wiki/Category:Royal_Albert_Hall_in_art"
-      ]
+      "referenceImageUrls": []
     },
     "guide": {
       "name": "Edith Marlow",
@@ -75,8 +77,27 @@
       "centreBearingDeg": 0.5183755793966611
     },
     "narrationAudioUrl": "/demo/royal-albert-hall_1871/narration.mp3",
-    "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.424Z"
+    "guideVideo": {
+      "segments": [
+        {
+          "kind": "walk_on",
+          "url": "/demo/royal-albert-hall_1871/walk_on.mp4",
+          "durationS": 5
+        },
+        {
+          "kind": "talk",
+          "url": "/demo/royal-albert-hall_1871/talk.mp4",
+          "durationS": 39.2
+        },
+        {
+          "kind": "walk_off",
+          "url": "/demo/royal-albert-hall_1871/walk_off.mp4",
+          "durationS": 5
+        }
+      ],
+      "stitchedUrl": null
+    },
+    "updatedAt": "2026-11-15T05:04:22.644Z"
   },
   "provenance": {
     "narration": {
@@ -91,31 +112,51 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab2839a/T2Gys6RxEDFUfOO02Nkej_jHK4gbow.jpg",
-      "seconds": 19,
+      "falUrl": "https://v3b.fal.media/files/b/0ab2849e/SOPwQtFcvyzkeGRgtoCiY_79kY8iYH.jpg",
+      "seconds": 17,
       "check": {
         "passed": false,
         "checked": true,
         "attempts": 2,
         "problems": [
-          "anachronism: Royal Albert Hall shown largely complete with dome and scaffolding, representing a stage of construction that matches late 1871 but closely resembles the finished building rather than clearly earlier framework stages"
+          "looks computer generated, not like a real photograph",
+          "anachronism: glass visible in the entrance arch windows",
+          "anachronism: fully completed Royal Albert Hall appearance (finished 1871 but still being finished/surrounded by construction debris inconsistent with glass installed)",
+          "Glass panes visible in arch windows, listed as forbidden",
+          "Image has a glossy, digitally rendered/colorized look rather than authentic period photograph texture",
+          "Overall composition and lighting resemble CGI or AI upscaling rather than a true 1871 photographic plate"
         ],
-        "checkCostUsd": 0.011678000000000001
+        "checkCostUsd": 0.013422
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283a7/ZG0bVDAbKSscI0kjuBKXj_1794712714874.jpeg",
-      "seconds": 105,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284a6/JdUQrrVub6m993RfmKS0U_1794715267146.jpeg",
+      "seconds": 57,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
         "passed": true,
         "checked": true,
-        "attempts": 2,
+        "attempts": 1,
         "problems": [],
-        "checkCostUsd": 0.025648
+        "checkCostUsd": 0.011674
       }
+    },
+    "walk_on": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab285df/ClYHs-6iVUYpDCB0I6hdo_output.mp4",
+      "seconds": 164
+    },
+    "walk_off": {
+      "model": "kling/v4/image-to-video",
+      "falUrl": "https://v3b.fal.media/files/b/0ab285e0/MU0_rilwJ943a2yOE8UJ-_output.mp4",
+      "seconds": 166
+    },
+    "talk": {
+      "model": "fal-ai/kling-video/ai-avatar/v2/standard",
+      "falUrl": "https://v3b.fal.media/files/b/0ab28620/pGGMeBo9y_MSPrICwA89m_output.mp4",
+      "seconds": 810
     }
   }
 }

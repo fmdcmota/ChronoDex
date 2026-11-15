@@ -34,7 +34,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "Facing north from Cromwell Road, about 45 metres south of the museum, the view is filled by the newly opened Waterhouse façade: a long, symmetrical terracotta front with a central gable and twin towers, set back behind a forecourt with iron railings and a gate lodge. The building is complete externally and open, but the gardens are still incomplete, with only the path layout achieved and limited planting. The central gable is surmounted by a single figure of Adam.",
+      "description": "Exactly the framing of the photograph: standing on the east lawn by Exhibition Road, looking west along the museum front that runs from the right edge to the corner tower in the middle distance. In 1881 the Natural History Museum has just opened: the same building, its terracotta clean and bright buff and blue-grey, every carved detail sharp. The lawn is newly laid with young, thin trees instead of the large mature tree, iron railings along the front, a gravel path. A few visitors in 1880s dress walking towards the entrance.",
       "changes": {
         "persists": [
           "The Waterhouse front, front lodge, gates and railings still survive."
@@ -46,7 +46,10 @@
           "The Whale Hall of 1929–31.",
           "The former Geology Museum/Earth Galleries of 1929–33.",
           "The Darwin Centre of 1999–2008.",
-          "The pedestrian subway under Exhibition Road, largely completed in 1885."
+          "The pedestrian subway under Exhibition Road, largely completed in 1885.",
+          "garden umbrellas or cafe tables",
+          "people sitting on the grass",
+          "modern clothes"
         ],
         "gone": [
           "The 1862 International Exhibition building, already demolished after the 1863 veto."
@@ -75,7 +78,7 @@
     },
     "narrationAudioUrl": "/demo/natural-history-museum_1881/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.431Z"
+    "updatedAt": "2026-11-15T04:03:08.548Z"
   },
   "provenance": {
     "narration": {
@@ -90,20 +93,20 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab2839a/jVTXbyqWpaaeU9RYPo7nd_E0PSe7Se.jpg",
-      "seconds": 22,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284a9/-GA1LRVLj96Oe1tjNHYit_m93rQsJA.jpg",
+      "seconds": 20,
       "check": {
         "passed": true,
         "checked": true,
         "attempts": 2,
         "problems": [],
-        "checkCostUsd": 0.009528
+        "checkCostUsd": 0.009588
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283a2/hnQgPnV7zVUD3Kfl2J3DA_1794712664487.jpeg",
-      "seconds": 55,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284b2/XK__C3JwFKhvFXUkN4G93_1794715385382.jpeg",
+      "seconds": 68,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
@@ -111,7 +114,7 @@
         "checked": true,
         "attempts": 1,
         "problems": [],
-        "checkCostUsd": 0.011914
+        "checkCostUsd": 0.011624
       }
     }
   }

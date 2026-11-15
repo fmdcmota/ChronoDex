@@ -38,7 +38,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "Looking north across a newly made Cromwell Road at the south front of Fowke's International Exhibition building: a long, sheer brick frontage rising straight from the footpaths, with two enormous glass domes and a great apsidal hall behind. No railings or gardens set it back, and because the road was built about five feet above the old ground, the building looks slightly sunken. Horse-drawn omnibuses, cabs, vans and carriages crowd the roadway; visitors in full-skirted crinolines and formal daywear walk the pavements, with mounted Household Cavalry among the traffic.",
+      "description": "Exactly the framing of the photograph: standing on the east lawn by Exhibition Road, looking west along the building front that runs from the right edge into the distance. In 1862 the building on this exact line is the International Exhibition building: a very long, plain, two-storey yellow-brown brick facade with tall round-arched windows in a regular rhythm, running in the same perspective from the right edge to the vanishing point, and where the museum's corner tower stands now, one of the exhibition's two enormous glass-and-iron domes rises above the roofline. Flags on poles along the parapet. In front, a gravel forecourt crowded with visitors in 1860s crinolines and top hats, a few carriages. A large tree on the left, as in the photograph.",
       "changes": {
         "persists": [
           "The line of Cromwell Road and the position of the Exhibition Road and Queen's Gate junctions"
@@ -50,18 +50,17 @@
         "notYetBuilt": [
           "Alfred Waterhouse's Natural History Museum, built 1873 to 1881",
           "South Kensington Underground station, opened on Christmas Eve 1868",
-          "The Science Museum as it exists today"
+          "The Science Museum as it exists today",
+          "the Natural History Museum or its towers",
+          "a wall or hoarding standing across the forecourt",
+          "garden umbrellas or modern cafe furniture"
         ],
         "gone": [
           "The International Exhibition building, demolished by the autumn of 1864"
         ]
       },
       "surroundings": "North: the exhibition's south front with its twin glass domes, and beyond it the Royal Horticultural Society's gardens and glasshouses. East: the building's frontage running away along Exhibition Road. West: its western frontage along Queen's Gate. South, behind the viewer: Freake's new Italianate houses, No. 21 occupied, Nos. 23 and 25 bare carcases, Nos. 27 and 29 empty plots, and No. 33 the Duke of Rutland's. All around, new roads, footpaths and building plots make the district feel like a building site.",
-      "referenceImageUrls": [
-        "https://historicengland.org.uk/images-books/photos/item/BB80/00009",
-        "https://www.londonpicturearchive.org.uk/view-item?i=8255",
-        "https://collections.vam.ac.uk/item/O1178779/1862-international-exhibition-south-kensington-design/1862-international-exhibition-south-kensington-design-fowke/"
-      ]
+      "referenceImageUrls": []
     },
     "guide": {
       "name": "Thomas Pell",
@@ -83,7 +82,7 @@
     },
     "narrationAudioUrl": "/demo/natural-history-museum_1862/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.430Z"
+    "updatedAt": "2026-11-15T04:01:51.863Z"
   },
   "provenance": {
     "narration": {
@@ -98,20 +97,25 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab2839f/77Gxw8ZFN39lmGh-CpNct_ieAMhqhB.jpg",
-      "seconds": 19,
+      "falUrl": "https://v3b.fal.media/files/b/0ab2849c/aa4B4o89cRcFme9VGQibC_dPMhtXn3.jpg",
+      "seconds": 22,
       "check": {
-        "passed": true,
+        "passed": false,
         "checked": true,
         "attempts": 2,
-        "problems": [],
-        "checkCostUsd": 0.00971
+        "problems": [
+          "looks computer generated, not like a real photograph",
+          "Image has a glossy, overly sharp digitally colorized look rather than authentic period photograph texture",
+          "Heavy black smoke plume appears artificially rendered",
+          "Overall tonal and lighting consistency suggests CGI or AI generation rather than a genuine 1862 photographic process"
+        ],
+        "checkCostUsd": 0.011817999999999999
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283aa/Mz6GoWhxy_5cpGyPOK_1X_1794712748951.jpeg",
-      "seconds": 91,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284aa/MyBrMxOfixbesgMftROmQ_1794715308573.jpeg",
+      "seconds": 95,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
@@ -119,7 +123,7 @@
         "checked": true,
         "attempts": 2,
         "problems": [],
-        "checkCostUsd": 0.024288
+        "checkCostUsd": 0.024278
       }
     }
   }

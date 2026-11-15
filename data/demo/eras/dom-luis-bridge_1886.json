@@ -37,7 +37,7 @@
       }
     ],
     "sceneBrief": {
-      "description": "A view from a newly opened approach road on the Gaia bank, looking almost due north up at a great iron arch bridge. The upper deck is complete and the arch springs from both granite banks; the lower deck is still unfinished, with unenclosed ironwork below. Across the river the Ribeira quays, boats and the steep upper town of Porto rise, with the cathedral on the skyline. To the right the old suspension bridge still stands alongside. The road curves around the Serra do Pilar hill, and gas lamps line the bridge deck.",
+      "description": "Exactly the framing of the photograph: standing at the Vila Nova de Gaia end of the upper deck, looking north along the brand-new iron arch bridge to Porto across the Douro, the old town and the cathedral hill on the left, the granite abutment wall on the right. In 1886 the bridge has just opened: fresh dark grey iron, the upper deck busy with traffic: ox carts loaded with barrels, mule carts, horse-drawn carriages, women carrying baskets on their heads, porters, men in flat caps and dark suits. Below on the river, wooden rabelo sailing boats with port wine barrels moored along the Ribeira quay.",
       "changes": {
         "persists": [
           "The iron arch and upper deck of the Dom Luís I Bridge",
@@ -53,17 +53,20 @@
         "notYetBuilt": [
           "The Jardim do Morro",
           "A broad straight avenue on the Gaia side",
-          "Electric lighting and tram lines"
+          "Electric lighting and tram lines",
+          "a second bridge",
+          "a suspension bridge or its stone towers",
+          "overhead tram wires or lamp gantries",
+          "modern roofs with air-conditioning units",
+          "cars or trams",
+          "London streets, shopfronts or terraces"
         ],
         "gone": [
           "The old Ponte Pênsil suspension bridge"
         ]
       },
       "surroundings": "North: the new bridge over the Douro gorge, with the Ribeira and upper town of Porto beyond. East: the old Ponte Pênsil beside it, and about a kilometre upstream the Maria Pia railway bridge. South: the new approach road curving round the hill and heading inland. West: the Serra do Pilar hill and its monastery. Below to the west and north-west: the Gaia riverfront and the Port wine lodges.",
-      "referenceImageUrls": [
-        "https://commons.wikimedia.org/wiki/File:Ponte_Dom_Lu%C3%ADs_-_Porto_-_Portugal_%F0%9F%87%B5%F0%9F%87%B9_(53840329717).jpg#1",
-        "https://commons.wikimedia.org/wiki/File:Puente_de_Don_Luis_I,_Oporto,_Portugal,_2019-06-02,_DD_29-31_HDR.jpg#1"
-      ]
+      "referenceImageUrls": []
     },
     "guide": {
       "name": "Joaquim Ferreira",
@@ -85,7 +88,7 @@
     },
     "narrationAudioUrl": "/demo/dom-luis-bridge_1886/narration.mp3",
     "guideVideo": null,
-    "updatedAt": "2026-11-15T03:25:40.436Z"
+    "updatedAt": "2026-11-15T04:25:30.501Z"
   },
   "provenance": {
     "narration": {
@@ -100,44 +103,34 @@
     },
     "scene": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283ae/gw18Z307-vlRTf2r-1nWm_PjrwK34g.jpg",
-      "seconds": 24,
+      "falUrl": "https://v3b.fal.media/files/b/0ab284c7/MxTkBqqjzr5lQnYxdvrF6_Oc7ndgiS.jpg",
+      "seconds": 20,
       "check": {
         "passed": false,
         "checked": true,
         "attempts": 2,
         "problems": [
-          "looks computer generated, not like a real photograph",
-          "anachronism: Modern-looking buildings on hillside (possible concrete structures)",
-          "anachronism: Suspension bridge and city layout depict Porto, Portugal (Dom Luis I Bridge over Douro river), not a street in London",
-          "Image depicts Porto, Portugal (Douro river, Dom Luís I bridge), not a London street as required",
-          "Color grading and texture have a digitally colorized/AI-rendered look rather than authentic 1886 photographic grain",
-          "Overly uniform lighting and sharpness across the whole scene inconsistent with period photographic optics"
+          "anachronism: This depicts Porto, Portugal (Dom Luís I Bridge over the Douro River) rather than a London street",
+          "anachronism: Hillside Portuguese architecture and rabelo boats instead of London terraces/shopfronts",
+          "Image shows Porto's Dom Luís I Bridge and riverside, not a London street scene",
+          "No London architecture, shopfronts, or terraces present",
+          "Entire setting is geographically and culturally wrong for the prompt"
         ],
-        "checkCostUsd": 0.013232
+        "checkCostUsd": 0.013408
       }
     },
     "panorama": {
       "model": "fal-ai/nano-banana-pro/edit",
-      "falUrl": "https://v3b.fal.media/files/b/0ab283bd/zuAR2bZxrfZfzCEH7ClrT_1794712940273.jpeg",
-      "seconds": 102,
+      "falUrl": "https://v3b.fal.media/files/b/0ab28538/yUswaMOYSz9AMpj9gZ6jD_1794716726957.jpeg",
+      "seconds": 56,
       "widthPx": 4032,
       "heightPx": 2016,
       "check": {
-        "passed": false,
+        "passed": true,
         "checked": true,
-        "attempts": 2,
-        "problems": [
-          "visible seam or repeated panel",
-          "anachronism: modern-style arched steel bridge resembling 20th century construction",
-          "anachronism: stylized sign text 'PORT UNL LOORES' that is garbled/nonsensical",
-          "This depicts Porto, Portugal (Dom Luís bridge and river Douro), not a street in London",
-          "Horizon/skyline is not level or centered, curving oddly across the frame",
-          "Left and right edges do not align into a continuous scene",
-          "Visible seam-like distortion in sky and ground stitching",
-          "Image looks like a CGI/painted composite rather than a photo"
-        ],
-        "checkCostUsd": 0.026638000000000002
+        "attempts": 1,
+        "problems": [],
+        "checkCostUsd": 0.012634
       }
     }
   }

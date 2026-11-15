@@ -8,11 +8,11 @@
     "lng": -0.17689
   },
   "photoSpot": {
-    "lat": 51.49793,
-    "lng": -0.17689
+    "lat": 51.49835,
+    "lng": -0.17545
   },
-  "facingDeg": 0,
-  "distanceM": 46.813128778638855,
+  "facingDeg": 270,
+  "distanceM": 99.7,
   "captureRadiusM": 50,
   "geometryEvidence": [
     {
@@ -28,19 +28,19 @@
       "note": "Photo spot is 4.4 m from the mapped Imperial College Road pedestrian way in cached geometry; not inside a building. A map proximity check does not establish current access."
     }
   ],
-  "photoSpotReason": "South of the tower, facing north from the Imperial College Road pedestrian area; rechecked against inherited OSM geometry. On-site access and reference-photo framing still require confirmation.",
+  "photoSpotReason": "Changed by Agent 6 for the demo (15 Nov 2026): Imperial College Road beside the Central Library, looking west at the tower, so the reference photo and the period scenes show the same street. Estimated, not checked on site.",
   "referencePhoto": {
     "status": "commons_stand_in",
     "file": "data/reference/queens-tower.jpg",
-    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Queens_Tower.jpg",
-    "pageUrl": "https://commons.wikimedia.org/wiki/File:Queens_Tower.jpg",
+    "originalUrl": null,
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Imperial_College_Central_Library_and_Queen%27s_Tower,_Imperial_College_Road.jpg",
     "licence": "CC BY-SA 4.0",
-    "author": "David Richfield",
-    "takenAt": "2014-08-04",
+    "author": "Shadowssettle",
+    "takenAt": null,
     "takenFrom": null,
-    "facingDeg": 0,
-    "crop": "Padded, not cropped: the 1920x2102 Commons thumbnail minus its bottom 3% (a white stitching wedge) scaled to 847x900 and centred at x=377; each side band is the same photo blurred (sigma 40) and dimmed to 85%. Made with spikes/agent-5/pad-reference.mjs. A 16:9 crop cannot hold the 87 m tower from this distance without losing the dome or the base.",
-    "notes": "Wide-angle view of the south face from Queen's Lawn, close to the photo spot and facing north: whole tower from dome to entrance steps, both lions, college buildings left, trees right. One passer-by, small and off-centre. The file GPS (51.498400, -0.176940) is about 5 m from the tower, so it records the subject, not the camera; takenFrom is left null and facingDeg 0 is read from the view. The blurred side bands are padding for the image model to repaint, not evidence. Replace with the team H1 photo when it arrives."
+    "facingDeg": 270,
+    "crop": "Commons 2598x2916 photo, the band from 170 px to 1486 px (top) scaled to 1600x900: the tower from its dome down past the belfry, with the library front.",
+    "notes": "Looking west up Imperial College Road (the old Imperial Institute Road) past the Central Library to the Queen’s Tower. Replaces the padded 2014 stand-in, which the scene model kept zooming out of. Replace with the team H1 photo when it arrives."
   },
   "eraYears": [
     1893,

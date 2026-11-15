@@ -21,7 +21,7 @@ describe('licenceUrlFor', () => {
 describe('eraPictureCredits', () => {
   it('reads the real Queen\'s Tower 1893 delivery: the CC BY-SA photo first, then the period images', async () => {
     const credits = await eraPictureCredits('queens-tower', 'queens-tower_1893', path.join(process.cwd(), 'data'));
-    expect(credits[0]).toMatchObject({ role: 'reference', author: 'David Richfield', licence: 'CC BY-SA 4.0' });
+    expect(credits[0]).toMatchObject({ role: 'reference', author: 'Shadowssettle', licence: 'CC BY-SA 4.0' });
     expect(credits.filter((c) => c.role === 'period').length).toBeGreaterThanOrEqual(1);
   });
 
