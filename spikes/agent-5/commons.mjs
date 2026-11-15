@@ -5,7 +5,7 @@
 //   node commons.mjs geo <lat> <lng> [radiusM]     files geotagged near a point
 //   node commons.mjs info "File:A.jpg" "File:B.jpg" ...   size, licence, author, date, 1920 px thumbnail
 //   node commons.mjs get <url> <outfile>           download one image (for looking at it)
-// Sends the User-Agent AGENT5.md rule 4.5 asks for, waits 1.1 s before each uncached request, and
+// Sends the User-Agent AGENT5.md rule 4.5 asks for, waits 3 s before each uncached request, and
 // caches every API answer under cache/api/ so a rerun costs nothing.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -14,7 +14,7 @@ import path from 'node:path';
 const UA = 'Chronodex-hackathon-archivist/0.1';
 const API = 'https://commons.wikimedia.org/w/api.php';
 const CACHE = new URL('./cache/api/', import.meta.url);
-const PAUSE_MS = 1100;
+const PAUSE_MS = 3000; // RESEARCH_BRIEF.md rule 8: 3 s between Wikimedia requests (1.1 s drew 429s)
 fs.mkdirSync(CACHE, { recursive: true });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

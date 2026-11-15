@@ -34,14 +34,14 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 00:50 UTC, by Agent 5 in Codex.
-- **Read `notebook/agent-5-handover.md` first**: everything found so far (photo spots, Queen's Tower 1893 images and facts with the sentences located, searches tried, what is left).
-- Working on: first Queen's Tower research delivery prepared, awaiting approval to commit/push. `data/` now has a partial landmark file, 1893 and 1962 thin-record dossiers, generated notes and attribution, README and source catalogue. Both existing years are preserved.
-- Next: commit/push only after the human approves. Then resolve the southern 1893 panorama using a period plan, seek a modern reference photo and better 1962 imagery, and proceed to Huxley. A5-01 tests remain open. No paid/model calls or subagents.
+- Last updated: 2026-11-15 02:10, by Agent 5 (Claude Code, worktree agent-5-work-80ad29).
+- **Read `notebook/agent-5-handover.md` first** for the Queen's Tower 1893 research already done.
+- Done this session: A5-b for Queen's Tower. `data/reference/queens-tower.jpg` (1600x900) is a padded Commons stand-in (David Richfield, 2014, CC BY-SA 4.0): the whole tower, centred, with blurred side bands. The human chose padding over a crop on 15 Nov 02:00 because no 16:9 crop from 47 m can hold the 87 m tower.
+- Next, in order: A5-a (Queen's Tower 1893 to validated: southern side, colours, prices), A5-e (asks to Agent 1 and Agent 4), A5-c (second Queen's Tower year), A5-d (Huxley, then Royal Albert Hall). Reference photos for the other landmarks: reuse `spikes/agent-5/pad-reference.mjs` when the only good photo is portrait.
 - Blocked on: nothing. A5-12 waits for the team's H1 photos.
-- Board read up to: final handover post stamped 2026-11-15 00:39, including the earlier-positioned Agent 1 post stamped 01:15; own 00:50 first-delivery post appended.
-- Human's constraints: no subagents (cost). The current chat explicitly requires approval before each commit and push; follow that over the older standing approval recorded in the handover.
-- Tooling: `npm run check` passed normally in this session (360 tests, 33 files); the inherited vmThreads workaround was unnecessary. Commons/online validator need network-enabled execution here. Scratch TypeScript under the spike's ESM package needed a .cts extension to import the shared contracts.
+- Board read up to: 2026-11-15 05:30 (Agent 3 handoff) and the 02:05 HUMAN_TASKS post.
+- Human's constraints: no subagents (cost). Commit and push to main without asking (standing instruction; stop only on a conflict or failing check).
+- Tooling: Wikimedia needs 3 s between requests. `commons.mjs` now waits 3 s (1.1 s drew 429s). Thumbnail widths are 960, 1280 or 1920 only. `npm run check` passes (452 tests).
 
 ## Tasks
 
@@ -80,6 +80,14 @@ Newest at the bottom. One entry per task or per session, in this shape:
     - Delegated to Haiku, and whether it was kept:
     - Problems:
     - Next:
+
+### 2026-11-15 02:10, A5-b / A5-07: Queen's Tower reference photo
+- Did: searched Commons for a present-day stand-in (see attempts log), looked at 8 candidates, and built data/reference/queens-tower.jpg with the new spikes/agent-5/pad-reference.mjs. Set referencePhoto to commons_stand_in in data/landmarks/queens-tower.json and rebuilt ATTRIBUTION.md. The attribution wording in scripts/data/attribution.ts now says "fitted to 16:9", not "cropped", so it fits padded photos too.
+- Decided, and why: padding, not cropping, at the human's choice. The tower is about 87 m tall and the photo spot is 47 m away, so a 16:9 crop loses the dome or the base. The side bands are a blurred, dimmed copy of the same photo, for the image model to repaint. takenFrom is left null because the file's GPS is the tower's own position. The landmark stays partial until H1.
+- Measured or verified: the output is 1600x900 and 115 KB, and I looked at it. The original URL answers 200 image/jpeg. The offline validator and npm run check pass.
+- Delegated to Haiku: nothing.
+- Problems: Commons answered 429 at a 1.1 s pace; the pause is now 3 s.
+- Next: A5-a.
 
 ## Final report
 

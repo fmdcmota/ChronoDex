@@ -10,3 +10,4 @@ the app.
 |---|---|---|---|
 | [Imperial Institute south frontage on a postcard mailed in 1903](https://commons.wikimedia.org/wiki/File:1903-11-04_front_Imperial_Institute_London.jpg) | Unknown author | Public domain | model input for queens-tower_1893 |
 | [Imperial Institute south frontage, oblique street-level photograph](https://commons.wikimedia.org/wiki/File:Gezicht_op_het_Imperial_Institute_te_Londen,_RP-F-00-4232.jpg) | Rijksmuseum (metadata credit); photographer Frith & Co. (object description) | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) | model input for queens-tower_1893 |
+| [Present-day photo of Queen's Tower](https://commons.wikimedia.org/wiki/File:Queens_Tower.jpg) | David Richfield | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | reference photo for queens-tower (fitted to 16:9, shown in app, model input) |

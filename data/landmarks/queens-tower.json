@@ -30,17 +30,17 @@
   ],
   "photoSpotReason": "South of the tower, facing north from the Imperial College Road pedestrian area; rechecked against inherited OSM geometry. On-site access and reference-photo framing still require confirmation.",
   "referencePhoto": {
-    "status": "missing",
-    "file": null,
-    "originalUrl": null,
-    "pageUrl": null,
-    "licence": null,
-    "author": null,
-    "takenAt": null,
+    "status": "commons_stand_in",
+    "file": "data/reference/queens-tower.jpg",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Queens_Tower.jpg",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Queens_Tower.jpg",
+    "licence": "CC BY-SA 4.0",
+    "author": "David Richfield",
+    "takenAt": "2014-08-04",
     "takenFrom": null,
-    "facingDeg": null,
-    "crop": null,
-    "notes": "Team H1 photo not supplied in this session; no Commons present-day stand-in selected yet."
+    "facingDeg": 0,
+    "crop": "Padded, not cropped: the 1920x2102 Commons thumbnail minus its bottom 3% (a white stitching wedge) scaled to 847x900 and centred at x=377; each side band is the same photo blurred (sigma 40) and dimmed to 85%. Made with spikes/agent-5/pad-reference.mjs. A 16:9 crop cannot hold the 87 m tower from this distance without losing the dome or the base.",
+    "notes": "Wide-angle view of the south face from Queen's Lawn, close to the photo spot and facing north: whole tower from dome to entrance steps, both lions, college buildings left, trees right. One passer-by, small and off-centre. The file GPS (51.498400, -0.176940) is about 5 m from the tower, so it records the subject, not the camera; takenFrom is left null and facingDeg 0 is read from the view. The blurred side bands are padding for the image model to repaint, not evidence. Replace with the team H1 photo when it arrives."
   },
   "eraYears": [
     1893,
@@ -52,7 +52,7 @@
   },
   "rejectedYears": {},
   "openQuestions": [
-    "Obtain and validate the team H1 photo or a licensed 1600×900 stand-in.",
+    "Replace the Commons stand-in with the team H1 photo (wide-angle, landscape, whole tower) when it arrives.",
     "Confirm current public access and framing at the proposed photo spot.",
     "Complete 1962 imagery and guide research; resolve the 1893 southern panorama before a fully evidenced 360-degree scene."
   ]

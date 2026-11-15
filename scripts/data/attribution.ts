@@ -58,7 +58,7 @@ export function attributionRows(landmarks: readonly LandmarkFile[], eras: readon
     if (photo.status !== 'commons_stand_in' || !photo.pageUrl) continue;
     add(
       { pageUrl: photo.pageUrl, title: `Present-day photo of ${landmark.name}`, author: photo.author ?? 'Unknown', licence: photo.licence ?? 'Unknown' },
-      `reference photo for ${landmark.id} (cropped to 16:9, shown in app, model input)`,
+      `reference photo for ${landmark.id} (fitted to 16:9, shown in app, model input)`,
     );
   }
   for (const era of eras) {
