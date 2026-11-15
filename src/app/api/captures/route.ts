@@ -7,7 +7,7 @@
  * Request: CaptureRequest. Response: CaptureResult. "Too far", "no location" and "no photo" are
  * normal results with `ok: false`, not HTTP errors. HTTP errors: 400 for a malformed body or a
  * photo URL that is not http(s), 403 `spoofed_location` for a spoofed location when
- * ALLOW_SPOOFED_LOCATION is not "1".
+ * ALLOW_SPOOFED_LOCATION is "0" (spoofing is permanent by default for the demo, Agent 6, 15 Nov 2026).
  */
 import type { NextRequest } from 'next/server';
 import { CaptureRequestSchema, resolveCapture, type Capture, type CaptureResult } from '@/lib/contracts';
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     const { playerId, photoUrl, location, accuracyM, spoofed } = body.data;
 
     if (playerId.length > MAX_PLAYER_ID_LENGTH) return jsonError(400, 'bad_request', 'Invalid player id');
-    if (spoofed && process.env.ALLOW_SPOOFED_LOCATION !== '1') {
+    if (spoofed && process.env.ALLOW_SPOOFED_LOCATION === '0') {
       return jsonError(403, 'spoofed_location', 'Spoofed locations are not accepted on this server');
     }
     if (!location) return json({ ok: false, reason: 'location_missing', nearest: null } satisfies CaptureResult);

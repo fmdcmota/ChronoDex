@@ -44,12 +44,12 @@ afterEach(() => {
 });
 
 describe('landmarks and eras', () => {
-  it('GET /api/landmarks lists fifteen valid landmarks and is not cached', async () => {
+  it('GET /api/landmarks lists sixteen valid landmarks and is not cached', async () => {
     const res = await listLandmarks();
     expect(res.status).toBe(200);
     expect(res.headers.get('cache-control')).toBe('no-store');
     const { landmarks: list } = await res.json();
-    expect(list).toHaveLength(15);
+    expect(list).toHaveLength(16);
     for (const l of list) LandmarkSchema.parse(l);
   });
 
@@ -137,11 +137,11 @@ describe('POST /api/captures and the Dex', () => {
     expect((await capture({ playerId: 'p' })).status).toBe(400);
   });
 
-  it('refuses spoofed locations unless ALLOW_SPOOFED_LOCATION=1', async () => {
+  it('accepts spoofed locations unless ALLOW_SPOOFED_LOCATION=0 (spoofing is permanent for the demo)', async () => {
     const spoofed = { ...base, location: queensTower.photoSpot, spoofed: true };
-    expect((await capture(spoofed)).status).toBe(403);
-    process.env.ALLOW_SPOOFED_LOCATION = '1';
     expect((await capture(spoofed)).result).toMatchObject({ ok: true });
+    process.env.ALLOW_SPOOFED_LOCATION = '0';
+    expect((await capture({ ...spoofed, playerId: 'someone-else' })).status).toBe(403);
   });
 });
 

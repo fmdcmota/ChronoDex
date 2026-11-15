@@ -12,16 +12,9 @@
  * Agent 2's crop for queens-tower_1893 was for an older scene and does not fit the demo one. Remove an id once
  * its scene is regenerated from the reference photo (Queen's Tower 1893 after Agent 5's wide photo, R3-2e).
  */
-export const THEN_NOW_MISALIGNED_ERAS: ReadonlySet<string> = new Set([
-  'dom-luis-bridge_1886',
-  'natural-history-museum_1862',
-  'natural-history-museum_1881',
-  'queens-tower_1893',
-  'queens-tower_1962',
-  'raffles-landing-site_1819',
-  'royal-albert-hall_1871',
-  'zocalo-cathedral_1519',
-]);
+// Empty since 05:30 on 15 Nov (Agent 6, A6-06): all 8 demo scenes were regenerated from their reference photo's own
+// viewpoint (scripts/demo/framing.ts), and the human asked for Then/Now on every location.
+export const THEN_NOW_MISALIGNED_ERAS: ReadonlySet<string> = new Set<string>([]);
 
 /**
  * Whether the Then/Now button is offered for an era.

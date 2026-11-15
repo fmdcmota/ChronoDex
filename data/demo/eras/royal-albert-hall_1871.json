@@ -66,32 +66,32 @@
       "voiceKey": "eleven-lily",
       "script": "I'm Edith Marlow, and I keep the beds and paths in this garden, so mind where you step. You'll want to look up at the hall itself, red brick and terra-cotta, a hundred and thirty-five feet of it, and that's only since March, when the Queen opened it. She was too overcome to speak, so the Prince of Wales declared it open in her place. They say the organ inside has ten thousand pipes, and the whole place sits about eight thousand people. Come May the International Exhibition opens in these very galleries, a shilling on ordinary days. Mind the canal edge now. Good day to you, and enjoy the flowers.",
       "greeting": "Morning to you. You're standing in the Horticultural Society's garden, you know, not on any street, so watch the gravel. Shall I point you towards the hall?",
-      "headshotUrl": "/demo/royal-albert-hall_1871/headshot.jpg"
+      "headshotUrl": "/demo/royal-albert-hall_1871/headshot.jpg?v=8c0055ca89"
     },
-    "sceneImageUrl": "/demo/royal-albert-hall_1871/scene.jpg",
+    "sceneImageUrl": "/demo/royal-albert-hall_1871/scene.jpg?v=60e02e305a",
     "panorama": {
-      "url": "/demo/royal-albert-hall_1871/panorama.jpg",
+      "url": "/demo/royal-albert-hall_1871/panorama.jpg?v=78e3d2e204",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 0.5183755793966611
     },
-    "narrationAudioUrl": "/demo/royal-albert-hall_1871/narration.mp3",
+    "narrationAudioUrl": "/demo/royal-albert-hall_1871/narration.mp3?v=9617708e6a",
     "guideVideo": {
       "segments": [
         {
           "kind": "walk_on",
-          "url": "/demo/royal-albert-hall_1871/walk_on.mp4",
+          "url": "/demo/royal-albert-hall_1871/walk_on.mp4?v=84dd5c6b9f",
           "durationS": 5
         },
         {
           "kind": "talk",
-          "url": "/demo/royal-albert-hall_1871/talk.mp4",
+          "url": "/demo/royal-albert-hall_1871/talk.mp4?v=4df3bad9c9",
           "durationS": 39.2
         },
         {
           "kind": "walk_off",
-          "url": "/demo/royal-albert-hall_1871/walk_off.mp4",
+          "url": "/demo/royal-albert-hall_1871/walk_off.mp4?v=41061a17c9",
           "durationS": 5
         }
       ],

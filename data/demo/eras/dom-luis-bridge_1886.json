@@ -76,17 +76,17 @@
       "voiceKey": "eleven-pt-man",
       "script": "Boa tarde, senhor. I am Joaquim Ferreira, a porter here on the Gaia side, and I will walk a little way with you. They opened this upper deck on the last day of October, the king's birthday, though His Majesty did not come himself. Crossing on foot costs a few réis each, so keep a small coin ready in your pocket. Notice the gas lamps set along the deck; there are twenty-four of them up here, and they burn well after dark. Below us the lower deck is still not finished, so every load goes over the top for now. Mind your step on the iron, and boa viagem.",
       "greeting": "Boa tarde! You are looking at our new iron bridge, and I am Joaquim, a porter who crosses it every day. Come, I will tell you how it is.",
-      "headshotUrl": "/demo/dom-luis-bridge_1886/headshot.jpg"
+      "headshotUrl": "/demo/dom-luis-bridge_1886/headshot.jpg?v=928dd09107"
     },
-    "sceneImageUrl": "/demo/dom-luis-bridge_1886/scene.jpg",
+    "sceneImageUrl": "/demo/dom-luis-bridge_1886/scene.jpg?v=826c90c035",
     "panorama": {
-      "url": "/demo/dom-luis-bridge_1886/panorama.jpg",
+      "url": "/demo/dom-luis-bridge_1886/panorama.jpg?v=37c33f28ee",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 344.22933932952407
     },
-    "narrationAudioUrl": "/demo/dom-luis-bridge_1886/narration.mp3",
+    "narrationAudioUrl": "/demo/dom-luis-bridge_1886/narration.mp3?v=52b4ededd9",
     "guideVideo": null,
     "updatedAt": "2026-11-15T04:25:30.501Z"
   },

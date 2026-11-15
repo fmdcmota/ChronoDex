@@ -73,17 +73,17 @@
       "voiceKey": "eleven-daniel",
       "script": "Thomas Meecham, that's me, mason on the Institute's finishing works. The Queen herself opened the place on the tenth of May, and fine it looked for the day, though plenty of us were still at it after. That central tower stands two hundred and eighty-seven feet, and the walls at its base are nine feet thick, so there's substance to it. They rang the ten bells cast by John Taylor of Loughborough, and the sound carried. There's a billiard-room opened this year too, meant to draw in subscribing Fellows. Mind the delivery carts in the road. Good day to you, and take care on the kerb.",
       "greeting": "Morning to you. I'm Thomas Meecham, mason on the Institute's finishing works — mind the carts as you cross, and have a look up at that tower.",
-      "headshotUrl": "/demo/queens-tower_1893/headshot.jpg"
+      "headshotUrl": "/demo/queens-tower_1893/headshot.jpg?v=803c616af5"
     },
-    "sceneImageUrl": "/demo/queens-tower_1893/scene.jpg",
+    "sceneImageUrl": "/demo/queens-tower_1893/scene.jpg?v=a29793d6e5",
     "panorama": {
-      "url": "/demo/queens-tower_1893/panorama.jpg",
+      "url": "/demo/queens-tower_1893/panorama.jpg?v=bb13fb80a1",
       "widthPx": 4032,
       "heightPx": 2016,
       "vFovDeg": 180,
       "centreBearingDeg": 270.06447727016587
     },
-    "narrationAudioUrl": "/demo/queens-tower_1893/narration.mp3",
+    "narrationAudioUrl": "/demo/queens-tower_1893/narration.mp3?v=912f13377b",
     "guideVideo": null,
     "updatedAt": "2026-11-15T04:08:49.031Z"
   },

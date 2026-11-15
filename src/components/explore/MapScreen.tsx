@@ -13,6 +13,7 @@
  */
 'use client';
 
+import { LOCATION_SPOOFING } from './lib/spoofing';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -51,8 +52,8 @@ const MIN_ZOOM = 1;
  * 145 m across a phone: enough to see a whole 50 m capture ring.
  */
 const FOUND_ZOOM = 17;
-/** True when the location-spoof panel may be shown (MASTER.md section 8.2). */
-const DEV_TOOLS = process.env.NEXT_PUBLIC_DEV_TOOLS === '1';
+/** True when the location-spoof tools are shown: permanently on unless switched off (./lib/spoofing.ts). */
+const DEV_TOOLS = LOCATION_SPOOFING;
 /**
  * With the dev spoof panel under the CHRONODEX chip, the location banner moves below its closed summary. Inline, not
  * a class: the project's CSS pipeline dropped a new `.banner-below-dev` rule from globals.css (15 Nov).

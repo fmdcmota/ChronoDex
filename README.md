@@ -21,7 +21,7 @@ Built in one weekend at the **Imperial AI Hackathon** (14 to 15 November 2026) b
 | | |
 |---|---|
 | **Live app** | **<https://url-poems-screens-poll.trycloudflare.com>**. Open it on a phone: camera, location and motion need one |
-| **Where it works** | Six landmarks have ready eras: Queen's Tower, Royal Albert Hall and the Natural History Museum in London, plus Mexico City, Porto and Singapore. Nine more are on the map and unlock as their eras are generated |
+| **Where it works** | Six landmarks have ready eras: Queen's Tower, Royal Albert Hall and the Natural History Museum in London, plus Mexico City, Porto and Singapore. Ten more are on the map and unlock as their eras are generated |
 | **Not near one?** | You can still browse the map, the globe and the Dex. Captures need you within 50 m of a landmark's photo spot |
 | **Technical writeup** | [TECHNICAL_WRITEUP.md](TECHNICAL_WRITEUP.md): architecture, AI pipeline, data sources and APIs |
 
@@ -121,6 +121,7 @@ it loads instantly for everyone. (The progress screenshot above is from mock mod
 | London | Queen's Tower (1893, 1962), Royal Albert Hall (1871), Natural History Museum (1862, 1881), Huxley Building (1885, 1961), Exhibition Road (1862, 2011), V&A (1941) |
 | Mexico City | Zócalo and Metropolitan Cathedral (1519) |
 | Porto | Dom Luís I Bridge (1886) |
+| Lisbon | Praça do Comércio (1754 and 1775, before and after the 1755 earthquake) |
 | Singapore | Raffles' Landing Site (1819), Raffles Hotel (1887), Merlion Park (1972) |
 | Oslo | Viking Ship Museum (834, 1904), Akershus Fortress (1299, 1624) |
 | Cambridge | Emmanuel College (1584, 1677) |
@@ -161,7 +162,7 @@ capture from your desk.
 `MONGODB_DB`, `FAL_KEY`, `DEEPSEEK_API_KEY`, and `NEXT_PUBLIC_USE_MOCKS` left empty. Then:
 
 ```sh
-npm run seed       # load the 15 landmarks and their eras into MongoDB
+npm run seed       # load the 16 landmarks and their eras into MongoDB
 npm run build && npm run start
 npm run worker     # in a second terminal: generates eras that players request
 ```

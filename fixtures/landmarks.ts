@@ -199,4 +199,19 @@ export const landmarks: Landmark[] = [
     eraYears: [1886],
     ...sharedFields('dom-luis-bridge'),
   },
+  // Lisbon, added by Agent 1 at the human's request (15 Nov 2026): the same riverside view before and
+  // after the earthquake of 1 November 1755. In 1754 the Royal Ribeira Palace filled the west side of the
+  // Terreiro do Paço; Pombal's rebuilt square, the Praça do Comércio, had its equestrian statue of José I
+  // unveiled on 6 June 1775. Coordinates are OpenStreetMap ESTIMATES, not checked on site: the photo spot
+  // is the Cais das Colunas steps on the Tagus, facing north across the square to the Rua Augusta.
+  {
+    id: 'praca-do-comercio',
+    name: 'Praça do Comércio',
+    blurb: 'Lisbon’s riverside square, where a royal palace stood until the great earthquake of 1755.',
+    photoSpot: { lat: 38.70668, lng: -9.13648 },
+    subject: { lat: 38.70775, lng: -9.13650 },
+    rarity: 'legendary',
+    eraYears: [1754, 1775],
+    ...sharedFields('praca-do-comercio'),
+  },
 ];

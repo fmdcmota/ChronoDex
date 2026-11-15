@@ -23,7 +23,7 @@ function setup() {
 describe('mock API: landmarks and eras', () => {
   it('lists thirteen landmarks and one era per year', async () => {
     const { api } = setup();
-    expect(await api.listLandmarks()).toHaveLength(15);
+    expect(await api.listLandmarks()).toHaveLength(16);
     const eras = await api.listEras('queens-tower');
     expect(eras.map((e) => e.year)).toEqual([1893, 1962]);
   });

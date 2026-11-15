@@ -8,7 +8,7 @@ Data access for landmarks, eras and captures. Server and worker only. Owner: Age
 
 **Collections.** `landmarks` (2dsphere on `photoSpotGeo`), `eras` (unique `landmarkId + year`), `captures` (unique `playerId + landmarkId`), `jobs` (see `src/lib/jobs`), and `media_assets`, which is Agent 4's durable media ledger (`src/lib/media`, `notebook/agent-4-panorama-plan.md`): one record per stored file, `{ _id, eraId, name, contentType, bytes, sha256, sourceUrl, falUrl, falUrlExpiresAt, createdAt }`, and the Era stores `/api/media/<id>` in place of the fal URL. Agent 4 owns it; there is no accessor in `src/lib/db`. Every `_id` is the domain id.
 
-**Seed.** `npm run seed` writes the 15 fixture landmarks (replaced, with `data/landmarks/*.json` applied over them) and their 22 eras (inserted only if missing, all `missing`). `npm run seed -- --dry-run` only validates.
+**Seed.** `npm run seed` writes the 16 fixture landmarks (replaced, with `data/landmarks/*.json` applied over them) and their 24 eras (inserted only if missing, all `missing`). `npm run seed -- --dry-run` only validates.
 
 **Test:** `npm run test` (`src/lib/jobs/jobs.test.ts`, `src/app/api/routes.test.ts`). These cover the in-memory backend only. The MongoDB backend has not yet run against a live server.
 

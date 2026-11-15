@@ -21,7 +21,7 @@ describe('demo set', () => {
     for (const era of DEMO_ERAS) {
       expect(EraSchema.parse(era)).toEqual(era);
       expect(era.state).toBe('ready');
-      for (const url of demoUrls(era)) expect(existsSync(path.join(process.cwd(), 'public', url)), url).toBe(true);
+      for (const url of demoUrls(era)) expect(existsSync(path.join(process.cwd(), 'public', url.split('?')[0])), url).toBe(true);
     }
   });
   it('has valid landmarks with a committed reference photo', () => {
