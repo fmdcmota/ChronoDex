@@ -27,6 +27,8 @@ export interface ComposerProps {
   onCue: (kind: EarconKind | 'silent') => void;
   /** Shown when the microphone is refused or missing. */
   onMicError: (message: string) => void;
+  /** Called with true when a hold-to-talk press starts and false when it ends, so the ambience can go silent. */
+  onMicOpenChange?: (open: boolean) => void;
 }
 
 /**
@@ -38,9 +40,10 @@ export interface ComposerProps {
  * @param props.onRecording - Called with a finished hold-to-talk recording.
  * @param props.onCue - Called inside every tap that may later play audio (iOS unlock, mic earcons).
  * @param props.onMicError - Called with a message when the microphone is refused or missing.
+ * @param props.onMicOpenChange - Called with true on press and false on release or failure.
  * @returns The composer form.
  */
-export function Composer({ enabled, onSend, onRecording, onCue, onMicError }: ComposerProps) {
+export function Composer({ enabled, onSend, onRecording, onCue, onMicError, onMicOpenChange }: ComposerProps) {
   const [text, setText] = useState('');
   const [recording, setRecording] = useState(false);
   const recorder = useRef<HoldToTalkRecorder | null>(null);
@@ -60,6 +63,7 @@ export function Composer({ enabled, onSend, onRecording, onCue, onMicError }: Co
 
   const finish = async () => {
     setRecording(false);
+    onMicOpenChange?.(false);
     const rec = await recorder.current?.stop();
     if (rec) onRecording(rec);
   };
@@ -71,6 +75,8 @@ export function Composer({ enabled, onSend, onRecording, onCue, onMicError }: Co
     onCue('on');
     holding.current = true;
     setRecording(true);
+    // Before the mic opens, so the ambience is already fading when recording starts.
+    onMicOpenChange?.(true);
     recorder.current ??= new HoldToTalkRecorder();
     try {
       await recorder.current.start();
@@ -79,6 +85,7 @@ export function Composer({ enabled, onSend, onRecording, onCue, onMicError }: Co
     } catch (err) {
       holding.current = false;
       setRecording(false);
+      onMicOpenChange?.(false);
       onMicError(err instanceof DOMException && err.name === 'NotAllowedError' ? 'Microphone access was refused. You can still type.' : 'No microphone available. You can still type.');
     }
   };

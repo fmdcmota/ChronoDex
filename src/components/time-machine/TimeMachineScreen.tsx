@@ -33,6 +33,7 @@ import { hasSourceNotes } from './sources';
 import { YearBar } from './YearBar';
 import { AmbienceToggle } from './AmbienceToggle';
 import { useAmbience } from './useAmbience';
+import { ambienceMode } from './ambience';
 import { loadEraSnapshot, saveEraSnapshot } from './eraSnapshot';
 import { prefetchMedia, useCachedMediaUrl } from './mediaCache';
 import { BTN_PRIMARY, BTN_SECONDARY_SMALL, PANEL_DARK, PIXEL_FONT } from './pixel';
@@ -141,7 +142,7 @@ export function TimeMachineScreen({ landmarkId }: TimeMachineScreenProps) {
   const era = liveEra ?? snapshot;
   // From the year bar, not the loaded era, so the loop does not stop and restart while a year loads.
   const selectedYear = eras?.find((e) => e.id === selectedId)?.year ?? null;
-  const ambience = useAmbience(selectedYear, guideSpeaking);
+  const ambience = useAmbience(selectedYear, ambienceMode(guideSpeaking), 'time-machine');
   const job = current?.era.id === selectedId ? current.job : null;
 
   // Generate what is missing, once. Never from a snapshot: only the server's answer can start spending.

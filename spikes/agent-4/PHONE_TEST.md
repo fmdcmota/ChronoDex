@@ -129,6 +129,16 @@ Albert Neale). Video generation is off, so nothing here spends fal credits. Do i
 
 Report as for the other tests: for example `iPhone: 6.1 to 6.9 pass` or `6.2 fail, seam on the left`.
 
+
+### Retest after round 2 fixes (ambience)
+
+| # | Do | Pass when |
+|---|---|---|
+| 6.10 | Time Machine, sound on: listen without tapping anything else | A quiet piano waltz with faint street sounds (hooves, crowd), not a hiss. It loops with no click |
+| 6.11 | Tap **Meet Albert**, then **Chat with Albert** | Music drops low while Albert speaks; in the chat it is much quieter again, barely there |
+| 6.12 | In the chat, hold the mic and speak, play the recording back if you can (or read the transcript) | The music fades out the moment you press and comes back after you let go; it is not in the recording |
+| 6.13 | Chat with voice on: let a reply be spoken | The music is silent while the guide speaks |
+
 ## How to report
 
 Paste lines like these to the agent:

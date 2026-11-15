@@ -1,6 +1,6 @@
 /**
- * Period ambience under the Time Machine and the chat: a quiet loop for the era's period, lowered
- * while the guide speaks, with a mute switch saved per device.
+ * Period ambience under the Time Machine and the chat: two quiet loops (music and street) for the era's period,
+ * lowered while the guide speaks, silent while the microphone records, with a mute switch saved per device.
  *
  * Owner: Agent 4. Phone test round 1, chat item 4. Pure parts are in ./ambience.ts.
  *
@@ -16,26 +16,46 @@
 'use client';
 
 import { useCallback, useEffect, useSyncExternalStore } from 'react';
-import { ambienceBucket, ambienceGain, ambienceUrl, placeholderLoop, type AmbienceBucket } from './ambience';
+import {
+  LAYER_MIX,
+  LOOP_CROSSFADE_S,
+  ambienceBucket,
+  ambienceGain,
+  ambienceUrl,
+  crossfadeLoop,
+  placeholderLoop,
+  type AmbienceBucket,
+  type AmbienceLayer,
+  type AmbienceMode,
+  type AmbienceScene,
+} from './ambience';
 
 /** Saved setting: ambience muted. Per device. */
 const MUTED_KEY = 'chronodex.ambience.muted';
-/** How quickly the level follows a change (duck, unduck, mute). A time constant, in seconds. */
+/** How quickly the level follows a duck, unduck or mute. A time constant, in seconds. */
 const GAIN_TIME_CONSTANT_S = 0.25;
-/** Length of the placeholder loop. */
+/** Going silent for the microphone must be quick, or the tail is recorded. */
+const SILENCE_TIME_CONSTANT_S = 0.03;
+/** Length of the placeholder street loop. */
 const PLACEHOLDER_LOOP_S = 8;
+/** Both layers, in start order. */
+const LAYERS: AmbienceLayer[] = ['music', 'street'];
 
 /**
  * One player per page. Module level so a client-side move from the Time Machine to the chat keeps
  * the unlocked AudioContext.
+ *
+ * Graph: one AudioBufferSourceNode per layer (looped) → that layer's GainNode (LAYER_MIX) → the master
+ * GainNode (scene and mode level) → speakers.
  */
 class AmbiencePlayer {
   private ctx: AudioContext | null = null;
-  private gain: GainNode | null = null;
-  private source: AudioBufferSourceNode | null = null;
+  private master: GainNode | null = null;
+  private layerGain = new Map<AmbienceLayer, GainNode>();
+  private sources: AudioBufferSourceNode[] = [];
   private playing: AmbienceBucket | null = null;
   private wanted: AmbienceBucket | null = null;
-  private buffers = new Map<AmbienceBucket, Promise<AudioBuffer>>();
+  private buffers = new Map<string, Promise<AudioBuffer | null>>();
   private level = 0;
 
   /**
@@ -48,86 +68,118 @@ class AmbiencePlayer {
     if (!this.ctx) {
       const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!Ctor) return;
-      this.ctx = new Ctor();
-      this.gain = this.ctx.createGain();
-      this.gain.gain.value = 0;
-      this.gain.connect(this.ctx.destination);
+      const ctx = new Ctor();
+      const master = ctx.createGain();
+      master.gain.value = 0;
+      master.connect(ctx.destination);
+      for (const layer of LAYERS) {
+        const g = ctx.createGain();
+        g.gain.value = LAYER_MIX[layer];
+        g.connect(master);
+        this.layerGain.set(layer, g);
+      }
+      this.ctx = ctx;
+      this.master = master;
     }
     if (this.ctx.state !== 'running') void this.ctx.resume().catch(() => undefined);
-    if (this.wanted && this.playing !== this.wanted) void this.startLoop(this.wanted);
+    if (this.wanted && this.playing !== this.wanted) void this.startLoops(this.wanted);
   }
 
   /**
-   * Ask for a period's loop. Starts at once if the context is unlocked, otherwise on the next tap.
+   * Ask for a period's loops. Starts at once if the context is unlocked, otherwise on the next tap.
    *
-   * @param bucket - The loop, or null for none.
+   * @param bucket - The period, or null for none.
    */
   want(bucket: AmbienceBucket | null): void {
     this.wanted = bucket;
     if (!bucket) {
-      this.stopLoop();
+      this.stopLoops();
       return;
     }
-    if (this.ctx && this.playing !== bucket) void this.startLoop(bucket);
+    if (this.ctx && this.playing !== bucket) void this.startLoops(bucket);
   }
 
   /**
-   * Set the level, smoothly.
+   * Set the master level, smoothly; quickly when going silent for the microphone.
    *
    * @param level - 0 to 1.
    */
   setLevel(level: number): void {
     this.level = level;
-    if (!this.ctx || !this.gain) return;
-    this.gain.gain.setTargetAtTime(level, this.ctx.currentTime, GAIN_TIME_CONSTANT_S);
+    if (!this.ctx || !this.master) return;
+    const now = this.ctx.currentTime;
+    this.master.gain.cancelScheduledValues(now);
+    this.master.gain.setTargetAtTime(level, now, level === 0 ? SILENCE_TIME_CONSTANT_S : GAIN_TIME_CONSTANT_S);
   }
 
-  /** Load a bucket's loop: the real file, or the placeholder when it is missing or will not decode. */
-  private loadBuffer(bucket: AmbienceBucket): Promise<AudioBuffer> {
+  /**
+   * Load one layer, its end crossfaded into its start. A missing street file becomes the placeholder noise;
+   * a missing music file stays silent.
+   */
+  private loadBuffer(bucket: AmbienceBucket, layer: AmbienceLayer): Promise<AudioBuffer | null> {
     const ctx = this.ctx as AudioContext;
-    let p = this.buffers.get(bucket);
+    const key = `${bucket}:${layer}`;
+    let p = this.buffers.get(key);
     if (!p) {
-      p = fetch(ambienceUrl(bucket))
+      p = fetch(ambienceUrl(bucket, layer))
         .then((res) => {
           if (!res.ok) throw new Error(`ambience ${res.status}`);
           return res.arrayBuffer();
         })
         .then((bytes) => ctx.decodeAudioData(bytes))
+        .then((decoded) => {
+          const fade = Math.round(decoded.sampleRate * LOOP_CROSSFADE_S);
+          const looped = ctx.createBuffer(decoded.numberOfChannels, decoded.length - Math.min(fade, Math.floor(decoded.length / 2)), decoded.sampleRate);
+          for (let ch = 0; ch < decoded.numberOfChannels; ch++) looped.copyToChannel(crossfadeLoop(decoded.getChannelData(ch), fade), ch);
+          return looped;
+        })
         .catch(() => {
+          if (layer === 'music') return null;
           const samples = placeholderLoop(ctx.sampleRate, PLACEHOLDER_LOOP_S);
           const buffer = ctx.createBuffer(1, samples.length, ctx.sampleRate);
           buffer.copyToChannel(samples, 0);
           return buffer;
         });
-      this.buffers.set(bucket, p);
+      this.buffers.set(key, p);
     }
     return p;
   }
 
-  private async startLoop(bucket: AmbienceBucket): Promise<void> {
+  private async startLoops(bucket: AmbienceBucket): Promise<void> {
     const ctx = this.ctx;
-    if (!ctx || !this.gain) return;
+    if (!ctx) return;
     this.playing = bucket;
-    const buffer = await this.loadBuffer(bucket);
-    // The year may have changed while the file loaded.
+    const buffers = await Promise.all(LAYERS.map((layer) => this.loadBuffer(bucket, layer)));
+    // The year may have changed while the files loaded.
     if (this.wanted !== bucket || this.playing !== bucket) return;
-    this.source?.stop();
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    source.loop = true;
-    source.connect(this.gain);
-    source.start();
-    this.source = source;
+    this.stopSources();
+    LAYERS.forEach((layer, i) => {
+      const buffer = buffers[i];
+      const gain = this.layerGain.get(layer);
+      if (!buffer || !gain) return;
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+      source.connect(gain);
+      source.start();
+      this.sources.push(source);
+    });
     this.setLevel(this.level);
   }
 
-  private stopLoop(): void {
-    try {
-      this.source?.stop();
-    } catch {
-      // Already stopped.
+  private stopSources(): void {
+    for (const source of this.sources) {
+      try {
+        source.stop();
+      } catch {
+        // Already stopped.
+      }
     }
-    this.source = null;
+    this.sources = [];
+  }
+
+  private stopLoops(): void {
+    this.stopSources();
     this.playing = null;
   }
 }
@@ -150,10 +202,11 @@ export interface AmbienceControls {
  * reads and writes the mute setting in localStorage. Stops the loop on unmount.
  *
  * @param year - The era's year, or null while it is not known (no sound).
- * @param ducked - True while the guide speaks: the loop drops to AMBIENCE_DUCKED_GAIN.
+ * @param mode - normal; ducked while the guide speaks; silent while the microphone records (use ambienceMode).
+ * @param scene - Which screen: the chat plays much lower than the Time Machine (AMBIENCE_LEVELS).
  * @returns The mute state and switch.
  */
-export function useAmbience(year: number | null, ducked: boolean): AmbienceControls {
+export function useAmbience(year: number | null, mode: AmbienceMode, scene: AmbienceScene): AmbienceControls {
   const muted = useSyncExternalStore(subscribeMuted, readMuted, () => false);
   const bucket = year === null ? null : ambienceBucket(year);
 
@@ -174,8 +227,8 @@ export function useAmbience(year: number | null, ducked: boolean): AmbienceContr
   useEffect(() => () => player.want(null), []);
 
   useEffect(() => {
-    player.setLevel(ambienceGain(muted, ducked));
-  }, [muted, ducked]);
+    player.setLevel(ambienceGain(muted, mode, scene));
+  }, [muted, mode, scene]);
 
   const toggleMuted = useCallback(() => {
     player.unlock();
