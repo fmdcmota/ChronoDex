@@ -450,3 +450,11 @@ Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek
 - With mocks off against an empty dev database, `/api/landmarks` returned `[]`; the welcome-intro opening (mine, in Agent 3's MapScreen.tsx) asked an empty LngLatBounds for its centre and threw "Cannot read properties of undefined (reading 'lng')".
 - Fix: no landmarks opens the map on the globe; the City button and the locate fallback do nothing on an empty list. `npm run check` 574 passing.
 - The human chose mock mode back on for local use (chat voice is real through fal now). Server restarted with a clean `.next`.
+
+### 2026-11-15 11:55, demo video 2 (the human's request: judges' four-part structure)
+- Script: `spikes/agent-2/demo-video/SCRIPT-2.md` (problem 15 s, one real run about 75 s, how it's built about 20 s, what's new 10 s); the first video's end card kept at the human's request.
+- Built from the team's three files (repo root, not committed): `Voiceover.mp4` (104 s), `Screen_recording.mp4` (64 s, phone), `Real life Demo.mp4` (44 s, street, no sound). Voice-over word timings from fal Scribe v2 (one call, about $0.014; `.mp4` was rejected, `.m4a` accepted).
+- Sync: screen = street + 0.55 s before the camera prompt, + 0.85 s after (checked on badge twirl, smoke, horse: frame-accurate).
+- Sound: the screen recording is silent until Edith, so the app's sounds are added as before; the period beds fill the voice-free 360° look-around at full level and step down under every spoken line.
+- Facts checked on the cards: RAH 1871 brief has 3 sources; the Prince of Wales, not Queen Victoria, declared it open (my first draft was wrong, fixed before the build).
+- Output `out/chronodex-demo-2.mp4`, 2:01, copied to the repo root for the human.
