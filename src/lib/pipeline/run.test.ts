@@ -351,3 +351,27 @@ describe('keeping every file (A2-a, A2-h, A2-i)', () => {
     warn.mockRestore();
   });
 });
+
+describe('flagging a picture kept with problems (HUMAN_TASKS 2.4)', () => {
+  it('writes the critic\'s reasons on the job stage while the stage stays done', async () => {
+    const job = await claim(false);
+    const base = makeDeps();
+    const deps: PipelineDeps = {
+      ...base.deps,
+      stages: {
+        ...base.deps.stages,
+        panorama: async () => ({
+          url: 'pano.jpg', model: 'm', requestId: null, elapsedMs: 1, widthPx: 2880, heightPx: 1440, attempts: 3, unpaintedFraction: 0,
+          check: { passed: false, checked: true, attempts: 3, problems: ['not a 360 panorama'], checkCostUsd: 0.04 },
+        }),
+      },
+    };
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    await runEraJob(job, deps);
+    log.mockRestore();
+    const stage = (await getJob(job.id))?.stages.find((s) => s.key === 'panorama');
+    expect(stage?.state).toBe('done');
+    expect(stage?.error).toMatch(/KEPT WITH PROBLEMS after 3 attempts: not a 360 panorama/);
+    expect(await getEra(ERA_ID)).toMatchObject({ state: 'ready' });
+  });
+});

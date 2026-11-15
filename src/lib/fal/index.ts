@@ -15,7 +15,7 @@ import { MODELS } from './models';
 import { runFal, FalStageError, type FalRunContext } from './run';
 import { getVoice } from './voices';
 
-export { VOICE_CATALOG, getVoice, type VoiceEntry } from './voices';
+export { VOICE_CATALOG, getVoice, selectableVoices, type VoiceEntry } from './voices';
 export {
   MODELS,
   IMAGE_ASPECT_RATIO,
@@ -117,6 +117,18 @@ export async function synthesizeSpeech(
     throw new Error(`synthesizeSpeech: ${trimmed.length} characters is over the ${MAX_TTS_CHARACTERS} limit`);
   }
   if (mocksOn()) return MOCK_AUDIO_URL;
+  if (voice.provider === 'gemini') {
+    // Gemini has one model for narration and chat. The delivery (accent, warmth) goes in style_instructions.
+    const endpoint = MODELS.gemini_speech.endpoint;
+    const { data } = await runFal<{ audio?: { url?: string } }>(
+      endpoint,
+      { prompt: trimmed, voice: voice.voiceName, ...(voice.styleInstructions ? { style_instructions: voice.styleInstructions } : {}) },
+      ctx,
+    );
+    const url = data.audio?.url;
+    if (!url) throw new FalStageError(`${endpoint} returned no audio`, { endpoint });
+    return url;
+  }
   const endpoint = opts?.fast ? MODELS.chat_speech.endpoint : MODELS.narration.endpoint;
   const { data } = await runFal<{ audio?: { url?: string } }>(
     endpoint,

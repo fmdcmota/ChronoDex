@@ -59,21 +59,25 @@ export function badness(verdict: CheckVerdict, extraProblems = 0): number {
 }
 
 /**
- * Generate with at most MAX_CHECK_ATTEMPTS tries, judging each, and return the best.
+ * Generate with at most `maxAttempts` tries (default MAX_CHECK_ATTEMPTS), judging each, and return the best.
  *
  * @param options - How to generate, how to judge, and the stage context.
  * @param options.generate - Makes one picture. Receives an extra instruction (the critic's fix) on the retry and
  *   a context whose resume id is cleared on the retry, because a saved request belongs to the first attempt.
  * @param options.judge - Judges one picture. Returns the critic's verdict and any extra problems already known.
  * @param options.ctx - The stage context.
+ * @param options.maxAttempts - Most generations, first included. Default MAX_CHECK_ATTEMPTS.
  * @returns The best output and a report.
  */
 export async function generateChecked<T extends StageOutput>(options: {
   generate: (extraInstruction: string | null, ctx: StageContext) => Promise<T>;
   judge: (output: T) => Promise<{ verdict: CheckVerdict; extraProblems?: string[] }>;
   ctx: StageContext;
+  /** Most generations, first included. Default MAX_CHECK_ATTEMPTS (2). The panorama passes 3 (HUMAN_TASKS 2.4). */
+  maxAttempts?: number;
 }): Promise<{ output: T; report: CheckReport }> {
   const { generate, judge, ctx } = options;
+  const maxAttempts = Math.max(1, options.maxAttempts ?? MAX_CHECK_ATTEMPTS);
   let best = await generate(null, ctx);
   if (!checksEnabled(ctx)) return { output: best, report: { passed: true, checked: false, attempts: 1, problems: ['checks are off'], checkCostUsd: 0 } };
 
@@ -83,18 +87,21 @@ export async function generateChecked<T extends StageOutput>(options: {
   let bestScore = badness(judged.verdict, judged.extraProblems?.length ?? 0);
   let bestProblems = [...judged.verdict.problems, ...(judged.extraProblems ?? [])];
   let bestChecked = judged.verdict.checked;
+  // Each retry is told what was wrong with the attempt just before it, which may differ from the best one's problem.
+  let advice = judged.verdict.fix || bestProblems[0] || null;
 
-  if (bestScore > 0 && attempts < MAX_CHECK_ATTEMPTS) {
+  while (bestScore > 0 && attempts < maxAttempts) {
     attempts++;
-    const advice = judged.verdict.fix || bestProblems[0] || null;
     const retry = await generate(advice, { ...ctx, resumeRequestId: null });
     const retryJudged = await judge(retry);
     cost += retryJudged.verdict.costUsd ?? 0;
     const retryScore = badness(retryJudged.verdict, retryJudged.extraProblems?.length ?? 0);
+    const retryProblems = [...retryJudged.verdict.problems, ...(retryJudged.extraProblems ?? [])];
+    advice = retryJudged.verdict.fix || retryProblems[0] || advice;
     if (retryScore < bestScore) {
       best = retry;
       bestScore = retryScore;
-      bestProblems = [...retryJudged.verdict.problems, ...(retryJudged.extraProblems ?? [])];
+      bestProblems = retryProblems;
       bestChecked = retryJudged.verdict.checked;
     }
   }

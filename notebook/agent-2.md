@@ -61,9 +61,9 @@ Next, in order:
 
 Rewrite this block before you stop, so a fresh session can continue from it alone.
 
-- Last updated: 2026-11-15 03:35 (real clock)
-- Working on: REMAINING_WORK_2.md section 3.2. A2-r2-1 and A2-r2-2 were already on main (PR #4). A2-r2-3 (Then/Now): partly done, see the log: Queen's Tower 1893's scene and panorama regenerated in `chronodex` (colour now), but the scene cannot keep the reference photo's framing, and some other process rewrote the era's scene, headshot and narration links to `/demo/...` paths.
-- Next: (1) answers on the board: who writes `/demo/` links into `chronodex`; Agent 4 hides Then/Now for queens-tower_1893 or uses the approximate crop; a wide reference photo for Queen's Tower (H1 or Agent 5). (2) HU-1 voices and talk model, HU-2 credits, then A2-r2-5 the real guide video. (3) More demo eras once A1-r2-5 names them and a human has read their briefs.
+- Last updated: 2026-11-15 03:51 (real clock)
+- Working on: the human answered HUMAN_TASKS 2.1 to 2.8 (see the log). Done from them: VOICE_CATALOG final with the five picks (Gemini voices now supported), panorama gets a third try and a flag, colour confirmed, voice-test page fixed for the HTTPS dev server. The /demo/ links in chronodex are Agent 6's demo set (not a bug).
+- Next: the real guide video for Queen's Tower 1893 (A2-r2-5) needs two more answers: Kling or Fabric for the talk clip (2.2 named voices only) and a yes to about $4.25 of the $14.97 left. Agent 1 to offer only selectableVoices() to the Historian.
 - Blocked on: the human's voice and talk-model picks (A2-04/A2-05) and the fal credit count. FAL_KEY is also in the root `.env.local` (copied 2026-11-14 20:58; mocks stay on, so set NEXT_PUBLIC_USE_MOCKS empty to hit real fal); Node v26.13.1 at `C:\Program Files\nodejs`.
 - Board read up to: 2026-11-15 08:00 (@agent-1 A1-r2-3, stamp ahead of the real clock)
 - Waiting for commit approval: nothing; the Sunday work is committed and pushed (A2-g, the human asked for it)
@@ -365,3 +365,15 @@ Pulled `main` and merged it into `agent-2` (no rebase). A2-r2-1 (commit the queu
 **A2-r2-6.** `scripts/backup-media.ts` on `chronodex` after the batch: the panorama saved; the `/demo/` files are not ours to read, so they were skipped.
 
 Spikes added: `regen-scene.mts`, `scene-trial.mts`, `era-peek.mts`, `ledger-peek.mts`, `align.py`.
+
+### 2026-11-15 03:51, the human's answers to HUMAN_TASKS section 2
+
+- **2.1 credits: $14.97 left.** The real guide video (about $4.25 with Kling standard) fits, but the human has not said yes to it, and 2.2 named no talk model, so it is not started.
+- **2.2 voices: Eleven v4 Charlotte and Daniel; Gemini TTS Kore and Aoede (female Cockney style) and Iapetus (male Cockney style).** `VOICE_CATALOG` is final: those five plus Agent 6's six accent voices are offered; Alice, Lily and George are marked `retired` (stored eras still use george 6 times, lily twice, alice once, so they must keep speaking). New `selectableVoices()` lists what may be offered; Agent 1's Historian still reads all of `VOICE_CATALOG`, so the retired ones say "RETIRED, do not choose" in their description until Agent 1 switches to `selectableVoices()`. `synthesizeSpeech` now speaks Gemini voices through `google/gemini-3.8-flash-tts` (`MODELS.gemini_speech`, prompt, voice, style_instructions; WAV out) for both narration and chat. Live: Kore, Iapetus and Charlotte each read a test line correctly (Scribe transcript exact); a short chat reply takes about 5 s on Gemini against 2.5 s on Eleven turbo.
+- **2.3 colour.** Already the default (`PERIOD_LOOK` unset). Nothing to change.
+- **2.4 a panorama still flat after its retry: "try once again, and if it fails, flag it".** The panorama now gets up to 3 paintings (`PANORAMA_MAX_ATTEMPTS`), each retry told what was wrong with the attempt just before it. If it still fails, the stage stays `done` (the picture is usable) and its `error` says `KEPT WITH PROBLEMS after 3 attempts: ...`, so the job, the progress sheet and scripts can show it. The same flag now applies to any checked picture kept with problems (scene, guide frame).
+- **2.6 ambience: sounds good.** Nothing to change.
+- **2.7 mic test failed with ECONNREFUSED.** The dev server now runs `next dev --experimental-https`, so nothing answers on plain http://localhost:3000, and the test page crashed on the error. `voice-test.mjs` now tries https://localhost:3000 (accepting the local self-signed certificate) then http, and shows an error on the page instead of crashing. Checked: it forwards to the HTTPS dev server and returns 200. With mocks on, the answer is the tagged `[mock transcript]`; for a real transcript the app must run with `NEXT_PUBLIC_USE_MOCKS` empty.
+- **2.8 E1: stick to the current two-step method.** Not adopted.
+- **The /demo/ links** in `chronodex` (my last post) are Agent 6's demo set (commit c2e7f6d, files in public/demo): not a bug. My regenerated Queen's Tower 1893 scene and panorama are superseded by theirs.
+- Tests: 540 pass.

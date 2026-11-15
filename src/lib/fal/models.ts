@@ -12,7 +12,7 @@
 import type { StageKey } from '@/lib/contracts';
 
 /** Stages that call fal. `brief` is Claude (the Historian) and `stitch` is chosen in A2-14. */
-export type FalStageKey = Exclude<StageKey, 'brief'> | 'chat_speech' | 'speech_to_text' | 'panorama_upscale' | 'image_check' | 'ambience_music' | 'ambience_street';
+export type FalStageKey = Exclude<StageKey, 'brief'> | 'chat_speech' | 'speech_to_text' | 'panorama_upscale' | 'image_check' | 'ambience_music' | 'ambience_street' | 'gemini_speech';
 
 /** One stage's model choice. */
 export interface ModelChoice {
@@ -111,6 +111,13 @@ export const MODELS: Record<FalStageKey, ModelChoice> = {
     typicalCostUsd: 0.05,
     typicalSeconds: 12,
     note: 'A2-04: provisional until a human has listened. $0.08 per 1,000 characters.',
+  },
+  gemini_speech: {
+    endpoint: 'google/gemini-3.8-flash-tts',
+    fallback: null,
+    typicalCostUsd: 0.03,
+    typicalSeconds: 12,
+    note: 'A2-04 and the human\'s picks: three of the five London voices (Kore, Aoede, Iapetus) with a Cockney style instruction. $0.045 per 1,000 characters; style instructions are not billed. Returns WAV (24 kHz mono). Used for both narration and chat replies.',
   },
   chat_speech: {
     endpoint: 'elevenlabs/tts/eleven-v4-turbo',

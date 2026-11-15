@@ -1,24 +1,32 @@
 /**
  * The catalogue of guide voices. The Historian picks a key; TTS turns the key into a voice.
  *
- * Owner: Agent 2 (Studio). Implements MASTER.md section 4.4 (VOICE_CATALOG), tasks A2-04 and A2-07.
+ * Owner: Agent 2 (Studio). Implements MASTER.md section 4.4 (VOICE_CATALOG), tasks A2-04, A2-07 and A2-r2-4.
  *
- * PROVISIONAL: A2-04 generated 16 clips (spikes/agent-2/out/review.html) but a human has not yet
- * listened and chosen. The voices below are ElevenLabs names whose British accent is from memory
- * (MASTER.md section 14, "not verified"), so treat the descriptions as unconfirmed until the human
- * picks. Replace this list from the picks and update notebook/agent-2.md in the same commit.
+ * FINAL for London (15 Nov 2026): the human listened to the 16 A2-04 clips (spikes/agent-2/out/review.html) and
+ * picked five: Eleven v4 Charlotte and Daniel, and Gemini TTS Kore, Aoede (women) and Iapetus (a man) with the
+ * Cockney style instruction. Agent 6 added the accent voices for the cities outside Britain. The first provisional
+ * London voices (Alice, Lily, George) are RETIRED: never offered for a new guide, but kept so eras already stored
+ * with those keys still speak. Use `selectableVoices()` for anything that offers a choice.
  */
 
 /** One voice the guide can speak with. */
 export interface VoiceEntry {
   /** Plain words the Historian uses to pick a voice, for example "older man, London accent". */
   description: string;
-  /** Which speech service reads this voice. Only ElevenLabs is used today. */
-  provider: 'elevenlabs';
-  /** The provider's voice name, as passed in the `voice` field (the chat model takes the same names). */
+  /**
+   * Which speech service reads this voice. `elevenlabs`: MODELS.narration (and MODELS.chat_speech for fast chat
+   * replies). `gemini`: MODELS.gemini_speech for both, with `styleInstructions`.
+   */
+  provider: 'elevenlabs' | 'gemini';
+  /** The provider's voice name, as passed in its `voice` field. */
   voiceName: string;
-  /** ElevenLabs stability, 0 to 1. Lower is more expressive. 0.4 was used for every A2-04 clip. */
+  /** ElevenLabs stability, 0 to 1. Lower is more expressive. 0.4 was used for every A2-04 clip. Unused by Gemini. */
   stability: number;
+  /** Gemini only: how to deliver the line (accent, warmth, pace). Billed as nothing; only the spoken text is billed. */
+  styleInstructions?: string;
+  /** True for a voice no new guide may get. It still speaks for eras already stored with it. */
+  retired?: boolean;
   /**
    * ElevenLabs audio tag that sets the accent, for guides outside Britain, for example "Mexican Spanish accent".
    * synthesizeSpeech puts it in square brackets before the text. Checked 15 Nov 2026 (Agent 6,
@@ -31,31 +39,69 @@ export interface VoiceEntry {
 /** ElevenLabs stability used for all guide voices until a human says otherwise (A2-04). */
 const DEFAULT_STABILITY = 0.4;
 
-/** Every voice, by key. Guide.voiceKey must be one of these keys. */
+/** Gemini delivery for the London women: the instruction the human heard in A2-04, without the flower-seller role. */
+const COCKNEY_WOMAN =
+  'A warm, cheerful working-class London woman with a natural Cockney accent. Friendly and lively, smiling as she speaks, unhurried, like chatting to a visitor.';
+/** Gemini delivery for the London man: the instruction the human heard in A2-04, without the porter role. */
+const COCKNEY_MAN = 'A warm, good-humoured working-class London man with a natural Cockney accent. Friendly and steady, like chatting to a visitor.';
+
+/** Every voice, by key. Guide.voiceKey must be one of these keys. New guides take one of `selectableVoices()`. */
 export const VOICE_CATALOG: Record<string, VoiceEntry> = {
-  'eleven-alice': {
-    description: 'Younger woman, British accent, bright and friendly (unconfirmed by ear)',
+  // London, picked by the human by ear (HUMAN_TASKS 2.2).
+  'eleven-charlotte': {
+    description: 'Woman, British accent, clear and composed. For London guides who are not working-class Londoners',
     provider: 'elevenlabs',
-    voiceName: 'Alice',
-    stability: DEFAULT_STABILITY,
-  },
-  'eleven-lily': {
-    description: 'Woman in her thirties or forties, British accent, warm (unconfirmed by ear)',
-    provider: 'elevenlabs',
-    voiceName: 'Lily',
-    stability: DEFAULT_STABILITY,
-  },
-  'eleven-george': {
-    description: 'Older man, British accent, warm and steady (unconfirmed by ear)',
-    provider: 'elevenlabs',
-    voiceName: 'George',
+    voiceName: 'Charlotte',
     stability: DEFAULT_STABILITY,
   },
   'eleven-daniel': {
-    description: 'Man in his forties or fifties, British accent, calm and authoritative (unconfirmed by ear)',
+    description: 'Man in his forties or fifties, British accent, calm and authoritative. For London guides who are not working-class Londoners',
     provider: 'elevenlabs',
     voiceName: 'Daniel',
     stability: DEFAULT_STABILITY,
+  },
+  'gemini-kore': {
+    description: 'Woman, working-class London, Cockney accent, warm and lively. For London street and working guides',
+    provider: 'gemini',
+    voiceName: 'Kore',
+    stability: DEFAULT_STABILITY,
+    styleInstructions: COCKNEY_WOMAN,
+  },
+  'gemini-aoede': {
+    description: 'Woman, working-class London, Cockney accent, warm and cheerful (a second Cockney woman, different from Kore)',
+    provider: 'gemini',
+    voiceName: 'Aoede',
+    stability: DEFAULT_STABILITY,
+    styleInstructions: COCKNEY_WOMAN,
+  },
+  'gemini-iapetus': {
+    description: 'Man, working-class London, Cockney accent, good-humoured and steady. For London street and working guides',
+    provider: 'gemini',
+    voiceName: 'Iapetus',
+    stability: DEFAULT_STABILITY,
+    styleInstructions: COCKNEY_MAN,
+  },
+  // Retired: the first provisional London voices. Eras already stored with these keys still speak with them.
+  'eleven-alice': {
+    description: 'RETIRED, do not choose. Younger woman, British accent',
+    provider: 'elevenlabs',
+    voiceName: 'Alice',
+    stability: DEFAULT_STABILITY,
+    retired: true,
+  },
+  'eleven-lily': {
+    description: 'RETIRED, do not choose. Woman, British accent',
+    provider: 'elevenlabs',
+    voiceName: 'Lily',
+    stability: DEFAULT_STABILITY,
+    retired: true,
+  },
+  'eleven-george': {
+    description: 'RETIRED, do not choose. Older man, British accent',
+    provider: 'elevenlabs',
+    voiceName: 'George',
+    stability: DEFAULT_STABILITY,
+    retired: true,
   },
   // Guides for the demo cities outside Britain (Agent 6, 15 Nov 2026). Same premade ElevenLabs voices, with an
   // accent tag. The accent's quality is unconfirmed by ear.
@@ -102,6 +148,15 @@ export const VOICE_CATALOG: Record<string, VoiceEntry> = {
     accentTag: 'Malay accent',
   },
 };
+
+/**
+ * The voices a new guide may be given: every catalogue entry that is not retired. The Historian should offer only these.
+ *
+ * @returns Key to entry, without the retired voices.
+ */
+export function selectableVoices(): Record<string, VoiceEntry> {
+  return Object.fromEntries(Object.entries(VOICE_CATALOG).filter(([, voice]) => !voice.retired));
+}
 
 /**
  * Look up a voice by key.
