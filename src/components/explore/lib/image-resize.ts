@@ -139,3 +139,36 @@ export async function resizeFileToJpeg(file: Blob): Promise<Blob> {
     bitmap.close();
   }
 }
+
+/** Longest edge of a memory-box thumbnail, in pixels. About 10 to 20 KB as a JPEG. */
+export const THUMBNAIL_EDGE_PX = 200;
+
+/** JPEG quality of a memory-box thumbnail. */
+export const THUMBNAIL_QUALITY = 0.7;
+
+/**
+ * Make a small picture of a photo, as a `data:` address that can live in localStorage (the memory
+ * box, lib/memory-box.ts).
+ *
+ * Side effects: creates one off-screen canvas and decodes the photo once.
+ *
+ * @param photo - The photo, normally the JPEG that was just uploaded.
+ * @param maxEdgePx - Longest edge of the thumbnail. Defaults to THUMBNAIL_EDGE_PX.
+ * @returns A `data:image/jpeg;base64,...` address.
+ * @throws Error when the photo cannot be decoded or the browser cannot encode the thumbnail.
+ */
+export async function makeThumbnailDataUrl(photo: Blob, maxEdgePx: number = THUMBNAIL_EDGE_PX): Promise<string> {
+  const bitmap = await createImageBitmap(photo, { imageOrientation: 'from-image' });
+  try {
+    const size = fitWithin(bitmap.width, bitmap.height, maxEdgePx);
+    const canvas = document.createElement('canvas');
+    canvas.width = size.widthPx;
+    canvas.height = size.heightPx;
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('The browser could not prepare the thumbnail');
+    context.drawImage(bitmap, 0, 0, size.widthPx, size.heightPx);
+    return canvas.toDataURL('image/jpeg', THUMBNAIL_QUALITY);
+  } finally {
+    bitmap.close();
+  }
+}

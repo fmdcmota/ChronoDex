@@ -474,6 +474,40 @@ function greatWallBadaling(): PixelCanvas {
   return finish(c, 14);
 }
 
+/**
+ * The memory box: a little open wooden chest with three polaroid photos sticking out of it. Shown in
+ * a corner of the Dex and the capture screen (src/components/explore/MemoryBox.tsx). Not a landmark,
+ * so it is not in SPRITES.
+ *
+ * @returns A 32 by 32 canvas with an outline and a soft ground shadow.
+ */
+export function memoryBoxSprite(): PixelCanvas {
+  const c = new PixelCanvas(SPRITE_PX, SPRITE_PX);
+  /** One polaroid: a cream card with a coloured photo window and a thicker bottom edge. */
+  const polaroid = (x0: number, y0: number, window: Rgba) => {
+    c.rect(x0, y0, x0 + 8, y0 + 10, P.paper);
+    c.rect(x0 + 8, y0, x0 + 8, y0 + 10, P.paperShade);
+    c.rect(x0 + 1, y0 + 1, x0 + 7, y0 + 6, window);
+    c.hline(x0 + 1, x0 + 7, y0 + 6, P.inkSoft);
+  };
+  polaroid(5, 7, P.glass);
+  polaroid(14, 4, P.park);
+  polaroid(20, 8, P.gold);
+  // Chest body, with a darker underside and iron-gold corner bands.
+  c.rect(3, 17, 28, 28, P.terracotta);
+  c.rect(3, 25, 28, 28, P.goldDark);
+  c.rect(3, 17, 5, 28, P.brickDark);
+  c.rect(26, 17, 28, 28, P.brickDark);
+  c.hline(3, 28, 17, P.gold);
+  c.hline(3, 28, 18, P.goldDark);
+  // Plank lines and a lock.
+  c.hline(6, 25, 22, P.goldDark);
+  c.rect(14, 20, 17, 24, P.gold);
+  c.rect(15, 21, 16, 22, P.slate);
+  c.set(15, 23, P.slate);
+  return finish(c, 14);
+}
+
 /** Width of one frame of a voyage duck, in art pixels. */
 export const VOYAGE_FRAME_W = 40;
 /** Height of one frame of a voyage duck, in art pixels. */

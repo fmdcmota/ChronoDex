@@ -21,7 +21,7 @@ import { ART_LANDMARKS } from '../src/lib/landmarks';
 import { PALETTE } from '../src/lib/palette';
 import { hex, PixelCanvas } from './pixel/canvas';
 import { BADGE_PX, makeBadge } from './pixel/badges';
-import { SPRITE_PX, SPRITES, VOYAGE_FRAME_H, VOYAGE_FRAME_W, voyageDuckFrame, type VoyageDuck } from './pixel/sprites';
+import { memoryBoxSprite, SPRITE_PX, SPRITES, VOYAGE_FRAME_H, VOYAGE_FRAME_W, voyageDuckFrame, type VoyageDuck } from './pixel/sprites';
 
 /** Export scale. 4 keeps pixels square and crisp up to 2x CSS size on 2x screens. */
 const SCALE = 4;
@@ -63,6 +63,8 @@ ART_LANDMARKS.forEach((landmark, i) => {
 });
 
 save('preview/contact-sheet.png', sheet.scaled(SCALE));
+
+save('sprites/memory-box.png', memoryBoxSprite().scaled(SCALE));
 
 // The three voyage ducks' two frames each, side by side (src/components/explore/duck-voyages.ts).
 for (const kind of ['british', 'saharan', 'chinese'] as VoyageDuck[]) {

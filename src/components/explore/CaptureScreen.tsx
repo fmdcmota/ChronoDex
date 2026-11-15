@@ -28,6 +28,10 @@ import { Button, Card, ProgressList, Sheet, Spinner, type ProgressItem } from '@
 import { describeApiFailure, describeCaptureFailure } from './lib/capture-messages';
 import { clearFix, loadFix } from './lib/fix-store';
 import { directionHint, formatDistance, nearestLandmark } from './lib/geo-format';
+import { MemoryBox } from './MemoryBox';
+import { AwardEffects } from './AwardEffects';
+import { Sparks } from './Sparks';
+import { rememberPhoto } from './lib/remember-photo';
 import { useUnavailableTimeMachines } from './lib/use-era-ready';
 import { encodeJpeg, resizeFileToJpeg } from './lib/image-resize';
 import { LocationTracker, locationMessage, type LocationState, type PlayerFix } from './lib/location';
@@ -294,6 +298,8 @@ export default function CaptureScreen() {
       });
       if (result.ok) {
         setOutcome({ kind: 'collected', capture: result.capture, landmark: result.landmark, alreadyCollected: result.alreadyCollected });
+        // Keep a small copy of the photo in the memory box (and note a first-time badge for the Dex to twirl).
+        void rememberPhoto(photo.blob, result.capture, result.landmark, !result.alreadyCollected, getPlayerId());
       } else {
         setOutcome({ kind: 'refused', message: describeCaptureFailure(result, landmarks, fix.position) });
       }
@@ -340,8 +346,17 @@ export default function CaptureScreen() {
           {outcome.kind === 'collected' ? (
             <>
               <h1 className="award-title">{outcome.alreadyCollected ? 'Already collected' : 'Badge collected!'}</h1>
-              {/* eslint-disable-next-line @next/next/no-img-element -- pixel art must stay crisp; next/image would re-encode it */}
-              <img className="award-badge" src={outcome.landmark.badgeUrl} alt={`${outcome.landmark.name} badge`} />
+              <div className="award-stage">
+                {!outcome.alreadyCollected && <AwardEffects />}
+                <Sparks delayS={0.43} />
+                <Sparks count={8} radiusPx={112} delayS={1.5} />
+                {/* eslint-disable-next-line @next/next/no-img-element -- pixel art must stay crisp; next/image would re-encode it */}
+                <img
+                  className={outcome.alreadyCollected ? 'award-badge' : 'award-badge award-twirl'}
+                  src={outcome.landmark.badgeUrl}
+                  alt={`${outcome.landmark.name} badge`}
+                />
+              </div>
               <Card title={outcome.landmark.name}>
                 <span className={`rarity rarity-${outcome.landmark.rarity}`}>{outcome.landmark.rarity.toUpperCase()}</span>
                 <p>{outcome.landmark.blurb}</p>
@@ -359,6 +374,8 @@ export default function CaptureScreen() {
                   Back to the map
                 </Button>
               </div>
+              {photo && <div className="award-photo" aria-hidden="true" style={{ backgroundImage: `url(${photo.previewUrl})` }} />}
+              <MemoryBox />
             </>
           ) : (
             <>

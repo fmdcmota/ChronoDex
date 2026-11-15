@@ -17,6 +17,9 @@ import { api, getPlayerId } from '@/lib/client';
 import type { Capture, Landmark } from '@/lib/contracts';
 import { Button, Card, Spinner } from '@/components/ui';
 import { describeApiFailure } from './lib/capture-messages';
+import { MemoryBox } from './MemoryBox';
+import { Sparks } from './Sparks';
+import { clearJustCollected, peekJustCollected } from './lib/memory-box';
 import { useUnavailableTimeMachines } from './lib/use-era-ready';
 import { parseDexCache, readDexCacheRaw, saveDexCache } from './lib/dex-cache';
 import {
@@ -43,7 +46,7 @@ interface DexData {
 const subscribeNever = (): (() => void) => () => undefined;
 
 /** One badge card, collected or locked. */
-function DexCard({ entry, noTimeMachine }: { entry: DexEntry; noTimeMachine: boolean }) {
+function DexCard({ entry, noTimeMachine, isNew }: { entry: DexEntry; noTimeMachine: boolean; isNew: boolean }) {
   const { landmark, capture } = entry;
   const [photoBroken, setPhotoBroken] = useState(false);
   if (!capture) {
@@ -60,8 +63,12 @@ function DexCard({ entry, noTimeMachine }: { entry: DexEntry; noTimeMachine: boo
   }
   const body = (
     <>
-      {/* eslint-disable-next-line @next/next/no-img-element -- pixel art must stay crisp; next/image would re-encode it */}
-      <img className="dex-badge" src={landmark.badgeUrl} alt="" />
+      {/* A badge collected a moment ago twirls and bursts sparks, once (the capture screen leaves a note). */}
+      <span className="dex-badge-wrap">
+        {isNew && <Sparks count={8} radiusPx={56} />}
+        {/* eslint-disable-next-line @next/next/no-img-element -- pixel art must stay crisp; next/image would re-encode it */}
+        <img className="dex-badge" src={landmark.badgeUrl} alt="" />
+      </span>
       <div className="dex-name">{landmark.name}</div>
       <span className={`rarity rarity-${landmark.rarity}`}>{landmark.rarity.toUpperCase()}</span>
       {/* The player's own photo. A blob: address from an earlier visit may be gone, so hide it if it fails. */}
@@ -83,7 +90,7 @@ function DexCard({ entry, noTimeMachine }: { entry: DexEntry; noTimeMachine: boo
   if (noTimeMachine) {
     return (
       <li>
-        <div className="dex-card" aria-label={`${landmark.name}, collected. Time Machine coming soon`}>
+        <div className={isNew ? 'dex-card dex-card-new' : 'dex-card'} aria-label={`${landmark.name}, collected. Time Machine coming soon`}>
           {body}
         </div>
       </li>
@@ -91,7 +98,7 @@ function DexCard({ entry, noTimeMachine }: { entry: DexEntry; noTimeMachine: boo
   }
   return (
     <li>
-      <Link className="dex-card" href={`/time/${landmark.id}`} aria-label={`${landmark.name}, collected. Open the Time Machine`}>
+      <Link className={isNew ? 'dex-card dex-card-new' : 'dex-card'} href={`/time/${landmark.id}`} aria-label={`${landmark.name}, collected. Open the Time Machine`}>
         {body}
       </Link>
     </li>
@@ -109,6 +116,8 @@ export default function DexScreen() {
   /** The message of the last failed load, or null. */
   const [failure, setFailure] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  /** The badge to twirl, if the player came straight from a first-time capture. Read without removing it, so React's double render in development cannot lose it. */
+  const [justCollected] = useState(() => peekJustCollected());
   /** Bumped by "Try again" to run the load effect once more. */
   const [attempt, setAttempt] = useState(0);
 
@@ -119,6 +128,13 @@ export default function DexScreen() {
     () => (cachedRaw === null ? null : parseDexCache(cachedRaw, getPlayerId())),
     [cachedRaw],
   );
+
+  // The twirl lasts about two seconds; after that the note is no longer needed.
+  useEffect(() => {
+    if (!justCollected) return;
+    const timer = setTimeout(clearJustCollected, 4000);
+    return () => clearTimeout(timer);
+  }, [justCollected]);
 
   useEffect(() => {
     let alive = true;
@@ -229,7 +245,12 @@ export default function DexScreen() {
       {data && total > 0 && (
         <ul className="dex-grid">
           {entries.map((entry) => (
-            <DexCard key={entry.landmark.id} entry={entry} noTimeMachine={noTimeMachine.has(entry.landmark.id)} />
+            <DexCard
+              key={entry.landmark.id}
+              entry={entry}
+              noTimeMachine={noTimeMachine.has(entry.landmark.id)}
+              isNew={entry.landmark.id === justCollected}
+            />
           ))}
         </ul>
       )}
@@ -239,6 +260,7 @@ export default function DexScreen() {
           <Spinner label="Refreshing" />
         </div>
       )}
+      <MemoryBox />
     </main>
   );
 }
