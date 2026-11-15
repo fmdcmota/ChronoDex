@@ -53,8 +53,8 @@ describe('canCompareThenNow (R3-4c)', () => {
     expect(canCompareThenNow('x_1900', '/s.jpg', '')).toBe(false);
     expect(canCompareThenNow('x_1900', '/s.jpg', '/r.jpg')).toBe(true);
   });
-  it('hides the demo eras whose scene is from another viewpoint', () => {
-    expect(canCompareThenNow('queens-tower_1893', '/s.jpg', '/r.jpg')).toBe(false);
-    expect(THEN_NOW_MISALIGNED_ERAS.size).toBe(8);
+  it('offers Then/Now on every demo era now that their scenes keep the reference viewpoint', () => {
+    expect(canCompareThenNow('raffles-landing-site_1819', '/s.jpg', '/r.jpg')).toBe(true);
+    expect(THEN_NOW_MISALIGNED_ERAS.size).toBe(0);
   });
 });
