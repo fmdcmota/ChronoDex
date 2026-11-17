@@ -47,7 +47,25 @@ function devOrigins(): string[] {
   return [...new Set([...lanIps, ...TUNNEL_HOST_PATTERNS, ...extra])];
 }
 
+/**
+ * Optional path prefix, for hosting the game under another site: "/chronodex" for
+ * fmota.com/chronodex, which Netlify proxies to this machine (the `host` script at the repo root).
+ * Empty by default, so local runs and every other deploy are unchanged. Read at build time: rebuild
+ * after changing it.
+ */
+const BASE_PATH = (process.env.NEXT_BASE_PATH ?? "").replace(/\/+$/, "");
+
+// Trap: Next prefixes pages, <Link> and its own scripts with BASE_PATH, but not raw strings such as
+// fetch("/api/..."), <img src="/sprites/...">, the ambience files, stored era media ("/api/media/...",
+// "/demo/...") or the map worker. Next cannot rewrite those back itself (a basePath:false rewrite must
+// point at an external URL), so the host site forwards them: fmota.com/api/* goes to
+// <this machine>/chronodex/api/*, and so on for every folder in public/. The list is in `host`
+// (redirect_rules) and spikes/agent-4/HOSTING.md.
+
 const nextConfig: NextConfig = {
+  ...(BASE_PATH ? { basePath: BASE_PATH } : {}),
+  // A second build (the /chronodex one) goes to its own folder so it can run beside the normal one.
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   // Lets a phone on the LAN or a tunnel URL run the dev build. See devOrigins() above.
   allowedDevOrigins: devOrigins(),
   // Cache Components (and the Partial Prefetching that goes with it) is the scaffold default in

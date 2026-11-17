@@ -2,3 +2,6 @@
 # Git's built-in "union" merge keeps the lines from both sides instead of
 # raising a conflict when two branches add posts at the same place.
 BOARD.md merge=union
+
+# ./host is a bash script: CRLF line endings (autocrlf on Windows) would break it.
+host text eol=lf

@@ -1,0 +1,386 @@
+#!/usr/bin/env bash
+# host: serve Chronodex from this laptop, permanently, at https://fmota.com/chronodex.
+#
+# Owner: Agent 4 (R3-4e, server and tunnel). Runbook: spikes/agent-4/HOSTING.md.
+#
+# Run from Git Bash in the repo root (the checkout on `main` that has .env.local):
+#   ./host              pull main, build, then serve, tunnel and run the worker; restart anything that
+#                       dies; pull and rebuild every HOST_UPDATE_MIN minutes. Ctrl+C stops it all.
+#   ./host stop         stop a running ./host (from another window)
+#   ./host status       is it running, the public URL, the last log lines
+#   ./host redirects    print the Netlify _redirects block for fmota.com
+#   ./host autostart    start ./host at every Windows sign-in (./host autostart off to undo)
+#
+# How a request gets here:
+#   phone -> fmota.com/chronodex/...  (Netlify, the static portfolio; dist/_redirects proxies, status 200)
+#         -> https://<laptop>.<tailnet>.ts.net/chronodex/...  (Tailscale Funnel: fixed URL, free)
+#         -> next start on 127.0.0.1:$HOST_PORT, built with NEXT_BASE_PATH=/chronodex
+#
+# Without Tailscale it falls back to a Cloudflare quick tunnel, whose URL changes on every start, so
+# fmota.com's _redirects has to be redeployed each time. Install Tailscale for a URL that never changes.
+#
+# Why each piece is the way it is:
+# - Two build folders (.next-chronodex-a and -b): an update builds into the idle one while the
+#   live one keeps serving, then swaps, so an update costs seconds of downtime instead of minutes.
+# - .env.local is not sourced here. Next and the worker read it themselves, and a MongoDB URI with
+#   "&" in it would break a shell `source`. Values exported below win over .env.local in both.
+# - Keeps the PC awake (no idle sleep) for as long as it runs, via SetThreadExecutionState. Closing
+#   the lid still sleeps the laptop unless Windows is told to do nothing on lid close.
+
+set -uo pipefail
+
+# ---- settings (override any of these in the environment) -----------------------------------------
+HOST_PORT="${HOST_PORT:-3120}"
+HOST_BRANCH="${HOST_BRANCH:-main}"
+HOST_UPDATE_MIN="${HOST_UPDATE_MIN:-30}"          # 0 turns automatic updates off
+HOST_WORKER="${HOST_WORKER:-1}"                   # 1 runs the generation worker beside the server
+PORTFOLIO_DIST="${PORTFOLIO_DIST:-$HOME/PROGRAMMING/fmota com/fmota-portfolio/dist}"
+BASE_PATH="/chronodex"
+
+# What the build and the server run with. Video generation stays off: a public site must not be able
+# to spend video credits. The spoof panel stays on so visitors far from the landmarks can still play.
+export NEXT_BASE_PATH="$BASE_PATH"
+export MSYS2_ENV_CONV_EXCL="NEXT_BASE_PATH"       # else Git Bash rewrites /chronodex to C:/Program Files/Git/chronodex
+export NEXT_PUBLIC_USE_MOCKS=0
+export NEXT_PUBLIC_DEV_TOOLS="${NEXT_PUBLIC_DEV_TOOLS:-1}"
+export ALLOW_SPOOFED_LOCATION="${ALLOW_SPOOFED_LOCATION:-1}"
+export MONGODB_DB="${MONGODB_DB:-chronodex}"
+export VIDEO_GENERATION=off
+export NEXT_TELEMETRY_DISABLED=1
+
+cd "$(dirname "$0")" || exit 1
+REPO="$(pwd)"
+LOGS="$REPO/host-logs"
+PIDFILE="$LOGS/host.pid"
+URLFILE="$LOGS/public-url"
+mkdir -p "$LOGS"
+
+NEXT_BIN="node_modules/next/dist/bin/next"
+TSX_BIN="node_modules/tsx/dist/cli.mjs"
+
+SERVER_PID="" WORKER_PID="" TUNNEL_PID="" AWAKE_PID=""
+SLOT=""            # a or b: which build folder is live
+PUBLIC_URL=""
+
+# ---- small helpers --------------------------------------------------------------------------------
+
+log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" | tee -a "$LOGS/host.log"; }
+
+# Kill a background job and every process under it. Git Bash's `kill` stops the bash side only, so
+# taskkill /T is what reaches node.exe and its children.
+kill_tree() {
+  local pid="${1:-}" winpid
+  [ -n "$pid" ] || return 0
+  winpid="$(cat "/proc/$pid/winpid" 2>/dev/null || true)"
+  [ -n "$winpid" ] && taskkill //F //T //PID "$winpid" >/dev/null 2>&1
+  kill "$pid" 2>/dev/null
+  wait "$pid" 2>/dev/null
+  return 0
+}
+
+alive() { [ -n "${1:-}" ] && kill -0 "$1" 2>/dev/null; }
+
+http_code() { curl -s -o /dev/null -w '%{http_code}' -m "${2:-10}" "$1" 2>/dev/null; }
+
+find_tailscale() {
+  if command -v tailscale >/dev/null 2>&1; then command -v tailscale
+  elif [ -x "/c/Program Files/Tailscale/tailscale.exe" ]; then echo "/c/Program Files/Tailscale/tailscale.exe"
+  fi
+}
+
+# Every root path the app uses without the /chronodex prefix: /api and each entry in public/.
+# See the trap in next.config.ts. Generated from public/ so a new folder there is never missed.
+root_paths() {
+  echo api
+  local entry
+  for entry in public/*; do basename "$entry"; done
+}
+
+# The Netlify _redirects block for fmota.com, pointing at $1 (https://..., no trailing slash).
+redirect_rules() {
+  local url="$1" name
+  echo "# chronodex start: written by ./host in the Chronodex repo. Proxies to $url"
+  printf '%-28s %s  200!\n' "$BASE_PATH" "$url$BASE_PATH"
+  printf '%-28s %s  200!\n' "$BASE_PATH/*" "$url$BASE_PATH/:splat"
+  while read -r name; do
+    if [ -d "public/$name" ] || [ "$name" = api ]; then
+      printf '%-28s %s  200!\n' "/$name/*" "$url$BASE_PATH/$name/:splat"
+    else
+      printf '%-28s %s  200!\n' "/$name" "$url$BASE_PATH/$name"
+    fi
+  done < <(root_paths)
+  echo "# chronodex end"
+}
+
+# Put the block into the portfolio's dist/_redirects, keeping any other rules in that file.
+write_redirects() {
+  local url="$1" file="$PORTFOLIO_DIST/_redirects" tmp
+  if [ ! -d "$PORTFOLIO_DIST" ]; then
+    log "Portfolio not found at $PORTFOLIO_DIST. Put these lines in its dist/_redirects yourself:"
+    redirect_rules "$url"
+    return
+  fi
+  tmp="$(mktemp)"
+  [ -f "$file" ] && sed '/^# chronodex start/,/^# chronodex end/d' "$file" > "$tmp"
+  redirect_rules "$url" >> "$tmp"
+  if [ -f "$file" ] && cmp -s "$tmp" "$file"; then
+    rm -f "$tmp"
+    log "fmota.com redirects already point at $url"
+  else
+    mv "$tmp" "$file"
+    log "Wrote $file. REDEPLOY THE PORTFOLIO to Netlify so fmota.com/chronodex uses it (spikes/agent-4/HOSTING.md)."
+  fi
+}
+
+# ---- code, dependencies, builds -------------------------------------------------------------------
+
+# Fast-forward to origin/$HOST_BRANCH. Returns 0 when new code arrived, 1 otherwise.
+pull_latest() {
+  local branch
+  branch="$(git rev-parse --abbrev-ref HEAD)"
+  if [ "$branch" != "$HOST_BRANCH" ]; then
+    log "On branch $branch, not $HOST_BRANCH: serving it as it is, no pulls."
+    return 1
+  fi
+  git fetch --quiet origin "$HOST_BRANCH" >> "$LOGS/git.log" 2>&1 || { log "git fetch failed (offline?)"; return 1; }
+  # Nothing new, or only local commits that are not pushed yet.
+  git merge-base --is-ancestor "origin/$HOST_BRANCH" HEAD && return 1
+  if git merge --ff-only --quiet "origin/$HOST_BRANCH" >> "$LOGS/git.log" 2>&1; then
+    log "Pulled $(git rev-parse --short HEAD): $(git log -1 --format=%s)"
+    return 0
+  fi
+  log "Cannot fast-forward to origin/$HOST_BRANCH (local commits or edits in the way). Still serving $(git rev-parse --short HEAD)."
+  return 1
+}
+
+lock_hash() { git hash-object package-lock.json; }
+
+deps_current() { [ -f node_modules/.host-lock ] && [ "$(cat node_modules/.host-lock)" = "$(lock_hash)" ] && [ -f "$NEXT_BIN" ]; }
+
+install_deps() {
+  log "Installing dependencies (package-lock.json changed)"
+  if npm install --no-audit --no-fund >> "$LOGS/npm.log" 2>&1; then
+    lock_hash > node_modules/.host-lock
+  else
+    log "npm install failed, see host-logs/npm.log"
+    return 1
+  fi
+}
+
+# Build into .next-chronodex-<slot>. `next build` rewrites tsconfig.json to include its type folder;
+# that change is undone so the checkout stays clean and the next pull can fast-forward.
+build_slot() {
+  local slot="$1" rc
+  # Reference photos are git-ignored and normally copied by `npm run seed`; the pages link to them.
+  if [ -d data/reference ]; then mkdir -p public/reference && cp -n data/reference/* public/reference/ 2>/dev/null; fi
+  log "Building $(git rev-parse --short HEAD) into .next-chronodex-$slot (a few minutes)"
+  cp tsconfig.json "$LOGS/tsconfig.json.bak"
+  NEXT_DIST_DIR=".next-chronodex-$slot" node "$NEXT_BIN" build > "$LOGS/build.log" 2>&1
+  rc=$?
+  cp "$LOGS/tsconfig.json.bak" tsconfig.json
+  if [ $rc -ne 0 ]; then log "Build failed, see host-logs/build.log"; return 1; fi
+  log "Build done"
+}
+
+# ---- processes ------------------------------------------------------------------------------------
+
+start_server() {
+  local i code
+  NEXT_DIST_DIR=".next-chronodex-$SLOT" node "$NEXT_BIN" start -p "$HOST_PORT" -H 127.0.0.1 >> "$LOGS/server.log" 2>&1 &
+  SERVER_PID=$!
+  for i in $(seq 1 60); do
+    code="$(http_code "http://127.0.0.1:$HOST_PORT$BASE_PATH" 5)"
+    case "$code" in 2??|3??) log "Server up on 127.0.0.1:$HOST_PORT$BASE_PATH (build $SLOT)"; return 0 ;; esac
+    alive "$SERVER_PID" || break
+    sleep 1
+  done
+  log "Server did not come up, see host-logs/server.log"
+  return 1
+}
+
+stop_server() { kill_tree "$SERVER_PID"; SERVER_PID=""; }
+
+start_worker() {
+  [ "$HOST_WORKER" = 1 ] || return 0
+  node "$TSX_BIN" --env-file-if-exists=.env.local src/worker/index.ts >> "$LOGS/worker.log" 2>&1 &
+  WORKER_PID=$!
+  log "Worker started (video tier off)"
+}
+
+stop_worker() { kill_tree "$WORKER_PID"; WORKER_PID=""; }
+
+# Keep Windows from sleeping while this runs. Released when the PowerShell process ends.
+start_keep_awake() {
+  powershell.exe -NoProfile -NonInteractive -Command "Add-Type -Name P -Namespace W -MemberDefinition '[DllImport(\"kernel32.dll\")] public static extern uint SetThreadExecutionState(uint f);'; [void][W.P]::SetThreadExecutionState([uint32]2147483649); while (\$true) { Start-Sleep -Seconds 3600 }" > /dev/null 2>&1 &
+  AWAKE_PID=$!
+}
+
+# Public URL: Tailscale Funnel if installed (fixed URL, runs inside the Tailscale service, nothing to
+# babysit), else a Cloudflare quick tunnel (new URL each start, watched by the main loop).
+start_tunnel() {
+  local ts out dns i
+  ts="$(find_tailscale)"
+  if [ -n "$ts" ]; then
+    if out="$("$ts" funnel --bg "$HOST_PORT" 2>&1)"; then
+      dns="$("$ts" status --json 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write((JSON.parse(s).Self.DNSName||"").replace(/\.$/,""))}catch{}})')"
+      if [ -n "$dns" ]; then
+        PUBLIC_URL="https://$dns"
+        log "Tailscale Funnel: $PUBLIC_URL -> 127.0.0.1:$HOST_PORT"
+        return 0
+      fi
+    fi
+    log "Tailscale is installed but Funnel did not start. Its message:"
+    printf '%s\n' "$out" | tee -a "$LOGS/host.log"
+    log "Sign in to Tailscale and allow Funnel (the link above), then restart ./host. Using a temporary tunnel for now."
+  fi
+  if ! command -v cloudflared >/dev/null 2>&1; then
+    log "No tunnel available: install Tailscale (spikes/agent-4/HOSTING.md). Serving on this machine only."
+    return 1
+  fi
+  : > "$LOGS/tunnel.log"
+  cloudflared tunnel --no-autoupdate --url "http://127.0.0.1:$HOST_PORT" >> "$LOGS/tunnel.log" 2>&1 &
+  TUNNEL_PID=$!
+  for i in $(seq 1 45); do
+    PUBLIC_URL="$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' "$LOGS/tunnel.log" | head -1)"
+    if [ -n "$PUBLIC_URL" ]; then
+      log "Temporary Cloudflare tunnel: $PUBLIC_URL (changes on every restart; install Tailscale for a fixed one)"
+      return 0
+    fi
+    sleep 1
+  done
+  log "Cloudflare tunnel gave no URL, see host-logs/tunnel.log"
+  return 1
+}
+
+announce() {
+  [ -n "$PUBLIC_URL" ] || return 0
+  echo "$PUBLIC_URL" > "$URLFILE"
+  write_redirects "$PUBLIC_URL"
+  log "Game (direct):      $PUBLIC_URL$BASE_PATH"
+  log "Game (your site):   https://fmota.com$BASE_PATH   once the portfolio is redeployed with the new _redirects"
+}
+
+cleanup() {
+  trap - INT TERM EXIT
+  log "Stopping"
+  stop_worker
+  stop_server
+  kill_tree "$TUNNEL_PID"
+  kill_tree "$AWAKE_PID"
+  rm -f "$PIDFILE"
+  exit 0
+}
+
+# Pull and rebuild while the live build keeps serving, then swap.
+update() {
+  pull_latest || return 0
+  if ! deps_current; then
+    # npm cannot replace native modules (sharp) that a running node holds open on Windows.
+    stop_worker; stop_server
+    install_deps
+    build_slot "$SLOT" || log "Restarting the previous build anyway (it may not match the new dependencies)"
+    start_server; start_worker
+    return 0
+  fi
+  local next=a
+  [ "$SLOT" = a ] && next=b
+  build_slot "$next" || { log "Keeping build $SLOT live"; return 0; }
+  stop_worker; stop_server
+  SLOT="$next"
+  start_server; start_worker
+}
+
+# ---- commands -------------------------------------------------------------------------------------
+
+running_pid() { [ -f "$PIDFILE" ] && alive "$(cat "$PIDFILE")" && cat "$PIDFILE"; }
+
+cmd_stop() {
+  local pid
+  pid="$(running_pid)" || { echo "./host is not running."; return 0; }
+  kill -TERM "$pid" 2>/dev/null
+  for _ in $(seq 1 20); do alive "$pid" || { echo "Stopped."; return 0; }; sleep 1; done
+  kill_tree "$pid"; rm -f "$PIDFILE"; echo "Stopped (forced)."
+}
+
+cmd_status() {
+  local pid
+  local port="$HOST_PORT"
+  [ -f "$LOGS/port" ] && port="$(cat "$LOGS/port")"
+  if pid="$(running_pid)"; then echo "Running (pid $pid)."; else echo "Not running."; fi
+  [ -f "$URLFILE" ] && echo "Public URL: $(cat "$URLFILE")$BASE_PATH"
+  echo "Local check: http://127.0.0.1:$port$BASE_PATH -> $(http_code "http://127.0.0.1:$port$BASE_PATH" 5)"
+  echo "--- last log lines (host-logs/host.log)"
+  tail -n 12 "$LOGS/host.log" 2>/dev/null
+}
+
+cmd_redirects() {
+  local url="${1:-}"
+  [ -n "$url" ] || url="$(cat "$URLFILE" 2>/dev/null)"
+  [ -n "$url" ] || { echo "No public URL yet: start ./host first, or pass one: ./host redirects https://..."; return 1; }
+  redirect_rules "${url%/}"
+}
+
+cmd_autostart() {
+  local startup cmdfile bash_exe
+  startup="$(cygpath -u "$APPDATA")/Microsoft/Windows/Start Menu/Programs/Startup"
+  cmdfile="$startup/chronodex-host.cmd"
+  if [ "${1:-}" = off ]; then rm -f "$cmdfile"; echo "Removed $cmdfile"; return 0; fi
+  bash_exe="$(cygpath -w /usr/bin/bash.exe)"
+  printf '@echo off\r\ntitle Chronodex host\r\n"%s" -lc "cd \x27%s\x27 && ./host"\r\n' "$bash_exe" "$REPO" > "$cmdfile"
+  echo "Wrote $cmdfile: ./host now starts in a console window at every sign-in. Undo with ./host autostart off"
+}
+
+cmd_start() {
+  local pid fails=0 last_update now
+  if pid="$(running_pid)"; then echo "./host is already running (pid $pid). ./host stop first."; exit 1; fi
+  if [ "$(http_code "http://127.0.0.1:$HOST_PORT" 3)" != 000 ]; then
+    echo "Something already answers on port $HOST_PORT. Stop it, or pick another: HOST_PORT=3130 ./host"; exit 1
+  fi
+  [ -f .env.local ] || log "Warning: no .env.local here, so no database or keys: the game will have no data."
+  echo $$ > "$PIDFILE"
+  echo "$HOST_PORT" > "$LOGS/port"
+  trap cleanup INT TERM EXIT
+  log "Starting Chronodex host in $REPO"
+  start_keep_awake
+
+  pull_latest || true
+  deps_current || install_deps || exit 1
+  SLOT=a
+  build_slot "$SLOT" || exit 1
+  start_server || exit 1
+  start_worker
+  start_tunnel && announce
+  log "Running. Ctrl+C (or ./host stop) to stop. Logs in host-logs/."
+
+  last_update="$(date +%s)"
+  while true; do
+    sleep 15
+    if ! alive "$SERVER_PID"; then
+      log "Server stopped, restarting"; start_server || sleep 30
+    elif [ "$(http_code "http://127.0.0.1:$HOST_PORT$BASE_PATH" 20)" = 000 ]; then
+      fails=$((fails + 1))
+      if [ $fails -ge 3 ]; then log "Server not answering, restarting"; stop_server; start_server; fails=0; fi
+    else
+      fails=0
+    fi
+    if [ "$HOST_WORKER" = 1 ] && ! alive "$WORKER_PID"; then log "Worker stopped, restarting"; start_worker; fi
+    if [ -n "$TUNNEL_PID" ] && ! alive "$TUNNEL_PID"; then
+      log "Tunnel stopped, starting a new one"; TUNNEL_PID=""; start_tunnel && announce
+    fi
+    now="$(date +%s)"
+    if [ "$HOST_UPDATE_MIN" -gt 0 ] && [ $((now - last_update)) -ge $((HOST_UPDATE_MIN * 60)) ]; then
+      last_update="$now"
+      update
+    fi
+  done
+}
+
+case "${1:-start}" in
+  start) cmd_start ;;
+  stop) cmd_stop ;;
+  status) cmd_status ;;
+  redirects) cmd_redirects "${2:-}" ;;
+  autostart) cmd_autostart "${2:-}" ;;
+  -h|--help|help) sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) echo "Unknown command: $1 (try ./host help)"; exit 1 ;;
+esac
