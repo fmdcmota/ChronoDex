@@ -74,8 +74,10 @@ export function lockedBadgeUrl(badgeUrl: string): string {
  * The Dex cache lives in localStorage, so it is not trusted blindly.
  *
  * @param url - Address from `Capture.photoUrl`.
- * @returns True for http, https and blob URLs.
+ * @returns True for http, https and blob URLs, except the showcase build's placeholders on the reserved
+ *   `.invalid` domain (src/lib/showcase/photos.ts), which never load.
  */
 export function isShowablePhotoUrl(url: string): boolean {
+  if (/^https?:\/\/[^/]*\.invalid(?:[:/]|$)/i.test(url)) return false;
   return /^(https?:|blob:)/i.test(url);
 }

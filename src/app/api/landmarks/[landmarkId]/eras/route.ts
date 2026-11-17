@@ -7,6 +7,7 @@
 import type { NextRequest } from 'next/server';
 import { isLandmarkId, type ErasResponse } from '@/lib/contracts';
 import { getLandmark, listEras } from '@/lib/db';
+import { SHOWCASE, showcaseEras } from '@/lib/showcase';
 import { handle, json, jsonError } from '../../../_lib/http';
 
 /**
@@ -21,7 +22,9 @@ export async function GET(_request: NextRequest, ctx: RouteContext<'/api/landmar
     const { landmarkId } = await ctx.params;
     if (!isLandmarkId(landmarkId)) return jsonError(400, 'bad_request', `Invalid landmark id "${landmarkId}"`);
     if (!(await getLandmark(landmarkId))) return jsonError(404, 'not_found', `No landmark "${landmarkId}"`);
-    const body: ErasResponse = { eras: await listEras(landmarkId) };
+    const eras = await listEras(landmarkId);
+    // Showcase (fmota.com): generated eras only, so the Time Machine never asks for a new one.
+    const body: ErasResponse = { eras: SHOWCASE ? showcaseEras(eras) : eras };
     return json(body);
   });
 }

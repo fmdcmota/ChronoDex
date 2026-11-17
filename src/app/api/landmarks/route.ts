@@ -5,17 +5,19 @@
  * Response: `{ landmarks: Landmark[] }` in route order.
  */
 import type { LandmarksResponse } from '@/lib/contracts';
-import { listLandmarks } from '@/lib/db';
+import { listEras, listLandmarks } from '@/lib/db';
+import { SHOWCASE, showcaseLandmarks } from '@/lib/showcase';
 import { handle, json } from '../_lib/http';
 
 /**
- * List the landmarks.
+ * List the landmarks. In showcase mode (fmota.com), only those with generated eras: see src/lib/showcase.
  *
  * @returns 200 with the landmarks.
  */
 export async function GET(): Promise<Response> {
   return handle('GET /api/landmarks', async () => {
-    const body: LandmarksResponse = { landmarks: await listLandmarks() };
+    const all = await listLandmarks();
+    const body: LandmarksResponse = { landmarks: SHOWCASE ? await showcaseLandmarks(all, listEras) : all };
     return json(body);
   });
 }

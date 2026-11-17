@@ -12,8 +12,21 @@ phone -> fmota.com/chronodex/...      Netlify, the static portfolio (fmota-portf
          https://<laptop>.<tailnet>.ts.net/chronodex/...      Tailscale Funnel: fixed URL, free
            v
          next start on 127.0.0.1:3120, built with NEXT_BASE_PATH=/chronodex     ./host
-         + the generation worker (video tier off)                                ./host
 ```
+
+## It spends no credits (showcase build)
+
+`./host` builds with `NEXT_PUBLIC_SHOWCASE=1` (src/lib/showcase) and blanks every key in `.env.local` (any name with
+KEY, TOKEN or SECRET) for the server. No worker runs. Only `MONGODB_URI` is kept, because the eras and their media live
+in that database. Startup stops unless the server's chat answers `showcase_disabled`.
+
+- Map and Dex list only landmarks with a generated era, and the year bar shows only generated years (9 landmarks and
+  16 eras on 17 Nov).
+- Nothing is generated: `POST /api/eras/[id]/generate` returns the era as it is, with no job.
+- Eras without a guide video play the free preview: the guide's portrait over the scene, with the narration and captions.
+- Chat shows the guide's greeting and a note that chat is off to save AI tokens. Voice is off.
+- Capture photos are saved to `Pictures/Chronodex captures` on the hosting PC (`CAPTURE_PHOTO_DIR`), named
+  `<date>_<time>_<id>.jpg` and renamed to `..._<landmark>.jpg` when the capture collects a badge. Nothing goes to fal.
 
 ## One-time setup on the hosting laptop
 
@@ -24,22 +37,26 @@ phone -> fmota.com/chronodex/...      Netlify, the static portfolio (fmota-portf
 2. **Power**: Settings > System > Power > Screen and sleep: "When plugged in, put my device to sleep
    after" Never. Control Panel > Power Options > "Choose what closing the lid does": "When I close the
    lid, plugged in" Do nothing. (`./host` already blocks idle sleep while it runs; the lid is not idle.)
-3. **The checkout**: the repo folder on `main` with `.env.local` (MONGODB_URI, FAL_KEY,
-   DEEPSEEK_API_KEY). `./host` pulls `main` on start and every 30 minutes.
+3. **The checkout**: the repo folder on `main` with `.env.local` (only MONGODB_URI is used; keys there are
+   blanked). `./host` pulls `main` on start and every 30 minutes.
 4. **Start at sign-in** (optional): `./host autostart` (undo: `./host autostart off`). For a reboot to
    bring it back with nobody there, Windows must also sign in by itself, or use Task Scheduler instead.
 
 ## Run it (Git Bash, repo root)
 
 ```bash
-./host            # pull, build (about 3 minutes), serve, tunnel, worker; restarts anything that dies
+./host            # pull, build (about 2 minutes), serve, tunnel; restarts anything that dies
 ./host status     # running?, public URL, last log lines
 ./host stop       # from another window; Ctrl+C in its own window does the same
 ./host redirects  # the _redirects block for fmota.com
 ```
 
 Settings by environment variable: `HOST_PORT` (3120), `HOST_BRANCH` (main), `HOST_UPDATE_MIN` (30, 0 = off),
-`HOST_WORKER` (1), `PORTFOLIO_DIST`, `MONGODB_DB` (chronodex). Logs: `host-logs/`.
+`HOST_TUNNEL` (1; 0 for a local test beside the live one, which leaves Funnel alone), `PORTFOLIO_DIST`,
+`CAPTURE_PHOTO_DIR`, `MONGODB_DB` (chronodex). Logs: `host-logs/`.
+
+`./host` re-reads its own settings only when started: after a pull that changes `host` itself, run `./host stop`
+and `./host` again.
 
 ## fmota.com side
 

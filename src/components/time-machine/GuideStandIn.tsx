@@ -15,6 +15,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Avatar } from '@/components/chat/Avatar';
+import { SHOWCASE } from '@/lib/showcase';
 import { useCachedMediaUrl } from './mediaCache';
 import { PIXEL_FONT, TAG_DARK } from './pixel';
 
@@ -131,7 +132,8 @@ export function GuideStandIn({ stage, name, role, headshotUrl, sceneUrl, year, o
         // eslint-disable-next-line @next/next/no-img-element
         <img src={scene} alt={`The street in ${year}, AI reconstruction`} className="absolute inset-0 h-full w-full object-cover opacity-80" />
       )}
-      <span className={`${TAG_DARK} absolute top-2 left-2 z-10`}>Preview · guide video coming</span>
+      {/* The showcase build (fmota.com) never generates video, so it does not promise one. */}
+      <span className={`${TAG_DARK} absolute top-2 left-2 z-10`}>{SHOWCASE ? 'Guide preview' : 'Preview · guide video coming'}</span>
       <div ref={figure} className="absolute inset-x-0 bottom-28 flex justify-center" style={{ transform: 'translateY(110vh)' }}>
         <div ref={body} className="flex flex-col items-center">
           <div className="rounded-full shadow-(--pixel-frame)">

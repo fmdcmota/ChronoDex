@@ -11,7 +11,9 @@
  */
 import type { NextRequest } from 'next/server';
 import { CaptureRequestSchema, resolveCapture, type Capture, type CaptureResult } from '@/lib/contracts';
-import { insertCapture, listLandmarks } from '@/lib/db';
+import { insertCapture, listEras, listLandmarks } from '@/lib/db';
+import { SHOWCASE, showcaseLandmarks } from '@/lib/showcase';
+import { labelCapturePhoto } from '@/lib/showcase/photos';
 import { handle, json, jsonError, readJson } from '../_lib/http';
 import { captureLimiter, limitOrNull } from '../_lib/limits';
 
@@ -55,7 +57,9 @@ export async function POST(request: NextRequest): Promise<Response> {
     }
     if (!location) return json({ ok: false, reason: 'location_missing', nearest: null } satisfies CaptureResult);
 
-    const { hit, nearest } = resolveCapture(location, accuracyM, await listLandmarks());
+    // Showcase (fmota.com): only the landmarks the map shows can be collected. See src/lib/showcase.
+    const all = await listLandmarks();
+    const { hit, nearest } = resolveCapture(location, accuracyM, SHOWCASE ? await showcaseLandmarks(all, listEras) : all);
     const nearestOut = nearest ? { landmarkId: nearest.landmark.id, distanceM: round(nearest.distanceM) } : null;
 
     if (!photoUrl) return json({ ok: false, reason: 'photo_missing', nearest: nearestOut } satisfies CaptureResult);
@@ -73,6 +77,8 @@ export async function POST(request: NextRequest): Promise<Response> {
       capturedAt: new Date().toISOString(),
     };
     const stored = await insertCapture(capture);
+    // Showcase (fmota.com): the photo is in a folder on the hosting PC; name it after the landmark it collected.
+    if (SHOWCASE) await labelCapturePhoto(photoUrl, hit.landmark.id);
     const result: CaptureResult = { ok: true, capture: stored.capture, landmark: hit.landmark, alreadyCollected: stored.alreadyCollected };
     return json(result);
   });

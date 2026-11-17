@@ -21,7 +21,8 @@ export interface ChatHeaderProps {
   backHref: string;
   /** When on, every new reply is played in the guide's voice as it arrives. */
   readAloud: boolean;
-  onToggleReadAloud: () => void;
+  /** Flips read-aloud. Leave it out to hide the switch (showcase build, where voice is off). */
+  onToggleReadAloud?: () => void;
   /** The period ambience is muted on this device. */
   ambienceMuted: boolean;
   onToggleAmbience: () => void;
@@ -37,7 +38,7 @@ export interface ChatHeaderProps {
  * @param props.year - The year being viewed.
  * @param props.backHref - Where the back arrow goes.
  * @param props.readAloud - Whether new replies are spoken.
- * @param props.onToggleReadAloud - Flips read-aloud. Called inside the tap, so audio can be unlocked.
+ * @param props.onToggleReadAloud - Flips read-aloud. Called inside the tap, so audio can be unlocked. Absent: no switch.
  * @param props.ambienceMuted - Whether the period ambience is muted.
  * @param props.onToggleAmbience - Flips the ambience mute.
  * @param props.onReset - Clears the thread back to the greeting.
@@ -56,14 +57,16 @@ export function ChatHeader({ guide, year, backHref, readAloud, onToggleReadAloud
           {guide.role}, {year}
         </div>
       </div>
-      <button
-        type="button"
-        onClick={onToggleReadAloud}
-        aria-pressed={readAloud}
-        className={`${BTN_SECONDARY_SMALL} shrink-0 ${readAloud ? 'bg-(--gold)!' : ''}`}
-      >
-        {readAloud ? '🔊 Voice on' : '🔈 Voice off'}
-      </button>
+      {onToggleReadAloud && (
+        <button
+          type="button"
+          onClick={onToggleReadAloud}
+          aria-pressed={readAloud}
+          className={`${BTN_SECONDARY_SMALL} shrink-0 ${readAloud ? 'bg-(--gold)!' : ''}`}
+        >
+          {readAloud ? '🔊 Voice on' : '🔈 Voice off'}
+        </button>
+      )}
       <AmbienceToggle muted={ambienceMuted} onToggle={onToggleAmbience} />
       <button type="button" onClick={onReset} className="px-1 text-lg text-(--paper)/70" aria-label="Start the chat over">
         ↺

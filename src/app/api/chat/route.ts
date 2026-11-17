@@ -12,6 +12,7 @@ import { ChatRequestSchema, parseEraId } from '@/lib/contracts';
 import { ChatInputError, pickNextLandmark, streamGuideReply, toChatTurns } from '@/lib/chat';
 import { formatSseEvent } from '@/lib/client/sse';
 import { getEra, getLandmark, listCaptures, listLandmarks } from '@/lib/db';
+import { SHOWCASE, SHOWCASE_DISABLED_CODE } from '@/lib/showcase';
 import { handle, jsonError, readJson } from '../_lib/http';
 import { chatLimiter, limitOrNull } from '../_lib/limits';
 
@@ -29,6 +30,8 @@ export const maxDuration = 60;
  */
 export async function POST(request: NextRequest): Promise<Response> {
   return handle('POST /api/chat', async () => {
+    // Showcase (fmota.com): no chat model calls at all. The chat screen says so instead. See src/lib/showcase.
+    if (SHOWCASE) return jsonError(403, SHOWCASE_DISABLED_CODE, 'Chat is switched off on this public demo to save AI tokens.');
     const limited = limitOrNull(chatLimiter, request);
     if (limited) return limited;
     const body = await readJson(request, ChatRequestSchema);

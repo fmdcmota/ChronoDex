@@ -8,6 +8,7 @@ import type { Era, EraId } from '@/lib/contracts';
 import { getEra } from '@/lib/db';
 import { withDemoEras } from '@/lib/demo';
 import { FalStageError, createRateLimiter, createSpeechCache } from '@/lib/fal';
+import { SHOWCASE, SHOWCASE_DISABLED_CODE } from '@/lib/showcase';
 import { eras as fixtureEras } from '@fixtures/index';
 import { jsonError } from '../../_lib/http';
 
@@ -78,10 +79,12 @@ export function tooManyRequests(decision: { ok: boolean; retryAfterS: number }):
 
 /**
  * Refuse with 503 when the server has no fal key and is not in mock mode. Saves a doomed request.
+ * In showcase mode (fmota.com, src/lib/showcase) refuse with 403 `showcase_disabled` whatever the keys.
  *
- * @returns A 503 response, or null when voice can run.
+ * @returns A 403 or 503 response, or null when voice can run.
  */
 export function voiceUnavailable(): Response | null {
+  if (SHOWCASE) return jsonError(403, SHOWCASE_DISABLED_CODE, 'Voice is switched off on this public demo to save AI credits.');
   if (process.env.NEXT_PUBLIC_USE_MOCKS === '1' || process.env.FAL_KEY) return null;
   return jsonError(503, 'voice_unavailable', 'Voice is not configured on this server (no FAL_KEY).');
 }

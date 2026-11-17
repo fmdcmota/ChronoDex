@@ -13,6 +13,8 @@
 import type { NextRequest } from 'next/server';
 import { MAX_UPLOAD_BYTES, type UploadResponse } from '@/lib/contracts';
 import { uploadToFal } from '@/lib/fal';
+import { SHOWCASE } from '@/lib/showcase';
+import { saveCapturePhoto } from '@/lib/showcase/photos';
 import { handle, json, jsonError } from '../_lib/http';
 import { callerKey, tooManyRequests, upstreamError, voiceUnavailable } from '../voice/_lib/voice';
 import { looksLikeJpeg, uploadLimiter } from './_lib/limits';
@@ -44,6 +46,9 @@ export async function POST(request: NextRequest): Promise<Response> {
     const head = new Uint8Array(await file.slice(0, HEAD_BYTES).arrayBuffer());
     if (!looksLikeJpeg(head)) return jsonError(415, 'unsupported_type', 'file: only JPEG photos are accepted');
 
+    // Showcase (fmota.com): no fal. The photo is written to a folder on the hosting PC and the capture gets a
+    // placeholder URL that the Dex knows not to show (the phone keeps its own copy). See src/lib/showcase/photos.ts.
+    if (SHOWCASE) return json({ url: await saveCapturePhoto(file) } satisfies UploadResponse);
     const unavailable = voiceUnavailable();
     if (unavailable) return unavailable;
     try {

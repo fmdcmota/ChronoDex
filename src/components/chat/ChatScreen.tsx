@@ -24,6 +24,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GAME, parseEraId, type ChatMessage, type Era, type EraId, type EraResponse } from '@/lib/contracts';
 import { ApiError, api, getPlayerId } from '@/lib/client';
+import { SHOWCASE, showcaseChatNotice } from '@/lib/showcase';
 import { ChatHeader } from './ChatHeader';
 import { Composer } from './Composer';
 import { MessageBubble } from './MessageBubble';
@@ -134,7 +135,8 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [streamText, setStreamText] = useState('');
   const [notice, setNotice] = useState<string | null>(null);
-  const [readAloud, setReadAloud] = useState(() => safeGet(READ_ALOUD_KEY) === '1');
+  // Voice is off in the showcase build, whatever an earlier visit saved.
+  const [readAloud, setReadAloud] = useState(() => !SHOWCASE && safeGet(READ_ALOUD_KEY) === '1');
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   /** The hold-to-talk mic is open: the ambience goes silent so it is not recorded (phone test 5.4). */
   const [micOpen, setMicOpen] = useState(false);
@@ -297,7 +299,7 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
         year={year}
         backHref={backHref}
         readAloud={readAloud}
-        onToggleReadAloud={toggleReadAloud}
+        onToggleReadAloud={SHOWCASE ? undefined : toggleReadAloud}
         ambienceMuted={ambience.muted}
         onToggleAmbience={ambience.toggleMuted}
         onReset={reset}
@@ -311,7 +313,7 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
             key={i}
             message={m}
             onSpeak={
-              m.role === 'guide'
+              m.role === 'guide' && !SHOWCASE
                 ? () => {
                     cue('silent');
                     void playMessage(i, m.text);
@@ -332,14 +334,21 @@ function ChatThread({ era, backHref }: ChatThreadProps) {
         {phase === 'idle' && chatHasExchange(messages) && <NextStopCard landmarkId={era.landmarkId} />}
         <div ref={bottom} />
       </main>
-      <Composer
-        enabled={phase === 'idle'}
-        onSend={(t) => void send(t)}
-        onRecording={(r) => void sendRecording(r)}
-        onCue={cue}
-        onMicError={setNotice}
-        onMicOpenChange={setMicOpen}
-      />
+      {SHOWCASE ? (
+        // Showcase build (fmota.com): no chat model, so say what the chat would do instead of a message box.
+        <footer role="note" className="border-t-[3px] border-(--ink) bg-(--paper-shade) px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] text-center text-sm text-(--ink)">
+          {showcaseChatNotice(guide.name, year)}
+        </footer>
+      ) : (
+        <Composer
+          enabled={phase === 'idle'}
+          onSend={(t) => void send(t)}
+          onRecording={(r) => void sendRecording(r)}
+          onCue={cue}
+          onMicError={setNotice}
+          onMicOpenChange={setMicOpen}
+        />
+      )}
     </div>
   );
 }

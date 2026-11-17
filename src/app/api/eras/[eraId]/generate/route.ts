@@ -9,7 +9,9 @@
  */
 import type { NextRequest } from 'next/server';
 import { EraIdSchema, GenerateRequestSchema } from '@/lib/contracts';
+import { getEra } from '@/lib/db';
 import { requestEraGeneration } from '@/lib/jobs';
+import { SHOWCASE } from '@/lib/showcase';
 import { handle, json, jsonError, readJson } from '../../../_lib/http';
 import { generateLimiter, limitOrNull } from '../../../_lib/limits';
 
@@ -28,6 +30,12 @@ export async function POST(request: NextRequest, ctx: RouteContext<'/api/eras/[e
     if (!EraIdSchema.safeParse(eraId).success) return jsonError(400, 'bad_request', `Invalid era id "${eraId}"`);
     const body = await readJson(request, GenerateRequestSchema);
     if (!body.ok) return body.response;
+    // Showcase (fmota.com): never generate. Answer with the era as it is and no job, which screens read as
+    // "nothing to wait for". See src/lib/showcase.
+    if (SHOWCASE) {
+      const era = await getEra(eraId);
+      return era ? json({ era, job: null }) : jsonError(404, 'not_found', `No era "${eraId}"`);
+    }
     // `?force=1` skips the retry limit, and only works where a developer switched it on.
     const force = new URL(request.url).searchParams.get('force') === '1' && process.env.ALLOW_FORCE_GENERATE === '1';
     const outcome = await requestEraGeneration(eraId, body.data.includeVideo, { force });

@@ -4,8 +4,8 @@
 # Owner: Agent 4 (R3-4e, server and tunnel). Runbook: spikes/agent-4/HOSTING.md.
 #
 # Run from Git Bash in the repo root (the checkout on `main` that has .env.local):
-#   ./host              pull main, build, then serve, tunnel and run the worker; restart anything that
-#                       dies; pull and rebuild every HOST_UPDATE_MIN minutes. Ctrl+C stops it all.
+#   ./host              pull main, build, then serve and tunnel; restart anything that dies; pull and
+#                       rebuild every HOST_UPDATE_MIN minutes. Ctrl+C stops it all.
 #   ./host stop         stop a running ./host (from another window)
 #   ./host status       is it running, the public URL, the last log lines
 #   ./host redirects    print the Netlify _redirects block for fmota.com
@@ -19,11 +19,17 @@
 # Without Tailscale it falls back to a Cloudflare quick tunnel, whose URL changes on every start, so
 # fmota.com's _redirects has to be redeployed each time. Install Tailscale for a URL that never changes.
 #
+# It spends no credits. The build is the showcase build (NEXT_PUBLIC_SHOWCASE=1, src/lib/showcase): only
+# landmarks and years that are already generated, no generation, chat and voice switched off. On top of
+# that every key in .env.local (any name with KEY, TOKEN or SECRET in it) is blanked for the server and no
+# worker runs, so a missed code path fails instead of spending. Only MONGODB_URI is kept: the eras and
+# their media live in that database. Startup stops if the server does not answer as a showcase build.
+#
 # Why each piece is the way it is:
 # - Two build folders (.next-chronodex-a and -b): an update builds into the idle one while the
 #   live one keeps serving, then swaps, so an update costs seconds of downtime instead of minutes.
-# - .env.local is not sourced here. Next and the worker read it themselves, and a MongoDB URI with
-#   "&" in it would break a shell `source`. Values exported below win over .env.local in both.
+# - .env.local is not sourced here. Next reads it itself, and a MongoDB URI with "&" in it would break
+#   a shell `source`. Values exported below, empty ones included, win over .env.local.
 # - Keeps the PC awake (no idle sleep) for as long as it runs, via SetThreadExecutionState. Closing
 #   the lid still sleeps the laptop unless Windows is told to do nothing on lid close.
 
@@ -33,12 +39,15 @@ set -uo pipefail
 HOST_PORT="${HOST_PORT:-3120}"
 HOST_BRANCH="${HOST_BRANCH:-main}"
 HOST_UPDATE_MIN="${HOST_UPDATE_MIN:-30}"          # 0 turns automatic updates off
-HOST_WORKER="${HOST_WORKER:-1}"                   # 1 runs the generation worker beside the server
+HOST_TUNNEL="${HOST_TUNNEL:-1}"                   # 0 serves this machine only (for a test beside the live one)
 PORTFOLIO_DIST="${PORTFOLIO_DIST:-$HOME/PROGRAMMING/fmota com/fmota-portfolio/dist}"
+# Every photo players take is saved here (src/lib/showcase/photos.ts), named by time and then landmark.
+CAPTURE_PHOTO_DIR="${CAPTURE_PHOTO_DIR:-$HOME/Pictures/Chronodex captures}"
 BASE_PATH="/chronodex"
 
-# What the build and the server run with. Video generation stays off: a public site must not be able
-# to spend video credits. The spoof panel stays on so visitors far from the landmarks can still play.
+# What the build and the server run with. The spoof panel stays on so visitors far from the landmarks
+# can still play.
+export NEXT_PUBLIC_SHOWCASE=1
 export NEXT_BASE_PATH="$BASE_PATH"
 export MSYS2_ENV_CONV_EXCL="NEXT_BASE_PATH"       # else Git Bash rewrites /chronodex to C:/Program Files/Git/chronodex
 export NEXT_PUBLIC_USE_MOCKS=0
@@ -47,6 +56,9 @@ export ALLOW_SPOOFED_LOCATION="${ALLOW_SPOOFED_LOCATION:-1}"
 export MONGODB_DB="${MONGODB_DB:-chronodex}"
 export VIDEO_GENERATION=off
 export NEXT_TELEMETRY_DISABLED=1
+mkdir -p "$CAPTURE_PHOTO_DIR"
+CAPTURE_PHOTO_DIR="$(cygpath -w "$CAPTURE_PHOTO_DIR")"   # node needs a Windows path
+export CAPTURE_PHOTO_DIR
 
 cd "$(dirname "$0")" || exit 1
 REPO="$(pwd)"
@@ -55,10 +67,18 @@ PIDFILE="$LOGS/host.pid"
 URLFILE="$LOGS/public-url"
 mkdir -p "$LOGS"
 
-NEXT_BIN="node_modules/next/dist/bin/next"
-TSX_BIN="node_modules/tsx/dist/cli.mjs"
+# No keys: blank the ones every part of the app knows, plus any other key-like name in .env.local.
+export FAL_KEY= DEEPSEEK_API_KEY= ANTHROPIC_API_KEY=
+if [ -f .env.local ]; then
+  for key_name in $(grep -oE '^[[:space:]]*(export[[:space:]]+)?[A-Za-z0-9_]*(KEY|TOKEN|SECRET)[A-Za-z0-9_]*=' .env.local \
+      | sed -E 's/^[[:space:]]*(export[[:space:]]+)?//; s/=$//'); do
+    export "$key_name="
+  done
+fi
 
-SERVER_PID="" WORKER_PID="" TUNNEL_PID="" AWAKE_PID=""
+NEXT_BIN="node_modules/next/dist/bin/next"
+
+SERVER_PID="" TUNNEL_PID="" AWAKE_PID=""
 SLOT=""            # a or b: which build folder is live
 PUBLIC_URL=""
 
@@ -200,14 +220,18 @@ start_server() {
 
 stop_server() { kill_tree "$SERVER_PID"; SERVER_PID=""; }
 
-start_worker() {
-  [ "$HOST_WORKER" = 1 ] || return 0
-  node "$TSX_BIN" --env-file-if-exists=.env.local src/worker/index.ts >> "$LOGS/worker.log" 2>&1 &
-  WORKER_PID=$!
-  log "Worker started (video tier off)"
+# Refuse to go public unless the running server is the no-credit showcase build: its chat must answer
+# 403 showcase_disabled (src/app/api/chat/route.ts) without touching any model.
+verify_showcase() {
+  if curl -s -m 10 -X POST -H 'Content-Type: application/json' -d '{}' "http://127.0.0.1:$HOST_PORT$BASE_PATH/api/chat" \
+      | grep -q showcase_disabled; then
+    log "Showcase build confirmed: no generation, chat and voice off, no keys"
+    return 0
+  fi
+  # Exits the whole host (the trap stops everything): a restart loop must never bring it back.
+  log "The server is NOT the showcase build (chat did not answer showcase_disabled). Stopping so nothing can spend."
+  exit 1
 }
-
-stop_worker() { kill_tree "$WORKER_PID"; WORKER_PID=""; }
 
 # Keep Windows from sleeping while this runs. Released when the PowerShell process ends.
 start_keep_awake() {
@@ -221,7 +245,12 @@ start_tunnel() {
   local ts out dns i
   ts="$(find_tailscale)"
   if [ -n "$ts" ]; then
-    if out="$("$ts" funnel --bg "$HOST_PORT" 2>&1)"; then
+    # Shown live, not captured: the first time, tailscale prints a link to allow Funnel and waits for it.
+    log "Starting Tailscale Funnel. If a link appears below, open it and allow Funnel; this then carries on."
+    "$ts" funnel --bg "$HOST_PORT" 2>&1 | tee "$LOGS/funnel.log"
+    local rc="${PIPESTATUS[0]}"
+    out="$(cat "$LOGS/funnel.log")"
+    if [ "$rc" = 0 ]; then
       dns="$("$ts" status --json 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write((JSON.parse(s).Self.DNSName||"").replace(/\.$/,""))}catch{}})')"
       if [ -n "$dns" ]; then
         PUBLIC_URL="https://$dns"
@@ -257,13 +286,12 @@ announce() {
   echo "$PUBLIC_URL" > "$URLFILE"
   write_redirects "$PUBLIC_URL"
   log "Game (direct):      $PUBLIC_URL$BASE_PATH"
-  log "Game (your site):   https://fmota.com$BASE_PATH   once the portfolio is redeployed with the new _redirects"
+  log "Game (your site):   https://fmota.com$BASE_PATH"
 }
 
 cleanup() {
   trap - INT TERM EXIT
   log "Stopping"
-  stop_worker
   stop_server
   kill_tree "$TUNNEL_PID"
   kill_tree "$AWAKE_PID"
@@ -276,18 +304,18 @@ update() {
   pull_latest || return 0
   if ! deps_current; then
     # npm cannot replace native modules (sharp) that a running node holds open on Windows.
-    stop_worker; stop_server
+    stop_server
     install_deps
     build_slot "$SLOT" || log "Restarting the previous build anyway (it may not match the new dependencies)"
-    start_server; start_worker
+    start_server && verify_showcase
     return 0
   fi
   local next=a
   [ "$SLOT" = a ] && next=b
   build_slot "$next" || { log "Keeping build $SLOT live"; return 0; }
-  stop_worker; stop_server
+  stop_server
   SLOT="$next"
-  start_server; start_worker
+  start_server && verify_showcase
 }
 
 # ---- commands -------------------------------------------------------------------------------------
@@ -341,6 +369,7 @@ cmd_start() {
   echo "$HOST_PORT" > "$LOGS/port"
   trap cleanup INT TERM EXIT
   log "Starting Chronodex host in $REPO"
+  log "Players' capture photos are saved to $CAPTURE_PHOTO_DIR"
   start_keep_awake
 
   pull_latest || true
@@ -348,22 +377,21 @@ cmd_start() {
   SLOT=a
   build_slot "$SLOT" || exit 1
   start_server || exit 1
-  start_worker
-  start_tunnel && announce
+  verify_showcase
+  if [ "$HOST_TUNNEL" = 1 ]; then start_tunnel && announce; else log "HOST_TUNNEL=0: no public URL, this machine only"; fi
   log "Running. Ctrl+C (or ./host stop) to stop. Logs in host-logs/."
 
   last_update="$(date +%s)"
   while true; do
     sleep 15
     if ! alive "$SERVER_PID"; then
-      log "Server stopped, restarting"; start_server || sleep 30
+      log "Server stopped, restarting"; if start_server; then verify_showcase; else sleep 30; fi
     elif [ "$(http_code "http://127.0.0.1:$HOST_PORT$BASE_PATH" 20)" = 000 ]; then
       fails=$((fails + 1))
-      if [ $fails -ge 3 ]; then log "Server not answering, restarting"; stop_server; start_server; fails=0; fi
+      if [ $fails -ge 3 ]; then log "Server not answering, restarting"; stop_server; start_server && verify_showcase; fails=0; fi
     else
       fails=0
     fi
-    if [ "$HOST_WORKER" = 1 ] && ! alive "$WORKER_PID"; then log "Worker stopped, restarting"; start_worker; fi
     if [ -n "$TUNNEL_PID" ] && ! alive "$TUNNEL_PID"; then
       log "Tunnel stopped, starting a new one"; TUNNEL_PID=""; start_tunnel && announce
     fi

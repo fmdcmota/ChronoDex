@@ -49,3 +49,4 @@ certificates
 # fmota.com/chronodex builds and logs made by ./host
 /.next-chronodex*/
 /host-logs/
+/captured-photos/
