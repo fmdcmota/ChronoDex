@@ -17,6 +17,7 @@ import type { LngLatBounds, Map as MapLibreMap, PaddingOptions } from 'maplibre-
 import { INTRO_TIMING, landingFor, markIntroSeen, type IntroLanding } from './lib/intro';
 import type { LocationTracker } from './lib/location';
 import { INTRO_CSS } from './WelcomeIntro.styles';
+import { unlockDuckVoice } from './lib/duck-voice';
 
 /** Degrees of longitude the globe turns per second while the title is up. */
 const SPIN_DEG_PER_S = 4;
@@ -172,6 +173,8 @@ export default function WelcomeIntro({ mapRef, trackerRef, fallbackBounds, landi
     if (phaseRef.current !== 'title') return;
     // Must run before the first await: iOS only shows the prompt inside the tap's own call stack.
     trackerRef.current?.start();
+    // Also inside the tap: lets the tutorial duck that follows the intro make its chirps (browsers mute audio until a tap).
+    unlockDuckVoice();
     go('locating');
 
     const landing = await waitForLanding(trackerRef.current);

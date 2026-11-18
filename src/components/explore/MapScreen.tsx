@@ -31,6 +31,8 @@ import { PALETTE } from './lib/palette';
 import { useUnavailableTimeMachines } from './lib/use-era-ready';
 import { shouldShowIntro } from './lib/intro';
 import WelcomeIntro, { sessionStorageOrNull } from './WelcomeIntro';
+import DuckTutorial from './DuckTutorial';
+import { markTutorialSeen, shouldShowTutorial } from './lib/duck-tutorial';
 
 /**
  * Screen pixels kept clear around the landmarks when the map first frames them. Markers stand
@@ -128,6 +130,8 @@ export default function MapScreen() {
   // intro, not drawPlayer, makes the first move to the player. This screen only renders in the browser (ssr: false).
   const [introOpen, setIntroOpen] = useState(() => shouldShowIntro(sessionStorageOrNull(), window.location.search));
   const introOpenRef = useRef(introOpen);
+  // The duck tutorial (DuckTutorial.tsx) follows the intro, once a session. It waits while the intro is up.
+  const [tutorialOpen, setTutorialOpen] = useState(() => shouldShowTutorial(sessionStorageOrNull(), window.location.search));
 
   const [landmarks, setLandmarks] = useState<Landmark[] | null>(null);
   const [collected, setCollected] = useState<Set<LandmarkId>>(new Set());
@@ -548,6 +552,15 @@ export default function MapScreen() {
             // After a landing on the player the next fix must not jump the camera; after a fallback it should.
             hasCentredRef.current = centredOnPlayer;
             setIntroOpen(false);
+          }}
+        />
+      )}
+
+      {tutorialOpen && !introOpen && (
+        <DuckTutorial
+          onDone={() => {
+            markTutorialSeen(sessionStorageOrNull());
+            setTutorialOpen(false);
           }}
         />
       )}
